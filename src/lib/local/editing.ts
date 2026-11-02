@@ -307,6 +307,26 @@ export async function insertNote(
   return insertColumn(part, events, afterEventId, { [String(stringIndex)]: fret }, {}, ctx);
 }
 
+/**
+ * Insert a space: a column with nothing on any string.
+ *
+ * In a positional model this is how time passes without a note -- a pause, or
+ * a note left to ring. Those are the same thing on a page of tab, which is
+ * why there is one button rather than two: the difference between silence and
+ * sustain is an articulation on the note before it, not a separate column.
+ *
+ * Worth knowing: `repeat` works on these like any other column, so a long
+ * hold is one space with a count rather than six empty columns.
+ */
+export async function insertRest(
+  part: Pick<PartRow, "id" | "bandId">,
+  events: readonly EventRow[],
+  afterEventId: string | null,
+  ctx: MutateContext = {},
+): Promise<EventRow> {
+  return insertColumn(part, events, afterEventId, {}, { kind: "rest" }, ctx);
+}
+
 /** Insert a barline at the cursor. */
 export async function insertBarline(
   part: Pick<PartRow, "id" | "bandId">,
@@ -370,7 +390,13 @@ export async function stackNote(
   return patchRow(
     "events",
     event.id,
-    { frets: { ...event.frets, [String(stringIndex)]: fret } },
+    {
+      frets: { ...event.frets, [String(stringIndex)]: fret },
+      // A space with a note on it is no longer a space. Leaving the kind alone
+      // would give a column that renders as notes but reads as a rest to
+      // anything inspecting it later.
+      ...(event.kind === "rest" ? { kind: "notes" as const } : {}),
+    },
     ctx,
   );
 }

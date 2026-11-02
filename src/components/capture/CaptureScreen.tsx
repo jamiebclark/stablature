@@ -30,6 +30,7 @@ import {
   groupAsTuplet,
   insertBarline,
   insertNote,
+  insertRest,
   setChord,
   stackNote,
 } from "@/lib/local/editing";
@@ -189,6 +190,7 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
             annotations={annotations ?? []}
             followTail={atEnd}
             activeEventId={focused?.id ?? null}
+            insertAfterEventId={afterId}
             onSelectColumn={(eventId) => {
               setCursor(eventId);
               setStacking(false);
@@ -313,6 +315,19 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
           disabled={!part}
           onClick={async () => {
             if (!part) return;
+            const inserted = await insertRest(part, columns, afterId);
+            setStacking(false);
+            advance(inserted.id);
+          }}
+          title="A gap: a pause, or a note left ringing. Use the repeat for a longer one."
+        >
+          space
+        </Button>
+
+        <Button
+          disabled={!part}
+          onClick={async () => {
+            if (!part) return;
             const inserted = await insertBarline(part, columns, afterId);
             setStacking(false);
             advance(inserted.id);
@@ -358,7 +373,12 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
         </Button>
       </div>
 
-      <Fretboard tuning={tuning} onPress={press} disabled={!part} />
+      <Fretboard
+        tuning={tuning}
+        onPress={press}
+        highlight={editable?.frets}
+        disabled={!part}
+      />
     </div>
   );
 }

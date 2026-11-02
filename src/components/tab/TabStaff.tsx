@@ -13,7 +13,7 @@
  * tab rather than as a terminal.
  */
 
-import { useEffect, useMemo, useRef } from "react";
+import { Fragment, useEffect, useMemo, useRef } from "react";
 import type { AnnotationRow, EventRow } from "@/lib/model";
 import { layoutPart, tupletSpans, type Density } from "@/lib/tab/layout";
 import type { Tuning } from "@/lib/tunings";
@@ -25,6 +25,16 @@ export interface TabStaffProps {
   density?: Density;
   /** Highlights a column and keeps it in view -- used during capture. */
   activeEventId?: string | null;
+  /**
+   * Draws an insertion caret. `null` puts it before the first column, an id
+   * puts it after that event's last rendered column, and leaving it undefined
+   * draws none -- which is what the read-only views want.
+   *
+   * Separate from `activeEventId` because they answer different questions:
+   * the rule under a column says which one the controls act on, the caret says
+   * where the next note goes.
+   */
+  insertAfterEventId?: string | null;
   onSelectColumn?: (eventId: string) => void;
   /** Keeps the right-hand edge in view as columns are appended. */
   followTail?: boolean;
@@ -38,6 +48,7 @@ export function TabStaff({
   annotations = [],
   density = "expanded",
   activeEventId = null,
+  insertAfterEventId,
   onSelectColumn,
   followTail = false,
   surface = "base",
@@ -62,6 +73,16 @@ export function TabStaff({
 
   const hasChords = layout.columns.some((column) => column.chord !== null);
   const hasTuplets = spans.length > 0;
+
+  const showCaret = insertAfterEventId !== undefined;
+  /*
+   * A repeated column renders as several columns from one event, so the caret
+   * belongs after the LAST of them -- otherwise inserting after a x4 would
+   * appear to drop the note into the middle of it.
+   */
+  const caretAfterIndex = insertAfterEventId
+    ? layout.columns.findLastIndex((column) => column.eventId === insertAfterEventId)
+    : -1;
 
   /** Which tuplet span, if any, a column sits in -- for drawing the bracket. */
   const spanAt = (index: number) =>
@@ -90,6 +111,13 @@ export function TabStaff({
           aria-label="Tablature"
         >
           <div className="flex w-max items-stretch">
+            {showCaret && insertAfterEventId === null ? (
+              <Caret
+                stringCount={layout.stringCount}
+                offset={offsetFor(hasChords, hasTuplets)}
+              />
+            ) : null}
+
             {layout.columns.length === 0 ? (
               <EmptyStaff
                 stringCount={layout.stringCount}
@@ -99,8 +127,8 @@ export function TabStaff({
               layout.columns.map((column, index) => {
                 const span = spanAt(index);
                 return (
+                  <Fragment key={`${column.eventId}-${column.repetition}`}>
                   <Column
-                    key={`${column.eventId}-${column.repetition}`}
                     cells={column.cells}
                     width={column.width}
                     chord={column.chord}
@@ -123,6 +151,13 @@ export function TabStaff({
                     }
                     onSelect={onSelectColumn ? () => onSelectColumn(column.eventId) : undefined}
                   />
+                  {showCaret && caretAfterIndex === index ? (
+                    <Caret
+                      stringCount={layout.stringCount}
+                      offset={offsetFor(hasChords, hasTuplets)}
+                    />
+                  ) : null}
+                  </Fragment>
                 );
               })
             )}
@@ -234,6 +269,20 @@ function Column({
     >
       {body}
     </button>
+  );
+}
+
+/** The insertion point: where the next tap puts a note. */
+function Caret({ stringCount, offset }: { stringCount: number; offset: string }) {
+  return (
+    <div className="relative w-0.5 shrink-0" data-testid="tab-caret" aria-hidden>
+      <div style={{ paddingTop: offset }}>
+        <div
+          className="w-0.5 rounded-full bg-accent"
+          style={{ height: `calc(var(--string-height) * ${stringCount})` }}
+        />
+      </div>
+    </div>
   );
 }
 

@@ -157,6 +157,63 @@ test("stacking stops when you move the cursor", async ({ page }) => {
   await expect(columns(page)).toHaveCount(2);
 });
 
+test("adds a space for a pause or a hold", async ({ page }) => {
+  await startCapturing(page);
+
+  await fret(page, "E", 7).click();
+  await page.getByTitle(/a pause, or a note left ringing/).click();
+  await fret(page, "E", 5).click();
+
+  // Three columns, with the middle one empty.
+  await expect(columns(page)).toHaveCount(3);
+  await expect(columns(page).nth(0)).toContainText("7");
+  await expect(columns(page).nth(1)).toHaveText("");
+  await expect(columns(page).nth(2)).toContainText("5");
+});
+
+test("stretches a hold with the repeat rather than more taps", async ({ page }) => {
+  await startCapturing(page);
+
+  await fret(page, "E", 7).click();
+  await page.getByTitle(/a pause, or a note left ringing/).click();
+  await page.getByTitle("Four of these").click();
+
+  await expect(page.getByLabel("Repeat count")).toHaveText("×4");
+  // The note plus four columns of space.
+  await expect(columns(page)).toHaveCount(5);
+});
+
+test("shows a caret where the next note will land", async ({ page }) => {
+  await startCapturing(page);
+
+  await fret(page, "E", 7).click();
+  await fret(page, "E", 5).click();
+  await expect(page.getByTestId("tab-caret")).toHaveCount(1);
+
+  // Move the cursor; the caret has to follow it, not stay at the end.
+  await columns(page).first().click();
+  await expect(page.getByText("adding after the marked column")).toBeVisible();
+  await expect(page.getByTestId("tab-caret")).toHaveCount(1);
+
+  await page.getByRole("button", { name: /start/ }).click();
+  await expect(page.getByTestId("tab-caret")).toHaveCount(1);
+});
+
+test("lights the current column on the fretboard", async ({ page }) => {
+  await startCapturing(page);
+
+  await fret(page, "A", 9).click();
+  await page.getByTitle(/build a chord/).click();
+  await fret(page, "E", 8).click();
+  await fret(page, "B", 7).click();
+
+  // Building a chord means remembering what is already in it; the neck shows
+  // you instead.
+  const lit = page.locator('button[aria-pressed="true"]');
+  await expect(lit).toHaveCount(3);
+  await expect(page.getByRole("button", { name: /A string, fret 9,.*in this column/ })).toBeVisible();
+});
+
 test("groups three columns into a triplet", async ({ page }) => {
   await startCapturing(page);
 

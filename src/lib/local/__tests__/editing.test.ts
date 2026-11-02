@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { HlcClock } from "../../hlc";
 import { newId } from "../../ids";
 import { toAscii } from "../../tab/ascii";
+import { countBars } from "../../tab/layout";
 import { presetById } from "../../tunings";
 import { StablatureDb } from "../db";
 import {
@@ -11,6 +12,7 @@ import {
   appendNote,
   insertBarline,
   insertNote,
+  insertRest,
   bumpColumnRepeat,
   createBand,
   createPart,
@@ -260,6 +262,60 @@ describe("inserting at a cursor", () => {
     await insertBarline(part, events, events[0].id, ctx());
 
     expect((await staff(part.id)).split("\n")[3]).toBe("E |-7-|-5-|");
+  });
+});
+
+describe("spaces", () => {
+  it("renders as a gap between notes", async () => {
+    const { part } = await scaffold();
+    await appendNote(part, 3, 7, ctx());
+    let events = await listEvents(part.id, db);
+    await insertRest(part, events, events[0].id, ctx());
+    events = await listEvents(part.id, db);
+    await insertNote(part, events, events[1].id, 3, 5, ctx());
+
+    expect((await staff(part.id)).split("\n")[3]).toBe("E |-7---5-|");
+  });
+
+  it("holds for longer with a repeat, not with more columns", async () => {
+    const { part } = await scaffold();
+    await appendNote(part, 3, 7, ctx());
+    const events = await listEvents(part.id, db);
+    const rest = await insertRest(part, events, events[0].id, ctx());
+    await setColumnRepeat(rest.id, 4, ctx());
+
+    // One stored row for the whole hold.
+    expect(await listEvents(part.id, db)).toHaveLength(2);
+    expect((await staff(part.id)).split("\n")[3]).toBe("E |-7---------|");
+  });
+
+  it("is recorded as a rest, not an empty note column", async () => {
+    const { part } = await scaffold();
+    const rest = await insertRest(part, [], null, ctx());
+    expect(rest.kind).toBe("rest");
+    expect(rest.frets).toEqual({});
+  });
+
+  it("becomes a note column once something is stacked on it", async () => {
+    const { part } = await scaffold();
+    const rest = await insertRest(part, [], null, ctx());
+
+    const filled = await stackNote(rest, 3, 7, ctx());
+
+    expect(filled.kind).toBe("notes");
+    expect((await staff(part.id)).split("\n")[3]).toBe("E |-7-|");
+  });
+
+  it("counts toward bars like any other column", async () => {
+    const { part } = await scaffold();
+    await appendNote(part, 3, 7, ctx());
+    let events = await listEvents(part.id, db);
+    await insertBarline(part, events, events[0].id, ctx());
+    events = await listEvents(part.id, db);
+    await insertRest(part, events, events[1].id, ctx());
+
+    // A bar containing only a hold is still a bar.
+    expect(countBars(await listEvents(part.id, db))).toBe(2);
   });
 });
 

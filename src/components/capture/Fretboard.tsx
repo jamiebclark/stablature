@@ -12,7 +12,7 @@
  * string indices in storage (0 = highest).
  */
 
-import type { FretValue } from "@/lib/model";
+import type { FretMap, FretValue } from "@/lib/model";
 import { fretToMidi, type Tuning } from "@/lib/tunings";
 import { midiToNote, noteLabel } from "@/lib/pitch";
 
@@ -24,11 +24,24 @@ export interface FretboardProps {
   /** Highest fret offered. 24 covers anything a bass part will ask for. */
   maxFret?: number;
   onPress: (stringIndex: number, fret: FretValue) => void;
+  /**
+   * Notes already in the column being edited, lit up on the neck.
+   *
+   * Building a chord otherwise means remembering what you have already put in
+   * it while looking at a grid of 125 identical cells.
+   */
+  highlight?: FretMap;
   /** Dims everything and blocks input while there is no part to write to. */
   disabled?: boolean;
 }
 
-export function Fretboard({ tuning, maxFret = 24, onPress, disabled = false }: FretboardProps) {
+export function Fretboard({
+  tuning,
+  maxFret = 24,
+  onPress,
+  highlight,
+  disabled = false,
+}: FretboardProps) {
   // Bare note names, matching the tab staff. The octave lives in the
   // accessible label, where it disambiguates without adding visual noise.
   const labels = tuning.strings.map((s) => s.note);
@@ -63,6 +76,7 @@ export function Fretboard({ tuning, maxFret = 24, onPress, disabled = false }: F
 
             {frets.map((fret) => {
               const pitch = midiToNote(fretToMidi(tuning, stringIndex, fret));
+              const lit = highlight?.[String(stringIndex)] === fret;
               return (
                 <button
                   key={fret}
@@ -70,14 +84,19 @@ export function Fretboard({ tuning, maxFret = 24, onPress, disabled = false }: F
                   onClick={() => onPress(stringIndex, fret)}
                   // Deliberately generous: 2.25rem is about a thumb pad, and
                   // mis-taps here are the main way bad data gets captured.
-                  className={`relative h-9 w-9 shrink-0 font-mono text-[0.7rem] text-text-faint transition-colors active:bg-accent active:text-accent-text ${
-                    fret === 0
-                      ? "rounded-l border-r-2 border-border-strong bg-bg-raised"
-                      : INLAYS.has(fret)
-                        ? "bg-bg-raised/60"
-                        : "bg-bg-raised/25"
+                  className={`relative h-9 w-9 shrink-0 font-mono text-[0.7rem] transition-colors active:bg-accent active:text-accent-text ${
+                    lit
+                      ? "bg-accent font-semibold text-accent-text"
+                      : fret === 0
+                        ? "rounded-l border-r-2 border-border-strong bg-bg-raised text-text-faint"
+                        : INLAYS.has(fret)
+                          ? "bg-bg-raised/60 text-text-faint"
+                          : "bg-bg-raised/25 text-text-faint"
                   }`}
-                  aria-label={`${labels[stringIndex]} string, fret ${fret}, ${noteLabel(pitch)}`}
+                  aria-label={`${labels[stringIndex]} string, fret ${fret}, ${noteLabel(pitch)}${
+                    lit ? ", in this column" : ""
+                  }`}
+                  aria-pressed={lit || undefined}
                 >
                   {/* The string itself, drawn through the cell. */}
                   <span
