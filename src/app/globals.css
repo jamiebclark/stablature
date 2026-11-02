@@ -222,6 +222,15 @@ button,
  */
 .tab-column-selected {
   background: var(--selection);
+  /*
+   * Bright rules top and bottom as well as the fill. A fill alone has to
+   * carry the whole message on an 18px-wide column, and a tint quiet enough
+   * not to fight the notes is too quiet to notice -- across a run these edges
+   * read as one continuous band.
+   */
+  box-shadow:
+    inset 0 2px 0 var(--accent),
+    inset 0 -2px 0 var(--accent);
 }
 
 .tab-staff .tab-column-selected .tab-cell > span {

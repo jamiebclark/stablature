@@ -234,7 +234,7 @@ test("selects a run by tapping both ends", async ({ page }) => {
   await expect(page.getByText("3 selected")).toBeVisible();
   await expect(page.locator('[data-selected="true"]')).toHaveCount(3);
 
-  await page.getByRole("button", { name: "done" }).click();
+  await page.getByRole("button", { name: "cancel" }).click();
   await expect(page.locator('[data-selected="true"]')).toHaveCount(0);
 });
 

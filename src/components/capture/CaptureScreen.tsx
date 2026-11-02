@@ -270,9 +270,14 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
             <Scissors size={14} aria-hidden />
             cut
           </Button>
+          {/*
+            Bordered like copy and cut rather than bare red text: these three
+            are peers acting on the same selection, and the odd one out read
+            as a different kind of control. The red label and the bin keep it
+            from being mistaken for a safe action.
+          */}
           <Button
-            variant="danger"
-            className="px-2 py-1 text-xs"
+            className="px-2 py-1 text-xs text-danger"
             onClick={async () => {
               await deleteColumns(selectedEvents);
               endSelection(true);
@@ -281,12 +286,13 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
             <Trash2 size={14} aria-hidden />
             delete
           </Button>
+          {/* Borderless, because it leaves rather than does. */}
           <Button
             variant="ghost"
             className="ml-auto px-2 py-1 text-xs"
             onClick={() => endSelection()}
           >
-            done
+            cancel
           </Button>
         </div>
       ) : part ? (

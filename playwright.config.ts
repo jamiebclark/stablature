@@ -28,7 +28,13 @@ export default defineConfig({
   webServer: {
     command: `npm run build && npm run start -- --port ${PORT}`,
     url: baseURL,
-    reuseExistingServer: !process.env.CI,
+    /*
+     * Never reuse. An interrupted run can orphan a `next start` on this port,
+     * and every later run then silently tests that stale build instead of the
+     * working tree -- a suite that passes against code you did not write is
+     * worse than one that fails. Rebuilding costs about twenty seconds.
+     */
+    reuseExistingServer: false,
     timeout: 240_000,
     // The test server runs on its own port, which is a different origin from
     // whatever BETTER_AUTH_URL says in .env.local. Better Auth rejects
