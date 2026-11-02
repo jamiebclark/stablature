@@ -143,17 +143,24 @@ export function Fretboard({
                * and because two competing text-colour utilities in one class
                * list resolve by stylesheet order rather than by what was meant.
                */
+              /*
+               * Exactly one background utility and one text utility per cell.
+               * Two of either on one element resolve by stylesheet order
+               * rather than by intent, which is how the chord-tone colour was
+               * lost once already.
+               */
               const tier = lit
-                ? "bg-accent font-semibold text-accent-text"
+                ? "bg-accent"
                 : fret === 0
-                  ? "fret-nut rounded-l border-r-2 border-border-strong"
+                  ? "rounded-l border-r-2 border-border-strong bg-bg-raised"
                   : INLAYS.has(fret)
-                    ? "fret-cell-inlay"
-                    : "";
-              // Empty default rather than a utility: `.fret-cell` supplies the
-              // resting colour per theme, and a utility here would have to be
-              // kept in step with it.
-              const ink = lit ? "" : role ? ROLE_STYLES[role] : "";
+                    ? "bg-fret-cell-inlay"
+                    : "bg-fret-cell";
+              const ink = lit
+                ? "font-semibold text-accent-text"
+                : role
+                  ? ROLE_STYLES[role]
+                  : "text-fret-number";
               return (
                 <button
                   key={fret}
@@ -161,7 +168,7 @@ export function Fretboard({
                   onClick={() => onPress(stringIndex, fret)}
                   // Deliberately generous: 2.25rem is about a thumb pad, and
                   // mis-taps here are the main way bad data gets captured.
-                  className={`fret-cell relative h-9 w-9 shrink-0 font-mono text-[0.7rem] transition-colors active:bg-accent active:text-accent-text ${tier} ${ink}`}
+                  className={`relative h-9 w-9 shrink-0 font-mono text-[0.7rem] transition-colors active:bg-accent active:text-accent-text ${tier} ${ink}`}
                   aria-label={`${labels[stringIndex]} string, fret ${fret}, ${noteLabel(pitch)}${
                     lit ? ", in this column" : role ? `, ${ROLE_LABELS[role]} of this chord` : ""
                   }`}
@@ -191,7 +198,7 @@ export function Fretboard({
               key={stringIndex}
               type="button"
               onClick={() => onPress(stringIndex, "x")}
-              className="fret-cell h-7 w-9 shrink-0 rounded font-mono text-[0.7rem] active:bg-accent active:text-accent-text"
+              className="h-7 w-9 shrink-0 rounded bg-fret-cell font-mono text-[0.7rem] text-fret-number active:bg-accent active:text-accent-text"
               aria-label={`Dead note on the ${labels[stringIndex]} string`}
             >
               {labels[stringIndex]}

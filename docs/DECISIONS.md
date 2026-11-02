@@ -55,4 +55,45 @@ surface is dark. Anywhere else, name the colour.
 
 ---
 
+### Merged: chord-tone highlighting (another Claude session)
+
+**Worth your eye** — this is someone else's feature and I merged it on your
+behalf. A second session built it in a worktree on `feat/chord-tones`: chord
+symbols are parsed into notes, and the frets belonging to the chord in force
+at the cursor light up on the neck. Roots in bold, the notes actually in the
+current column still win. 26 new unit tests; the status bar now reads e.g.
+`C · C E G`.
+
+I reviewed it rather than taking their word, rebased it onto main, resolved
+one conflict in the fretboard cell renderer, and verified it in a browser. It
+is on main. Revert `6d62315..5982f0b` if you would rather it waited.
+
+Two things I changed in the merge:
+
+- Their background tiers used the opacity approach I had just removed for
+  breaking the light theme, so the resolution kept their `tier`/`ink` split
+  but on the per-theme tokens.
+- **The feature silently did not work after merging**, and the measurements
+  caught it where eyes would not have: the chord-tone colour was rendering at
+  the resting grey. `.fret-cell { color }` was beating `text-accent`.
+
+  The cause is worth remembering. Lightning CSS flattens `@layer components`
+  into plain rules and hoists the layer declaration to the top, so custom
+  classes land *after* the utilities in source order and win every specificity
+  tie. Wrapping rules in a layer buys nothing here. The fretboard has no
+  classes of its own now — the tokens are exposed as Tailwind colours and the
+  component emits exactly one background utility and one text utility per
+  cell. Nothing to override, nothing to order.
+
+### `npm run dev:clean`
+
+Turbopack's CSS cache went stale on the long-running dev server three separate
+times today, each time silently: source right, production build right, browser
+serving an older chunk. It is what made the selection highlight look invisible
+to you. Added a `dev:clean` script that clears `.next` first, and documented it
+in the README as the first thing to try when a style change appears to do
+nothing.
+
+---
+
 _Entries below are added as the day goes._

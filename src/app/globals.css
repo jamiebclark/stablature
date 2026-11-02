@@ -92,6 +92,9 @@
   --color-accent-dim: var(--accent-dim);
   --color-accent-text: var(--accent-text);
   --color-danger: var(--danger);
+  --color-fret-cell: var(--fret-cell);
+  --color-fret-cell-inlay: var(--fret-cell-inlay);
+  --color-fret-number: var(--fret-number);
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
 }
@@ -264,31 +267,21 @@ button,
   border-left: 1px solid var(--tab-bar);
 }
 
-/* ---------- fretboard ---------- */
-
 /*
- * In the components layer so utilities win.
+ * The fretboard has no classes of its own on purpose.
  *
- * Plain rules here sit after the Tailwind import and would therefore beat
- * `text-accent` and `bg-accent` on specificity ties, which silently breaks any
- * per-cell colouring layered on top -- the highlight, and chord-tone roles.
- * Putting them in `components` makes utilities the override they look like,
- * and removes the need for `!important` on the highlight.
+ * Its tiers were custom classes for a while, and that quietly broke every
+ * attempt to colour a single cell. Lightning CSS flattens `@layer components`
+ * into plain rules and hoists the layer declaration, so the custom rules end
+ * up *after* the utilities in source order and win every specificity tie --
+ * `.fret-cell { color }` silently beat `text-accent`, and the chord-tone
+ * highlight rendered in the resting grey.
+ *
+ * So the tokens are exposed as Tailwind colours above (`bg-fret-cell`,
+ * `text-fret-number`, ...) and the component emits exactly one background
+ * utility and one text utility per cell. Nothing to override, nothing to
+ * order.
  */
-@layer components {
-  .fret-cell {
-    background: var(--fret-cell);
-    color: var(--fret-number);
-  }
-
-  .fret-cell-inlay {
-    background: var(--fret-cell-inlay);
-  }
-
-  .fret-nut {
-    background: var(--bg-raised);
-  }
-}
 
 /* ---------- print ---------- */
 

@@ -36,6 +36,18 @@ full-screen, and a service worker keeps the app shell cached so a cold open
 with no signal still works. The data was never on the server first, so there
 is nothing to wait for.
 
+### If a style change seems to do nothing, run `npm run dev:clean`
+
+Turbopack's CSS cache goes stale on a long-running dev server, and the failure
+is silent and very convincing: the source is right, a production build is
+right, and the browser serves a chunk from some earlier state. It cost hours
+across one session — including a selection highlight that looked like a
+colour bug and was actually a missing stylesheet.
+
+Before debugging any styling that "should work", kill the dev server and
+restart it with `npm run dev:clean`, which clears `.next` first. If the rule
+is in a clean `npm run build` but not in the browser, it is this and not you.
+
 ### Three things that will bite you
 
 **The database URL is `STABLATURE_DATABASE_URL`, not `DATABASE_URL`.** This is

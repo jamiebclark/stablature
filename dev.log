@@ -1,49 +1,23 @@
 
-> stablature@1.3.0 dev
-> next dev --port 3000 --hostname 0.0.0.0
+> stablature@1.3.2 dev:clean
+> node -e "require('fs').rmSync('.next',{recursive:true,force:true})" && next dev --port 3000 --hostname 0.0.0.0
 
 ▲ Next.js 16.4.3 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://0.0.0.0:3000
 - Environments: .env.local, .env
-✓ Ready in 2.3s
-✓ Running next.config.ts took 47ms
+✓ Ready in 553ms
+✓ Running next.config.ts took 38ms
 
- GET / 200 in 310ms (next.js: 128ms, application-code: 182ms)
- GET / 200 in 24ms (next.js: 1.0ms, application-code: 23ms)
- GET /sign-in 200 in 35ms (next.js: 7ms, application-code: 28ms)
- GET /sign-up 200 in 43ms (next.js: 7ms, application-code: 36ms)
- GET /offline 200 in 37ms (next.js: 7ms, application-code: 30ms)
- GET /join/ZZZZZZZZZZZZ 200 in 2.5s (next.js: 2.4s, application-code: 26ms)
- GET /bands/01a19c29-dd45-7624-b69c-426593021ccc 200 in 4.4s (next.js: 4.3s, application-code: 34ms)
- GET /bands/01a19c29-dd45-7624-b69c-426593021ccc/tunings 200 in 7.7s (next.js: 7.7s, application-code: 33ms)
- GET /songs/01a19c2a-0904-7ee7-8c47-994a4e090cef 200 in 539ms (next.js: 501ms, application-code: 38ms)
- GET /songs/01a19c2a-0904-7ee7-8c47-994a4e090cef/play 200 in 761ms (next.js: 717ms, application-code: 44ms)
- GET /songs/01a19c2a-0904-7ee7-8c47-994a4e090cef/capture 200 in 569ms (next.js: 525ms, application-code: 44ms)
- GET /songs/01a19c2a-0904-7ee7-8c47-994a4e090cef/capture/01a19c54-5ab5-7ba5-ae4b-7ce811a915df 200 in 2.4s (next.js: 2.3s, application-code: 40ms)
- GET / 200 in 25ms (next.js: 2.0ms, application-code: 23ms)
- GET /manifest.webmanifest 200 in 93ms (next.js: 77ms, application-code: 16ms)
- GET /manifest.webmanifest 200 in 8ms (next.js: 1.4ms, application-code: 6ms)
- GET /api/auth/get-session 200 in 3.0s (next.js: 3.0s, application-code: 47ms)
- GET /api/auth/get-session 200 in 348ms (next.js: 338ms, application-code: 10ms)
- GET /songs/01a19c2a-0904-7ee7-8c47-994a4e090cef/play 200 in 1835ms (next.js: 1805ms, application-code: 30ms)
+○ Compiling / ...
+ GET / 200 in 335ms (next.js: 141ms, application-code: 193ms)
+ GET /songs/01a19c2a-0904-7ee7-8c47-994a4e090cef/capture/01a19c2a-9962-7c84-a491-ed38c89c29e0 200 in 2.2s (next.js: 2.1s, application-code: 34ms)
+ GET /songs/01a19c2a-0904-7ee7-8c47-994a4e090cef/capture/01a19c2a-9962-7c84-a491-ed38c89c29e0 200 in 3.6s (next.js: 3.5s, application-code: 30ms)
+ GET /manifest.webmanifest 200 in 84ms (next.js: 72ms, application-code: 12ms)
  GET /manifest.webmanifest 200 in 4ms (next.js: 1.0ms, application-code: 3ms)
- GET /api/auth/get-session 200 in 5.4s (next.js: 5.4s, application-code: 6ms)
- GET /manifest.webmanifest 200 in 6ms (next.js: 1.3ms, application-code: 4ms)
- GET /songs/01a19c2a-0904-7ee7-8c47-994a4e090cef 200 in 414ms (next.js: 378ms, application-code: 36ms)
- GET /manifest.webmanifest 200 in 6ms (next.js: 1.2ms, application-code: 4ms)
- GET /api/auth/get-session 200 in 234ms (next.js: 229ms, application-code: 5ms)
- GET /manifest.webmanifest 200 in 5ms (next.js: 1.2ms, application-code: 4ms)
- GET /songs/01a19c2a-0904-7ee7-8c47-994a4e090cef/capture/01a19c54-5ab5-7ba5-ae4b-7ce811a915df 200 in 786ms (next.js: 753ms, application-code: 33ms)
- GET /manifest.webmanifest 200 in 6ms (next.js: 1.1ms, application-code: 5ms)
- GET /api/auth/get-session 200 in 3.8s (next.js: 3.8s, application-code: 6ms)
- GET /manifest.webmanifest 200 in 5ms (next.js: 0.9ms, application-code: 4ms)
-✓ Compiled in 84ms
- GET /songs/01a19c2a-0904-7ee7-8c47-994a4e090cef/capture/01a19c54-5ab5-7ba5-ae4b-7ce811a915df 200 in 5.0s (next.js: 4.9s, application-code: 33ms)
- GET /manifest.webmanifest 200 in 5ms (next.js: 0.8ms, application-code: 4ms)
- GET /api/auth/get-session 200 in 1802ms (next.js: 1797ms, application-code: 5ms)
- GET /manifest.webmanifest 200 in 4ms (next.js: 1.2ms, application-code: 3ms)
- GET /songs/01a19c2a-0904-7ee7-8c47-994a4e090cef/capture/01a19c54-5ab5-7ba5-ae4b-7ce811a915df 200 in 75ms (next.js: 40ms, application-code: 34ms)
+ GET /api/auth/get-session 200 in 7.1s (next.js: 7.1s, application-code: 42ms)
+ GET /api/auth/get-session 200 in 512ms (next.js: 506ms, application-code: 6ms)
+ GET /songs/01a19c2a-0904-7ee7-8c47-994a4e090cef/capture/01a19c2a-9962-7c84-a491-ed38c89c29e0 200 in 1915ms (next.js: 1883ms, application-code: 32ms)
  GET /manifest.webmanifest 200 in 6ms (next.js: 1.5ms, application-code: 5ms)
- GET /api/auth/get-session 200 in 1857ms (next.js: 1852ms, application-code: 5ms)
- GET /manifest.webmanifest 200 in 5ms (next.js: 1.2ms, application-code: 4ms)
+ GET /api/auth/get-session 200 in 1800ms (next.js: 1794ms, application-code: 5ms)
+ GET /manifest.webmanifest 200 in 4ms (next.js: 1.2ms, application-code: 3ms)
