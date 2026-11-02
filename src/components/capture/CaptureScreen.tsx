@@ -18,7 +18,7 @@
  *    thing you are editing is never off screen.
  */
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ClipboardPaste,
@@ -40,6 +40,12 @@ import {
   pasteClipboard,
   writeClipboard,
 } from "@/lib/local/clipboard";
+import {
+  chordInForceAt,
+  chordToneMap,
+  chordToneNames,
+  parseChord,
+} from "@/lib/chords";
 import {
   bumpColumnRepeat,
   createPart,
@@ -113,6 +119,22 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
   const focused = afterId ? columns.find((event) => event.id === afterId) : undefined;
   /** Repeats and chords are meaningless on a barline. */
   const editable: EventRow | undefined = focused?.kind === "barline" ? undefined : focused;
+
+  /*
+   * The chord in force where the cursor is, so the neck can show where its
+   * notes fall. A symbol holds until the next one rather than applying only to
+   * the column it is anchored to, which is why this looks backwards -- see
+   * chordInForceAt.
+   *
+   * Parsing is split from finding so that the parse only re-runs when the
+   * symbol itself changes, and not on every note added underneath it.
+   */
+  const chordSymbol = useMemo(
+    () => chordInForceAt(events ?? [], annotations ?? [], afterId),
+    [events, annotations, afterId],
+  );
+  const chord = useMemo(() => (chordSymbol ? parseChord(chordSymbol) : null), [chordSymbol]);
+  const chordTones = useMemo(() => (chord ? chordToneMap(chord) : undefined), [chord]);
 
   const selectedEvents = selection
     ? columnRange(columns, selection.anchorId, selection.headId)
@@ -306,6 +328,18 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
                   ? "adding at the start"
                   : "adding after the marked column"}
           </span>
+          {/* Which notes the lit frets are. The unreadable-symbol case says so
+              rather than leaving an unexplained bare neck. */}
+          {chord ? (
+            <span className="truncate font-mono text-accent">
+              {chord.symbol}
+              <span className="text-text-dim"> {chordToneNames(chord).join(" ")}</span>
+            </span>
+          ) : chordSymbol ? (
+            <span className="truncate font-mono text-text-faint" title="Not a chord this app can read">
+              {chordSymbol} &mdash; not a chord I know
+            </span>
+          ) : null}
           {columns.length > 0 ? (
             <>
               <button
@@ -500,6 +534,7 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
         tuning={tuning}
         onPress={press}
         highlight={editable?.frets}
+        chordTones={chordTones}
         disabled={!part}
       />
     </div>

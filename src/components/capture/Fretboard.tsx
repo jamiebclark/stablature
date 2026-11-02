@@ -12,12 +12,55 @@
  * string indices in storage (0 = highest).
  */
 
+import type { ChordRole } from "@/lib/chords";
 import type { FretMap, FretValue } from "@/lib/model";
 import { fretToMidi, type Tuning } from "@/lib/tunings";
 import { midiToNote, noteLabel } from "@/lib/pitch";
 
 /** Frets with position inlays on a real neck. */
 const INLAYS = new Set([3, 5, 7, 9, 12, 15, 17, 19, 21, 24]);
+
+/**
+ * How loudly each chord role is drawn.
+ *
+ * Colour on the fret number rather than a fill or a ring, and the reason is
+ * density: four chord tones repeat up a 25-fret neck, so a third of the grid
+ * is a chord tone at any time. A fill at that density buries the column
+ * highlight, and rings on forty cells collide with each other across the
+ * one-pixel gaps. Tinting the number leaves all three background tiers -- nut,
+ * inlay, plain -- intact underneath, which is also what keeps the neck's shape
+ * readable.
+ *
+ * One colour for every chord tone, and weight -- not opacity -- to pick out the
+ * root and a written slash bass, which are the notes a run is anchored on.
+ *
+ * Grading the lesser roles by opacity was the first attempt and was wrong twice
+ * over. Measured against the cell it sits on, accent at 60% comes to 4.15:1,
+ * which is nearly the 3.74:1 of the dim grey used for notes that are *not* in
+ * the chord -- so the one thing the highlight has to say, in or out, was the
+ * thing it said least clearly. In the light theme even 85% falls to 3.59:1 and
+ * misses AA outright. Full accent is 10:1 dark and 4.6:1 light, and bold
+ * carries the root without leaning on colour at all, which is also what keeps
+ * it legible to a colour-blind reader.
+ */
+const ROLE_STYLES: Record<ChordRole, string> = {
+  root: "font-bold text-accent",
+  bass: "font-bold text-accent",
+  third: "text-accent",
+  fifth: "text-accent",
+  seventh: "text-accent",
+  extension: "text-accent",
+};
+
+/** Read aloud after the note, where the colour cannot be seen. */
+const ROLE_LABELS: Record<ChordRole, string> = {
+  root: "the root",
+  bass: "the bass note",
+  third: "the third",
+  fifth: "the fifth",
+  seventh: "the seventh",
+  extension: "an extension",
+};
 
 export interface FretboardProps {
   tuning: Tuning;
@@ -31,6 +74,15 @@ export interface FretboardProps {
    * it while looking at a grid of 125 identical cells.
    */
   highlight?: FretMap;
+  /**
+   * Notes of the chord in force at the cursor, keyed by pitch class.
+   *
+   * Pitch classes rather than string/fret pairs, so the geometry stays here
+   * and the caller does not recompute positions per string. This is the
+   * "where are my options" layer: a bass player reading a chord change wants
+   * to see which frets belong to it before picking a run through them.
+   */
+  chordTones?: ReadonlyMap<number, ChordRole>;
   /** Dims everything and blocks input while there is no part to write to. */
   disabled?: boolean;
 }
@@ -40,6 +92,7 @@ export function Fretboard({
   maxFret = 24,
   onPress,
   highlight,
+  chordTones,
   disabled = false,
 }: FretboardProps) {
   // Bare note names, matching the tab staff. The octave lives in the
@@ -75,8 +128,32 @@ export function Fretboard({
             </div>
 
             {frets.map((fret) => {
-              const pitch = midiToNote(fretToMidi(tuning, stringIndex, fret));
+              const midi = fretToMidi(tuning, stringIndex, fret);
+              const pitch = midiToNote(midi);
               const lit = highlight?.[String(stringIndex)] === fret;
+              /*
+               * Precedence, in one place: a note actually in the column beats a
+               * chord tone. Being in the column is a fact about the part, and
+               * the chord is only ever a suggestion about what would fit.
+               */
+              const role = lit ? undefined : chordTones?.get(midi % 12);
+              /*
+               * Background tier and ink are kept apart because they are two
+               * questions -- where on the neck, and what the note is doing --
+               * and because two competing text-colour utilities in one class
+               * list resolve by stylesheet order rather than by what was meant.
+               */
+              const tier = lit
+                ? "bg-accent font-semibold text-accent-text"
+                : fret === 0
+                  ? "fret-nut rounded-l border-r-2 border-border-strong"
+                  : INLAYS.has(fret)
+                    ? "fret-cell-inlay"
+                    : "";
+              // Empty default rather than a utility: `.fret-cell` supplies the
+              // resting colour per theme, and a utility here would have to be
+              // kept in step with it.
+              const ink = lit ? "" : role ? ROLE_STYLES[role] : "";
               return (
                 <button
                   key={fret}
@@ -84,19 +161,14 @@ export function Fretboard({
                   onClick={() => onPress(stringIndex, fret)}
                   // Deliberately generous: 2.25rem is about a thumb pad, and
                   // mis-taps here are the main way bad data gets captured.
-                  className={`fret-cell relative h-9 w-9 shrink-0 font-mono text-[0.7rem] transition-colors active:bg-accent active:text-accent-text ${
-                    lit
-                      ? "bg-accent font-semibold text-accent-text"
-                      : fret === 0
-                        ? "fret-nut rounded-l border-r-2 border-border-strong"
-                        : INLAYS.has(fret)
-                          ? "fret-cell-inlay"
-                          : ""
-                  }`}
+                  className={`fret-cell relative h-9 w-9 shrink-0 font-mono text-[0.7rem] transition-colors active:bg-accent active:text-accent-text ${tier} ${ink}`}
                   aria-label={`${labels[stringIndex]} string, fret ${fret}, ${noteLabel(pitch)}${
-                    lit ? ", in this column" : ""
+                    lit ? ", in this column" : role ? `, ${ROLE_LABELS[role]} of this chord` : ""
                   }`}
+                  // Chord tones are not a toggle state, so they stay out of
+                  // aria-pressed; the data attribute is what tests assert on.
                   aria-pressed={lit || undefined}
+                  data-chord-role={role}
                 >
                   {/* The string itself, drawn through the cell. */}
                   <span

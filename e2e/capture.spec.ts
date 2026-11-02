@@ -333,6 +333,90 @@ test("records a chord above a column", async ({ page }) => {
   await expect(page.getByTestId("tab-staff").getByText("Am")).toBeVisible();
 });
 
+/*
+ * The point of naming a chord, for a bass player: the neck shows where that
+ * chord's notes are, so you can see the options for a run through them. The
+ * tuning here is B Standard, so string A fret 0 is an A, fret 3 is a C, and
+ * string E fret 0 is an E -- the whole of Am.
+ */
+test("lights the chord's notes on the neck", async ({ page }) => {
+  await startCapturing(page);
+
+  // B on the E string, which is deliberately not a note of Am -- it keeps the
+  // in-column highlight and the chord highlight from overlapping.
+  await fret(page, "E", 7).click();
+  await expect(page.locator("[data-chord-role]")).toHaveCount(0);
+
+  await page.getByRole("button", { name: "chord" }).click();
+  await page.getByLabel("Chord").fill("Am");
+  await page.getByRole("button", { name: "Set" }).click();
+
+  await expect(
+    page.getByRole("button", { name: /A string, fret 0,.*the root of this chord/ }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /A string, fret 3,.*the third of this chord/ }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /E string, fret 0,.*the fifth of this chord/ }),
+  ).toBeVisible();
+
+  // Notes outside the chord stay plain: a D is not in Am.
+  await expect(
+    page.getByRole("button", { name: /^D string, fret 0, D2$/ }),
+  ).toBeVisible();
+
+  // And the status line says which notes those lit frets are.
+  await expect(page.getByText("A C E")).toBeVisible();
+});
+
+test("chord tones are not a pressed state, so only the column's notes are", async ({ page }) => {
+  await startCapturing(page);
+
+  await fret(page, "E", 7).click();
+  await page.getByRole("button", { name: "chord" }).click();
+  await page.getByLabel("Chord").fill("Am");
+  await page.getByRole("button", { name: "Set" }).click();
+
+  // The chord lights many frets, but exactly one note is in the column.
+  await expect(page.locator("[data-chord-role]").first()).toBeVisible();
+  await expect(page.locator('button[aria-pressed="true"]')).toHaveCount(1);
+});
+
+test("a chord stays in force over the columns after it", async ({ page }) => {
+  await startCapturing(page);
+
+  await fret(page, "E", 7).click();
+  await page.getByRole("button", { name: "chord" }).click();
+  await page.getByLabel("Chord").fill("Am");
+  await page.getByRole("button", { name: "Set" }).click();
+
+  // A chord symbol means "from here until the next one", so adding columns
+  // after it -- including a barline and a held space -- keeps it showing.
+  await fret(page, "A", 5).click();
+  await page.getByTitle("Barline").click();
+  await page.getByTitle(/a pause, or a note left ringing/).click();
+
+  await expect(
+    page.getByRole("button", { name: /A string, fret 0,.*the root of this chord/ }),
+  ).toBeVisible();
+});
+
+test("an unreadable chord symbol says so instead of lighting the neck", async ({ page }) => {
+  await startCapturing(page);
+
+  await fret(page, "E", 7).click();
+  await page.getByRole("button", { name: "chord" }).click();
+  await page.getByLabel("Chord").fill("N.C.");
+  await page.getByRole("button", { name: "Set" }).click();
+
+  // Still recorded above the staff -- the text is the user's, not ours to
+  // reject -- but nothing is claimed about the neck.
+  await expect(page.getByTestId("tab-staff").getByText("N.C.")).toBeVisible();
+  await expect(page.getByText("not a chord I know")).toBeVisible();
+  await expect(page.locator("[data-chord-role]")).toHaveCount(0);
+});
+
 test("inserts a note between two existing columns", async ({ page }) => {
   await startCapturing(page);
 
