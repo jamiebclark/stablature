@@ -377,7 +377,7 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
             autoFocus
             value={chordDraft}
             onChange={(e) => setChordDraft(e.target.value)}
-            placeholder="Chord above this column, e.g. Am"
+            placeholder="Harmony here, e.g. Am — written above the staff"
             aria-label="Chord"
           />
           <Button type="submit" variant="primary">
@@ -432,7 +432,7 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
           variant={stacking ? "primary" : "secondary"}
           disabled={!editable}
           onClick={() => setStacking((on) => !on)}
-          title="Keep adding notes to this column to build a chord"
+          title="Keep adding notes to this column, so they sound together as a chord"
         >
           stack
         </Button>
@@ -481,8 +481,18 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
           <TripletGlyph />
         </Button>
 
-        <Button disabled={!editable} onClick={() => setChordDraft("")} title="Chord above this column">
-          chord
+        {/*
+          "chord symbol" rather than "chord", because the button next to it
+          also makes a chord -- an actual one, out of notes. This one writes
+          the harmony above the staff: a label saying what the band is on, not
+          something the bass plays.
+        */}
+        <Button
+          disabled={!editable}
+          onClick={() => setChordDraft("")}
+          title="Name the harmony here, written above the staff"
+        >
+          chord symbol
         </Button>
 
         <Button

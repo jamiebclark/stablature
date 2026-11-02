@@ -99,7 +99,7 @@ test("stacks a chord onto one column", async ({ page }) => {
   await startCapturing(page);
 
   await fret(page, "E", 7).click();
-  await page.getByTitle(/build a chord/).click();
+  await page.getByRole("button", { name: "stack" }).click();
   await fret(page, "A", 5).click();
 
   // Still one column, now with two strings on it.
@@ -113,7 +113,7 @@ test("builds a three-note chord in one column", async ({ page }) => {
 
   // A9 / E8 / B7 all hitting together: arm stack once, then tap the strings.
   await fret(page, "A", 9).click();
-  await page.getByTitle(/build a chord/).click();
+  await page.getByRole("button", { name: "stack" }).click();
   await expect(page.getByText("stacking onto the marked column")).toBeVisible();
 
   await fret(page, "E", 8).click();
@@ -131,7 +131,7 @@ test("re-tapping a string in a chord replaces that note", async ({ page }) => {
   await startCapturing(page);
 
   await fret(page, "A", 9).click();
-  await page.getByTitle(/build a chord/).click();
+  await page.getByRole("button", { name: "stack" }).click();
   await fret(page, "E", 8).click();
   // Same string again: a column can only hold one note per string.
   await fret(page, "E", 10).click();
@@ -145,7 +145,7 @@ test("stacking stops when you move the cursor", async ({ page }) => {
   await startCapturing(page);
 
   await fret(page, "A", 9).click();
-  await page.getByTitle(/build a chord/).click();
+  await page.getByRole("button", { name: "stack" }).click();
   await fret(page, "E", 8).click();
 
   // Selecting a column means you have moved on; the next tap is a new column,
@@ -203,7 +203,7 @@ test("lights the current column on the fretboard", async ({ page }) => {
   await startCapturing(page);
 
   await fret(page, "A", 9).click();
-  await page.getByTitle(/build a chord/).click();
+  await page.getByRole("button", { name: "stack" }).click();
   await fret(page, "E", 8).click();
   await fret(page, "B", 7).click();
 
@@ -326,7 +326,7 @@ test("records a chord above a column", async ({ page }) => {
   await startCapturing(page);
 
   await fret(page, "E", 7).click();
-  await page.getByRole("button", { name: "chord" }).click();
+  await page.getByRole("button", { name: "chord symbol" }).click();
   await page.getByLabel("Chord").fill("Am");
   await page.getByRole("button", { name: "Set" }).click();
 
@@ -347,7 +347,7 @@ test("lights the chord's notes on the neck", async ({ page }) => {
   await fret(page, "E", 7).click();
   await expect(page.locator("[data-chord-role]")).toHaveCount(0);
 
-  await page.getByRole("button", { name: "chord" }).click();
+  await page.getByRole("button", { name: "chord symbol" }).click();
   await page.getByLabel("Chord").fill("Am");
   await page.getByRole("button", { name: "Set" }).click();
 
@@ -374,7 +374,7 @@ test("chord tones are not a pressed state, so only the column's notes are", asyn
   await startCapturing(page);
 
   await fret(page, "E", 7).click();
-  await page.getByRole("button", { name: "chord" }).click();
+  await page.getByRole("button", { name: "chord symbol" }).click();
   await page.getByLabel("Chord").fill("Am");
   await page.getByRole("button", { name: "Set" }).click();
 
@@ -396,12 +396,21 @@ test("a chord tone is drawn more heavily than a note outside the chord", async (
   await startCapturing(page);
 
   await fret(page, "E", 7).click();
-  await page.getByRole("button", { name: "chord" }).click();
+  await page.getByRole("button", { name: "chord symbol" }).click();
   await page.getByLabel("Chord").fill("Am");
   await page.getByRole("button", { name: "Set" }).click();
 
   const weightOf = (locator: ReturnType<typeof fret>) =>
     locator.evaluate((el) => Number(getComputedStyle(el).fontWeight));
+
+  /*
+   * Wait for the chord to reach the neck before measuring anything. Setting a
+   * chord symbol is a local write that travels Dexie -> liveQuery -> render,
+   * and reading computed style does not wait for that: the first cell read
+   * came back at the pre-chord weight while a cell read a moment later came
+   * back correct, which looks exactly like a broken root style.
+   */
+  await expect(fret(page, "A", 0)).toHaveAttribute("data-chord-role", "root");
 
   // A string: fret 0 is the root, fret 3 is the third, fret 1 is in no chord.
   const root = await weightOf(fret(page, "A", 0));
@@ -416,7 +425,7 @@ test("a chord stays in force over the columns after it", async ({ page }) => {
   await startCapturing(page);
 
   await fret(page, "E", 7).click();
-  await page.getByRole("button", { name: "chord" }).click();
+  await page.getByRole("button", { name: "chord symbol" }).click();
   await page.getByLabel("Chord").fill("Am");
   await page.getByRole("button", { name: "Set" }).click();
 
@@ -435,7 +444,7 @@ test("an unreadable chord symbol says so instead of lighting the neck", async ({
   await startCapturing(page);
 
   await fret(page, "E", 7).click();
-  await page.getByRole("button", { name: "chord" }).click();
+  await page.getByRole("button", { name: "chord symbol" }).click();
   await page.getByLabel("Chord").fill("N.C.");
   await page.getByRole("button", { name: "Set" }).click();
 
@@ -489,7 +498,7 @@ test("sets a chord on a chosen column, not just the last", async ({ page }) => {
   await fret(page, "E", 5).click();
 
   await columns(page).first().click();
-  await page.getByRole("button", { name: "chord" }).click();
+  await page.getByRole("button", { name: "chord symbol" }).click();
   await page.getByLabel("Chord").fill("Am");
   await page.getByRole("button", { name: "Set" }).click();
 

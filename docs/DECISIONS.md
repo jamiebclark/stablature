@@ -202,4 +202,69 @@ it fails without the fix.
 
 ---
 
+### Verified, not assumed
+
+The other session checked something about the font change that I had not, and
+it is the kind of thing that hides well: computed `font-weight` reports 600
+whether or not the family actually has a 600, so the chord-tone weight test
+would stay green while the distinction visually collapsed. `next/font` emits
+`font-weight: 100 800` for JetBrains Mono, so 400/600/700 are genuine
+instances off the variable axis — no synthesis, no snapping. Worth knowing if
+anyone ever pins a static weight.
+
+They also traced the "zombie server on port 3100" to its real cause, which
+was running `npm run build` twice while their own `next start` held the same
+`.next`. Same corruption I hit earlier in the day. The port was never the
+problem, and `reuseExistingServer: false` does fail loudly as intended.
+
+---
+
+### Terminology: "chord" was doing two jobs
+
+You spotted this and you were right. Two buttons were fighting over one word:
+`stack` built an actual chord out of notes, while `chord` wrote the harmony
+label above the staff. The one called "chord" was the one that did not make a
+chord.
+
+The annotation button is **chord symbol** now, and both tooltips say plainly
+which is which. `stack` stays — it is a verb for what it does, and the tooltip
+says "so they sound together as a chord".
+
+One correction to the framing in your question: a chord symbol is not a key
+change. `Am → C` inside a song is a chord change; a key change is a
+modulation, and the app does not model keys at all. The original brief asked
+for "chord changes above the tabs", which is exactly what this is.
+
+### A test that was passing for the wrong reason
+
+The new chord-weight test failed on desktop and passed on mobile, which looked
+like a rendering difference and was not. It read the root cell's computed
+weight immediately after clicking Set — before the chord annotation had
+travelled Dexie → liveQuery → render — so the first cell read came back at the
+pre-chord weight and a cell read a moment later came back correct. Exactly the
+shape of a broken root style.
+
+It now waits for `data-chord-role` to appear before measuring. Mobile had only
+ever passed on timing luck.
+
+### Machine housekeeping
+
+Mid-afternoon everything started failing with `fork: Resource temporarily
+unavailable`. The machine had 602 MB free and its commit limit was exhausted.
+155 node processes were running, and the biggest by far was **not this
+project** — an AdonisJS `bin/test.ts functional` run holding over 20 GB, plus
+Nuxt dev servers for vr-ui-system, vr-campaign and vr-roadmap and a Next
+server for crimeball.
+
+I killed only the five stablature processes (leaked `next dev` and `next start`
+instances of my own) and left everything of yours alone. That recovered free
+memory from 602 MB to 72 GB, so the leak was at least partly mine. The Adonis
+process may still be worth a look.
+
+Related: do not run `npm run build` or the e2e suite while a dev server is up
+on the same checkout. They share `.next` and corrupt each other — it produced
+a fake test failure for the other session and a spawn failure for me.
+
+---
+
 _Entries below are added as the day goes._
