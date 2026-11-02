@@ -35,6 +35,18 @@ export const auth = betterAuth({
   },
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL,
+  /*
+   * A self-hosted box gets reached by more than one name: localhost while you
+   * set it up, then an IP or a .local hostname from your phone. Any origin not
+   * listed here is rejected, so sign-in silently fails from the phone unless
+   * its address is added. Comma-separated, e.g.
+   *   STABLATURE_TRUSTED_ORIGINS=http://unraid.local:3000,http://192.168.1.20:3000
+   * Left strict rather than wildcarded, because this is the CSRF boundary.
+   */
+  trustedOrigins: (process.env.STABLATURE_TRUSTED_ORIGINS ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
   plugins: [
     // Must stay last: it lets server actions set the session cookie.
     nextCookies(),

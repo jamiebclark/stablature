@@ -106,6 +106,7 @@ function Nodes({ nodes, parts, activeEntryId, onSelectEntry }: RoadmapProps) {
             key={node.entryId}
             type="button"
             onClick={onSelectEntry ? () => onSelectEntry(node.entryId) : undefined}
+            data-testid="roadmap-chip"
             className={`rounded-md border px-2 py-1 text-left transition ${
               active
                 ? "border-accent bg-accent-dim/30"

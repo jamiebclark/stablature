@@ -31,7 +31,7 @@ services:
       STABLATURE_DATABASE_URL: postgres://stablature:${POSTGRES_PASSWORD:-stablature}@db:5432/stablature
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET in .env}
       BETTER_AUTH_URL: ${APP_URL:-http://localhost:3000}
-      NEXT_PUBLIC_APP_URL: ${APP_URL:-http://localhost:3000}
+      STABLATURE_TRUSTED_ORIGINS: ${TRUSTED_ORIGINS:-}
       NODE_ENV: production
     ports:
       - "${APP_PORT:-3000}:3000"

@@ -13,7 +13,7 @@
  */
 
 import type { FretValue } from "@/lib/model";
-import { fretToMidi, stringLabels, type Tuning } from "@/lib/tunings";
+import { fretToMidi, type Tuning } from "@/lib/tunings";
 import { midiToNote, noteLabel } from "@/lib/pitch";
 
 /** Frets with position inlays on a real neck. */
@@ -29,7 +29,9 @@ export interface FretboardProps {
 }
 
 export function Fretboard({ tuning, maxFret = 24, onPress, disabled = false }: FretboardProps) {
-  const labels = stringLabels(tuning);
+  // Bare note names, matching the tab staff. The octave lives in the
+  // accessible label, where it disambiguates without adding visual noise.
+  const labels = tuning.strings.map((s) => s.note);
   const frets = Array.from({ length: maxFret + 1 }, (_, fret) => fret);
 
   return (

@@ -150,7 +150,7 @@ export function SongView({ songId }: { songId: string }) {
             className="no-print"
             onClick={async () => {
               const created = await createPart(song);
-              router.push(`/songs/${songId}/capture?part=${created.id}`);
+              router.push(`/songs/${songId}/capture/${created.id}`);
             }}
           >
             + part
@@ -260,7 +260,7 @@ function PartCard({
               + variant
             </Button>
           )}
-          <ButtonLink href={`/songs/${songId}/capture?part=${part.id}`}>Edit</ButtonLink>
+          <ButtonLink href={`/songs/${songId}/capture/${part.id}`}>Edit</ButtonLink>
           <Button
             variant="danger"
             onClick={() => deleteRow("parts", part.id)}

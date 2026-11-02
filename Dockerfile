@@ -9,10 +9,7 @@ FROM node:24-alpine AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# Build-time placeholders: these are read at runtime, but Next wants the public
-# ones present to compile. Real values come from the compose environment.
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV NEXT_PUBLIC_APP_URL=http://localhost:3000
 RUN npm run build
 
 FROM node:24-alpine AS runtime

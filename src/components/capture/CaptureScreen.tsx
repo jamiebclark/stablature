@@ -18,7 +18,8 @@
  */
 
 import { useCallback, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { Button, Input, Loading } from "@/components/ui";
 import {
@@ -42,31 +43,27 @@ import {
 import type { EventRow, FretValue } from "@/lib/model";
 import { Fretboard } from "./Fretboard";
 
-export function CaptureScreen({ songId }: { songId: string }) {
+export function CaptureScreen({ songId, partId }: { songId: string; partId?: string }) {
   const router = useRouter();
   const song = useSong(songId);
   const tuning = useSongTuning(song);
   const parts = useParts(songId);
   const pending = usePendingWrites();
 
-  const [chosenPartId, setChosenPartId] = useState<string | null>(null);
   const [stacking, setStacking] = useState(false);
   const [chordDraft, setChordDraft] = useState<string | null>(null);
 
-  const linkedPartId = useSearchParams().get("part");
-
   /*
-   * Derived rather than synced in an effect, which matters for more than lint:
-   * the fallback chain handles a part being deleted from another device
-   * mid-session for free. The chosen id simply stops matching and the view
-   * drops to the next candidate, with no cascading render and no window where
-   * the screen points at a part that is gone.
+   * The open part lives in the URL rather than in component state, because
+   * switching parts genuinely is navigation: back and forward work, a reload
+   * keeps your place, and a part is linkable from the song page.
+   *
+   * Falling back to the last part also handles the part being deleted on
+   * another device mid-session -- the id simply stops matching and the view
+   * drops to the next candidate, with no window where the screen points at
+   * something that is gone.
    */
-  const part =
-    parts?.find((p) => p.id === chosenPartId) ??
-    parts?.find((p) => p.id === linkedPartId) ??
-    parts?.at(-1) ??
-    null;
+  const part = parts?.find((p) => p.id === partId) ?? parts?.at(-1) ?? null;
   const events = useEvents(part?.id);
   const annotations = useAnnotations(part?.id);
 
@@ -122,10 +119,10 @@ export function CaptureScreen({ songId }: { songId: string }) {
           the B section and you need somewhere to put it immediately. */}
       <div className="flex items-center gap-1.5 overflow-x-auto border-b border-border-subtle px-3 py-2">
         {parts.map((candidate) => (
-          <button
+          <Link
             key={candidate.id}
-            type="button"
-            onClick={() => setChosenPartId(candidate.id)}
+            href={`/songs/${songId}/capture/${candidate.id}`}
+            replace
             className={`shrink-0 rounded px-2.5 py-1 font-mono text-sm ${
               candidate.id === part?.id
                 ? "bg-accent text-accent-text"
@@ -133,14 +130,14 @@ export function CaptureScreen({ songId }: { songId: string }) {
             }`}
           >
             {candidate.label}
-          </button>
+          </Link>
         ))}
         <Button
           variant="ghost"
           className="shrink-0 px-2 py-1"
           onClick={async () => {
             const created = await createPart(song);
-            setChosenPartId(created.id);
+            router.push(`/songs/${songId}/capture/${created.id}`);
           }}
           aria-label="Add a part"
         >
@@ -200,7 +197,13 @@ export function CaptureScreen({ songId }: { songId: string }) {
           >
             &minus;
           </button>
-          <span className="min-w-10 bg-bg-raised px-1 text-center font-mono text-sm">
+          {/* Announced, because the count changes under the user's thumb and
+              there is no other feedback that the tap landed. */}
+          <span
+            className="min-w-10 bg-bg-raised px-1 text-center font-mono text-sm"
+            aria-label="Repeat count"
+            aria-live="polite"
+          >
             &times;{lastColumn?.repeat ?? 1}
           </span>
           <button

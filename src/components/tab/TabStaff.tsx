@@ -68,7 +68,7 @@ export function TabStaff({
     spans.find((span) => index >= span.start && index <= span.end);
 
   return (
-    <div className="tab-staff" data-surface={surface}>
+    <div className="tab-staff" data-surface={surface} data-testid="tab-staff">
       <div className="flex items-stretch gap-1">
         {/* String labels stay put while the staff scrolls. */}
         <div
@@ -206,7 +206,12 @@ function Column({
 
   if (!onSelect) {
     return (
-      <div style={style} className={active ? "bg-accent-dim/30" : undefined}>
+      <div
+        style={style}
+        className={active ? "bg-accent-dim/30" : undefined}
+        data-testid="tab-column"
+        data-barline={barline ? "true" : undefined}
+      >
         {body}
       </div>
     );
@@ -218,6 +223,8 @@ function Column({
       onClick={onSelect}
       style={style}
       className={`text-left ${active ? "bg-accent-dim/30" : "hover:bg-bg-raised"}`}
+      data-testid="tab-column"
+      data-barline={barline ? "true" : undefined}
       aria-label={describe(cells, barline)}
       aria-current={active ? "true" : undefined}
     >
