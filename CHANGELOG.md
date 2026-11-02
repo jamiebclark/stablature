@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/jamiebclark/stablature/compare/v1.0.0...v1.1.0) (2026-11-02)
+
+
+### Features
+
+* **capture:** add an insertion cursor, and fix what looking at it exposed ([a96a2ae](https://github.com/jamiebclark/stablature/commit/a96a2aeb420959aa49a5c84f7b7fffa55e1f23c1))
+
 # 1.0.0 (2026-11-02)
 
 
