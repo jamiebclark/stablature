@@ -175,4 +175,31 @@ matches are placeholder variable references in the compose file. Clean.
 
 ---
 
+### Merged: chord tones carried by weight, not colour
+
+The other session found a real gap in my own fix, and I verified their numbers
+from the committed tokens rather than taking them:
+
+```
+            chord tone      non-chord
+dark        9.47 / 8.66     3.79 / 3.46
+light       5.02 / 4.15     5.28 / 4.36
+```
+
+In the light theme the non-chord grey is *more* contrasty than a chord tone —
+separation of −0.26. Both are legible, but "is this note in the chord" was
+resting entirely on hue at matched lightness, which is the first thing to go
+in glare, on a stage, or for a colour-blind reader.
+
+Every chord tone is now semibold, with the root and a slash bass bold. Weight
+reads identically in both themes and needs no colour at all.
+
+The test that comes with it is the better half. Asserting roles and
+aria-labels is exactly what let the original bug through — those were all
+correct while the colour was gone, so the chord tests passed against a blank
+neck. The new one reads computed font-weight off the cells, and they confirmed
+it fails without the fix.
+
+---
+
 _Entries below are added as the day goes._
