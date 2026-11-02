@@ -1,3 +1,10 @@
+## [1.5.2](https://github.com/jamiebclark/stablature/compare/v1.5.1...v1.5.2) (2026-11-02)
+
+
+### Bug Fixes
+
+* **capture:** rename the chord annotation to "chord symbol" ([467b4ab](https://github.com/jamiebclark/stablature/commit/467b4abbb65ad3d86ab4ac76499b41ef048ee55f))
+
 ## [1.5.1](https://github.com/jamiebclark/stablature/compare/v1.5.0...v1.5.1) (2026-11-02)
 
 
