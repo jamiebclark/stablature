@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/jamiebclark/stablature/compare/v1.1.0...v1.1.1) (2026-11-02)
+
+
+### Bug Fixes
+
+* **capture:** keep stack mode armed so chords take one toggle ([53b9055](https://github.com/jamiebclark/stablature/commit/53b90551ad8fe13f98135bad613ed6008548ec1e))
+
 # [1.1.0](https://github.com/jamiebclark/stablature/compare/v1.0.0...v1.1.0) (2026-11-02)
 
 
