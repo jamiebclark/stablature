@@ -86,7 +86,7 @@ export function Fretboard({
                   // mis-taps here are the main way bad data gets captured.
                   className={`fret-cell relative h-9 w-9 shrink-0 font-mono text-[0.7rem] transition-colors active:bg-accent active:text-accent-text ${
                     lit
-                      ? "!bg-accent font-semibold !text-accent-text"
+                      ? "bg-accent font-semibold text-accent-text"
                       : fret === 0
                         ? "fret-nut rounded-l border-r-2 border-border-strong"
                         : INLAYS.has(fret)
@@ -119,7 +119,7 @@ export function Fretboard({
               key={stringIndex}
               type="button"
               onClick={() => onPress(stringIndex, "x")}
-              className="fret-cell h-7 w-9 shrink-0 rounded font-mono text-[0.7rem] active:!bg-accent active:!text-accent-text"
+              className="fret-cell h-7 w-9 shrink-0 rounded font-mono text-[0.7rem] active:bg-accent active:text-accent-text"
               aria-label={`Dead note on the ${labels[stringIndex]} string`}
             >
               {labels[stringIndex]}

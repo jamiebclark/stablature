@@ -266,17 +266,28 @@ button,
 
 /* ---------- fretboard ---------- */
 
-.fret-cell {
-  background: var(--fret-cell);
-  color: var(--fret-number);
-}
+/*
+ * In the components layer so utilities win.
+ *
+ * Plain rules here sit after the Tailwind import and would therefore beat
+ * `text-accent` and `bg-accent` on specificity ties, which silently breaks any
+ * per-cell colouring layered on top -- the highlight, and chord-tone roles.
+ * Putting them in `components` makes utilities the override they look like,
+ * and removes the need for `!important` on the highlight.
+ */
+@layer components {
+  .fret-cell {
+    background: var(--fret-cell);
+    color: var(--fret-number);
+  }
 
-.fret-cell-inlay {
-  background: var(--fret-cell-inlay);
-}
+  .fret-cell-inlay {
+    background: var(--fret-cell-inlay);
+  }
 
-.fret-nut {
-  background: var(--bg-raised);
+  .fret-nut {
+    background: var(--bg-raised);
+  }
 }
 
 /* ---------- print ---------- */
