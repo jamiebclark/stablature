@@ -25,9 +25,12 @@ import type {
   TuningRow,
 } from "../model";
 import {
+  barCountsBySong,
   getBand,
   getPart,
   getSong,
+  listAnnotationsBySong,
+  listEventsBySong,
   listAnnotations,
   listArrangement,
   listBands,
@@ -86,6 +89,22 @@ export function useAnnotations(partId: string | undefined): AnnotationRow[] | un
 
 export function useArrangement(songId: string | undefined): ArrangementEntryRow[] | undefined {
   return useLiveQuery(() => (songId ? listArrangement(songId) : undefined), [songId]);
+}
+
+/** Every part's columns for a song, keyed by part id. */
+export function useSongEvents(songId: string | undefined): Record<string, EventRow[]> | undefined {
+  return useLiveQuery(() => (songId ? listEventsBySong(songId) : undefined), [songId]);
+}
+
+export function useSongAnnotations(
+  songId: string | undefined,
+): Record<string, AnnotationRow[]> | undefined {
+  return useLiveQuery(() => (songId ? listAnnotationsBySong(songId) : undefined), [songId]);
+}
+
+/** Bar count per part, used to bound the arrangement bar-range controls. */
+export function useBarCounts(songId: string | undefined): Record<string, number> | undefined {
+  return useLiveQuery(() => (songId ? barCountsBySong(songId) : undefined), [songId]);
 }
 
 /**

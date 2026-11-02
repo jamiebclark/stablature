@@ -13,6 +13,7 @@
 
 import { isLive, type SyncMeta } from "../model";
 import { sortByRank } from "../rank";
+import { countBars } from "../tab/layout";
 import type {
   AnnotationRow,
   ArrangementEntryRow,
@@ -143,6 +144,52 @@ export async function listVariants(
 ): Promise<PartRow[]> {
   const siblings = await listParts(songId, database);
   return siblings.filter((p) => p.variantOfPartId === partId);
+}
+
+/**
+ * Every part's columns for a song, keyed by part id.
+ *
+ * One query instead of a live query per part: the song view renders a staff
+ * for each part and needs bar counts for all of them, and hooks cannot be
+ * called in a loop.
+ */
+export async function listEventsBySong(
+  songId: string,
+  database: StablatureDb = defaultDb,
+): Promise<Record<string, EventRow[]>> {
+  const parts = await listParts(songId, database);
+  const byPart: Record<string, EventRow[]> = {};
+  await Promise.all(
+    parts.map(async (part) => {
+      byPart[part.id] = await listEvents(part.id, database);
+    }),
+  );
+  return byPart;
+}
+
+export async function listAnnotationsBySong(
+  songId: string,
+  database: StablatureDb = defaultDb,
+): Promise<Record<string, AnnotationRow[]>> {
+  const parts = await listParts(songId, database);
+  const byPart: Record<string, AnnotationRow[]> = {};
+  await Promise.all(
+    parts.map(async (part) => {
+      byPart[part.id] = await listAnnotations(part.id, database);
+    }),
+  );
+  return byPart;
+}
+
+/** Bar count per part, which bounds the arrangement's bar-range controls. */
+export async function barCountsBySong(
+  songId: string,
+  database: StablatureDb = defaultDb,
+): Promise<Record<string, number>> {
+  const byPart = await listEventsBySong(songId, database);
+  return Object.fromEntries(
+    Object.entries(byPart).map(([partId, events]) => [partId, countBars(events)]),
+  );
 }
 
 /** How many local writes are still waiting to be pushed. */
