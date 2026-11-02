@@ -12,6 +12,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrangementEditor } from "@/components/arrangement/ArrangementEditor";
+import { ExportSong } from "@/components/app/ExportSong";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader } from "@/components/ui";
 import { createPart, createVariant } from "@/lib/local/editing";
@@ -105,6 +106,21 @@ export function SongView({ songId }: { songId: string }) {
             aria-label="Beats per minute"
           />
         </label>
+
+        {tuning && parts && eventsByPart && entries ? (
+          <ExportSong
+            density={density}
+            input={{
+              song,
+              tuning,
+              tuningName: tuning.name,
+              parts,
+              eventsByPart,
+              annotationsByPart: annotationsByPart ?? {},
+              entries,
+            }}
+          />
+        ) : null}
 
         <div className="ml-auto flex overflow-hidden rounded-md border border-border-subtle">
           {(["expanded", "compact"] as const).map((option) => (

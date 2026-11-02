@@ -20,7 +20,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@serwist/next": "^9.5.13",
     "better-auth": "^1.7.15",
     "dexie": "^4.4.7",
     "dexie-react-hooks": "^4.4.0",
@@ -30,7 +29,6 @@
     "postgres": "^3.4.9",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "serwist": "^9.5.13",
     "uuidv7": "^1.2.1",
     "zod": "^4.6.7"
   },
