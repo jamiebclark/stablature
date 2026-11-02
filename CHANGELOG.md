@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/jamiebclark/stablature/compare/v1.2.0...v1.3.0) (2026-11-02)
+
+
+### Features
+
+* **capture:** add select, cut, copy and paste, and an icon pass ([5953d75](https://github.com/jamiebclark/stablature/commit/5953d7575cd705b36035fad6303f2fbf411130e3)), closes [#26200f](https://github.com/jamiebclark/stablature/issues/26200f)
+
 # [1.2.0](https://github.com/jamiebclark/stablature/compare/v1.1.1...v1.2.0) (2026-11-02)
 
 
