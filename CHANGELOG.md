@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/jamiebclark/stablature/compare/v1.3.0...v1.3.1) (2026-11-02)
+
+
+### Bug Fixes
+
+* **capture:** make the selection visible, and stop the suite testing stale builds ([ff2ddcd](https://github.com/jamiebclark/stablature/commit/ff2ddcdc9ea90b3e5692fde08fd6e472aa3f91e9))
+
 # [1.3.0](https://github.com/jamiebclark/stablature/compare/v1.2.0...v1.3.0) (2026-11-02)
 
 
