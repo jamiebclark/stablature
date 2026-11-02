@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/jamiebclark/stablature/compare/v1.4.0...v1.5.0) (2026-11-02)
+
+
+### Features
+
+* real favicon, measured tab font, logo, and the written pages ([3b6ad5e](https://github.com/jamiebclark/stablature/commit/3b6ad5e2241828f2fa2bd9ef8e67c51745342867))
+
 # [1.4.0](https://github.com/jamiebclark/stablature/compare/v1.3.2...v1.4.0) (2026-11-02)
 
 
