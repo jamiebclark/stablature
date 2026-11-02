@@ -42,6 +42,20 @@ async function startCapturing(page: Page, band = "Hollow Crown", song = "Dirge")
 
 const columns = (page: Page) => page.getByTestId("tab-column");
 
+/**
+ * Add a part and wait until the screen is actually on it.
+ *
+ * Adding a part navigates, and tapping a fret before the new URL settles puts
+ * the note in the part you just left.
+ */
+async function addPart(page: Page) {
+  const before = page.url();
+  await page.getByRole("button", { name: "Add a part" }).click();
+  await expect(page).not.toHaveURL(before);
+  await expect(page).toHaveURL(/\/capture\/[0-9a-f-]+$/);
+  await expect(columns(page)).toHaveCount(0);
+}
+
 /** Tap a fret on the on-screen neck. */
 const fret = (page: Page, string: string, number: number) =>
   page.getByRole("button", { name: new RegExp(`^${string} string, fret ${number},`) });
@@ -85,13 +99,62 @@ test("stacks a chord onto one column", async ({ page }) => {
   await startCapturing(page);
 
   await fret(page, "E", 7).click();
-  await page.getByTitle(/Add the next note to this column/).click();
+  await page.getByTitle(/build a chord/).click();
   await fret(page, "A", 5).click();
 
   // Still one column, now with two strings on it.
   await expect(columns(page)).toHaveCount(1);
   await expect(columns(page).first()).toContainText("7");
   await expect(columns(page).first()).toContainText("5");
+});
+
+test("builds a three-note chord in one column", async ({ page }) => {
+  await startCapturing(page);
+
+  // A9 / E8 / B7 all hitting together: arm stack once, then tap the strings.
+  await fret(page, "A", 9).click();
+  await page.getByTitle(/build a chord/).click();
+  await expect(page.getByText("stacking onto the marked column")).toBeVisible();
+
+  await fret(page, "E", 8).click();
+  await fret(page, "B", 7).click();
+
+  // One column, three strings -- not three columns.
+  await expect(columns(page)).toHaveCount(1);
+  const column = columns(page).first();
+  await expect(column).toContainText("9");
+  await expect(column).toContainText("8");
+  await expect(column).toContainText("7");
+});
+
+test("re-tapping a string in a chord replaces that note", async ({ page }) => {
+  await startCapturing(page);
+
+  await fret(page, "A", 9).click();
+  await page.getByTitle(/build a chord/).click();
+  await fret(page, "E", 8).click();
+  // Same string again: a column can only hold one note per string.
+  await fret(page, "E", 10).click();
+
+  await expect(columns(page)).toHaveCount(1);
+  await expect(columns(page).first()).toContainText("10");
+  await expect(columns(page).first()).not.toContainText("8");
+});
+
+test("stacking stops when you move the cursor", async ({ page }) => {
+  await startCapturing(page);
+
+  await fret(page, "A", 9).click();
+  await page.getByTitle(/build a chord/).click();
+  await fret(page, "E", 8).click();
+
+  // Selecting a column means you have moved on; the next tap is a new column,
+  // not a fourth note in the old chord.
+  await columns(page).first().click();
+  await expect(page.getByText("stacking onto the marked column")).toHaveCount(0);
+
+  await fret(page, "G", 5).click();
+  await expect(columns(page)).toHaveCount(2);
 });
 
 test("groups three columns into a triplet", async ({ page }) => {
@@ -171,10 +234,8 @@ test("switching parts changes the URL and keeps each part separate", async ({ pa
   await fret(page, "E", 7).click();
   const partAUrl = page.url();
 
-  await page.getByRole("button", { name: "Add a part" }).click();
+  await addPart(page);
   await expect(page).not.toHaveURL(partAUrl);
-  // The new part starts empty: columns belong to a part, not to the screen.
-  await expect(columns(page)).toHaveCount(0);
 
   await fret(page, "A", 3).click();
   await expect(columns(page)).toHaveCount(1);
@@ -194,7 +255,7 @@ test("builds the brief's arrangement and reads it back in order", async ({ page 
   await expect(page.getByLabel("Repeat count")).toHaveText("×4");
 
   // Part B.
-  await page.getByRole("button", { name: "Add a part" }).click();
+  await addPart(page);
   await fret(page, "A", 5).click();
   await expect(columns(page)).toHaveCount(1);
 

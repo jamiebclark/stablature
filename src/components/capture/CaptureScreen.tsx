@@ -95,9 +95,14 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
     async (stringIndex: number, fret: FretValue) => {
       if (!part) return;
       if (stacking && editable) {
+        /*
+         * Stays armed. A three-note chord is the common case this exists for,
+         * and disarming after each note made it cost two mode toggles. The
+         * button is lit while it is on and the status line says so, so this is
+         * visible state rather than a trap -- and it disarms itself on any
+         * action that means you have moved on.
+         */
         await stackNote(editable, stringIndex, fret);
-        // One stack per toggle: holding the mode on invites accidental chords.
-        setStacking(false);
         return;
       }
       const inserted = await insertNote(part, columns, afterId, stringIndex, fret);
@@ -147,7 +152,10 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
             key={candidate.id}
             href={`/songs/${songId}/capture/${candidate.id}`}
             replace
-            onClick={() => setCursor("end")}
+            onClick={() => {
+              setCursor("end");
+              setStacking(false);
+            }}
             className={`shrink-0 rounded px-2.5 py-1 font-mono text-sm ${
               candidate.id === part?.id
                 ? "bg-accent text-accent-text"
@@ -181,7 +189,10 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
             annotations={annotations ?? []}
             followTail={atEnd}
             activeEventId={focused?.id ?? null}
-            onSelectColumn={(eventId) => setCursor(eventId)}
+            onSelectColumn={(eventId) => {
+              setCursor(eventId);
+              setStacking(false);
+            }}
           />
         ) : (
           <p className="py-6 text-center text-sm text-text-dim">
@@ -192,12 +203,14 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
 
       {part ? (
         <div className="flex items-center gap-2 border-t border-border-subtle px-3 py-1.5 text-[0.7rem]">
-          <span className={atEnd ? "text-text-faint" : "text-accent"}>
-            {atEnd
-              ? "adding at the end"
-              : afterId === null
-                ? "adding at the start"
-                : "adding after the marked column"}
+          <span className={stacking || !atEnd ? "text-accent" : "text-text-faint"}>
+            {stacking
+              ? "stacking onto the marked column"
+              : atEnd
+                ? "adding at the end"
+                : afterId === null
+                  ? "adding at the start"
+                  : "adding after the marked column"}
           </span>
           {columns.length > 0 ? (
             <>
@@ -291,7 +304,7 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
           variant={stacking ? "primary" : "secondary"}
           disabled={!editable}
           onClick={() => setStacking((on) => !on)}
-          title="Add the next note to this column instead of a new one"
+          title="Keep adding notes to this column to build a chord"
         >
           stack
         </Button>
@@ -301,6 +314,7 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
           onClick={async () => {
             if (!part) return;
             const inserted = await insertBarline(part, columns, afterId);
+            setStacking(false);
             advance(inserted.id);
           }}
           title="Barline"
