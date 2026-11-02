@@ -1,4 +1,8 @@
+import { config as loadEnv } from "dotenv";
 import { defineConfig, devices } from "@playwright/test";
+
+// The sync specs talk to Postgres directly to verify rows actually landed.
+loadEnv({ path: ".env.local", override: true, quiet: true });
 
 const PORT = Number(process.env.E2E_PORT ?? 3100);
 const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`;
@@ -26,5 +30,16 @@ export default defineConfig({
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 240_000,
+    // The test server runs on its own port, which is a different origin from
+    // whatever BETTER_AUTH_URL says in .env.local. Better Auth rejects
+    // unlisted origins outright, so sign-in would fail with "Invalid origin" --
+    // the same thing that happens on a LAN when you reach the app by IP.
+    env: {
+      BETTER_AUTH_URL: baseURL,
+      STABLATURE_TRUSTED_ORIGINS: baseURL,
+      // The suite signs up a dozen throwaway accounts from one address, which
+      // trips the per-IP limit that protects the real credential endpoints.
+      STABLATURE_AUTH_RATE_LIMIT: "off",
+    },
   },
 });

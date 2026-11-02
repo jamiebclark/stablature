@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SyncProvider } from "@/components/app/SyncProvider";
 import { TopBar } from "@/components/app/TopBar";
 import "./globals.css";
 
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${sans.variable} ${mono.variable} antialiased`}>
+        <SyncProvider />
         <TopBar />
         {children}
       </body>

@@ -13,15 +13,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { usePendingWrites } from "@/lib/local/hooks";
 import { signOut, useSession } from "@/lib/auth-client";
+import { usePendingWrites } from "@/lib/local/hooks";
+import { useSyncStatus } from "@/lib/sync/hooks";
 
 export function TopBar() {
   const pathname = usePathname();
   const { data: session, isPending } = useSession();
   const pending = usePendingWrites();
+  const status = useSyncStatus();
 
-  if (pathname?.endsWith("/capture")) return null;
+  if (pathname?.endsWith("/capture") || pathname?.includes("/capture/")) return null;
 
   return (
     <div className="border-b border-border-subtle bg-bg-raised no-print">
@@ -31,11 +33,7 @@ export function TopBar() {
         </Link>
 
         <div className="flex items-center gap-3 text-xs">
-          {pending ? (
-            <span className="font-mono text-text-faint" title="Local changes not yet pushed">
-              {pending} unsynced
-            </span>
-          ) : null}
+          <SyncBadge pending={pending ?? 0} state={status?.state} message={status?.message} />
 
           {isPending ? null : session ? (
             <button
@@ -54,4 +52,49 @@ export function TopBar() {
       </div>
     </div>
   );
+}
+
+/**
+ * Says what is actually true rather than showing a spinner.
+ *
+ * "3 unsynced" is useful; an indeterminate spinner that means "something might
+ * be happening" is not, especially when the honest answer is that you are in a
+ * basement with no signal and nothing is wrong.
+ */
+function SyncBadge({
+  pending,
+  state,
+  message,
+}: {
+  pending: number;
+  state: string | undefined;
+  message: string | null | undefined;
+}) {
+  if (state === "error" && message) {
+    return (
+      <span className="max-w-56 truncate text-danger" title={message}>
+        {message}
+      </span>
+    );
+  }
+
+  if (state === "signed-out" && pending > 0) {
+    return (
+      <span className="text-text-faint" title="Sign in to sync these to your band">
+        {pending} local
+      </span>
+    );
+  }
+
+  if (pending > 0) {
+    return (
+      <span className="font-mono text-text-faint" title="Not pushed yet">
+        {pending} unsynced
+      </span>
+    );
+  }
+
+  if (state === "offline") return <span className="text-text-faint">offline</span>;
+  if (state === "syncing") return <span className="text-text-faint">syncing…</span>;
+  return null;
 }

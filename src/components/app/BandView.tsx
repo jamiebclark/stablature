@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader } from "@/components/ui";
+import { InviteBandmate } from "./InviteBandmate";
 import { createSong } from "@/lib/local/editing";
 import { useBand, useSongs, useTunings } from "@/lib/local/hooks";
 import { stringLabels } from "@/lib/tunings";
@@ -59,6 +60,10 @@ export function BandView({ bandId }: { bandId: string }) {
           Add song
         </Button>
       </form>
+
+      <div className="mb-6">
+        <InviteBandmate bandId={bandId} />
+      </div>
 
       {songs === undefined ? (
         <Loading />

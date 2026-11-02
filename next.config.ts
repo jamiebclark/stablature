@@ -1,9 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Required by the Docker image: bundles the server and its reachable deps so
-  // the runtime stage does not need a full node_modules.
-  output: "standalone",
+  /*
+   * Standalone output only when building the container image, because
+   * `next start` refuses to serve a standalone build -- it wants
+   * `node .next/standalone/server.js`. Gating it keeps `npm start` and the
+   * end-to-end tests working against an ordinary production build, while the
+   * Dockerfile sets this and runs the standalone server directly.
+   */
+  output: process.env.STABLATURE_STANDALONE ? "standalone" : undefined,
   // typedRoutes is deliberately off. Its RouteImpl type can only be inferred
   // from literal-ish hrefs, and every route in this app is parameterised by a
   // database id -- `/songs/${songId}` interpolates a plain string, which never

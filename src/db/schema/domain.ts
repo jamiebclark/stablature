@@ -119,6 +119,37 @@ export const bandMembers = pgTable(
   ],
 );
 
+/**
+ * Invites, so a bandmate can join without the owner knowing their email.
+ *
+ * Multi-use until revoked or expired, rather than one-shot: the realistic
+ * gesture is pasting one link into the band chat, not minting four codes.
+ * Server-owned like membership, so no HLC or sync columns.
+ */
+export const bandInvites = pgTable(
+  "band_invites",
+  {
+    id: uuid("id").primaryKey(),
+    bandId: uuid("band_id")
+      .notNull()
+      .references(() => bands.id, { onDelete: "cascade" }),
+    /** Short, unguessable, and safe to read aloud. */
+    code: text("code").notNull(),
+    /** Role granted on acceptance. Lets you invite someone read-only. */
+    role: bandRole("role").notNull().default("editor"),
+    createdByUserId: text("created_by_user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("band_invites_code_idx").on(t.code),
+    index("band_invites_band_idx").on(t.bandId),
+  ],
+);
+
 export const tunings = pgTable(
   "tunings",
   {
