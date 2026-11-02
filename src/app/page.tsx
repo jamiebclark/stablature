@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Button, Card, EmptyState, Input, Loading, PageHeader } from "@/components/ui";
+import { Button, Card, Input, Loading, PageHeader } from "@/components/ui";
+import { LogoMark } from "@/components/app/Logo";
 import { createBand, createTuningFromPreset } from "@/lib/local/editing";
 import { useBands } from "@/lib/local/hooks";
 import { DEFAULT_PRESET_ID, presetById } from "@/lib/tunings";
@@ -55,7 +56,23 @@ export default function BandsPage() {
       {bands === undefined ? (
         <Loading />
       ) : bands.length === 0 ? (
-        <EmptyState title="No bands yet. Add one above to get started." />
+        /*
+         * Shown once and then never again. Somebody opening this for the
+         * first time has no idea what it is, and somebody opening it for the
+         * hundredth wants their bands and nothing else -- so the explanation
+         * lives in the empty state rather than on the page.
+         */
+        <div className="rounded-lg border border-dashed border-border-subtle px-6 py-10 text-center">
+          <div className="mb-3 flex justify-center text-text-dim">
+            <LogoMark size={28} />
+          </div>
+          <p className="mx-auto max-w-sm text-sm text-text-dim">
+            Tablature for bands that build songs out of lettered parts. Capture a riff on
+            your phone while someone is playing it at you — in a rehearsal room with no
+            signal — then read the whole song back as a form rather than metres of tab.
+          </p>
+          <p className="mt-3 text-xs text-text-faint">Name your band above to start.</p>
+        </div>
       ) : (
         <ul className="grid gap-3">
           {bands.map((band) => (

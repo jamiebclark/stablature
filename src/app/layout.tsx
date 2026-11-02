@@ -1,12 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, JetBrains_Mono } from "next/font/google";
+import { Footer } from "@/components/app/Footer";
 import { ServiceWorker } from "@/components/app/ServiceWorker";
 import { SyncProvider } from "@/components/app/SyncProvider";
 import { TopBar } from "@/components/app/TopBar";
 import "./globals.css";
 
 const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const mono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+
+/*
+ * JetBrains Mono carries the tablature, and the choice was measured rather
+ * than picked: at the 11px the staff actually renders at, it has a visibly
+ * larger x-height than Geist Mono, IBM Plex Mono or Roboto Mono, and all four
+ * share an identical 0.6em advance. So the digits are easier to read at no
+ * cost in columns per screen -- and columns per screen is the whole point of
+ * this app.
+ *
+ * Geist Sans stays for the interface. Nothing about a band tool is improved
+ * by a more opinionated UI face, and a third family is weight a PWA carries
+ * offline for no return.
+ */
+const mono = JetBrains_Mono({ variable: "--font-mono-face", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "stablature",
@@ -40,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SyncProvider />
         <TopBar />
         {children}
+        <Footer />
       </body>
     </html>
   );

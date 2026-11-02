@@ -39,16 +39,26 @@ function chunk(type, data) {
   return Buffer.concat([length, body, crc]);
 }
 
-function encodePng(width, height, pixels) {
+/**
+ * `alpha` writes RGBA rather than RGB.
+ *
+ * Needed for the favicon: Next decodes app/favicon.ico at build time and its
+ * ICO reader rejects an embedded PNG that is not RGBA, with "The PNG is not in
+ * RGBA format!". The standalone PNGs do not need it, but there is no cost to
+ * one code path.
+ */
+function encodePng(width, height, pixels, alpha = false) {
+  const channels = alpha ? 4 : 3;
+
   const ihdr = Buffer.alloc(13);
   ihdr.writeUInt32BE(width, 0);
   ihdr.writeUInt32BE(height, 4);
   ihdr[8] = 8; // bit depth
-  ihdr[9] = 2; // colour type: truecolour RGB
+  ihdr[9] = alpha ? 6 : 2; // colour type: truecolour, with or without alpha
   // 10..12 stay zero: deflate, adaptive filtering, no interlace.
 
   // One filter byte per scanline, filter type 0 (none).
-  const raw = Buffer.alloc(height * (1 + width * 3));
+  const raw = Buffer.alloc(height * (1 + width * channels));
   let offset = 0;
   for (let y = 0; y < height; y += 1) {
     raw[offset] = 0;
@@ -58,7 +68,8 @@ function encodePng(width, height, pixels) {
       raw[offset] = r;
       raw[offset + 1] = g;
       raw[offset + 2] = b;
-      offset += 3;
+      if (alpha) raw[offset + 3] = 255;
+      offset += channels;
     }
   }
 
@@ -124,3 +135,68 @@ for (const target of targets) {
   writeFileSync(`public/icons/${target.file}`, png);
   console.log(`public/icons/${target.file}  ${target.size}x${target.size}  ${png.length} bytes`);
 }
+
+/**
+ * A simplified mark for tiny sizes.
+ *
+ * The full five-string staff with two notes turns to mush at 16px, so the
+ * favicon drops to three strings and one note. Same idea, fewer things
+ * fighting for the same twelve usable pixels.
+ */
+function smallStaff(size) {
+  const inset = Math.round(size * 0.14);
+  const usable = size - inset * 2;
+  const gap = usable / 2;
+  const thickness = Math.max(1, Math.round(size * 0.07));
+  const note = Math.max(3, Math.round(size * 0.3));
+  const cx = inset + usable * 0.52;
+  const cy = inset + gap;
+
+  return (x, y) => {
+    if (Math.abs(x - cx) <= note / 2 && Math.abs(y - cy) <= note / 2) return ACCENT;
+    for (let i = 0; i < 3; i += 1) {
+      const lineY = inset + gap * i;
+      if (Math.abs(y - lineY) <= thickness / 2 && x >= inset && x <= size - inset) return STRING;
+    }
+    return BACKGROUND;
+  };
+}
+
+/** Wrap PNGs in an ICO container. Browsers accept PNG-in-ICO. */
+function encodeIco(images) {
+  const header = Buffer.alloc(6);
+  header.writeUInt16LE(0, 0); // reserved
+  header.writeUInt16LE(1, 2); // type: icon
+  header.writeUInt16LE(images.length, 4);
+
+  let offset = 6 + images.length * 16;
+  const entries = [];
+  for (const { size, png } of images) {
+    const entry = Buffer.alloc(16);
+    entry[0] = size >= 256 ? 0 : size;
+    entry[1] = size >= 256 ? 0 : size;
+    entry[2] = 0; // palette
+    entry[3] = 0; // reserved
+    entry.writeUInt16LE(1, 4); // colour planes
+    entry.writeUInt16LE(32, 6); // bits per pixel
+    entry.writeUInt32LE(png.length, 8);
+    entry.writeUInt32LE(offset, 12);
+    entries.push(entry);
+    offset += png.length;
+  }
+
+  return Buffer.concat([header, ...entries, ...images.map((i) => i.png)]);
+}
+
+// The browser-tab icon. Next serves app/favicon.ico at /favicon.ico and
+// injects the link itself, which is why this has to live there rather than in
+// public/ -- and why the scaffold's default one shipped unnoticed for a while.
+const icoSizes = [16, 32, 48];
+const ico = encodeIco(
+  icoSizes.map((size) => ({
+    size,
+    png: encodePng(size, size, size <= 32 ? smallStaff(size) : staff(size, 0.14), true),
+  })),
+);
+writeFileSync("src/app/favicon.ico", ico);
+console.log(`src/app/favicon.ico  ${icoSizes.join("/")}  ${ico.length} bytes`);

@@ -95,7 +95,7 @@
   --color-fret-cell: var(--fret-cell);
   --color-fret-cell-inlay: var(--fret-cell-inlay);
   --color-fret-number: var(--fret-number);
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-mono: var(--font-mono-face), ui-monospace, monospace;
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
 }
 

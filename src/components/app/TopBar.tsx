@@ -16,6 +16,7 @@ import { usePathname } from "next/navigation";
 import { signOut, useSession } from "@/lib/auth-client";
 import { usePendingWrites } from "@/lib/local/hooks";
 import { useSyncStatus } from "@/lib/sync/hooks";
+import { Logo } from "./Logo";
 
 export function TopBar() {
   const pathname = usePathname();
@@ -28,8 +29,8 @@ export function TopBar() {
   return (
     <div className="border-b border-border-subtle bg-bg-raised no-print">
       <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-2.5">
-        <Link href="/" className="font-mono text-sm font-semibold tracking-tight">
-          stablature
+        <Link href="/" className="text-sm hover:text-accent" aria-label="stablature, home">
+          <Logo />
         </Link>
 
         <div className="flex items-center gap-3 text-xs">

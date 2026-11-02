@@ -106,6 +106,20 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         </form>
       </Card>
 
+      {signingUp ? (
+        <p className="mt-3 text-center text-xs text-text-faint">
+          Creating an account means your tablature syncs to this server. See{" "}
+          <Link href="/privacy" className="text-accent hover:underline">
+            what is stored
+          </Link>{" "}
+          and{" "}
+          <Link href="/terms" className="text-accent hover:underline">
+            the terms
+          </Link>
+          .
+        </p>
+      ) : null}
+
       <p className="mt-4 text-center text-xs text-text-dim">
         {signingUp ? (
           <>
