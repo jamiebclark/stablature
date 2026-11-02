@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.env*
+!.env.example
+drizzle/meta
+*.log
+playwright-report
+test-results
