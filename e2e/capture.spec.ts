@@ -383,6 +383,35 @@ test("chord tones are not a pressed state, so only the column's notes are", asyn
   await expect(page.locator('button[aria-pressed="true"]')).toHaveCount(1);
 });
 
+/*
+ * Asserting what the cell actually renders, not just that a role was computed.
+ *
+ * This is the gap that let a real bug through: the roles, the aria-labels and
+ * the data attributes were all correct while the colour was being overridden
+ * away, so every other test here passed against a neck that showed nothing.
+ * Weight is the honest thing to assert -- it carries "in the chord or not" in
+ * both themes, where colour alone does not in the light one.
+ */
+test("a chord tone is drawn more heavily than a note outside the chord", async ({ page }) => {
+  await startCapturing(page);
+
+  await fret(page, "E", 7).click();
+  await page.getByRole("button", { name: "chord" }).click();
+  await page.getByLabel("Chord").fill("Am");
+  await page.getByRole("button", { name: "Set" }).click();
+
+  const weightOf = (locator: ReturnType<typeof fret>) =>
+    locator.evaluate((el) => Number(getComputedStyle(el).fontWeight));
+
+  // A string: fret 0 is the root, fret 3 is the third, fret 1 is in no chord.
+  const root = await weightOf(fret(page, "A", 0));
+  const third = await weightOf(fret(page, "A", 3));
+  const outside = await weightOf(fret(page, "A", 1));
+
+  expect(third).toBeGreaterThan(outside);
+  expect(root).toBeGreaterThan(third);
+});
+
 test("a chord stays in force over the columns after it", async ({ page }) => {
   await startCapturing(page);
 

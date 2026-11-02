@@ -31,25 +31,35 @@ const INLAYS = new Set([3, 5, 7, 9, 12, 15, 17, 19, 21, 24]);
  * inlay, plain -- intact underneath, which is also what keeps the neck's shape
  * readable.
  *
- * One colour for every chord tone, and weight -- not opacity -- to pick out the
- * root and a written slash bass, which are the notes a run is anchored on.
+ * One colour for every chord tone, and weight carrying the distinction that
+ * matters -- in the chord or not -- with a further step up for the root and a
+ * written slash bass, which are the notes a run is anchored on.
  *
- * Grading the lesser roles by opacity was the first attempt and was wrong twice
- * over. Measured against the cell it sits on, accent at 60% comes to 4.15:1,
- * which is nearly the 3.74:1 of the dim grey used for notes that are *not* in
- * the chord -- so the one thing the highlight has to say, in or out, was the
- * thing it said least clearly. In the light theme even 85% falls to 3.59:1 and
- * misses AA outright. Full accent is 10:1 dark and 4.6:1 light, and bold
- * carries the root without leaning on colour at all, which is also what keeps
- * it legible to a colour-blind reader.
+ * Weight does that job because colour alone cannot do it in both themes.
+ * Grading the lesser roles by opacity was the first attempt and was wrong
+ * twice over: accent at 60% measured 4.15:1 against its cell, near the 3.74:1
+ * of the grey used for notes that are *not* in the chord, so the one thing the
+ * highlight has to say was the thing it said least clearly.
+ *
+ * Full accent fixed that in the dark theme, where a chord tone is 9.47:1
+ * against the plain cell and 8.66:1 on an inlay, against 3.79:1 and 3.46:1 for
+ * a note outside the chord -- a clear separation. The light theme does not get
+ * one for free: there a chord tone is 5.02:1 and a note outside the chord is
+ * 5.28:1, so the two are within a tenth of each other in luminance and the
+ * difference rests entirely on hue. Amber against grey at matched lightness is
+ * exactly what goes first in glare, on a stage, or to a colour-blind reader.
+ *
+ * So every chord tone is also heavier than its surroundings. That reads the
+ * same in both themes, needs no colour at all, and keeps the root distinct
+ * from the rest of the chord by one more step.
  */
 const ROLE_STYLES: Record<ChordRole, string> = {
   root: "font-bold text-accent",
   bass: "font-bold text-accent",
-  third: "text-accent",
-  fifth: "text-accent",
-  seventh: "text-accent",
-  extension: "text-accent",
+  third: "font-semibold text-accent",
+  fifth: "font-semibold text-accent",
+  seventh: "font-semibold text-accent",
+  extension: "font-semibold text-accent",
 };
 
 /** Read aloud after the note, where the colour cannot be seen. */
