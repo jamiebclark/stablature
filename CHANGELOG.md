@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/jamiebclark/stablature/compare/v1.3.1...v1.3.2) (2026-11-02)
+
+
+### Bug Fixes
+
+* **capture:** make the fretboard readable in light mode ([2623691](https://github.com/jamiebclark/stablature/commit/26236911fc6d2ac610efccef54fcb86e5b4e6fa1))
+
 ## [1.3.1](https://github.com/jamiebclark/stablature/compare/v1.3.0...v1.3.1) (2026-11-02)
 
 
