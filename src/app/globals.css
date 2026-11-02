@@ -1,26 +1,180 @@
 @import "tailwindcss";
 
+/*
+ * Dark-first, and not as a style preference: this gets used in dim rehearsal
+ * rooms and on a stage, where a white screen is genuinely unpleasant and wrecks
+ * your night vision. A light theme is still honoured if the device asks.
+ *
+ * Tab type is monospace throughout, because aligned columns are the whole
+ * point of tablature.
+ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #0b0b0d;
+  --bg-raised: #15151a;
+  --bg-sunken: #07070a;
+  --border: #2a2a33;
+  --border-strong: #3d3d49;
+
+  --text: #ededf0;
+  --text-dim: #9a9aa6;
+  --text-faint: #6b6b76;
+
+  /* Amber rather than a brand colour: it reads instantly against near-black
+     and stays legible under stage lighting. */
+  --accent: #ffa629;
+  --accent-dim: #7a4f12;
+  --accent-text: #0b0b0d;
+
+  --danger: #ff5f56;
+
+  /* Tab staff. The line is deliberately dimmer than the numbers so the frets
+     pop out and a page of tab stays scannable. */
+  --tab-line: #33333d;
+  --tab-bar: #55555f;
+  --string-height: 1.55rem;
+  --cell-pad: 0.18rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #fbfbf9;
+    --bg-raised: #ffffff;
+    --bg-sunken: #f1f1ee;
+    --border: #e0e0da;
+    --border-strong: #c6c6be;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --text: #16161a;
+    --text-dim: #5c5c66;
+    --text-faint: #8a8a94;
+
+    --accent: #b45309;
+    --accent-dim: #fde8c8;
+    --accent-text: #ffffff;
+
+    --danger: #c0392b;
+
+    --tab-line: #c9c9c2;
+    --tab-bar: #8a8a84;
   }
 }
 
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-raised: var(--bg-raised);
+  --color-bg-sunken: var(--bg-sunken);
+  --color-border-subtle: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-text-dim: var(--text-dim);
+  --color-text-faint: var(--text-faint);
+  --color-accent: var(--accent);
+  --color-accent-dim: var(--accent-dim);
+  --color-accent-text: var(--accent-text);
+  --color-danger: var(--danger);
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+* {
+  min-width: 0;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  /* Capture happens one-handed on a phone; stop rubber-banding from making
+     the fretboard feel loose under the thumb. */
+  overscroll-behavior-y: contain;
+}
+
+/* Tap targets on the fretboard are hit fast and repeatedly. Suppressing the
+   tap highlight and selection keeps that from looking like a bug. */
+button,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Honour reduced-motion for the one place we animate (column auto-scroll). */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- tab staff ---------- */
+
+.tab-staff {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/*
+ * Each cell draws the string as a line through its middle, and a fret number
+ * masks the line behind itself. Drawing strings this way rather than as literal
+ * dashes is what makes the on-screen staff look like tab instead of ASCII.
+ */
+.tab-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: var(--string-height);
+}
+
+.tab-cell::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  border-top: 1px solid var(--tab-line);
+}
+
+.tab-cell > span {
+  position: relative;
+  padding-inline: var(--cell-pad);
+  background: var(--bg);
+}
+
+.tab-staff[data-surface="raised"] .tab-cell > span {
+  background: var(--bg-raised);
+}
+
+/* A barline is one vertical rule spanning every string. */
+.tab-barline {
+  position: relative;
+}
+
+.tab-barline::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  border-left: 1px solid var(--tab-bar);
+}
+
+/* ---------- print ---------- */
+
+@media print {
+  :root {
+    --bg: #fff;
+    --bg-raised: #fff;
+    --text: #000;
+    --text-dim: #333;
+    --tab-line: #999;
+    --tab-bar: #000;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  /* Never split a part across a page -- the whole point is reading it whole. */
+  .print-keep {
+    break-inside: avoid;
+  }
 }
