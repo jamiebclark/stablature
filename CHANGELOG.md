@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/jamiebclark/stablature/compare/v1.5.0...v1.5.1) (2026-11-02)
+
+
+### Bug Fixes
+
+* **capture:** carry chord tones by weight, not colour alone ([de99391](https://github.com/jamiebclark/stablature/commit/de99391d9c40724fbe565fa522c411289450dcd6))
+
 # [1.5.0](https://github.com/jamiebclark/stablature/compare/v1.4.0...v1.5.0) (2026-11-02)
 
 
