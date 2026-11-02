@@ -1,3 +1,16 @@
+# [1.4.0](https://github.com/jamiebclark/stablature/compare/v1.3.2...v1.4.0) (2026-11-02)
+
+
+### Bug Fixes
+
+* **capture:** make chord-tone colours actually reach the neck ([81bebd1](https://github.com/jamiebclark/stablature/commit/81bebd16616ef555f0e9e58e7de5ff7f75902097))
+
+
+### Features
+
+* **capture:** show where a chord's notes fall on the neck ([5982f0b](https://github.com/jamiebclark/stablature/commit/5982f0ba40d6c9ff05b568bce9a04c9b76d88278))
+* **chords:** read chord symbols as notes ([6d62315](https://github.com/jamiebclark/stablature/commit/6d62315f99881988aebb28ea71d320c1f8a0ad53))
+
 ## [1.3.2](https://github.com/jamiebclark/stablature/compare/v1.3.1...v1.3.2) (2026-11-02)
 
 
