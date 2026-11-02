@@ -25,6 +25,7 @@
     "dexie-react-hooks": "^4.4.0",
     "drizzle-orm": "^0.45.4",
     "fractional-indexing": "^4.0.0",
+    "lucide-react": "^1.66.0",
     "next": "16.4.3",
     "postgres": "^3.4.9",
     "react": "19.3.0",

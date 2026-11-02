@@ -6,6 +6,7 @@
  */
 
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
@@ -74,9 +75,10 @@ export function PageHeader({
         {back ? (
           <Link
             href={back.href}
-            className="mb-1 inline-block text-xs text-text-dim hover:text-accent no-print"
+            className="mb-1 inline-flex items-center gap-1 text-xs text-text-dim hover:text-accent no-print"
           >
-            &larr; {back.label}
+            <ArrowLeft size={13} aria-hidden />
+            {back.label}
           </Link>
         ) : null}
         <h1 className="truncate text-xl font-semibold tracking-tight">{title}</h1>

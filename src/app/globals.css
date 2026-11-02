@@ -32,6 +32,11 @@
      pop out and a page of tab stays scannable. */
   --tab-line: #33333d;
   --tab-bar: #55555f;
+  /* Selection sits behind the staff, so the fret-number masks have to match
+     it exactly or they reappear as dark chips floating on a band. Pitched
+     well clear of the page background -- a first attempt at #26200f was
+     technically a tint and visually nothing. */
+  --selection: #4a3714;
   --string-height: 1.55rem;
   --cell-pad: 0.18rem;
 }
@@ -56,6 +61,7 @@
 
     --tab-line: #c9c9c2;
     --tab-bar: #8a8a84;
+    --selection: #fbe4bb;
   }
 }
 
@@ -204,6 +210,22 @@ button,
   bottom: 0;
   height: 2px;
   background: var(--accent);
+}
+
+/*
+ * A selected run.
+ *
+ * The number masks are repainted in the selection colour rather than left on
+ * the page background: a tint alone turns every fret number into a dark chip
+ * sitting on a coloured band, which is the mistake the capture cursor made
+ * before it became a rule.
+ */
+.tab-column-selected {
+  background: var(--selection);
+}
+
+.tab-staff .tab-column-selected .tab-cell > span {
+  background: var(--selection);
 }
 
 /* A barline is one vertical rule spanning every string. */

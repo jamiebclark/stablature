@@ -11,6 +11,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { GitBranch, Pencil, Play, Trash2 } from "lucide-react";
 import { ArrangementEditor } from "@/components/arrangement/ArrangementEditor";
 import { ExportSong } from "@/components/app/ExportSong";
 import { TabStaff } from "@/components/tab/TabStaff";
@@ -63,7 +64,10 @@ export function SongView({ songId }: { songId: string }) {
         back={{ href: `/bands/${song.bandId}`, label: "Band" }}
         actions={
           <>
-            <ButtonLink href={`/songs/${songId}/play`}>Play view</ButtonLink>
+            <ButtonLink href={`/songs/${songId}/play`}>
+              <Play size={15} aria-hidden />
+              Play view
+            </ButtonLink>
             <ButtonLink href={`/songs/${songId}/capture`} variant="primary">
               Capture
             </ButtonLink>
@@ -273,15 +277,20 @@ function PartCard({
         <div className="ml-auto flex gap-1 no-print">
           {part.variantOfPartId ? null : (
             <Button onClick={() => createVariant(part)} title="Copy this part so it can diverge">
+              <GitBranch size={15} aria-hidden />
               + variant
             </Button>
           )}
-          <ButtonLink href={`/songs/${songId}/capture/${part.id}`}>Edit</ButtonLink>
+          <ButtonLink href={`/songs/${songId}/capture/${part.id}`}>
+            <Pencil size={15} aria-hidden />
+            Edit
+          </ButtonLink>
           <Button
             variant="danger"
             onClick={() => deleteRow("parts", part.id)}
             aria-label={`Delete part ${part.label}`}
           >
+            <Trash2 size={15} aria-hidden />
             Delete
           </Button>
         </div>

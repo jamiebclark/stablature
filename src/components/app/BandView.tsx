@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { SlidersHorizontal } from "lucide-react";
 import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader } from "@/components/ui";
 import { InviteBandmate } from "./InviteBandmate";
 import { createSong } from "@/lib/local/editing";
@@ -37,7 +38,12 @@ export function BandView({ bandId }: { bandId: string }) {
             : "No tunings yet"
         }
         back={{ href: "/", label: "Bands" }}
-        actions={<ButtonLink href={`/bands/${bandId}/tunings`}>Tunings</ButtonLink>}
+        actions={
+          <ButtonLink href={`/bands/${bandId}/tunings`}>
+            <SlidersHorizontal size={15} aria-hidden />
+            Tunings
+          </ButtonLink>
+        }
       />
 
       <form

@@ -15,6 +15,7 @@
  */
 
 import { useLiveQuery } from "dexie-react-hooks";
+import { readClipboard, type Clipboard } from "./clipboard";
 import type {
   AnnotationRow,
   ArrangementEntryRow,
@@ -105,6 +106,11 @@ export function useSongAnnotations(
 /** Bar count per part, used to bound the arrangement bar-range controls. */
 export function useBarCounts(songId: string | undefined): Record<string, number> | undefined {
   return useLiveQuery(() => (songId ? barCountsBySong(songId) : undefined), [songId]);
+}
+
+/** What is on the clipboard, if anything. Survives moving between parts. */
+export function useClipboard(): Clipboard | null | undefined {
+  return useLiveQuery(() => readClipboard(), []);
 }
 
 /**

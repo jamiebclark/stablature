@@ -20,9 +20,26 @@
 
 import { useCallback, useState } from "react";
 import Link from "next/link";
+import {
+  ClipboardPaste,
+  Copy,
+  Delete,
+  Scissors,
+  SquareDashedMousePointer,
+  Trash2,
+} from "lucide-react";
+import { BarlineGlyph, SpaceGlyph, TripletGlyph } from "@/components/icons";
 import { useRouter } from "next/navigation";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { Button, Input, Loading } from "@/components/ui";
+import {
+  columnRange,
+  copyColumns,
+  cutColumns,
+  deleteColumns,
+  pasteClipboard,
+  writeClipboard,
+} from "@/lib/local/clipboard";
 import {
   bumpColumnRepeat,
   createPart,
@@ -36,6 +53,7 @@ import {
 } from "@/lib/local/editing";
 import {
   useAnnotations,
+  useClipboard,
   useEvents,
   useParts,
   usePendingWrites,
@@ -65,6 +83,15 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
   const [cursor, setCursor] = useState<Cursor>("end");
   const [stacking, setStacking] = useState(false);
   const [chordDraft, setChordDraft] = useState<string | null>(null);
+  /**
+   * A selection is two tapped columns, in either order.
+   *
+   * Tap-to-extend rather than drag: the staff already scrolls horizontally,
+   * so a horizontal drag is ambiguous between "select these" and "scroll",
+   * and disambiguating it with a long press fights fast capture.
+   */
+  const [selection, setSelection] = useState<{ anchorId: string; headId: string } | null>(null);
+  const clipboard = useClipboard();
 
   /*
    * The open part lives in the URL rather than in component state, because
@@ -86,6 +113,16 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
   const focused = afterId ? columns.find((event) => event.id === afterId) : undefined;
   /** Repeats and chords are meaningless on a barline. */
   const editable: EventRow | undefined = focused?.kind === "barline" ? undefined : focused;
+
+  const selectedEvents = selection
+    ? columnRange(columns, selection.anchorId, selection.headId)
+    : [];
+  const selectedIds = new Set(selectedEvents.map((event) => event.id));
+
+  const endSelection = (moveCursorToEnd = false) => {
+    setSelection(null);
+    if (moveCursorToEnd) setCursor("end");
+  };
 
   /** Keep the cursor on what was just inserted, unless it is tracking the end. */
   const advance = (insertedId: string) => {
@@ -190,8 +227,13 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
             annotations={annotations ?? []}
             followTail={atEnd}
             activeEventId={focused?.id ?? null}
-            insertAfterEventId={afterId}
+            insertAfterEventId={selection ? undefined : afterId}
+            selectedEventIds={selectedIds}
             onSelectColumn={(eventId) => {
+              if (selection) {
+                setSelection({ ...selection, headId: eventId });
+                return;
+              }
               setCursor(eventId);
               setStacking(false);
             }}
@@ -203,7 +245,51 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
         )}
       </div>
 
-      {part ? (
+      {part && selection ? (
+        <div className="flex flex-wrap items-center gap-1.5 border-t border-border-subtle px-3 py-1.5">
+          <span className="text-[0.7rem] text-accent">
+            {selectedEvents.length} selected &middot; tap another column to extend
+          </span>
+          <Button
+            className="px-2 py-1 text-xs"
+            onClick={async () => {
+              await writeClipboard(copyColumns(selectedEvents, annotations ?? []));
+              endSelection();
+            }}
+          >
+            <Copy size={14} aria-hidden />
+            copy
+          </Button>
+          <Button
+            className="px-2 py-1 text-xs"
+            onClick={async () => {
+              await cutColumns(selectedEvents, annotations ?? []);
+              endSelection(true);
+            }}
+          >
+            <Scissors size={14} aria-hidden />
+            cut
+          </Button>
+          <Button
+            variant="danger"
+            className="px-2 py-1 text-xs"
+            onClick={async () => {
+              await deleteColumns(selectedEvents);
+              endSelection(true);
+            }}
+          >
+            <Trash2 size={14} aria-hidden />
+            delete
+          </Button>
+          <Button
+            variant="ghost"
+            className="ml-auto px-2 py-1 text-xs"
+            onClick={() => endSelection()}
+          >
+            done
+          </Button>
+        </div>
+      ) : part ? (
         <div className="flex items-center gap-2 border-t border-border-subtle px-3 py-1.5 text-[0.7rem]">
           <span className={stacking || !atEnd ? "text-accent" : "text-text-faint"}>
             {stacking
@@ -321,6 +407,7 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
           }}
           title="A gap: a pause, or a note left ringing. Use the repeat for a longer one."
         >
+          <SpaceGlyph />
           space
         </Button>
 
@@ -333,8 +420,9 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
             advance(inserted.id);
           }}
           title="Barline"
+          aria-label="Barline"
         >
-          |
+          <BarlineGlyph />
         </Button>
 
         <Button
@@ -348,12 +436,40 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
             void groupAsTuplet(playable.slice(Math.max(0, index - 2), index + 1), 3);
           }}
           title="Make this column and the two before it a triplet"
+          aria-label="Triplet"
         >
-          3plt
+          <TripletGlyph />
         </Button>
 
         <Button disabled={!editable} onClick={() => setChordDraft("")} title="Chord above this column">
           chord
+        </Button>
+
+        <Button
+          disabled={!focused || Boolean(selection)}
+          onClick={() => focused && setSelection({ anchorId: focused.id, headId: focused.id })}
+          title="Select a run of columns to copy, cut or delete"
+        >
+          <SquareDashedMousePointer size={15} aria-hidden />
+          select
+        </Button>
+
+        <Button
+          disabled={!part || !clipboard}
+          onClick={async () => {
+            if (!part || !clipboard) return;
+            const pasted = await pasteClipboard(part, columns, afterId, clipboard);
+            const last = pasted.at(-1);
+            if (last && cursor !== "end") setCursor(last.id);
+          }}
+          title={
+            clipboard
+              ? `Paste ${clipboard.columns.length} column(s) at the cursor`
+              : "Nothing copied yet"
+          }
+        >
+          <ClipboardPaste size={15} aria-hidden />
+          paste
         </Button>
 
         <Button
@@ -368,8 +484,9 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
             if (cursor !== "end") setCursor(previous ? previous.id : null);
           }}
           aria-label={atEnd ? "Delete the last column" : "Delete the marked column"}
+          title="Remove this column"
         >
-          &#9003;
+          <Delete size={17} aria-hidden />
         </Button>
       </div>
 

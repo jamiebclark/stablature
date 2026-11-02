@@ -10,6 +10,7 @@
  */
 
 import { useState } from "react";
+import { Plus, Trash2 } from "lucide-react";
 import { Button, Card, EmptyState, Loading, PageHeader } from "@/components/ui";
 import { createTuningFromPreset, setDefaultTuning } from "@/lib/local/editing";
 import { deleteRow } from "@/lib/local/mutate";
@@ -68,6 +69,7 @@ export function TuningsView({ bandId }: { bandId: string }) {
                     onClick={() => deleteRow("tunings", tuning.id)}
                     aria-label={`Delete ${tuning.name}`}
                   >
+                    <Trash2 size={15} aria-hidden />
                     Delete
                   </Button>
                 </div>
@@ -104,6 +106,7 @@ export function TuningsView({ bandId }: { bandId: string }) {
                 </p>
               </div>
               <Button onClick={() => add(preset)} aria-label={`Add ${preset.name}`}>
+                <Plus size={15} aria-hidden />
                 Add
               </Button>
             </Card>

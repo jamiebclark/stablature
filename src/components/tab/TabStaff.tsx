@@ -35,6 +35,8 @@ export interface TabStaffProps {
    * where the next note goes.
    */
   insertAfterEventId?: string | null;
+  /** Events in the current selection, drawn as a band behind the staff. */
+  selectedEventIds?: ReadonlySet<string>;
   onSelectColumn?: (eventId: string) => void;
   /** Keeps the right-hand edge in view as columns are appended. */
   followTail?: boolean;
@@ -49,6 +51,7 @@ export function TabStaff({
   density = "expanded",
   activeEventId = null,
   insertAfterEventId,
+  selectedEventIds,
   onSelectColumn,
   followTail = false,
   surface = "base",
@@ -134,6 +137,7 @@ export function TabStaff({
                     chord={column.chord}
                     barline={column.kind === "barline"}
                     active={column.eventId === activeEventId}
+                    selected={selectedEventIds?.has(column.eventId) ?? false}
                     showChordRow={hasChords}
                     showTupletRow={hasTuplets}
                     tuplet={
@@ -180,6 +184,7 @@ interface ColumnProps {
   chord: string | null;
   barline: boolean;
   active: boolean;
+  selected: boolean;
   showChordRow: boolean;
   showTupletRow: boolean;
   tuplet: { count: number; start: boolean; end: boolean; labelled: boolean } | null;
@@ -192,6 +197,7 @@ function Column({
   chord,
   barline,
   active,
+  selected,
   showChordRow,
   showTupletRow,
   tuplet,
@@ -247,8 +253,9 @@ function Column({
     return (
       <div
         style={style}
-        className={active ? "tab-column-active" : undefined}
+        className={columnClass(active, selected)}
         data-testid="tab-column"
+        data-selected={selected ? "true" : undefined}
         data-barline={barline ? "true" : undefined}
       >
         {body}
@@ -261,8 +268,9 @@ function Column({
       type="button"
       onClick={onSelect}
       style={style}
-      className={`text-left ${active ? "tab-column-active" : "hover:bg-bg-raised"}`}
+      className={`text-left ${columnClass(active, selected) ?? "hover:bg-bg-raised"}`}
       data-testid="tab-column"
+      data-selected={selected ? "true" : undefined}
       data-barline={barline ? "true" : undefined}
       aria-label={describe(cells, barline)}
       aria-current={active ? "true" : undefined}
@@ -270,6 +278,13 @@ function Column({
       {body}
     </button>
   );
+}
+
+function columnClass(active: boolean, selected: boolean): string | undefined {
+  const classes = [selected ? "tab-column-selected" : null, active ? "tab-column-active" : null]
+    .filter(Boolean)
+    .join(" ");
+  return classes || undefined;
 }
 
 /** The insertion point: where the next tap puts a note. */

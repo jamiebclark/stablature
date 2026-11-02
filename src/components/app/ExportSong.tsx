@@ -9,6 +9,7 @@
  */
 
 import { useState } from "react";
+import { Check, Copy, Download } from "lucide-react";
 import { Button } from "@/components/ui";
 import { exportFilename, songToText, type SongExportInput } from "@/lib/export/text";
 import type { Density } from "@/lib/tab/layout";
@@ -40,6 +41,7 @@ export function ExportSong({
         }}
         title="Copy the whole song as text"
       >
+        {copied ? <Check size={15} aria-hidden /> : <Copy size={15} aria-hidden />}
         {copied ? "Copied" : "Copy text"}
       </Button>
 
@@ -56,6 +58,7 @@ export function ExportSong({
         }}
         title="Download the song as a .txt file"
       >
+        <Download size={15} aria-hidden />
         Download
       </Button>
     </div>

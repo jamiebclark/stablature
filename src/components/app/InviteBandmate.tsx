@@ -10,6 +10,7 @@
  */
 
 import { useState } from "react";
+import { UserPlus } from "lucide-react";
 import { Button, Card } from "@/components/ui";
 
 export function InviteBandmate({ bandId }: { bandId: string }) {
@@ -40,6 +41,7 @@ export function InviteBandmate({ bandId }: { bandId: string }) {
     return (
       <div className="no-print">
         <Button onClick={create} disabled={busy}>
+          <UserPlus size={15} aria-hidden />
           {busy ? "Working…" : "Invite a bandmate"}
         </Button>
         {error ? (

@@ -214,6 +214,104 @@ test("lights the current column on the fretboard", async ({ page }) => {
   await expect(page.getByRole("button", { name: /A string, fret 9,.*in this column/ })).toBeVisible();
 });
 
+/** Lay down four distinguishable notes on the E string. */
+async function riff(page: Page) {
+  for (const number of [7, 5, 3, 1]) await fret(page, "E", number).click();
+  await expect(columns(page)).toHaveCount(4);
+}
+
+test("selects a run by tapping both ends", async ({ page }) => {
+  await startCapturing(page);
+  await riff(page);
+
+  await columns(page).first().click();
+  await page.getByTitle(/Select a run of columns/).click();
+  await expect(page.getByText("1 selected")).toBeVisible();
+
+  // Tap-to-extend rather than drag: the staff scrolls horizontally, so a
+  // drag would be ambiguous.
+  await columns(page).nth(2).click();
+  await expect(page.getByText("3 selected")).toBeVisible();
+  await expect(page.locator('[data-selected="true"]')).toHaveCount(3);
+
+  await page.getByRole("button", { name: "done" }).click();
+  await expect(page.locator('[data-selected="true"]')).toHaveCount(0);
+});
+
+test("copies a run and pastes it at the cursor", async ({ page }) => {
+  await startCapturing(page);
+  await riff(page);
+
+  await columns(page).first().click();
+  await page.getByTitle(/Select a run of columns/).click();
+  await columns(page).nth(1).click();
+  await expect(page.getByText("2 selected")).toBeVisible();
+
+  await page.getByRole("button", { name: "copy" }).click();
+  await page.getByRole("button", { name: /end/ }).click();
+  await page.getByRole("button", { name: "paste" }).click();
+
+  await expect(columns(page)).toHaveCount(6);
+  await expect(columns(page).nth(4)).toContainText("7");
+  await expect(columns(page).nth(5)).toContainText("5");
+});
+
+test("cuts a run and pastes it somewhere else", async ({ page }) => {
+  await startCapturing(page);
+  await riff(page);
+
+  await columns(page).first().click();
+  await page.getByTitle(/Select a run of columns/).click();
+  await columns(page).nth(1).click();
+  await page.getByRole("button", { name: "cut" }).click();
+
+  // Gone from where it was ...
+  await expect(columns(page)).toHaveCount(2);
+  await expect(columns(page).first()).toContainText("3");
+
+  // ... and it comes back where you put it.
+  await page.getByRole("button", { name: "paste" }).click();
+  await expect(columns(page)).toHaveCount(4);
+  await expect(columns(page).nth(2)).toContainText("7");
+});
+
+test("deletes a selected run in one go", async ({ page }) => {
+  await startCapturing(page);
+  await riff(page);
+
+  await columns(page).first().click();
+  await page.getByTitle(/Select a run of columns/).click();
+  await columns(page).nth(2).click();
+  await page.getByRole("button", { name: "delete", exact: true }).click();
+
+  await expect(columns(page)).toHaveCount(1);
+  await expect(columns(page).first()).toContainText("1");
+});
+
+test("the clipboard survives moving to another part", async ({ page }) => {
+  await startCapturing(page);
+  await riff(page);
+
+  await columns(page).first().click();
+  await page.getByTitle(/Select a run of columns/).click();
+  await columns(page).nth(1).click();
+  await page.getByRole("button", { name: "copy" }).click();
+
+  // Copying a bar out of one part and into another is the main reason this
+  // exists, and that is a navigation.
+  await addPart(page);
+  await page.getByRole("button", { name: "paste" }).click();
+
+  await expect(columns(page)).toHaveCount(2);
+  await expect(columns(page).first()).toContainText("7");
+});
+
+test("paste is unavailable until something has been copied", async ({ page }) => {
+  await startCapturing(page);
+  await fret(page, "E", 7).click();
+  await expect(page.getByRole("button", { name: "paste" })).toBeDisabled();
+});
+
 test("groups three columns into a triplet", async ({ page }) => {
   await startCapturing(page);
 
