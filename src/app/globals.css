@@ -37,6 +37,17 @@
      well clear of the page background -- a first attempt at #26200f was
      technically a tint and visually nothing. */
   --selection: #4a3714;
+
+  /*
+   * Fretboard tiers, as explicit colours rather than opacity over a surface.
+   * They were `bg-raised` at 25% and 60%, which works on near-black and
+   * collapses on near-white -- in the light theme the whole neck washed out
+   * and the fret numbers went with it. The neck is the primary input surface;
+   * it does not get to be subtle.
+   */
+  --fret-cell: #131318;
+  --fret-cell-inlay: #1c1c23;
+  --fret-number: #70707b;
   --string-height: 1.55rem;
   --cell-pad: 0.18rem;
 }
@@ -62,6 +73,9 @@
     --tab-line: #c9c9c2;
     --tab-bar: #8a8a84;
     --selection: #fbe4bb;
+    --fret-cell: #ffffff;
+    --fret-cell-inlay: #eaeae2;
+    --fret-number: #6b6b74;
   }
 }
 
@@ -248,6 +262,21 @@ button,
   inset-block: 0;
   left: 50%;
   border-left: 1px solid var(--tab-bar);
+}
+
+/* ---------- fretboard ---------- */
+
+.fret-cell {
+  background: var(--fret-cell);
+  color: var(--fret-number);
+}
+
+.fret-cell-inlay {
+  background: var(--fret-cell-inlay);
+}
+
+.fret-nut {
+  background: var(--bg-raised);
 }
 
 /* ---------- print ---------- */

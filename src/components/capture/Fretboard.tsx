@@ -84,14 +84,14 @@ export function Fretboard({
                   onClick={() => onPress(stringIndex, fret)}
                   // Deliberately generous: 2.25rem is about a thumb pad, and
                   // mis-taps here are the main way bad data gets captured.
-                  className={`relative h-9 w-9 shrink-0 font-mono text-[0.7rem] transition-colors active:bg-accent active:text-accent-text ${
+                  className={`fret-cell relative h-9 w-9 shrink-0 font-mono text-[0.7rem] transition-colors active:bg-accent active:text-accent-text ${
                     lit
-                      ? "bg-accent font-semibold text-accent-text"
+                      ? "!bg-accent font-semibold !text-accent-text"
                       : fret === 0
-                        ? "rounded-l border-r-2 border-border-strong bg-bg-raised text-text-faint"
+                        ? "fret-nut rounded-l border-r-2 border-border-strong"
                         : INLAYS.has(fret)
-                          ? "bg-bg-raised/60 text-text-faint"
-                          : "bg-bg-raised/25 text-text-faint"
+                          ? "fret-cell-inlay"
+                          : ""
                   }`}
                   aria-label={`${labels[stringIndex]} string, fret ${fret}, ${noteLabel(pitch)}${
                     lit ? ", in this column" : ""
@@ -119,7 +119,7 @@ export function Fretboard({
               key={stringIndex}
               type="button"
               onClick={() => onPress(stringIndex, "x")}
-              className="h-7 w-9 shrink-0 rounded bg-bg-raised/40 font-mono text-[0.7rem] text-text-dim active:bg-accent active:text-accent-text"
+              className="fret-cell h-7 w-9 shrink-0 rounded font-mono text-[0.7rem] active:!bg-accent active:!text-accent-text"
               aria-label={`Dead note on the ${labels[stringIndex]} string`}
             >
               {labels[stringIndex]}
