@@ -61,9 +61,17 @@ export function ranksAtEnd(items: readonly Ranked[], count: number): Rank[] {
 }
 
 /**
- * Rank for moving an item so it lands between two others. Returns null when
- * the move is a no-op, so callers can skip a pointless write (and a pointless
- * bump of the row's HLC, which would otherwise win merges for no reason).
+ * Rank for moving an item so it lands between two others, or null when the
+ * move would change nothing.
+ *
+ * Detecting the no-op matters more than it looks: a pointless write bumps the
+ * row's HLC, which would let dragging an item onto its own position win a
+ * merge against somebody's real concurrent edit to it.
+ *
+ * "Changes nothing" is not just "the item is one of the two neighbours" --
+ * dropping the first item at the front yields neighbours (null, second), which
+ * is exactly where it already sits. So the test is whether the item's current
+ * rank already sorts strictly between the two targets.
  */
 export function rankForMove(
   before: Ranked | null,
@@ -71,6 +79,11 @@ export function rankForMove(
   moving: Ranked,
 ): Rank | null {
   if (before?.id === moving.id || after?.id === moving.id) return null;
+
+  const aboveLower = before === null || moving.rank > before.rank;
+  const belowUpper = after === null || moving.rank < after.rank;
+  if (aboveLower && belowUpper) return null;
+
   return rankBetween(before?.rank ?? null, after?.rank ?? null);
 }
 

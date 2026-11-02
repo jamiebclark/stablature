@@ -86,6 +86,20 @@ describe("rankForMove", () => {
     expect(rankForMove(item("x", "a1"), moving, moving)).toBeNull();
   });
 
+  it("returns null when the item already sorts between the targets", () => {
+    // The case that is easy to miss: dropping the first item at the front
+    // gives neighbours (null, second), which is where it already is. Writing
+    // here would bump its clock and let a no-op move win a merge.
+    const moving = item("m", "a1");
+    expect(rankForMove(null, item("x", "a2"), moving)).toBeNull();
+    expect(rankForMove(item("w", "a0"), null, item("m", "a5"))).toBeNull();
+  });
+
+  it("still moves an item that is genuinely out of place", () => {
+    expect(rankForMove(item("a", "a1"), item("b", "a2"), item("m", "a9"))).not.toBeNull();
+    expect(rankForMove(null, item("b", "a1"), item("m", "a9"))).not.toBeNull();
+  });
+
   it("produces a rank between the new neighbours", () => {
     const rank = rankForMove(item("a", "a1"), item("b", "a2"), item("m", "a9"));
     expect(rank).not.toBeNull();
