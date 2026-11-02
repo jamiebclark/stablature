@@ -50,3 +50,6 @@ next-env.d.ts
 /blob-report
 /playwright/.cache
 
+
+# local dev server output
+/dev.log
