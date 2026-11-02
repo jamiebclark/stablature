@@ -18,7 +18,9 @@ const VARIANTS: Record<Variant, string> = {
 };
 
 const BASE =
-  "inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40";
+  // whitespace-nowrap because these sit in tight flex rows next to inputs, and
+  // a wrapped label ("Add" over "band") reads as a layout bug.
+  "inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40";
 
 export function Button({
   variant = "secondary",

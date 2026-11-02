@@ -85,7 +85,7 @@ test("stacks a chord onto one column", async ({ page }) => {
   await startCapturing(page);
 
   await fret(page, "E", 7).click();
-  await page.getByTitle(/Add the next note to the current column/).click();
+  await page.getByTitle(/Add the next note to this column/).click();
   await fret(page, "A", 5).click();
 
   // Still one column, now with two strings on it.
@@ -98,7 +98,7 @@ test("groups three columns into a triplet", async ({ page }) => {
   await startCapturing(page);
 
   for (let i = 0; i < 3; i += 1) await fret(page, "A", 5).click();
-  await page.getByTitle("Make the last three columns a triplet").click();
+  await page.getByTitle(/triplet/).click();
 
   // The bracket label is drawn above the staff.
   await expect(page.getByTestId("tab-staff").getByText("3", { exact: true })).toBeVisible();
@@ -108,6 +108,56 @@ test("records a chord above a column", async ({ page }) => {
   await startCapturing(page);
 
   await fret(page, "E", 7).click();
+  await page.getByRole("button", { name: "chord" }).click();
+  await page.getByLabel("Chord").fill("Am");
+  await page.getByRole("button", { name: "Set" }).click();
+
+  await expect(page.getByTestId("tab-staff").getByText("Am")).toBeVisible();
+});
+
+test("inserts a note between two existing columns", async ({ page }) => {
+  await startCapturing(page);
+
+  // The real workflow: lay down the root notes, then go back and fill in.
+  await fret(page, "E", 7).click();
+  await fret(page, "E", 5).click();
+  await expect(columns(page)).toHaveCount(2);
+  await expect(page.getByText("adding at the end")).toBeVisible();
+
+  // Tap the first column to put the cursor after it.
+  await columns(page).first().click();
+  await expect(page.getByText("adding after the marked column")).toBeVisible();
+
+  await fret(page, "A", 3).click();
+  await expect(columns(page)).toHaveCount(3);
+
+  // The new note landed in the middle, not at the end.
+  await expect(columns(page).nth(1)).toContainText("3");
+  await expect(columns(page).nth(2)).toContainText("5");
+});
+
+test("can insert before the very first column", async ({ page }) => {
+  await startCapturing(page);
+
+  await fret(page, "E", 7).click();
+  await expect(columns(page)).toHaveCount(1);
+
+  // "after a column" alone cannot reach position zero, which is why the
+  // cursor has an explicit start.
+  await page.getByRole("button", { name: /start/ }).click();
+  await fret(page, "A", 3).click();
+
+  await expect(columns(page).first()).toContainText("3");
+  await expect(columns(page).nth(1)).toContainText("7");
+});
+
+test("sets a chord on a chosen column, not just the last", async ({ page }) => {
+  await startCapturing(page);
+
+  await fret(page, "E", 7).click();
+  await fret(page, "E", 5).click();
+
+  await columns(page).first().click();
   await page.getByRole("button", { name: "chord" }).click();
   await page.getByLabel("Chord").fill("Am");
   await page.getByRole("button", { name: "Set" }).click();

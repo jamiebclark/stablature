@@ -7,14 +7,15 @@
  * you and you have one hand and about four seconds. Every decision here is in
  * service of that.
  *
- *  - A tap always appends a new column. Correcting goes through backspace
- *    rather than through tap-to-overwrite, because an ambiguous tap costs more
- *    than an extra button press -- playing 7 then 5 is far more common than
- *    meaning to fix a 7 into a 5.
+ *  - There is a cursor, and by default it sits at the end, so tapping frets
+ *    appends exactly as fast as it ever did. Tapping a column moves the cursor
+ *    there, and new notes go in after it, pushing nothing around -- which is
+ *    what makes "capture the root notes first, flesh it out later" work.
  *  - Stacking a chord is an explicit mode, since bass is mostly single notes.
- *  - The repeat stepper acts on the last column, which is almost always the one
- *    you mean, and turns "same note sixteen times" into two taps.
- *  - The staff follows the tail, so the newest column is never off screen.
+ *  - The repeat stepper acts on the column at the cursor, turning "same note
+ *    sixteen times" into two taps.
+ *  - The staff sits just above the controls and follows the cursor, so the
+ *    thing you are editing is never off screen.
  */
 
 import { useCallback, useState } from "react";
@@ -23,14 +24,14 @@ import { useRouter } from "next/navigation";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { Button, Input, Loading } from "@/components/ui";
 import {
-  appendBarline,
-  appendNote,
   bumpColumnRepeat,
   createPart,
-  deleteLastColumn,
+  deleteColumn,
+  groupAsTuplet,
+  insertBarline,
+  insertNote,
   setChord,
   stackNote,
-  tripletFromTail,
 } from "@/lib/local/editing";
 import {
   useAnnotations,
@@ -43,6 +44,16 @@ import {
 import type { EventRow, FretValue } from "@/lib/model";
 import { Fretboard } from "./Fretboard";
 
+/**
+ * Where the next note lands.
+ *
+ * "end" rather than the id of the last column, so the cursor keeps tracking
+ * the end as columns are added instead of being left behind by its own
+ * insert. `null` is the very start, which is otherwise unreachable when the
+ * rule is "insert after".
+ */
+type Cursor = "end" | null | string;
+
 export function CaptureScreen({ songId, partId }: { songId: string; partId?: string }) {
   const router = useRouter();
   const song = useSong(songId);
@@ -50,6 +61,7 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
   const parts = useParts(songId);
   const pending = usePendingWrites();
 
+  const [cursor, setCursor] = useState<Cursor>("end");
   const [stacking, setStacking] = useState(false);
   const [chordDraft, setChordDraft] = useState<string | null>(null);
 
@@ -67,22 +79,32 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
   const events = useEvents(part?.id);
   const annotations = useAnnotations(part?.id);
 
-  const lastColumn: EventRow | undefined = events
-    ?.filter((event) => event.kind !== "barline")
-    .at(-1);
+  const columns = events ?? [];
+  /** The column to insert after; null when the cursor is at the start. */
+  const afterId = cursor === "end" ? (columns.at(-1)?.id ?? null) : cursor;
+  const focused = afterId ? columns.find((event) => event.id === afterId) : undefined;
+  /** Repeats and chords are meaningless on a barline. */
+  const editable: EventRow | undefined = focused?.kind === "barline" ? undefined : focused;
+
+  /** Keep the cursor on what was just inserted, unless it is tracking the end. */
+  const advance = (insertedId: string) => {
+    if (cursor !== "end") setCursor(insertedId);
+  };
 
   const press = useCallback(
     async (stringIndex: number, fret: FretValue) => {
       if (!part) return;
-      if (stacking && lastColumn) {
-        await stackNote(lastColumn, stringIndex, fret);
+      if (stacking && editable) {
+        await stackNote(editable, stringIndex, fret);
         // One stack per toggle: holding the mode on invites accidental chords.
         setStacking(false);
         return;
       }
-      await appendNote(part, stringIndex, fret);
+      const inserted = await insertNote(part, columns, afterId, stringIndex, fret);
+      advance(inserted.id);
     },
-    [part, stacking, lastColumn],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [part, stacking, editable, columns, afterId, cursor],
   );
 
   if (song === undefined || parts === undefined) return <Loading />;
@@ -99,6 +121,8 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
       </div>
     );
   }
+
+  const atEnd = cursor === "end";
 
   return (
     <div className="flex h-dvh flex-col bg-bg">
@@ -123,6 +147,7 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
             key={candidate.id}
             href={`/songs/${songId}/capture/${candidate.id}`}
             replace
+            onClick={() => setCursor("end")}
             className={`shrink-0 rounded px-2.5 py-1 font-mono text-sm ${
               candidate.id === part?.id
                 ? "bg-accent text-accent-text"
@@ -137,6 +162,7 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
           className="shrink-0 px-2 py-1"
           onClick={async () => {
             const created = await createPart(song);
+            setCursor("end");
             router.push(`/songs/${songId}/capture/${created.id}`);
           }}
           aria-label="Add a part"
@@ -145,14 +171,17 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
         </Button>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
+      {/* Bottom-aligned: during capture your eyes are on the fretboard, and a
+          staff stranded at the top of a tall screen is a lot of travel. */}
+      <div className="flex min-h-0 flex-1 flex-col justify-end overflow-y-auto px-3 py-3">
         {part ? (
           <TabStaff
-            events={events ?? []}
+            events={columns}
             tuning={tuning}
             annotations={annotations ?? []}
-            followTail
-            activeEventId={lastColumn?.id ?? null}
+            followTail={atEnd}
+            activeEventId={focused?.id ?? null}
+            onSelectColumn={(eventId) => setCursor(eventId)}
           />
         ) : (
           <p className="py-6 text-center text-sm text-text-dim">
@@ -161,12 +190,45 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
         )}
       </div>
 
-      {chordDraft !== null && lastColumn ? (
+      {part ? (
+        <div className="flex items-center gap-2 border-t border-border-subtle px-3 py-1.5 text-[0.7rem]">
+          <span className={atEnd ? "text-text-faint" : "text-accent"}>
+            {atEnd
+              ? "adding at the end"
+              : afterId === null
+                ? "adding at the start"
+                : "adding after the marked column"}
+          </span>
+          {columns.length > 0 ? (
+            <>
+              <button
+                type="button"
+                onClick={() => setCursor(null)}
+                className="rounded px-1.5 py-0.5 text-text-dim hover:text-accent"
+              >
+                &#8676; start
+              </button>
+              <button
+                type="button"
+                onClick={() => setCursor("end")}
+                className="rounded px-1.5 py-0.5 text-text-dim hover:text-accent"
+              >
+                end &#8677;
+              </button>
+              <span className="ml-auto hidden text-text-faint sm:inline">
+                tap a column to insert after it
+              </span>
+            </>
+          ) : null}
+        </div>
+      ) : null}
+
+      {chordDraft !== null && editable ? (
         <form
           className="flex gap-2 border-t border-border-subtle p-3"
           onSubmit={async (e) => {
             e.preventDefault();
-            if (part) await setChord(part, lastColumn.id, chordDraft);
+            if (part) await setChord(part, editable.id, chordDraft);
             setChordDraft(null);
           }}
         >
@@ -190,8 +252,8 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
         <div className="flex items-center overflow-hidden rounded-md border border-border-subtle">
           <button
             type="button"
-            disabled={!lastColumn || lastColumn.repeat <= 1}
-            onClick={() => lastColumn && bumpColumnRepeat(lastColumn, -1)}
+            disabled={!editable || editable.repeat <= 1}
+            onClick={() => editable && bumpColumnRepeat(editable, -1)}
             className="px-2.5 py-1.5 text-sm disabled:opacity-30"
             aria-label="Repeat one fewer time"
           >
@@ -204,12 +266,12 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
             aria-label="Repeat count"
             aria-live="polite"
           >
-            &times;{lastColumn?.repeat ?? 1}
+            &times;{editable?.repeat ?? 1}
           </span>
           <button
             type="button"
-            disabled={!lastColumn}
-            onClick={() => lastColumn && bumpColumnRepeat(lastColumn, 1)}
+            disabled={!editable}
+            onClick={() => editable && bumpColumnRepeat(editable, 1)}
             className="px-2.5 py-1.5 text-sm disabled:opacity-30"
             aria-label="Repeat one more time"
           >
@@ -218,8 +280,8 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
         </div>
 
         <Button
-          disabled={!lastColumn}
-          onClick={() => lastColumn && bumpColumnRepeat(lastColumn, 3)}
+          disabled={!editable}
+          onClick={() => editable && bumpColumnRepeat(editable, 3)}
           title="Four of these"
         >
           &times;4
@@ -227,35 +289,56 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
 
         <Button
           variant={stacking ? "primary" : "secondary"}
-          disabled={!lastColumn}
+          disabled={!editable}
           onClick={() => setStacking((on) => !on)}
-          title="Add the next note to the current column instead of a new one"
+          title="Add the next note to this column instead of a new one"
         >
           stack
         </Button>
 
-        <Button disabled={!part} onClick={() => part && appendBarline(part)} title="Barline">
+        <Button
+          disabled={!part}
+          onClick={async () => {
+            if (!part) return;
+            const inserted = await insertBarline(part, columns, afterId);
+            advance(inserted.id);
+          }}
+          title="Barline"
+        >
           |
         </Button>
 
         <Button
-          disabled={!part}
-          onClick={() => part && tripletFromTail(part.id, 3)}
-          title="Make the last three columns a triplet"
+          disabled={!editable}
+          onClick={() => {
+            if (!editable) return;
+            // The three columns ending at the cursor, so this works mid-part
+            // and not only at the tail.
+            const playable = columns.filter((event) => event.kind !== "barline");
+            const index = playable.findIndex((event) => event.id === editable.id);
+            void groupAsTuplet(playable.slice(Math.max(0, index - 2), index + 1), 3);
+          }}
+          title="Make this column and the two before it a triplet"
         >
           3plt
         </Button>
 
-        <Button disabled={!lastColumn} onClick={() => setChordDraft("")}>
+        <Button disabled={!editable} onClick={() => setChordDraft("")} title="Chord above this column">
           chord
         </Button>
 
         <Button
           variant="danger"
           className="ml-auto"
-          disabled={!events || events.length === 0}
-          onClick={() => part && deleteLastColumn(part.id)}
-          aria-label="Delete the last column"
+          disabled={!focused}
+          onClick={async () => {
+            if (!focused) return;
+            const index = columns.findIndex((event) => event.id === focused.id);
+            const previous = columns[index - 1];
+            await deleteColumn(focused.id);
+            if (cursor !== "end") setCursor(previous ? previous.id : null);
+          }}
+          aria-label={atEnd ? "Delete the last column" : "Delete the marked column"}
         >
           &#9003;
         </Button>

@@ -22,7 +22,7 @@ import type {
   SongRow,
   TuningRow,
 } from "../model";
-import { rankAtEnd } from "../rank";
+import { rankAtEnd, rankBetween } from "../rank";
 import type { TuningPreset } from "../tunings";
 import { listAnnotations, listEvents, listParts } from "./queries";
 import {
@@ -245,6 +245,77 @@ export async function createVariant(
 }
 
 /* ---------- capture ---------- */
+
+/**
+ * Insert a column at a cursor position.
+ *
+ * `afterEventId` names the column to insert *after*; null means the very
+ * start. This is what makes it possible to capture the root notes of a riff
+ * first and flesh the rest out afterwards, which is how people actually work
+ * when someone is playing at them.
+ *
+ * Nothing after the insertion point is rewritten. Fractional ranks mean the
+ * new column simply gets a key between its two neighbours, so inserting into
+ * the middle of a part is one row written, not a renumbering of the rest --
+ * and two people inserting into the same gap offline still merge cleanly.
+ */
+export async function insertColumn(
+  part: Pick<PartRow, "id" | "bandId">,
+  events: readonly EventRow[],
+  afterEventId: string | null,
+  frets: FretMap,
+  options: { repeat?: number; kind?: EventRow["kind"] } = {},
+  ctx: MutateContext = {},
+): Promise<EventRow> {
+  const index = afterEventId ? events.findIndex((event) => event.id === afterEventId) : -1;
+
+  // An unknown id means the column was deleted on another device mid-edit.
+  // Appending is the safe reading of "after something that is gone".
+  const resolved = afterEventId && index === -1 ? events.length - 1 : index;
+
+  const before = resolved >= 0 ? events[resolved] : undefined;
+  const after = events[resolved + 1];
+
+  return insertRow(
+    "events",
+    {
+      id: newId(),
+      bandId: part.bandId,
+      partId: part.id,
+      rank: rankBetween(before?.rank ?? null, after?.rank ?? null),
+      kind: options.kind ?? "notes",
+      frets,
+      techniques: {},
+      repeat: Math.max(1, options.repeat ?? 1),
+      durationHint: null,
+      tupletId: null,
+      tupletCount: null,
+    },
+    ctx,
+  );
+}
+
+/** Insert a single note at the cursor. The common gesture while editing. */
+export async function insertNote(
+  part: Pick<PartRow, "id" | "bandId">,
+  events: readonly EventRow[],
+  afterEventId: string | null,
+  stringIndex: number,
+  fret: FretValue,
+  ctx: MutateContext = {},
+): Promise<EventRow> {
+  return insertColumn(part, events, afterEventId, { [String(stringIndex)]: fret }, {}, ctx);
+}
+
+/** Insert a barline at the cursor. */
+export async function insertBarline(
+  part: Pick<PartRow, "id" | "bandId">,
+  events: readonly EventRow[],
+  afterEventId: string | null,
+  ctx: MutateContext = {},
+): Promise<EventRow> {
+  return insertColumn(part, events, afterEventId, {}, { kind: "barline" }, ctx);
+}
 
 /** Append a column of tab to a part. */
 export async function appendColumn(

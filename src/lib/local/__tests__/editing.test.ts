@@ -9,6 +9,8 @@ import { StablatureDb } from "../db";
 import {
   appendBarline,
   appendNote,
+  insertBarline,
+  insertNote,
   bumpColumnRepeat,
   createBand,
   createPart,
@@ -169,6 +171,95 @@ describe("capture", () => {
     const { part } = await scaffold();
     await appendNote(part, 3, "x", ctx());
     expect((await staff(part.id)).split("\n")[3]).toBe("E |-x-|");
+  });
+});
+
+describe("inserting at a cursor", () => {
+  /** Capture the skeleton of a riff, the way you would before fleshing it out. */
+  async function roots() {
+    const scaffolded = await scaffold();
+    await appendNote(scaffolded.part, 3, 7, ctx());
+    await appendNote(scaffolded.part, 3, 5, ctx());
+    return scaffolded;
+  }
+
+  it("drops a note between two existing ones", async () => {
+    const { part } = await roots();
+    const events = await listEvents(part.id, db);
+
+    await insertNote(part, events, events[0].id, 3, 3, ctx());
+
+    expect((await staff(part.id)).split("\n")[3]).toBe("E |-7-3-5-|");
+  });
+
+  it("inserts at the very start", async () => {
+    const { part } = await roots();
+    const events = await listEvents(part.id, db);
+
+    await insertNote(part, events, null, 3, 12, ctx());
+
+    expect((await staff(part.id)).split("\n")[3]).toBe("E |-12-7-5-|");
+  });
+
+  it("appends when the cursor is the last column", async () => {
+    const { part } = await roots();
+    const events = await listEvents(part.id, db);
+
+    await insertNote(part, events, events[events.length - 1].id, 3, 3, ctx());
+
+    expect((await staff(part.id)).split("\n")[3]).toBe("E |-7-5-3-|");
+  });
+
+  it("rewrites nothing but the inserted row", async () => {
+    // The whole reason for fractional ranks. Renumbering neighbours would bump
+    // their clocks and clobber concurrent edits to them.
+    const { part } = await roots();
+    const before = await listEvents(part.id, db);
+    const clocks = before.map((event) => event.updatedAt);
+
+    await insertNote(part, before, before[0].id, 3, 3, ctx());
+
+    const after = await listEvents(part.id, db);
+    for (const original of before) {
+      const current = after.find((event) => event.id === original.id)!;
+      expect(current.updatedAt).toBe(clocks[before.indexOf(original)]);
+    }
+  });
+
+  it("supports a run of inserts, each after the last", async () => {
+    // Walking the cursor forward is what the capture screen does when you keep
+    // tapping after choosing a spot.
+    const { part } = await roots();
+    let events = await listEvents(part.id, db);
+    let cursor: string | null = events[0].id;
+
+    for (const fret of [1, 2, 3]) {
+      const inserted = await insertNote(part, events, cursor, 3, fret, ctx());
+      cursor = inserted.id;
+      events = await listEvents(part.id, db);
+    }
+
+    expect((await staff(part.id)).split("\n")[3]).toBe("E |-7-1-2-3-5-|");
+  });
+
+  it("falls back to appending when the cursor column is gone", async () => {
+    // Reachable through a merge: the column was deleted on another device
+    // while it was selected here.
+    const { part } = await roots();
+    const events = await listEvents(part.id, db);
+
+    await insertNote(part, events, newId(), 3, 3, ctx());
+
+    expect((await staff(part.id)).split("\n")[3]).toBe("E |-7-5-3-|");
+  });
+
+  it("inserts a barline at the cursor too", async () => {
+    const { part } = await roots();
+    const events = await listEvents(part.id, db);
+
+    await insertBarline(part, events, events[0].id, ctx());
+
+    expect((await staff(part.id)).split("\n")[3]).toBe("E |-7-|-5-|");
   });
 });
 

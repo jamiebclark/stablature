@@ -97,6 +97,45 @@ button,
   user-select: none;
 }
 
+/*
+ * Scrollbars.
+ *
+ * The default chrome is a bright slab against a near-black page, and the
+ * fretboard carries a permanent horizontal one, so it is the first thing your
+ * eye lands on. Thin and recessive here; it is a position indicator, not a
+ * control anybody drags on a phone.
+ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+  /* Inset from the track so the thumb reads as floating rather than filling. */
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-faint);
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 /* Honour reduced-motion for the one place we animate (column auto-scroll). */
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -142,6 +181,29 @@ button,
 
 .tab-staff[data-surface="raised"] .tab-cell > span {
   background: var(--bg-raised);
+}
+
+/*
+ * The capture cursor.
+ *
+ * A rule beneath the column rather than a filled background. Filling it swamps
+ * the staff -- the strings disappear behind the tint and the fret numbers,
+ * which carry their own opaque background to mask the string line, turn into
+ * dark chips floating on a block. An underline says "you are here" without
+ * competing with the notes, and it spans every repetition of a repeated
+ * column, which is the thing actually being pointed at.
+ */
+.tab-column-active {
+  position: relative;
+}
+
+.tab-column-active::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--accent);
 }
 
 /* A barline is one vertical rule spanning every string. */

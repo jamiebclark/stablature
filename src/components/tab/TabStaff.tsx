@@ -114,6 +114,10 @@ export function TabStaff({
                             count: span.count,
                             start: index === span.start,
                             end: index === span.end,
+                            // Centred over the middle column of the span. On
+                            // the first one it sits above the opening note
+                            // rather than above the bracket it labels.
+                            labelled: index === Math.floor((span.start + span.end) / 2),
                           }
                         : null
                     }
@@ -143,7 +147,7 @@ interface ColumnProps {
   active: boolean;
   showChordRow: boolean;
   showTupletRow: boolean;
-  tuplet: { count: number; start: boolean; end: boolean } | null;
+  tuplet: { count: number; start: boolean; end: boolean; labelled: boolean } | null;
   onSelect?: () => void;
 }
 
@@ -186,7 +190,7 @@ function Column({
               }}
             />
           ) : null}
-          {tuplet?.start ? (
+          {tuplet?.labelled ? (
             <div className="absolute inset-x-0 top-0 text-center text-[0.65rem] leading-[0.9rem] text-text-faint">
               {tuplet.count}
             </div>
@@ -208,7 +212,7 @@ function Column({
     return (
       <div
         style={style}
-        className={active ? "bg-accent-dim/30" : undefined}
+        className={active ? "tab-column-active" : undefined}
         data-testid="tab-column"
         data-barline={barline ? "true" : undefined}
       >
@@ -222,7 +226,7 @@ function Column({
       type="button"
       onClick={onSelect}
       style={style}
-      className={`text-left ${active ? "bg-accent-dim/30" : "hover:bg-bg-raised"}`}
+      className={`text-left ${active ? "tab-column-active" : "hover:bg-bg-raised"}`}
       data-testid="tab-column"
       data-barline={barline ? "true" : undefined}
       aria-label={describe(cells, barline)}

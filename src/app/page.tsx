@@ -32,7 +32,7 @@ export default function BandsPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-6">
-      <PageHeader title="Bands" subtitle="Everything lives on this device and syncs when it can." />
+      <PageHeader title="Bands" />
 
       <form
         className="mb-6 flex gap-2"
