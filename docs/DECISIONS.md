@@ -150,9 +150,15 @@ I am not a lawyer and this is not legal advice. For a band tool on your own
 box it is proportionate; if you ever host it for strangers, have someone
 qualified read it.
 
-### Needs you: the repository is public with no licence
+### ~~Needs you~~ RESOLVED: MIT (Jamie chose, 2 Nov)
 
-**Worth your eye — I deliberately did not decide this one.**
+**Settled.** `LICENSE` added, `package.json` says MIT, README links it.
+The copyright line reads `jamiebclark` — the GitHub identity, since the only
+other names available were "Jamie" and the machine's git label "Jamie
+ Desktop". Say the word if you want your full legal name there instead; it is
+a one-line change and worth getting right while the project is young.
+
+The reasoning that was waiting on you is kept below for the record.
 
 `gh repo view` reports the repo is **public**, and it has no `LICENSE`. The
 default in that situation is *all rights reserved*: legally nobody may use,

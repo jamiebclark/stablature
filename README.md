@@ -135,3 +135,8 @@ at, and it pastes straight into a band chat.
 Commits follow [Conventional Commits](https://www.conventionalcommits.org);
 commitlint enforces it on `commit-msg` and releases are cut by
 semantic-release.
+
+## Licence
+
+MIT — see [LICENSE](LICENSE). Use it, change it, run it for your band; keep
+the copyright notice and do not expect a warranty.
