@@ -53,3 +53,6 @@ next-env.d.ts
 
 # local dev server output
 /dev.log
+specs/*/.pipeline/
+.specify/roadmaps/*.state.json
+.specify/feature.json
