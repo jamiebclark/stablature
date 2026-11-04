@@ -7,6 +7,44 @@ cost you should know about.
 
 ---
 
+## 2026-11-03 — capture-expression roadmap, browser checks
+
+Each entry gets a Chrome check after it merges, from a separate worktree. These
+notes live on the local `verify-log` branch of that worktree (not pushed), so they
+stay out of the runner's tree. Defects here are notes, not fixes.
+
+### Entry 1: capture-control-surface (PR #1, `5986674`)
+
+Checked at a true 375×667 viewport (an iframe, since this Chrome window will not
+shrink), dark and light, on a five-string part with a chord and a triplet. Light
+was the `prefers-color-scheme: light` tokens copied onto the root, not a real OS
+theme. Dev server, on a separate origin, so your data was not touched.
+
+Holds: strip reads as part of the neck; unarmed chip separated by its border in
+both themes; armed chip is a solid accent bar; arming moves no control; sheet
+readable with visible separators; chord edit through the sheet works and the field
+keeps its text; no page scroll; all five strings shown. The sheet stayed open after
+a simulated long press followed by the finger-lift click, which was review F2.
+
+**Worth your eye:**
+
+- **Long press on a real phone is unconfirmed.** Touch was simulated here and in
+  the review. Android Chrome and iOS Safari need trying by hand.
+- **Chord label still clipped.** With a chord and a tuplet, cursor at the end, the
+  label loses 7.2 px of its 17.6 px height at the top of the staff. `main` recorded
+  7.4 px, so the "no worse than main" test passes, but F18's fix has not removed
+  clipping in this state.
+- **Status row wraps with a chord active and stack armed.** "stacking onto the
+  marked column", "start" and "end" each break over two lines, and the chord tones
+  truncate. Review F23 records `main` doing the same, so it is not new, but it is
+  the wrapped-label look this file calls a layout bug. Entry 2's longer latch
+  messages may make it more common.
+- **No release from this merge, most likely.** The squash subject is the PR title,
+  with no `feat:` type, so semantic-release should see nothing to release. Every
+  roadmap entry will land the same way.
+
+---
+
 ## 2026-11-02 — session with Jamie away
 
 ### Process
