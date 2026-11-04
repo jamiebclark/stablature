@@ -114,6 +114,24 @@ export interface PartRow extends SyncMeta {
   notes: string | null;
 }
 
+export const GROUP_KINDS = ["tuplet", "plain"] as const;
+export type GroupKind = (typeof GROUP_KINDS)[number];
+
+export const MIN_GROUP_COLUMNS = 2;
+export const MAX_TUPLET_COLUMNS = 16;
+
+/** The three group fields of a column in no group. Spread, never restated. */
+export const NO_GROUP = { tupletId: null, tupletCount: null, groupKind: null } as const;
+
+/**
+ * The number a group prints, or null for none. A plain group prints nothing;
+ * a null or absent kind reads as a counted tuplet, and a null count as a triplet.
+ */
+export function groupNumber(row: Pick<EventRow, "tupletCount" | "groupKind">): number | null {
+  if (row.groupKind === "plain" && row.tupletCount === null) return null;
+  return row.tupletCount ?? 3;
+}
+
 export interface EventRow extends SyncMeta {
   id: string;
   bandId: string;
@@ -129,6 +147,8 @@ export interface EventRow extends SyncMeta {
   tupletId: string | null;
   /** 3 for a triplet, 5 for a quintuplet. */
   tupletCount: number | null;
+  /** Which presentation the group uses. Absent on rows written before this field existed. */
+  groupKind?: GroupKind | null;
 }
 
 export interface AnnotationRow extends SyncMeta {
@@ -210,6 +230,7 @@ export const MERGEABLE_FIELDS = {
     "durationHint",
     "tupletId",
     "tupletCount",
+    "groupKind",
     "deletedAt",
   ],
   annotations: ["anchorEventId", "kind", "value", "deletedAt"],

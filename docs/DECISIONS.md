@@ -271,6 +271,12 @@ Related: do not run `npm run build` or the e2e suite while a dev server is up
 on the same checkout. They share `.next` and corrupt each other — it produced
 a fake test failure for the other session and a spawn failure for me.
 
+### Generalised grouping (spec 003)
+
+Events gain an optional `groupKind` (absent = ratio-derived tuplet, `plain` = a bracketed run with no ratio). Plain groups let any run be bracketed and numbered without implying a tuplet; the triplet button is unchanged and refuses runs that already carry a ratio. The toolbar's grouping controls moved to row 2 (Deviation 1 in plan.md) so seven controls fit one line.
+
+- [ ] Person-level pass (real browser, both themes, actual size): quickstart §6 and the Postgres-backed sync scenarios are still owed.
+
 ---
 
 _Entries below are added as the day goes._

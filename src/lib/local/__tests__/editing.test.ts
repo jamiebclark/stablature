@@ -335,20 +335,20 @@ describe("tuplets", () => {
     expect((await staff(part.id)).split("\n")[0]).toBe("      ,-3-,");
   });
 
-  it("skips barlines when grouping from the tail", async () => {
+  it("writes nothing when the tail run crosses a barline", async () => {
     const { part } = await scaffold();
     await appendNote(part, 2, 5, ctx());
     await appendBarline(part, ctx());
     await appendNote(part, 2, 5, ctx());
     await appendNote(part, 2, 5, ctx());
 
-    await tripletFromTail(part.id, 3, ctx());
+    // A barline inside a triplet would be meaningless, and grouping must not
+    // silently swallow it: the run is refused rather than reshaped.
+    expect(await tripletFromTail(part.id, 3, ctx())).toBeUndefined();
     const events = await listEvents(part.id, db);
     const barline = events.find((e) => e.kind === "barline")!;
-    // A barline inside a triplet would be meaningless, and grouping must not
-    // silently swallow it.
     expect(barline.tupletId).toBeNull();
-    expect(events.filter((e) => e.tupletId !== null)).toHaveLength(3);
+    expect(events.filter((e) => e.tupletId !== null)).toHaveLength(0);
   });
 
   it("refuses to make a tuplet of one column", async () => {

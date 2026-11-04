@@ -46,6 +46,7 @@ export const globalSeq = pgSequence("global_seq", { startWith: 1, increment: 1 }
 export const bandRole = pgEnum("band_role", ["owner", "editor", "viewer"]);
 
 /** Tab columns. Most are `notes`; barlines are explicit, never computed. */
+export const groupKind = pgEnum("group_kind", ["tuplet", "plain"]);
 export const eventKind = pgEnum("event_kind", ["notes", "barline", "rest"]);
 
 /**
@@ -247,6 +248,8 @@ export const events = pgTable(
     tupletId: uuid("tuplet_id"),
     /** 3 for a triplet, 5 for a quintuplet. */
     tupletCount: integer("tuplet_count"),
+    /** Absent-equivalent null reads as a counted tuplet. */
+    groupKind: groupKind("group_kind"),
     ...sync,
   },
   (t) => [

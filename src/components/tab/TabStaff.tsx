@@ -214,7 +214,7 @@ interface ColumnProps {
   selected: boolean;
   showChordRow: boolean;
   showTupletRow: boolean;
-  tuplet: { count: number; start: boolean; end: boolean; labelled: boolean } | null;
+  tuplet: { count: number | null; start: boolean; end: boolean; labelled: boolean } | null;
   onSelect?: () => void;
   onInspect?: () => void;
 }
@@ -249,20 +249,20 @@ function Column({
         <div className="relative h-[1.1rem]">
           {tuplet ? (
             <div
-              className="absolute inset-x-0 bottom-[0.2rem] border-t border-text-faint"
+              className="tab-bracket absolute inset-x-0 bottom-[0.2rem] border-t"
+              data-testid="tab-bracket"
+              data-start={tuplet.start ? "" : undefined}
               style={{
                 borderLeftWidth: tuplet.start ? 1 : 0,
                 borderRightWidth: tuplet.end ? 1 : 0,
-                borderLeftColor: "var(--text-faint)",
-                borderRightColor: "var(--text-faint)",
                 borderLeftStyle: "solid",
                 borderRightStyle: "solid",
                 height: "0.3rem",
               }}
             />
           ) : null}
-          {tuplet?.labelled ? (
-            <div className="absolute inset-x-0 top-0 text-center text-[0.65rem] leading-[0.9rem] text-text-faint">
+          {tuplet?.labelled && tuplet.count !== null ? (
+            <div className="tab-bracket-label absolute inset-x-0 top-0 text-center text-[0.65rem] leading-[0.9rem]">
               {tuplet.count}
             </div>
           ) : null}
@@ -419,7 +419,7 @@ function Gap({
         <div className="relative h-[1.1rem]">
           {bracket ? (
             <div
-              className="absolute inset-x-0 bottom-[0.2rem] border-t border-text-faint"
+              className="tab-bracket absolute inset-x-0 bottom-[0.2rem] border-t"
               style={{ height: "0.3rem" }}
             />
           ) : null}

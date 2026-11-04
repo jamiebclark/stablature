@@ -14,7 +14,7 @@
  */
 
 import { z } from "zod";
-import { SYNCED_TABLES } from "../model";
+import { GROUP_KINDS, MAX_TUPLET_COLUMNS, MIN_GROUP_COLUMNS, SYNCED_TABLES } from "../model";
 
 /** Fixed-width HLC: 15 digits, 4 hex, node id. See hlc.ts. */
 const hlc = z.string().regex(/^\d{15}:[0-9a-f]{4}:[0-9a-z]{1,32}$/, "malformed HLC");
@@ -100,7 +100,8 @@ export const eventRowSchema = z.object({
   repeat: z.number().int().min(1).max(512),
   durationHint: z.enum(["w", "h", "q", "8", "16", "32"]).nullable(),
   tupletId: id.nullable(),
-  tupletCount: z.number().int().min(2).max(16).nullable(),
+  tupletCount: z.number().int().min(MIN_GROUP_COLUMNS).max(MAX_TUPLET_COLUMNS).nullable(),
+  groupKind: z.enum(GROUP_KINDS).nullable().optional(),
   ...syncMeta,
 });
 

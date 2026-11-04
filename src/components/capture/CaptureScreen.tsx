@@ -29,8 +29,9 @@ import {
   SquareDashedMousePointer,
   Trash2,
 } from "lucide-react";
-import { BarlineGlyph, SpaceGlyph, TripletGlyph } from "@/components/icons";
+import { BarlineGlyph, SpaceGlyph, BracketGlyph } from "@/components/icons";
 import { useRouter } from "next/navigation";
+import { groupOffer, TRIPLET_REFUSAL } from "@/lib/capture/grouping";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { Button, Input, Loading, Sheet } from "@/components/ui";
 import {
@@ -49,11 +50,13 @@ import {
 } from "@/lib/chords";
 import {
   createPart,
-  groupAsTuplet,
+  groupRunEndingAt,
+  groupSelection,
   insertBarline,
   insertNote,
   insertRest,
   stackNote,
+  ungroupTuplet,
 } from "@/lib/local/editing";
 import {
   useAnnotations,
@@ -65,7 +68,7 @@ import {
   useSongTuning,
 } from "@/lib/local/hooks";
 import type { AnnotationRow, EventRow, FretValue, PartRow } from "@/lib/model";
-import type { Tuning } from "@/lib/tunings";
+import { stringCount, type Tuning } from "@/lib/tunings";
 import {
   LATCHES,
   armLatch,
@@ -77,7 +80,11 @@ import {
   type LatchId,
 } from "@/lib/capture/latches";
 import { isPresent, TOOLBAR_CONTROLS } from "@/lib/capture/controls";
-import { COLUMN_PROPERTIES, propertiesFor, type ColumnProperty } from "@/lib/capture/properties";
+import {
+  COLUMN_PROPERTIES,
+  propertiesFor,
+  type ColumnProperty,
+} from "@/lib/capture/properties";
 import { resolveTarget } from "@/lib/capture/target";
 import { Fretboard } from "./Fretboard";
 import { nextCursorAfterDelete } from "@/lib/capture/cursor";
@@ -96,7 +103,16 @@ type Cursor = "end" | null | string;
 
 const ignoreLongPress = () => {};
 
-export function CaptureScreen({ songId, partId }: { songId: string; partId?: string }) {
+/** One sizing for every control on the selection row, so all of them fit one line. */
+const SELECTION_BUTTON = "h-9! px-1! text-xs! gap-1!";
+
+export function CaptureScreen({
+  songId,
+  partId,
+}: {
+  songId: string;
+  partId?: string;
+}) {
   const router = useRouter();
   const song = useSong(songId);
   const tuning = useSongTuning(song);
@@ -109,6 +125,10 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
   const [deliveredId, setDeliveredId] = useState<string | null>(null);
   /** An event id, never a copy of the row: deleting it elsewhere closes the sheet. */
   const [inspecting, setInspecting] = useState<string | null>(null);
+  const [refusedAt, setRefusedAt] = useState<{
+    afterId: string | null;
+    length: number;
+  } | null>(null);
   const [chordDraft, setChordDraft] = useState<string | null>(null);
   /**
    * A selection is two tapped columns, in either order.
@@ -117,7 +137,10 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
    * so a horizontal drag is ambiguous between "select these" and "scroll",
    * and disambiguating it with a long press fights fast capture.
    */
-  const [selection, setSelection] = useState<{ anchorId: string; headId: string } | null>(null);
+  const [selection, setSelection] = useState<{
+    anchorId: string;
+    headId: string;
+  } | null>(null);
   const clipboard = useClipboard();
 
   /*
@@ -137,9 +160,12 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
   const columns = events ?? [];
   /** The column to insert after; null when the cursor is at the start. */
   const afterId = cursor === "end" ? (columns.at(-1)?.id ?? null) : cursor;
-  const focused = afterId ? columns.find((event) => event.id === afterId) : undefined;
+  const focused = afterId
+    ? columns.find((event) => event.id === afterId)
+    : undefined;
   /** Repeats and chords are meaningless on a barline. */
-  const editable: EventRow | undefined = focused?.kind === "barline" ? undefined : focused;
+  const editable: EventRow | undefined =
+    focused?.kind === "barline" ? undefined : focused;
 
   /** What the cursor resolves to, and the lit (armed ∩ applicable) latches. */
   const target = resolveTarget(part, columns, afterId);
@@ -152,9 +178,15 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
    * render is the documented way to derive it from a changing value.
    */
   if (focused && focused.id !== deliveredId) setDeliveredId(focused.id);
-  const pruned = prunedArmed(armed, lit, cursorPending(afterId, focused?.id, deliveredId));
+  const pruned = prunedArmed(
+    armed,
+    lit,
+    cursorPending(afterId, focused?.id, deliveredId),
+  );
   if (pruned !== armed) setArmed(pruned);
-  const inspected = inspecting ? (columns.find((c) => c.id === inspecting) ?? null) : null;
+  const inspected = inspecting
+    ? (columns.find((c) => c.id === inspecting) ?? null)
+    : null;
   const afterInspectorAction = (property: ColumnProperty) => {
     if (property.destructive && inspected) {
       setCursor(nextCursorAfterDelete(columns, inspected.id, cursor));
@@ -172,6 +204,10 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
     TOOLBAR_CONTROLS.filter((c) => isPresent(c, target)).map((c) => c.id),
   );
   const status = statusFor(lit);
+  /** Derived, so any route that moves the cursor or changes the part clears it. */
+  const refused =
+    refusedAt?.afterId === afterId && refusedAt?.length === columns.length;
+  if (refusedAt && !refused) setRefusedAt(null);
 
   const toggleLatch = (id: LatchId) => {
     setArmed((prev) => armLatch(prev, id));
@@ -190,13 +226,21 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
     () => chordInForceAt(events ?? [], annotations ?? [], afterId),
     [events, annotations, afterId],
   );
-  const chord = useMemo(() => (chordSymbol ? parseChord(chordSymbol) : null), [chordSymbol]);
-  const chordTones = useMemo(() => (chord ? chordToneMap(chord) : undefined), [chord]);
+  const chord = useMemo(
+    () => (chordSymbol ? parseChord(chordSymbol) : null),
+    [chordSymbol],
+  );
+  const chordTones = useMemo(
+    () => (chord ? chordToneMap(chord) : undefined),
+    [chord],
+  );
 
   const selectedEvents = selection
     ? columnRange(columns, selection.anchorId, selection.headId)
     : [];
   const selectedIds = new Set(selectedEvents.map((event) => event.id));
+
+  const offer = groupOffer(selectedEvents);
 
   const endSelection = (moveCursorToEnd = false) => {
     setSelection(null);
@@ -226,12 +270,21 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
         });
       }
       if (next.stackOnto) {
-        await stackNote(next.stackOnto, stringIndex, fret, { techniques: next.techniques });
+        await stackNote(next.stackOnto, stringIndex, fret, {
+          techniques: next.techniques,
+        });
         return;
       }
-      const inserted = await insertNote(part, columns, afterId, stringIndex, fret, {
-        techniques: next.techniques,
-      });
+      const inserted = await insertNote(
+        part,
+        columns,
+        afterId,
+        stringIndex,
+        fret,
+        {
+          techniques: next.techniques,
+        },
+      );
       advance(inserted.id);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -240,13 +293,20 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
 
   if (song === undefined || parts === undefined) return <Loading />;
   if (!song) {
-    return <p className="p-6 text-sm text-text-dim">That song is not on this device.</p>;
+    return (
+      <p className="p-6 text-sm text-text-dim">
+        That song is not on this device.
+      </p>
+    );
   }
   if (!tuning) {
     return (
       <div className="p-6 text-sm text-text-dim">
         <p>This band has no tunings yet, and a fretboard needs one.</p>
-        <Button className="mt-3" onClick={() => router.push(`/bands/${song.bandId}/tunings`)}>
+        <Button
+          className="mt-3"
+          onClick={() => router.push(`/bands/${song.bandId}/tunings`)}
+        >
           Add a tuning
         </Button>
       </div>
@@ -306,29 +366,39 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
       </div>
 
       {/* Bottom-aligned: during capture your eyes are on the fretboard, and a
-          staff stranded at the top of a tall screen is a lot of travel. */}
-      <div className="flex min-h-0 flex-1 flex-col justify-end overflow-y-auto px-3 pt-3 pb-1">
+          staff stranded at the top of a tall screen is a lot of travel. Up to five strings
+          `justify-end` does it, as it always has. Six overflow at phone size, and
+          `justify-end` would put that overflow above the scroll origin where no swipe reaches
+          it (and `mt-auto` stops anchoring once content overflows). A column-reverse scroller
+          starts at the bottom and keeps its overflow on the side a swipe can reach. */}
+      <div
+        className={`flex min-h-0 flex-1 overflow-y-auto px-3 pt-3 pb-1 ${
+          stringCount(tuning) >= 6 ? "flex-col-reverse" : "flex-col justify-end"
+        }`}
+      >
         {part ? (
-          <TabStaff
-            events={columns}
-            tuning={tuning}
-            annotations={annotations ?? []}
-            followTail={atEnd}
-            activeEventId={focused?.id ?? null}
-            insertAfterEventId={selection ? undefined : afterId}
-            selectedEventIds={selectedIds}
-            // A selection-time hold is swallowed (FR-022): the handler does nothing, but its
-            // presence arms the press hook, whose click suppression stops the hold extending.
-            onInspectColumn={selection ? ignoreLongPress : setInspecting}
-            onSelectColumn={(eventId) => {
-              if (selection) {
-                setSelection({ ...selection, headId: eventId });
-                return;
-              }
-              setCursor(eventId);
-              setArmed(new Set());
-            }}
-          />
+          <div className="shrink-0">
+            <TabStaff
+              events={columns}
+              tuning={tuning}
+              annotations={annotations ?? []}
+              followTail={atEnd}
+              activeEventId={focused?.id ?? null}
+              insertAfterEventId={selection ? undefined : afterId}
+              selectedEventIds={selectedIds}
+              // A selection-time hold is swallowed (FR-022): the handler does nothing, but its
+              // presence arms the press hook, whose click suppression stops the hold extending.
+              onInspectColumn={selection ? ignoreLongPress : setInspecting}
+              onSelectColumn={(eventId) => {
+                if (selection) {
+                  setSelection({ ...selection, headId: eventId });
+                  return;
+                }
+                setCursor(eventId);
+                setArmed(new Set());
+              }}
+            />
+          </div>
         ) : (
           <p className="py-6 text-center text-sm text-text-dim">
             Add a part to start capturing.
@@ -339,73 +409,43 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
       {part && selection ? (
         <div className="flex flex-wrap items-center gap-1.5 border-t border-border-subtle px-3 py-1.5">
           <span className="text-[0.7rem] text-accent">
-            {selectedEvents.length} selected &middot; tap another column to extend
+            {selectedEvents.length} selected &middot; tap another column to
+            extend
           </span>
-          <Button
-            className="px-2 py-1 text-xs"
-            onClick={async () => {
-              await writeClipboard(copyColumns(selectedEvents, annotations ?? []));
-              endSelection();
-            }}
-          >
-            <Copy size={14} aria-hidden />
-            copy
-          </Button>
-          <Button
-            className="px-2 py-1 text-xs"
-            onClick={async () => {
-              await cutColumns(selectedEvents, annotations ?? []);
-              endSelection(true);
-            }}
-          >
-            <Scissors size={14} aria-hidden />
-            cut
-          </Button>
-          {/*
-            Bordered like copy and cut rather than bare red text: these three
-            are peers acting on the same selection, and the odd one out read
-            as a different kind of control. The red label and the bin keep it
-            from being mistaken for a safe action.
-          */}
-          <Button
-            className="px-2 py-1 text-xs text-danger"
-            onClick={async () => {
-              await deleteColumns(selectedEvents);
-              endSelection(true);
-            }}
-          >
-            <Trash2 size={14} aria-hidden />
-            delete
-          </Button>
-          {/* Borderless, because it leaves rather than does. */}
-          <Button
-            variant="ghost"
-            className="ml-auto px-2 py-1 text-xs"
-            onClick={() => endSelection()}
-          >
-            cancel
-          </Button>
         </div>
       ) : part ? (
-        <div className="flex items-center gap-2 border-t border-border-subtle px-3 py-1 text-[0.7rem]">
-          <span className={status || !atEnd ? "text-accent" : "text-text-faint"}>
-            {status
-              ? status
-              : atEnd
-                ? "adding at the end"
-                : afterId === null
-                  ? "adding at the start"
-                  : "adding after the marked column"}
+        <div className="flex items-center gap-2 overflow-hidden whitespace-nowrap border-t border-border-subtle px-3 py-1 text-[0.7rem]">
+          <span
+            className={`${refused ? "shrink-0" : "min-w-0 truncate"} ${refused || status || !atEnd ? "text-accent" : "text-text-faint"}`}
+          >
+            {refused ? (
+              TRIPLET_REFUSAL
+            ) : (
+              <>
+                {status ||
+                  (atEnd
+                    ? "adding at the end"
+                    : afterId === null
+                      ? "adding at the start"
+                      : "adding after the marked column")}
+              </>
+            )}
           </span>
           {/* Which notes the lit frets are. The unreadable-symbol case says so
               rather than leaving an unexplained bare neck. */}
           {chord ? (
-            <span className="truncate font-mono text-accent">
+            <span className="min-w-0 truncate font-mono text-accent">
               {chord.symbol}
-              <span className="text-text-dim"> {chordToneNames(chord).join(" ")}</span>
+              <span className="text-text-dim">
+                {" "}
+                {chordToneNames(chord).join(" ")}
+              </span>
             </span>
           ) : chordSymbol ? (
-            <span className="truncate font-mono text-text-faint" title="Not a chord this app can read">
+            <span
+              className="min-w-0 truncate font-mono text-text-faint"
+              title="Not a chord this app can read"
+            >
               {chordSymbol} &mdash; not a chord I know
             </span>
           ) : null}
@@ -438,7 +478,8 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
           className="flex gap-2 border-t border-border-subtle p-3"
           onSubmit={async (e) => {
             e.preventDefault();
-            if (chordProp && propCtx) await chordProp.commit(propCtx, chordDraft);
+            if (chordProp && propCtx)
+              await chordProp.commit(propCtx, chordDraft);
             setChordDraft(null);
           }}
         >
@@ -452,7 +493,11 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
           <Button type="submit" variant="primary">
             Set
           </Button>
-          <Button type="button" variant="ghost" onClick={() => setChordDraft(null)}>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setChordDraft(null)}
+          >
             Cancel
           </Button>
         </form>
@@ -492,7 +537,10 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
 
         <Button
           disabled={!focused || Boolean(selection)}
-          onClick={() => focused && setSelection({ anchorId: focused.id, headId: focused.id })}
+          onClick={() =>
+            focused &&
+            setSelection({ anchorId: focused.id, headId: focused.id })
+          }
           title="Select a run of columns to copy, cut or delete"
         >
           <SquareDashedMousePointer size={15} aria-hidden />
@@ -503,7 +551,12 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
           disabled={!part || !clipboard}
           onClick={async () => {
             if (!part || !clipboard) return;
-            const pasted = await pasteClipboard(part, columns, afterId, clipboard);
+            const pasted = await pasteClipboard(
+              part,
+              columns,
+              afterId,
+              clipboard,
+            );
             const last = pasted.at(-1);
             if (last && cursor !== "end") setCursor(last.id);
           }}
@@ -524,10 +577,15 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
             if (!focused || !part) return;
             const next = nextCursorAfterDelete(columns, focused.id, cursor);
             if (!tuning) return;
-            await deleteProp?.commit({ part, event: focused, annotations: [], tuning }, "");
+            await deleteProp?.commit(
+              { part, event: focused, annotations: [], tuning },
+              "",
+            );
             setCursor(next);
           }}
-          aria-label={atEnd ? "Delete the last column" : "Delete the marked column"}
+          aria-label={
+            atEnd ? "Delete the last column" : "Delete the marked column"
+          }
           title="Remove this column"
         >
           <Delete size={17} aria-hidden />
@@ -535,24 +593,128 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
       </div>
 
       {/* Present iff the cursor is on a playable column; absent, never greyed. */}
-      {part && !selection && editable && propCtx ? (
+      {part && selection ? (
+        <div
+          data-testid="toolbar-selection"
+          className="flex h-14 flex-nowrap items-center gap-1 border-t border-border-subtle px-2"
+        >
+          <Button
+            className={SELECTION_BUTTON}
+            onClick={async () => {
+              await writeClipboard(
+                copyColumns(selectedEvents, annotations ?? []),
+              );
+              endSelection();
+            }}
+          >
+            <Copy size={14} aria-hidden />
+            copy
+          </Button>
+          <Button
+            className={SELECTION_BUTTON}
+            onClick={async () => {
+              await cutColumns(selectedEvents, annotations ?? []);
+              endSelection(true);
+            }}
+          >
+            <Scissors size={14} aria-hidden />
+            cut
+          </Button>
+          {/*
+            Bordered like copy and cut rather than bare red text: these three
+            are peers acting on the same selection, and the odd one out read
+            as a different kind of control. The red label and the bin keep it
+            from being mistaken for a safe action.
+          */}
+          <Button
+            className={`${SELECTION_BUTTON} text-danger`}
+            onClick={async () => {
+              await deleteColumns(selectedEvents);
+              endSelection(true);
+            }}
+          >
+            <Trash2 size={14} aria-hidden />
+            delete
+          </Button>
+          {offer.tuplet ? (
+            <Button
+              className={SELECTION_BUTTON}
+              onClick={async () => {
+                await groupSelection(
+                  part.id,
+                  selection.anchorId,
+                  selection.headId,
+                  "tuplet",
+                );
+                endSelection();
+              }}
+              title={`Bracket these ${offer.tuplet.length} columns with their number`}
+              aria-label={`Make a tuplet of ${offer.tuplet.length}`}
+            >
+              <BracketGlyph numeral={offer.tuplet.length} />
+            </Button>
+          ) : null}
+          {offer.plain.length > 0 ? (
+            <Button
+              className={SELECTION_BUTTON}
+              onClick={async () => {
+                await groupSelection(
+                  part.id,
+                  selection.anchorId,
+                  selection.headId,
+                  "plain",
+                );
+                endSelection();
+              }}
+              title="Bracket these columns with no number"
+              aria-label="Group with no number"
+            >
+              <BracketGlyph />
+            </Button>
+          ) : null}
+          {offer.ungroup ? (
+            <Button
+              className={SELECTION_BUTTON}
+              onClick={async () => {
+                await ungroupTuplet(selectedEvents);
+                endSelection();
+              }}
+              title="Take these groups apart"
+              aria-label="Ungroup"
+            >
+              ungroup
+            </Button>
+          ) : null}
+          {/* Borderless, because it leaves rather than does. */}
+          <Button
+            variant="ghost"
+            className={`${SELECTION_BUTTON} ml-auto`}
+            onClick={() => endSelection()}
+          >
+            cancel
+          </Button>
+        </div>
+      ) : part && editable && propCtx ? (
         <div
           data-testid="toolbar-contextual"
           className="flex h-14 flex-nowrap items-center gap-1 border-t border-border-subtle px-2.5 py-2"
         >
           {presentIds.has("triplet") ? (
             <Button
-              onClick={() => {
+              onClick={async () => {
                 // The three columns ending at the cursor, so this works mid-part
                 // and not only at the tail.
-                const playable = columns.filter((event) => event.kind !== "barline");
-                const index = playable.findIndex((event) => event.id === editable.id);
-                void groupAsTuplet(playable.slice(Math.max(0, index - 2), index + 1), 3);
+                const made = await groupRunEndingAt(
+                  part.id,
+                  atEnd ? null : editable.id,
+                  3,
+                );
+                if (!made) setRefusedAt({ afterId, length: columns.length });
               }}
               title="Make this column and the two before it a triplet"
               aria-label="Triplet"
             >
-              <TripletGlyph />
+              <BracketGlyph numeral={3} />
             </Button>
           ) : null}
 
@@ -588,7 +750,10 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
           ) : null}
 
           {repeatProp && presentIds.has("times4") ? (
-            <Button onClick={() => void repeatProp.commit(propCtx, 3)} title="Four of these">
+            <Button
+              onClick={() => void repeatProp.commit(propCtx, 3)}
+              title="Four of these"
+            >
               &times;4
             </Button>
           ) : null}
@@ -673,12 +838,23 @@ function InspectorSheet({
 }) {
   const barline = inspected?.kind === "barline";
   return (
-    <Sheet open={inspected !== null} onClose={onClose} label={barline ? "Barline" : "Column"}>
+    <Sheet
+      open={inspected !== null}
+      onClose={onClose}
+      label={barline ? "Barline" : "Column"}
+    >
       {inspected && part ? (
         <ColumnInspector
           title={barline ? "Barline" : `Column ${index + 1}`}
-          properties={propertiesFor(resolveTarget(part, [inspected], inspected.id))}
-          ctx={{ part, event: inspected, annotations: annotations ?? [], tuning }}
+          properties={propertiesFor(
+            resolveTarget(part, [inspected], inspected.id),
+          )}
+          ctx={{
+            part,
+            event: inspected,
+            annotations: annotations ?? [],
+            tuning,
+          }}
           onActionDone={onActionDone}
           onClose={onClose}
         />

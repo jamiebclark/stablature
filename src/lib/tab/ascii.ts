@@ -115,8 +115,8 @@ function tupletRow(layout: TabLayout, places: Placed[], bodyWidth: number): stri
     const end = endPlace.offset + endPlace.width - 1;
     const width = Math.max(1, end - start + 1);
 
-    const label = String(span.count);
-    if (width <= label.length) {
+    const label = span.count === null ? "" : String(span.count);
+    if (label !== "" && width <= label.length) {
       overlay(row, start, label);
       continue;
     }

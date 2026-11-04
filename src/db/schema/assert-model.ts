@@ -29,6 +29,11 @@ export type _Tunings = AssertExtends<typeof tunings.$inferSelect, TuningRow>;
 export type _Songs = AssertExtends<typeof songs.$inferSelect, SongRow>;
 export type _Parts = AssertExtends<typeof parts.$inferSelect, PartRow>;
 export type _Events = AssertExtends<typeof events.$inferSelect, EventRow>;
+// `groupKind` is optional on EventRow, so _Events alone cannot see this column go missing.
+export type _EventGroupKind = AssertExtends<
+  (typeof events.$inferSelect)["groupKind"],
+  NonNullable<EventRow["groupKind"]> | null
+>;
 export type _Annotations = AssertExtends<typeof annotations.$inferSelect, AnnotationRow>;
 export type _Arrangement = AssertExtends<
   typeof arrangementEntries.$inferSelect,

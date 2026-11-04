@@ -80,7 +80,7 @@ describe("propertiesFor", () => {
 });
 
 describe("COLUMN_PROPERTIES", () => {
-  it("declares repeat, chord, decorations, delete in that order", () => {
-    expect(COLUMN_PROPERTIES.map((p) => p.id)).toEqual(["repeat", "chord", "decorations", "delete"]);
+  it("declares repeat, chord, decorations, group, delete in that order", () => {
+    expect(COLUMN_PROPERTIES.map((p) => p.id)).toEqual(["repeat", "chord", "decorations", "group", "delete"]);
   });
 });

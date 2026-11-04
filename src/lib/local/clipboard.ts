@@ -18,6 +18,7 @@ import type {
   EventKind,
   EventRow,
   FretMap,
+  GroupKind,
   PartRow,
   TechniqueMap,
 } from "../model";
@@ -41,6 +42,8 @@ export interface ClipboardColumn {
    */
   tupletGroup: number | null;
   tupletCount: number | null;
+  /** Absent on a clipboard saved before the field existed; that pastes as a counted tuplet. */
+  groupKind?: GroupKind | null;
 }
 
 export interface Clipboard {
@@ -92,6 +95,7 @@ export function copyColumns(
       durationHint: event.durationHint,
       tupletGroup,
       tupletCount: event.tupletCount,
+      groupKind: event.groupKind ?? null,
     } satisfies ClipboardColumn;
   });
 
@@ -173,6 +177,7 @@ export async function pasteClipboard(
           durationHint: column.durationHint,
           tupletId,
           tupletCount: column.tupletCount,
+          groupKind: column.groupKind ?? null,
         },
         inner,
       );

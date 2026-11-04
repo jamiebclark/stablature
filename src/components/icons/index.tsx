@@ -14,8 +14,22 @@ export interface GlyphProps {
   className?: string;
 }
 
-/** A tuplet bracket with its count: what `3plt` was standing in for. */
-export function TripletGlyph({ className }: GlyphProps) {
+/**
+ * A bracket, with the number it prints over it when it has one.
+ *
+ * Rails shorten as the numeral widens, so the number never touches them. With
+ * no numeral it is one closed path: a group that prints nothing.
+ */
+export function BracketGlyph({ className, numeral }: GlyphProps & { numeral?: number }) {
+  const digits = numeral === undefined ? 0 : String(numeral).length;
+  const rails =
+    digits === 0
+      ? null
+      : digits === 1 && numeral === 3
+        ? (["M1.5 12V8.5h3.6", "M10.9 8.5h3.6V12"] as const)
+        : digits === 1
+          ? (["M1.5 12V8.5h2.1", "M12.4 8.5h2.1V12"] as const)
+          : (["M1.5 12V8.5h.6", "M13.9 8.5h.6V12"] as const);
   return (
     <svg
       viewBox="0 0 16 16"
@@ -29,23 +43,26 @@ export function TripletGlyph({ className }: GlyphProps) {
       aria-hidden
       focusable="false"
     >
-      {/*
-        Two elements only. A first version also drew note stems under the
-        bracket, which at this size turned into noise -- a glyph on a button
-        line has about sixteen pixels to make its point.
-      */}
-      <path d="M1.5 12V8.5h3.6M10.9 8.5h3.6V12" />
-      <text
-        x="8"
-        y="11.4"
-        fontSize="10"
-        fontWeight="700"
-        textAnchor="middle"
-        fill="currentColor"
-        stroke="none"
-      >
-        3
-      </text>
+      {rails ? (
+        <>
+          <path data-rail d={rails[0]} />
+          <path data-rail d={rails[1]} />
+          <text
+            x="8"
+            y="11.4"
+            fontSize={digits === 1 ? "10" : "8"}
+            fontWeight="700"
+            textAnchor="middle"
+            fill="currentColor"
+            stroke="none"
+            {...(digits === 1 ? {} : { textLength: "9.2", lengthAdjust: "spacingAndGlyphs" })}
+          >
+            {numeral}
+          </text>
+        </>
+      ) : (
+        <path d="M1.5 12V8.5h13V12" />
+      )}
     </svg>
   );
 }
