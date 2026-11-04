@@ -12,6 +12,7 @@
  * string indices in storage (0 = highest).
  */
 
+import type { ReactNode } from "react";
 import type { ChordRole } from "@/lib/chords";
 import type { FretMap, FretValue } from "@/lib/model";
 import { fretToMidi, type Tuning } from "@/lib/tunings";
@@ -95,6 +96,8 @@ export interface FretboardProps {
   chordTones?: ReadonlyMap<number, ChordRole>;
   /** Dims everything and blocks input while there is no part to write to. */
   disabled?: boolean;
+  /** Rendered above the fret grid, inside the neck's own surface and its disabled wrapper. */
+  latchStrip?: ReactNode;
 }
 
 export function Fretboard({
@@ -104,6 +107,7 @@ export function Fretboard({
   highlight,
   chordTones,
   disabled = false,
+  latchStrip,
 }: FretboardProps) {
   // Bare note names, matching the tab staff. The octave lives in the
   // accessible label, where it disambiguates without adding visual noise.
@@ -112,109 +116,118 @@ export function Fretboard({
 
   return (
     <div
-      className={`overflow-x-auto border-t border-border-subtle bg-bg-sunken ${
+      className={`border-t border-border-subtle bg-bg-sunken ${
         disabled ? "pointer-events-none opacity-40" : ""
       }`}
     >
-      <div className="w-max min-w-full px-1 pb-2">
-        {/* Fret numbers along the top, so the neck is readable at a glance. */}
-        <div className="flex items-end gap-px pl-9 pt-1">
-          {frets.map((fret) => (
-            <div
-              key={fret}
-              className={`w-9 shrink-0 text-center text-[0.6rem] ${
-                INLAYS.has(fret) ? "text-text-dim" : "text-text-faint"
-              }`}
-            >
-              {fret}
-            </div>
-          ))}
-        </div>
-
-        {tuning.strings.map((_, stringIndex) => (
-          <div key={stringIndex} className="flex items-center gap-px">
-            <div className="w-9 shrink-0 pr-1 text-right font-mono text-xs text-text-dim">
-              {labels[stringIndex]}
-            </div>
-
-            {frets.map((fret) => {
-              const midi = fretToMidi(tuning, stringIndex, fret);
-              const pitch = midiToNote(midi);
-              const lit = highlight?.[String(stringIndex)] === fret;
-              /*
-               * Precedence, in one place: a note actually in the column beats a
-               * chord tone. Being in the column is a fact about the part, and
-               * the chord is only ever a suggestion about what would fit.
-               */
-              const role = lit ? undefined : chordTones?.get(midi % 12);
-              /*
-               * Background tier and ink are kept apart because they are two
-               * questions -- where on the neck, and what the note is doing --
-               * and because two competing text-colour utilities in one class
-               * list resolve by stylesheet order rather than by what was meant.
-               */
-              /*
-               * Exactly one background utility and one text utility per cell.
-               * Two of either on one element resolve by stylesheet order
-               * rather than by intent, which is how the chord-tone colour was
-               * lost once already.
-               */
-              const tier = lit
-                ? "bg-accent"
-                : fret === 0
-                  ? "rounded-l border-r-2 border-border-strong bg-bg-raised"
-                  : INLAYS.has(fret)
-                    ? "bg-fret-cell-inlay"
-                    : "bg-fret-cell";
-              const ink = lit
-                ? "font-semibold text-accent-text"
-                : role
-                  ? ROLE_STYLES[role]
-                  : "text-fret-number";
-              return (
-                <button
-                  key={fret}
-                  type="button"
-                  onClick={() => onPress(stringIndex, fret)}
-                  // Deliberately generous: 2.25rem is about a thumb pad, and
-                  // mis-taps here are the main way bad data gets captured.
-                  className={`relative h-9 w-9 shrink-0 font-mono text-[0.7rem] transition-colors active:bg-accent active:text-accent-text ${tier} ${ink}`}
-                  aria-label={`${labels[stringIndex]} string, fret ${fret}, ${noteLabel(pitch)}${
-                    lit ? ", in this column" : role ? `, ${ROLE_LABELS[role]} of this chord` : ""
-                  }`}
-                  // Chord tones are not a toggle state, so they stay out of
-                  // aria-pressed; the data attribute is what tests assert on.
-                  aria-pressed={lit || undefined}
-                  data-chord-role={role}
-                >
-                  {/* The string itself, drawn through the cell. */}
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute inset-x-0 top-1/2 border-t border-tab-line"
-                    style={{ borderTopColor: "var(--tab-line)" }}
-                  />
-                  <span className="relative">{fret}</span>
-                </button>
-              );
-            })}
+      {latchStrip}
+      <div data-testid="fret-grid" className="overflow-x-auto">
+        <div className="w-max min-w-full px-1 pb-2">
+          {/* Fret numbers along the top, so the neck is readable at a glance. */}
+          <div className="flex items-end gap-px pl-9 pt-1">
+            {frets.map((fret) => (
+              <div
+                key={fret}
+                className={`w-9 shrink-0 text-center text-[0.6rem] ${
+                  INLAYS.has(fret) ? "text-text-dim" : "text-text-faint"
+                }`}
+              >
+                {fret}
+              </div>
+            ))}
           </div>
-        ))}
 
-        {/* Dead notes are constant in this music, so they get their own row. */}
-        <div className="flex items-center gap-px pt-1">
-          <div className="w-9 shrink-0 pr-1 text-right text-[0.6rem] text-text-faint">mute</div>
           {tuning.strings.map((_, stringIndex) => (
-            <button
-              key={stringIndex}
-              type="button"
-              onClick={() => onPress(stringIndex, "x")}
-              className="h-7 w-9 shrink-0 rounded bg-fret-cell font-mono text-[0.7rem] text-fret-number active:bg-accent active:text-accent-text"
-              aria-label={`Dead note on the ${labels[stringIndex]} string`}
-            >
-              {labels[stringIndex]}
-              <span className="text-text-faint">x</span>
-            </button>
+            <div key={stringIndex} className="flex items-center gap-px">
+              <div className="w-9 shrink-0 pr-1 text-right font-mono text-xs text-text-dim">
+                {labels[stringIndex]}
+              </div>
+
+              {frets.map((fret) => {
+                const midi = fretToMidi(tuning, stringIndex, fret);
+                const pitch = midiToNote(midi);
+                const lit = highlight?.[String(stringIndex)] === fret;
+                /*
+                 * Precedence, in one place: a note actually in the column beats a
+                 * chord tone. Being in the column is a fact about the part, and
+                 * the chord is only ever a suggestion about what would fit.
+                 */
+                const role = lit ? undefined : chordTones?.get(midi % 12);
+                /*
+                 * Background tier and ink are kept apart because they are two
+                 * questions -- where on the neck, and what the note is doing --
+                 * and because two competing text-colour utilities in one class
+                 * list resolve by stylesheet order rather than by what was meant.
+                 */
+                /*
+                 * Exactly one background utility and one text utility per cell.
+                 * Two of either on one element resolve by stylesheet order
+                 * rather than by intent, which is how the chord-tone colour was
+                 * lost once already.
+                 */
+                const tier = lit
+                  ? "bg-accent"
+                  : fret === 0
+                    ? "rounded-l border-r-2 border-border-strong bg-bg-raised"
+                    : INLAYS.has(fret)
+                      ? "bg-fret-cell-inlay"
+                      : "bg-fret-cell";
+                const ink = lit
+                  ? "font-semibold text-accent-text"
+                  : role
+                    ? ROLE_STYLES[role]
+                    : "text-fret-number";
+                return (
+                  <button
+                    key={fret}
+                    type="button"
+                    onClick={() => onPress(stringIndex, fret)}
+                    // Deliberately generous: 2.25rem is about a thumb pad, and
+                    // mis-taps here are the main way bad data gets captured.
+                    className={`relative h-9 w-9 shrink-0 font-mono text-[0.7rem] transition-colors active:bg-accent active:text-accent-text ${tier} ${ink}`}
+                    aria-label={`${labels[stringIndex]} string, fret ${fret}, ${noteLabel(pitch)}${
+                      lit
+                        ? ", in this column"
+                        : role
+                          ? `, ${ROLE_LABELS[role]} of this chord`
+                          : ""
+                    }`}
+                    // Chord tones are not a toggle state, so they stay out of
+                    // aria-pressed; the data attribute is what tests assert on.
+                    aria-pressed={lit || undefined}
+                    data-chord-role={role}
+                  >
+                    {/* The string itself, drawn through the cell. */}
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-x-0 top-1/2 border-t border-tab-line"
+                      style={{ borderTopColor: "var(--tab-line)" }}
+                    />
+                    <span className="relative">{fret}</span>
+                  </button>
+                );
+              })}
+            </div>
           ))}
+
+          {/* Dead notes are constant in this music, so they get their own row. */}
+          <div className="flex items-center gap-px pt-1">
+            <div className="w-9 shrink-0 pr-1 text-right text-[0.6rem] text-text-faint">
+              mute
+            </div>
+            {tuning.strings.map((_, stringIndex) => (
+              <button
+                key={stringIndex}
+                type="button"
+                onClick={() => onPress(stringIndex, "x")}
+                className="h-7 w-9 shrink-0 rounded bg-fret-cell font-mono text-[0.7rem] text-fret-number active:bg-accent active:text-accent-text"
+                aria-label={`Dead note on the ${labels[stringIndex]} string`}
+              >
+                {labels[stringIndex]}
+                <span className="text-text-faint">x</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

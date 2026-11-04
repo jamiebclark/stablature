@@ -209,7 +209,7 @@ test("lights the current column on the fretboard", async ({ page }) => {
 
   // Building a chord means remembering what is already in it; the neck shows
   // you instead.
-  const lit = page.locator('button[aria-pressed="true"]');
+  const lit = page.getByRole("button", { name: / string, fret \d+,/ }).and(page.locator('[aria-pressed="true"]'));
   await expect(lit).toHaveCount(3);
   await expect(page.getByRole("button", { name: /A string, fret 9,.*in this column/ })).toBeVisible();
 });

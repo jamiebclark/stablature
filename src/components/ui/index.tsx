@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * Small shared primitives.
  *
@@ -7,6 +9,7 @@
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { useEffect, useRef } from "react";
 import type { ComponentProps, ReactNode } from "react";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
@@ -101,4 +104,51 @@ export function EmptyState({ title, children }: { title: string; children?: Reac
 /** Shown while a Dexie query has not resolved yet (its value is undefined). */
 export function Loading({ label = "Loading" }: { label?: string }) {
   return <p className="py-8 text-center text-sm text-text-faint">{label}&hellip;</p>;
+}
+
+/**
+ * A modal bottom sheet on a native `<dialog>`. `onClose` fires for the `close`
+ * event, so Esc, the backdrop and a programmatic close share one callback.
+ */
+export function Sheet({
+  open,
+  onClose,
+  label,
+  children,
+}: {
+  open: boolean;
+  onClose: () => void;
+  label: string;
+  children: ReactNode;
+}) {
+  const ref = useRef<HTMLDialogElement>(null);
+  // Whether the press now ending began on the backdrop. The click that finishes
+  // the press which OPENED the sheet (a long press) never did, so it must not dismiss.
+  const pressBeganOnBackdrop = useRef(false);
+
+  useEffect(() => {
+    const dialog = ref.current;
+    if (!dialog) return;
+    if (open && !dialog.open) dialog.showModal();
+    else if (!open && dialog.open) dialog.close();
+  }, [open]);
+
+  return (
+    <dialog
+      ref={ref}
+      aria-label={label}
+      onClose={onClose}
+      onPointerDown={(e) => {
+        pressBeganOnBackdrop.current = e.target === e.currentTarget;
+      }}
+      onClick={(e) => {
+        const dismiss = pressBeganOnBackdrop.current && e.target === e.currentTarget;
+        pressBeganOnBackdrop.current = false;
+        if (dismiss) e.currentTarget.close();
+      }}
+      className="m-0 mt-auto w-full max-w-none rounded-t-xl border border-border-subtle bg-bg p-0 text-text backdrop:bg-black/50"
+    >
+      {open ? children : null}
+    </dialog>
+  );
 }

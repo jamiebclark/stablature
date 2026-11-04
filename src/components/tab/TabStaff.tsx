@@ -14,9 +14,11 @@
  */
 
 import { Fragment, useEffect, useMemo, useRef } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { AnnotationRow, EventRow } from "@/lib/model";
 import { layoutPart, tupletSpans, type Density } from "@/lib/tab/layout";
 import type { Tuning } from "@/lib/tunings";
+import { useLongPress } from "@/components/capture/useLongPress";
 
 export interface TabStaffProps {
   events: readonly EventRow[];
@@ -38,6 +40,8 @@ export interface TabStaffProps {
   /** Events in the current selection, drawn as a band behind the staff. */
   selectedEventIds?: ReadonlySet<string>;
   onSelectColumn?: (eventId: string) => void;
+  /** Long-press on a column. When absent, no press handlers are attached at all. */
+  onInspectColumn?: (eventId: string) => void;
   /** Keeps the right-hand edge in view as columns are appended. */
   followTail?: boolean;
   /** Raised surfaces need the fret-number mask to match their background. */
@@ -53,6 +57,7 @@ export function TabStaff({
   insertAfterEventId,
   selectedEventIds,
   onSelectColumn,
+  onInspectColumn,
   followTail = false,
   surface = "base",
 }: TabStaffProps) {
@@ -154,6 +159,7 @@ export function TabStaff({
                         : null
                     }
                     onSelect={onSelectColumn ? () => onSelectColumn(column.eventId) : undefined}
+                    onInspect={onInspectColumn ? () => onInspectColumn(column.eventId) : undefined}
                   />
                   {showCaret && caretAfterIndex === index ? (
                     <Caret
@@ -189,6 +195,7 @@ interface ColumnProps {
   showTupletRow: boolean;
   tuplet: { count: number; start: boolean; end: boolean; labelled: boolean } | null;
   onSelect?: () => void;
+  onInspect?: () => void;
 }
 
 function Column({
@@ -202,6 +209,7 @@ function Column({
   showTupletRow,
   tuplet,
   onSelect,
+  onInspect,
 }: ColumnProps) {
   // Sized in `ch` so a two-digit fret gets twice the room and the staff stays
   // aligned, exactly as in the ASCII output.
@@ -263,12 +271,31 @@ function Column({
     );
   }
 
+  const className = `text-left ${columnClass(active, selected) ?? "hover:bg-bg-raised"}`;
+
+  if (onInspect) {
+    return (
+      <InspectableColumn
+        style={style}
+        className={className}
+        onSelect={onSelect}
+        onInspect={onInspect}
+        selected={selected}
+        barline={barline}
+        active={active}
+        label={describe(cells, barline)}
+      >
+        {body}
+      </InspectableColumn>
+    );
+  }
+
   return (
     <button
       type="button"
       onClick={onSelect}
       style={style}
-      className={`text-left ${columnClass(active, selected) ?? "hover:bg-bg-raised"}`}
+      className={className}
       data-testid="tab-column"
       data-selected={selected ? "true" : undefined}
       data-barline={barline ? "true" : undefined}
@@ -276,6 +303,54 @@ function Column({
       aria-current={active ? "true" : undefined}
     >
       {body}
+    </button>
+  );
+}
+
+/** The hook lives here so columns without `onInspect` carry no press machinery. */
+function InspectableColumn({
+  style,
+  className,
+  onSelect,
+  onInspect,
+  selected,
+  barline,
+  active,
+  label,
+  children,
+}: {
+  style: CSSProperties;
+  className: string;
+  onSelect: () => void;
+  onInspect: () => void;
+  selected: boolean;
+  barline: boolean;
+  active: boolean;
+  label: string;
+  children: ReactNode;
+}) {
+  const press = useLongPress({ onLongPress: onInspect });
+  return (
+    <button
+      type="button"
+      onClick={(event) => {
+        if (press.consumeSuppressedClick(event)) return;
+        onSelect();
+      }}
+      onPointerDown={press.onPointerDown}
+      onPointerMove={press.onPointerMove}
+      onPointerUp={press.onPointerUp}
+      onPointerCancel={press.onPointerCancel}
+      onContextMenu={press.onContextMenu}
+      style={style}
+      className={`select-none ${className}`}
+      data-testid="tab-column"
+      data-selected={selected ? "true" : undefined}
+      data-barline={barline ? "true" : undefined}
+      aria-label={label}
+      aria-current={active ? "true" : undefined}
+    >
+      {children}
     </button>
   );
 }

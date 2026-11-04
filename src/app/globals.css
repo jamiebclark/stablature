@@ -304,3 +304,8 @@ button,
     break-inside: avoid;
   }
 }
+
+/* Long-press on a capture column must not start a text selection or callout. */
+.select-none {
+  -webkit-touch-callout: none;
+}
