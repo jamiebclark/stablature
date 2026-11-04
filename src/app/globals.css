@@ -260,6 +260,21 @@ button,
   background: var(--selection);
 }
 
+.tab-bracket {
+  border-color: var(--text-faint);
+}
+.tab-bracket-label {
+  color: var(--text-faint);
+}
+
+/* --text-faint measures 2.16 and 2.75 on the selection band. */
+.tab-column-selected .tab-bracket {
+  border-color: var(--text-dim);
+}
+.tab-column-selected .tab-bracket-label {
+  color: var(--text-dim);
+}
+
 /* A barline is one vertical rule spanning every string. */
 .tab-barline {
   position: relative;

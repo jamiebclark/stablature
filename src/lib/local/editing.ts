@@ -24,10 +24,14 @@ import type {
   TechniqueMap,
   TuningRow,
 } from "../model";
+import type { GroupKind } from "../model";
+import { NO_GROUP } from "../model";
+import { groupOffer, runEndingAt } from "../capture/grouping";
 import { rankAtEnd, rankBetween } from "../rank";
 import type { Decoration } from "../tab/techniques";
 import { MAX_TECHNIQUES_PER_STRING } from "../tab/techniques";
 import type { TuningPreset } from "../tunings";
+import { columnRange } from "./clipboard";
 import { listAnnotations, listEvents, listParts } from "./queries";
 import {
   deleteRow,
@@ -221,6 +225,7 @@ export async function createVariant(
           durationHint: event.durationHint,
           tupletId: event.tupletId,
           tupletCount: event.tupletCount,
+          groupKind: event.groupKind ?? null,
         },
         inner,
       );
@@ -292,8 +297,7 @@ export async function insertColumn(
       techniques: options.techniques ?? {},
       repeat: Math.max(1, options.repeat ?? 1),
       durationHint: null,
-      tupletId: null,
-      tupletCount: null,
+      ...NO_GROUP,
     },
     ctx,
   );
@@ -373,8 +377,7 @@ export async function appendColumn(
       techniques: {},
       repeat: Math.max(1, options.repeat ?? 1),
       durationHint: null,
-      tupletId: null,
-      tupletCount: null,
+      ...NO_GROUP,
     },
     ctx,
   );
@@ -522,8 +525,7 @@ export async function appendBarline(
       techniques: {},
       repeat: 1,
       durationHint: null,
-      tupletId: null,
-      tupletCount: null,
+      ...NO_GROUP,
     },
     ctx,
   );
@@ -546,36 +548,98 @@ export async function deleteLastColumn(
 }
 
 /**
- * Mark a run of columns as a tuplet.
+ * The one writer behind every grouping action, so the rules exist once.
  *
- * A tuplet is a grouping over columns rather than a change to any column's
- * duration, which is what lets the positional model express triplets at all.
+ * Any group that loses a column to a new one is dissolved whole, so no remnant
+ * is left. All three group fields are patched together, one clock each column.
  */
-export async function groupAsTuplet(
-  events: readonly EventRow[],
-  count = 3,
-  ctx: MutateContext = {},
-): Promise<string | undefined> {
-  const playable = events.filter((event) => event.kind !== "barline");
-  if (playable.length < 2) return undefined;
-
-  const tupletId = newId();
-  await mutateBatch(async (inner) => {
-    for (const event of playable) {
-      await patchRow("events", event.id, { tupletId, tupletCount: count }, inner);
+async function regroup(
+  inner: MutateContext,
+  rows: readonly EventRow[],
+  runs: readonly (readonly EventRow[])[],
+  kind: GroupKind,
+): Promise<string[]> {
+  const joining = new Set(runs.flatMap((run) => run.map((row) => row.id)));
+  const dissolved = new Set<string>();
+  for (const row of rows) if (joining.has(row.id) && row.tupletId) dissolved.add(row.tupletId);
+  for (const row of rows) {
+    if (joining.has(row.id) || !row.tupletId || !dissolved.has(row.tupletId)) continue;
+    await patchRow("events", row.id, { ...NO_GROUP }, inner);
+  }
+  const ids: string[] = [];
+  for (const run of runs) {
+    const tupletId = newId();
+    ids.push(tupletId);
+    for (const row of run) {
+      await patchRow(
+        "events",
+        row.id,
+        { tupletId, tupletCount: kind === "tuplet" ? run.length : null, groupKind: kind },
+        inner,
+      );
     }
-  }, ctx);
-  return tupletId;
+  }
+  return ids;
 }
 
+/**
+ * Group the selection between two columns, in either order. Recomputes
+ * `groupOffer` from stored rows and acts on that.
+ */
+export async function groupSelection(
+  partId: string,
+  anchorId: string,
+  headId: string,
+  kind: GroupKind,
+  ctx: MutateContext = {},
+): Promise<string[]> {
+  let ids: string[] = [];
+  await mutateBatch(async (inner) => {
+    const rows = await listEvents(partId, inner.db);
+    const offer = groupOffer(columnRange(rows, anchorId, headId));
+    const runs = kind === "tuplet" ? (offer.tuplet ? [offer.tuplet] : []) : offer.plain;
+    if (runs.length === 0) return;
+    ids = await regroup(inner, rows, runs, kind);
+  }, ctx);
+  return ids;
+}
+
+/** Make the `count` columns ending at `endId` a counted tuplet. Undefined means no write. */
+export async function groupRunEndingAt(
+  partId: string,
+  endId: string | null,
+  count: number,
+  ctx: MutateContext = {},
+): Promise<string | undefined> {
+  let id: string | undefined;
+  await mutateBatch(async (inner) => {
+    const rows = await listEvents(partId, inner.db);
+    const run = runEndingAt(rows, endId, count);
+    if (!run) return;
+    [id] = await regroup(inner, rows, [run], "tuplet");
+  }, ctx);
+  return id;
+}
+
+/**
+ * Dissolve every group any of these columns is in, across the part they belong
+ * to, whether or not its columns are listed. Ids come from stored rows.
+ */
 export async function ungroupTuplet(
   events: readonly EventRow[],
   ctx: MutateContext = {},
 ): Promise<void> {
   await mutateBatch(async (inner) => {
-    for (const event of events) {
-      if (event.tupletId === null) continue;
-      await patchRow("events", event.id, { tupletId: null, tupletCount: null }, inner);
+    for (const partId of new Set(events.map((event) => event.partId))) {
+      const rows = await listEvents(partId, inner.db);
+      const selected = new Set(events.filter((e) => e.partId === partId).map((e) => e.id));
+      const ids = new Set<string>();
+      for (const row of rows) if (selected.has(row.id) && row.tupletId) ids.add(row.tupletId);
+      for (const row of rows) {
+        if (row.tupletId && ids.has(row.tupletId)) {
+          await patchRow("events", row.id, { ...NO_GROUP }, inner);
+        }
+      }
     }
   }, ctx);
 }
@@ -586,8 +650,7 @@ export async function tripletFromTail(
   count = 3,
   ctx: MutateContext = {},
 ): Promise<string | undefined> {
-  const events = (await listEvents(partId, ctx.db)).filter((e) => e.kind !== "barline");
-  return groupAsTuplet(events.slice(-count), count, ctx);
+  return groupRunEndingAt(partId, null, count, ctx);
 }
 
 /* ---------- annotations ---------- */

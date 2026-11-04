@@ -30,7 +30,7 @@ export function ColumnInspector({ properties, ctx, title, onClose, onActionDone 
           data-property-row
           className="flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle pb-3"
         >
-          <span className="text-sm text-text-dim">{property.label}</span>
+          <span className="text-sm text-text-dim">{property.heading?.(ctx) ?? property.label}</span>
           <Control property={property} ctx={ctx} onClose={onClose} onActionDone={onActionDone} />
         </div>
       ))}

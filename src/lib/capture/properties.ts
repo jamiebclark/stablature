@@ -1,11 +1,17 @@
-import { bumpColumnRepeat, deleteColumn, setChord, toggleDecoration } from "@/lib/local/editing";
-import type { AnnotationRow, EventRow, PartRow } from "@/lib/model";
+import {
+  bumpColumnRepeat,
+  deleteColumn,
+  setChord,
+  toggleDecoration,
+  ungroupTuplet,
+} from "@/lib/local/editing";
+import { groupNumber, type AnnotationRow, type EventRow, type PartRow } from "@/lib/model";
 import { DECORATIONS, type Decoration } from "@/lib/tab/techniques";
 import { noteLabel } from "@/lib/pitch";
 import type { Tuning } from "@/lib/tunings";
 import { appliesTo, type CursorTarget, type Scope } from "./target";
 
-export type ColumnPropertyId = "repeat" | "chord" | "decorations" | "delete";
+export type ColumnPropertyId = "repeat" | "chord" | "decorations" | "group" | "delete";
 
 export interface PropertyContext {
   readonly part: Pick<PartRow, "id" | "bandId">;
@@ -54,6 +60,8 @@ export interface ColumnProperty {
   commit(ctx: PropertyContext, value: PropertyValue): Promise<void>;
   /** Declared by a "toggles" control. */
   toggles?(ctx: PropertyContext): readonly ColumnToggleGroup[];
+  /** Replaces `label` in the row's left cell. Absent means `label`. */
+  heading?(ctx: PropertyContext): string;
   /** Narrows `scope` for one column. Absent means every column the scope allows. */
   appliesToColumn?(event: EventRow): boolean;
 }
@@ -121,6 +129,23 @@ export const COLUMN_PROPERTIES: readonly ColumnProperty[] = [
     commit: async (ctx, value) => {
       const change = value as DecorationChange;
       await toggleDecoration(ctx.event.id, change.stringIndex, change.decoration);
+    },
+  },
+  {
+    id: "group",
+    label: "ungroup",
+    ariaLabel: "ungroup",
+    scope: "column-property",
+    control: "action",
+    destructive: false,
+    read: () => null,
+    appliesToColumn: (event) => event.tupletId !== null,
+    heading: (ctx) => {
+      const n = groupNumber(ctx.event);
+      return n === null ? "plain group" : `tuplet of ${n}`;
+    },
+    commit: async (ctx) => {
+      await ungroupTuplet([ctx.event]);
     },
   },
   {

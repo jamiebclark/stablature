@@ -19,7 +19,7 @@
  *    inside a bar.
  */
 
-import { fretAt, type AnnotationRow, type EventKind, type EventRow } from "../model";
+import { fretAt, groupNumber, type AnnotationRow, type EventKind, type EventRow } from "../model";
 import { stringCount, type Tuning } from "../tunings";
 import { decorate, drawnDecorations, drawnTransition } from "./techniques";
 
@@ -40,6 +40,8 @@ export interface TabColumn {
   chord: string | null;
   tupletId: string | null;
   tupletCount: number | null;
+  /** What the group prints over this column: its count, or null for a plain group or none. */
+  bracketNumber: number | null;
   /**
    * Which pass of a repeat this is, 0-indexed. Always 0 in compact density.
    * Lets the editor highlight one repetition without splitting the row.
@@ -156,6 +158,7 @@ export function layoutPart({
         chord: null,
         tupletId: null,
         tupletCount: null,
+        bracketNumber: null,
         repetition: 0,
         repeat: 1,
         connectors: Array.from({ length: strings }, () => null),
@@ -198,6 +201,7 @@ export function layoutPart({
         chord,
         tupletId: event.tupletId,
         tupletCount: event.tupletCount,
+        bracketNumber: event.tupletId ? groupNumber(event) : null,
         repetition: 0,
         repeat,
         connectors,
@@ -218,6 +222,7 @@ export function layoutPart({
         chord: repetition === 0 ? chord : null,
         tupletId: event.tupletId,
         tupletCount: event.tupletCount,
+        bracketNumber: event.tupletId ? groupNumber(event) : null,
         repetition,
         repeat,
         connectors,
@@ -242,7 +247,8 @@ export function layoutPart({
  */
 export interface TupletSpan {
   tupletId: string;
-  count: number;
+  /** The number the bracket prints; null for a plain group. */
+  count: number | null;
   /** Inclusive column indices. */
   start: number;
   end: number;
@@ -263,7 +269,7 @@ export function tupletSpans(layout: TabLayout): TupletSpan[] {
     }
     current = {
       tupletId: column.tupletId,
-      count: column.tupletCount ?? 3,
+      count: column.bracketNumber,
       start: index,
       end: index,
     };
