@@ -69,6 +69,55 @@ landed alone, so no toggle flipped on a simulated finger lift.
 
 ---
 
+### Entry 3: generalised-grouping (PR #3, `eaa56ba`)
+
+Checked at a true 375×667 viewport, dark and light (same iframe and token copy as
+above), on a new six-string part of 23 columns. Touch is simulated, so this proves
+appearance, not how it feels under a thumb.
+
+Holds: any-size bracket from a six-column selection, with the selection ended and
+the cursor unmoved; plain bracket; plain to numbered on the same columns; a selection
+across a barline drops the numbered control and makes one bracket per bar; `ungroup`
+from two columns removes the whole bracket; the sheet reads `tuplet of 6` and its
+`ungroup` closes it; the triplet button makes no bracket from two notes, shows
+`a triplet needs three columns in one bar`, and the message clears on the next tap;
+16 offers a numbered control and 17 does not. Plain brackets show on capture, the
+song page in both densities and the play view, and over a selected column. The empty
+bracket reads as a bracket. All seven controls fit on one line, unwrapped.
+
+Not checked: the `,-----,` export by eye (unit tests cover it); the control's digits
+at 3 and 16 by eye (seen at 2, 4, 6, 8 and 10; 16 confirmed by its label only); whether
+copy, cut and delete feel right, and thumb comfort, which need a real phone. T056,
+the Postgres sync item, was run by the review, not by me.
+
+**Worth your eye:**
+
+- **Bracket numerals are faint.** 10.4px text at about 3.4:1 in light (`#8a8a94` on
+  white) and roughly 3.5:1 in dark, under the 4.5:1 AA needs for text this size. They
+  are legible but they are the weakest thing on the staff, and the number is the whole
+  point of a tuplet. Added to entry 7.
+- **A new bracket can land out of sight on six strings.** At rest the band shows the
+  low strings, so making a group gives no visible result until you swipe up. Confirmed
+  on the real flow. Already in entry 7.
+- **The two bracket controls are 28px wide.** Above the 24px floor, well under 44px, and
+  they sit side by side. Added to entry 7.
+
+### Calls made while you were away (2026-11-04)
+
+- **Six strings at 375×667: reachable by swipe.** You chose this; FR-020, SC-009 and
+  INV-013 were amended in `specs/003`.
+- **T021 and T023 narrowed, T057 and T058 added.** **Worth your eye.** Implement stalled
+  on two broad tasks, so I cut each to what was done and moved the rest to new tasks.
+  Nothing was dropped.
+- **Entry 7, `usability-pass`, added after `reading-aids`.** **Worth your eye.** You
+  asked for it; the contents are my reading. It audits every screen first, recovers
+  height on capture, sets density by pointer rather than width, and closes the defects
+  logged here. From Songsterr it takes ideas only: a collapsible control cluster,
+  desktop keyboard shortcuts, bar numbers and section labels, a reading cursor, and
+  width-filling tab in the play view. I saw Songsterr on desktop only, not its phone
+  layout. The capture toolbars stay as a judgement call for that spec, because capture
+  speed depends on one-tap controls.
+
 ## 2026-11-02 — session with Jamie away
 
 ### Process
