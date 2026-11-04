@@ -39,9 +39,33 @@ a simulated long press followed by the finger-lift click, which was review F2.
   truncate. Review F23 records `main` doing the same, so it is not new, but it is
   the wrapped-label look this file calls a layout bug. Entry 2's longer latch
   messages may make it more common.
-- **No release from this merge, most likely.** The squash subject is the PR title,
-  with no `feat:` type, so semantic-release should see nothing to release. Every
-  roadmap entry will land the same way.
+- **No release came from this merge.** The squash subject took the PR title, with no
+  `feat:` type, so semantic-release had nothing to publish. This happened because my
+  extra roadmap commit made it a two-commit PR. A single-commit PR keeps its
+  `feat(...)` subject, as PR #2 did, so entry 1 reaches the changelog only if a later
+  release picks it up by hand.
+
+### Entry 2: playing-techniques (PR #2, `421b130`)
+
+Same setup, on a five-string part with all four connectors and all six decorations:
+`5 h 7 p 5 / 9 \ 5 7~ <7> (7) 7b t7 7m`. T048 is still unticked on `main`, because
+its last item needs a real phone.
+
+Holds, in dark and light: all four connectors can be told apart and `/` and `\` stay
+crisp; `t7` reads differently from `5h7`; all five chips sit on one line and are
+legible lit and unlit; toggles read on and off by fill, not hue; connectors stay
+legible inside a selection and on the song page's raised surface. Each decoration
+landed alone, so no toggle flipped on a simulated finger lift.
+
+**Worth your eye:**
+
+- **Hold a column and lift, on a real phone.** The last item of T048. Only simulated
+  here.
+- **A selection hides the top string.** With a selection up, G is out of view and four
+  of five strings show. F18 measured `main` hiding one too, so this is not new.
+- **Chord symbols truncate on narrow columns.** "Em7" reads "Em…" on capture and "E…"
+  on the song page, which hides the chord. The `truncate` class is on `main` from
+  before this roadmap, so it is not new, but later entries add no fix for it.
 
 ---
 
