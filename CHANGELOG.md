@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/jamiebclark/stablature/compare/v1.6.0...v1.7.0) (2026-11-04)
+
+
+### Features
+
+* **generalised-grouping:** generalised note grouping, not just triplets ([#3](https://github.com/jamiebclark/stablature/issues/3)) ([eaa56ba](https://github.com/jamiebclark/stablature/commit/eaa56bad4d6f950f9b405789863ab20ead09a11b))
+
 # [1.6.0](https://github.com/jamiebclark/stablature/compare/v1.5.2...v1.6.0) (2026-11-04)
 
 
