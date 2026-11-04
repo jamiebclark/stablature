@@ -39,7 +39,7 @@ describe("isPresent", () => {
 });
 
 describe("TOOLBAR_CONTROLS", () => {
-  it("declares the five stable controls before the four contextual ones, in DOM order", () => {
+  it("declares the five stable controls before the five contextual ones, in DOM order", () => {
     expect(TOOLBAR_CONTROLS.map((c) => c.id)).toEqual([
       "space",
       "barline",
@@ -50,6 +50,7 @@ describe("TOOLBAR_CONTROLS", () => {
       "repeat",
       "times4",
       "chord",
+      "inspect",
     ]);
   });
 });

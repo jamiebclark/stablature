@@ -141,3 +141,18 @@ describe("LatchStrip layout (INV-015)", () => {
     for (const c of deadCells) expect(c.disabled).toBe(true);
   });
 });
+
+describe("LatchStrip with the real transition chips (INV-025)", () => {
+  it("renders every declared latch, glyph chips in mono, without reading ids", async () => {
+    const { LATCHES } = await import("@/lib/capture/latches");
+    const r = render(
+      <LatchStrip latches={LATCHES} lit={new Set(["hammer_on"] as LatchId[])} target={target} onToggle={() => {}} />,
+    );
+    const cells = [...r.getByTestId("latch-strip").querySelectorAll("button")];
+    expect(cells).toHaveLength(5);
+    expect(cells.map((c) => c.textContent)).toEqual(["stack", "h", "p", "/", "\\"]);
+    expect(cells[1].getAttribute("aria-pressed")).toBe("true");
+    expect(cells[1].className).toContain("font-mono");
+    expect(cells[0].className).not.toContain("font-mono");
+  });
+});

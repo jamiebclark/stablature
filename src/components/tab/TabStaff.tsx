@@ -69,6 +69,12 @@ export function TabStaff({
 
   const scroller = useRef<HTMLDivElement>(null);
   const columnCount = layout.columns.length;
+  // Drawn width: the widest cells plus any connector gaps, so a widened tail
+  // (a decorated note, a new connector) stays in view too.
+  const drawnWidth = layout.columns.reduce(
+    (total, column) => total + column.width + (column.connectors.some(Boolean) ? 1 : 0),
+    0,
+  );
 
   useEffect(() => {
     if (!followTail) return;
@@ -77,7 +83,7 @@ export function TabStaff({
     // Capture appends to the right, so the newest column is the one that
     // matters. Jumping to the end beats asking the user to chase it.
     el.scrollLeft = el.scrollWidth;
-  }, [followTail, columnCount]);
+  }, [followTail, columnCount, drawnWidth]);
 
   const hasChords = layout.columns.some((column) => column.chord !== null);
   const hasTuplets = spans.length > 0;
@@ -134,9 +140,23 @@ export function TabStaff({
             ) : (
               layout.columns.map((column, index) => {
                 const span = spanAt(index);
+                const previous = layout.columns[index - 1];
                 return (
                   <Fragment key={`${column.eventId}-${column.repetition}`}>
+                  {column.connectors.some(Boolean) ? (
+                    <Gap
+                      connectors={column.connectors}
+                      showChordRow={hasChords}
+                      showTupletRow={hasTuplets}
+                      bracket={!!span && !!previous && spanAt(index - 1) === span}
+                      selected={selectedEventIds?.has(column.eventId) ?? false}
+                      active={
+                        column.eventId === activeEventId && previous?.eventId === column.eventId
+                      }
+                    />
+                  ) : null}
                   <Column
+                    label={column.description}
                     cells={column.cells}
                     width={column.width}
                     chord={column.chord}
@@ -185,6 +205,7 @@ function offsetFor(hasChords: boolean, hasTuplets: boolean): string {
 }
 
 interface ColumnProps {
+  label: string;
   cells: (string | null)[];
   width: number;
   chord: string | null;
@@ -199,6 +220,7 @@ interface ColumnProps {
 }
 
 function Column({
+  label,
   cells,
   width,
   chord,
@@ -265,6 +287,8 @@ function Column({
         data-testid="tab-column"
         data-selected={selected ? "true" : undefined}
         data-barline={barline ? "true" : undefined}
+        role="img"
+        aria-label={label}
       >
         {body}
       </div>
@@ -283,7 +307,7 @@ function Column({
         selected={selected}
         barline={barline}
         active={active}
-        label={describe(cells, barline)}
+        label={label}
       >
         {body}
       </InspectableColumn>
@@ -299,7 +323,7 @@ function Column({
       data-testid="tab-column"
       data-selected={selected ? "true" : undefined}
       data-barline={barline ? "true" : undefined}
-      aria-label={describe(cells, barline)}
+      aria-label={label}
       aria-current={active ? "true" : undefined}
     >
       {body}
@@ -342,6 +366,14 @@ function InspectableColumn({
       onPointerUp={press.onPointerUp}
       onPointerCancel={press.onPointerCancel}
       onContextMenu={press.onContextMenu}
+      onKeyDown={(event) => {
+        if (event.key === "ContextMenu" || (event.key === "F10" && event.shiftKey)) {
+          event.preventDefault();
+          onInspect();
+        }
+      }}
+      aria-keyshortcuts="Shift+F10"
+      aria-haspopup="dialog"
       style={style}
       className={`select-none ${className}`}
       data-testid="tab-column"
@@ -352,6 +384,55 @@ function InspectableColumn({
     >
       {children}
     </button>
+  );
+}
+
+/**
+ * The one character between two columns. Decorative: the arriving column's
+ * label already says what the connector means, so this is hidden from
+ * assistive tech and takes no input.
+ */
+function Gap({
+  connectors,
+  showChordRow,
+  showTupletRow,
+  bracket,
+  selected,
+  active,
+}: {
+  connectors: (string | null)[];
+  showChordRow: boolean;
+  showTupletRow: boolean;
+  bracket: boolean;
+  selected: boolean;
+  active: boolean;
+}) {
+  return (
+    <div
+      style={{ width: "1ch" }}
+      className={`tab-connector shrink-0 ${columnClass(active, selected) ?? ""}`.trim()}
+      data-testid="tab-connector"
+      aria-hidden
+    >
+      {showChordRow ? <div className="h-[1.1rem]" /> : null}
+      {showTupletRow ? (
+        <div className="relative h-[1.1rem]">
+          {bracket ? (
+            <div
+              className="absolute inset-x-0 bottom-[0.2rem] border-t border-text-faint"
+              style={{ height: "0.3rem" }}
+            />
+          ) : null}
+        </div>
+      ) : null}
+      <div>
+        {connectors.map((glyph, index) => (
+          <div key={index} className="tab-cell">
+            {glyph ? <span>{glyph}</span> : null}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -384,13 +465,4 @@ function EmptyStaff({ stringCount, offset }: { stringCount: number; offset: stri
       ))}
     </div>
   );
-}
-
-/** Screen-reader description of a column, read when stepping through a part. */
-function describe(cells: (string | null)[], barline: boolean): string {
-  if (barline) return "Barline";
-  const played = cells
-    .map((text, index) => (text === null ? null : `string ${index + 1} fret ${text}`))
-    .filter(Boolean);
-  return played.length === 0 ? "Empty column" : played.join(", ");
 }

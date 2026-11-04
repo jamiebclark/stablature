@@ -25,6 +25,7 @@ import {
   Copy,
   Delete,
   Scissors,
+  SlidersHorizontal,
   SquareDashedMousePointer,
   Trash2,
 } from "lucide-react";
@@ -64,10 +65,20 @@ import {
   useSongTuning,
 } from "@/lib/local/hooks";
 import type { AnnotationRow, EventRow, FretValue, PartRow } from "@/lib/model";
-import { LATCHES, litLatches, type LatchId } from "@/lib/capture/latches";
+import type { Tuning } from "@/lib/tunings";
+import {
+  LATCHES,
+  armLatch,
+  cursorPending,
+  litLatches,
+  nextNote,
+  prunedArmed,
+  statusFor,
+  type LatchId,
+} from "@/lib/capture/latches";
 import { isPresent, TOOLBAR_CONTROLS } from "@/lib/capture/controls";
 import { COLUMN_PROPERTIES, propertiesFor, type ColumnProperty } from "@/lib/capture/properties";
-import { resolveTarget, targetEvent } from "@/lib/capture/target";
+import { resolveTarget } from "@/lib/capture/target";
 import { Fretboard } from "./Fretboard";
 import { nextCursorAfterDelete } from "@/lib/capture/cursor";
 import { ColumnInspector } from "./ColumnInspector";
@@ -94,6 +105,8 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
 
   const [cursor, setCursor] = useState<Cursor>("end");
   const [armed, setArmed] = useState<ReadonlySet<LatchId>>(() => new Set());
+  /** The last cursor column seen in `columns`: tells "not delivered yet" from "really gone". */
+  const [deliveredId, setDeliveredId] = useState<string | null>(null);
   /** An event id, never a copy of the row: deleting it elsewhere closes the sheet. */
   const [inspecting, setInspecting] = useState<string | null>(null);
   const [chordDraft, setChordDraft] = useState<string | null>(null);
@@ -138,7 +151,9 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
    * (a sync delete, a part opened from elsewhere). Adjusting state during
    * render is the documented way to derive it from a changing value.
    */
-  if ([...armed].some((id) => !lit.has(id))) setArmed(new Set(lit));
+  if (focused && focused.id !== deliveredId) setDeliveredId(focused.id);
+  const pruned = prunedArmed(armed, lit, cursorPending(afterId, focused?.id, deliveredId));
+  if (pruned !== armed) setArmed(pruned);
   const inspected = inspecting ? (columns.find((c) => c.id === inspecting) ?? null) : null;
   const afterInspectorAction = (property: ColumnProperty) => {
     if (property.destructive && inspected) {
@@ -146,7 +161,9 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
     }
   };
   const propCtx =
-    part && editable ? { part, event: editable, annotations: annotations ?? [] } : null;
+    part && editable && tuning
+      ? { part, event: editable, annotations: annotations ?? [], tuning }
+      : null;
   const props = propertiesFor(target);
   const deleteProp = COLUMN_PROPERTIES.find((p) => p.id === "delete");
   const repeatProp = props.find((p) => p.id === "repeat");
@@ -154,15 +171,10 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
   const presentIds = new Set(
     TOOLBAR_CONTROLS.filter((c) => isPresent(c, target)).map((c) => c.id),
   );
-  const litLatch = LATCHES.find((latch) => lit.has(latch.id));
+  const status = statusFor(lit);
 
   const toggleLatch = (id: LatchId) => {
-    setArmed((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+    setArmed((prev) => armLatch(prev, id));
   };
 
   /*
@@ -199,21 +211,27 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
   const press = useCallback(
     async (stringIndex: number, fret: FretValue) => {
       if (!part) return;
-      if (lit.has("stack")) {
-        /*
-         * Stays armed. A three-note chord is the common case this exists for,
-         * and disarming after each note made it cost two mode toggles. The
-         * chip is lit while it is on and the status line says so, so this is
-         * visible state rather than a trap -- and it disarms itself on any
-         * action that means you have moved on.
-         */
-        const event = targetEvent("next-note", target);
-        if (event) {
-          await stackNote(event, stringIndex, fret);
-          return;
-        }
+      const next = nextNote(lit, target);
+      /*
+       * A transition is one-shot: disarm it before awaiting the write, so a
+       * second tap in the same tick cannot store it twice. Stack stays armed
+       * -- a three-note chord is the common case it exists for -- and
+       * disarms itself on any action that means you have moved on.
+       */
+      if (next.consumed.length > 0) {
+        setArmed((prev) => {
+          const rest = new Set(prev);
+          for (const id of next.consumed) rest.delete(id);
+          return rest;
+        });
       }
-      const inserted = await insertNote(part, columns, afterId, stringIndex, fret);
+      if (next.stackOnto) {
+        await stackNote(next.stackOnto, stringIndex, fret, { techniques: next.techniques });
+        return;
+      }
+      const inserted = await insertNote(part, columns, afterId, stringIndex, fret, {
+        techniques: next.techniques,
+      });
       advance(inserted.id);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -370,9 +388,9 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
         </div>
       ) : part ? (
         <div className="flex items-center gap-2 border-t border-border-subtle px-3 py-1 text-[0.7rem]">
-          <span className={litLatch || !atEnd ? "text-accent" : "text-text-faint"}>
-            {litLatch
-              ? litLatch.statusText
+          <span className={status || !atEnd ? "text-accent" : "text-text-faint"}>
+            {status
+              ? status
               : atEnd
                 ? "adding at the end"
                 : afterId === null
@@ -505,7 +523,8 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
           onClick={async () => {
             if (!focused || !part) return;
             const next = nextCursorAfterDelete(columns, focused.id, cursor);
-            await deleteProp?.commit({ part, event: focused, annotations: [] }, "");
+            if (!tuning) return;
+            await deleteProp?.commit({ part, event: focused, annotations: [], tuning }, "");
             setCursor(next);
           }}
           aria-label={atEnd ? "Delete the last column" : "Delete the marked column"}
@@ -588,6 +607,17 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
               chord symbol
             </Button>
           ) : null}
+
+          {presentIds.has("inspect") ? (
+            <Button
+              onClick={() => setInspecting(editable.id)}
+              className="min-h-11 min-w-11"
+              title="Open column details"
+              aria-label="Open column details"
+            >
+              <SlidersHorizontal size={17} aria-hidden />
+            </Button>
+          ) : null}
         </div>
       ) : (
         /* Reserves row 2's height so the stable row above never moves (INV-003). */
@@ -598,6 +628,7 @@ export function CaptureScreen({ songId, partId }: { songId: string; partId?: str
         inspected={inspected}
         part={part}
         annotations={annotations}
+        tuning={tuning}
         index={columns.findIndex((c) => c.id === inspecting)}
         onActionDone={afterInspectorAction}
         onClose={() => setInspecting(null)}
@@ -627,6 +658,7 @@ function InspectorSheet({
   inspected,
   part,
   annotations,
+  tuning,
   index,
   onActionDone,
   onClose,
@@ -634,6 +666,7 @@ function InspectorSheet({
   inspected: EventRow | null;
   part: PartRow | null;
   annotations: readonly AnnotationRow[] | undefined;
+  tuning: Tuning;
   index: number;
   onActionDone: (property: ColumnProperty) => void;
   onClose: () => void;
@@ -645,7 +678,7 @@ function InspectorSheet({
         <ColumnInspector
           title={barline ? "Barline" : `Column ${index + 1}`}
           properties={propertiesFor(resolveTarget(part, [inspected], inspected.id))}
-          ctx={{ part, event: inspected, annotations: annotations ?? [] }}
+          ctx={{ part, event: inspected, annotations: annotations ?? [], tuning }}
           onActionDone={onActionDone}
           onClose={onClose}
         />

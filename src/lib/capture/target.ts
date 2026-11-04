@@ -12,7 +12,7 @@ export type CursorTarget =
   | { readonly kind: "playable"; readonly event: EventRow }
   | { readonly kind: "barline"; readonly event: EventRow };
 
-export type Scope = "column-property" | "next-note" | "part";
+export type Scope = "column-property" | "next-note" | "transition" | "part";
 
 /**
  * What the cursor resolves to. `afterId` is the id of the column to insert
@@ -39,6 +39,7 @@ export function resolveTarget(
 const APPLICABILITY: Record<Scope, Record<CursorTarget["kind"], boolean>> = {
   "column-property": { "no-part": false, "no-column": false, playable: true, barline: false },
   "next-note": { "no-part": false, "no-column": false, playable: true, barline: false },
+  transition: { "no-part": false, "no-column": false, playable: true, barline: true },
   part: { "no-part": false, "no-column": true, playable: true, barline: true },
 };
 

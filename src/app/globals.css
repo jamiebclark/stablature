@@ -206,6 +206,12 @@ button,
   background: var(--bg-raised);
 }
 
+/* A hammer-on, pull-off or slide sits between two columns, in the fret numbers' ink. */
+.tab-connector .tab-cell > span {
+  padding-inline: 0;
+  font-weight: 600;
+}
+
 /*
  * The capture cursor.
  *
