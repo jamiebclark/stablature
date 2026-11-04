@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/jamiebclark/stablature/compare/v1.5.2...v1.6.0) (2026-11-04)
+
+
+### Features
+
+* **playing-techniques:** playing techniques: hammer-ons, pull-offs, slides, taps and decorations ([#2](https://github.com/jamiebclark/stablature/issues/2)) ([421b130](https://github.com/jamiebclark/stablature/commit/421b1306e6f6b68db05c6ceaa944e299afbf81de))
+
 ## [1.5.2](https://github.com/jamiebclark/stablature/compare/v1.5.1...v1.5.2) (2026-11-02)
 
 
