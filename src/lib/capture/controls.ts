@@ -9,7 +9,8 @@ export type ToolbarControlId =
   | "triplet"
   | "repeat"
   | "times4"
-  | "chord"; // contextual, row 2, in this order
+  | "chord"
+  | "inspect"; // contextual, row 2, in this order
 
 export interface ToolbarControl {
   readonly id: ToolbarControlId;
@@ -17,7 +18,7 @@ export interface ToolbarControl {
   readonly scope: Scope;
 }
 
-/** Declaration order IS DOM order: all five stable controls, then all four contextual. */
+/** Declaration order IS DOM order: all five stable controls, then all five contextual. */
 export const TOOLBAR_CONTROLS: readonly ToolbarControl[] = [
   { id: "space", group: "stable", scope: "part" },
   { id: "barline", group: "stable", scope: "part" },
@@ -28,6 +29,7 @@ export const TOOLBAR_CONTROLS: readonly ToolbarControl[] = [
   { id: "repeat", group: "contextual", scope: "column-property" },
   { id: "times4", group: "contextual", scope: "column-property" },
   { id: "chord", group: "contextual", scope: "column-property" },
+  { id: "inspect", group: "contextual", scope: "column-property" },
 ];
 
 /** Present iff stable, or applicable. */

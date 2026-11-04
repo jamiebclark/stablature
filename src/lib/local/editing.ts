@@ -20,9 +20,13 @@ import type {
   FretValue,
   PartRow,
   SongRow,
+  Technique,
+  TechniqueMap,
   TuningRow,
 } from "../model";
 import { rankAtEnd, rankBetween } from "../rank";
+import type { Decoration } from "../tab/techniques";
+import { MAX_TECHNIQUES_PER_STRING } from "../tab/techniques";
 import type { TuningPreset } from "../tunings";
 import { listAnnotations, listEvents, listParts } from "./queries";
 import {
@@ -264,7 +268,7 @@ export async function insertColumn(
   events: readonly EventRow[],
   afterEventId: string | null,
   frets: FretMap,
-  options: { repeat?: number; kind?: EventRow["kind"] } = {},
+  options: { repeat?: number; kind?: EventRow["kind"]; techniques?: TechniqueMap } = {},
   ctx: MutateContext = {},
 ): Promise<EventRow> {
   const index = afterEventId ? events.findIndex((event) => event.id === afterEventId) : -1;
@@ -285,7 +289,7 @@ export async function insertColumn(
       rank: rankBetween(before?.rank ?? null, after?.rank ?? null),
       kind: options.kind ?? "notes",
       frets,
-      techniques: {},
+      techniques: options.techniques ?? {},
       repeat: Math.max(1, options.repeat ?? 1),
       durationHint: null,
       tupletId: null,
@@ -295,6 +299,9 @@ export async function insertColumn(
   );
 }
 
+/** A note write may carry the transitions the note arrives with. */
+export type NoteWrite = MutateContext & { techniques?: readonly Technique[] };
+
 /** Insert a single note at the cursor. The common gesture while editing. */
 export async function insertNote(
   part: Pick<PartRow, "id" | "bandId">,
@@ -302,9 +309,18 @@ export async function insertNote(
   afterEventId: string | null,
   stringIndex: number,
   fret: FretValue,
-  ctx: MutateContext = {},
+  write: NoteWrite = {},
 ): Promise<EventRow> {
-  return insertColumn(part, events, afterEventId, { [String(stringIndex)]: fret }, {}, ctx);
+  const { techniques, ...ctx } = write;
+  const key = String(stringIndex);
+  return insertColumn(
+    part,
+    events,
+    afterEventId,
+    { [key]: fret },
+    techniques && techniques.length > 0 ? { techniques: { [key]: [...techniques] } } : {},
+    ctx,
+  );
 }
 
 /**
@@ -385,20 +401,37 @@ export async function stackNote(
   event: EventRow,
   stringIndex: number,
   fret: FretValue,
-  ctx: MutateContext = {},
+  write: NoteWrite = {},
 ): Promise<EventRow> {
-  return patchRow(
-    "events",
-    event.id,
-    {
-      frets: { ...event.frets, [String(stringIndex)]: fret },
-      // A space with a note on it is no longer a space. Leaving the kind alone
-      // would give a column that renders as notes but reads as a rest to
-      // anything inspecting it later.
-      ...(event.kind === "rest" ? { kind: "notes" as const } : {}),
-    },
-    ctx,
-  );
+  const { techniques, ...ctx } = write;
+  const key = String(stringIndex);
+  let updated: EventRow = event;
+
+  // Read inside the transaction, so the patch is built from what is stored
+  // rather than from the row the caller rendered.
+  await mutateBatch(async (inner) => {
+    const row = ((await inner.db.events.get(event.id)) as EventRow | undefined) ?? event;
+    const map: TechniqueMap = { ...row.techniques };
+    if (techniques && techniques.length > 0) map[key] = [...techniques];
+    else delete map[key];
+
+    const changed = JSON.stringify(map) !== JSON.stringify(row.techniques);
+    updated = await patchRow(
+      "events",
+      event.id,
+      {
+        frets: { ...row.frets, [key]: fret },
+        // A space with a note on it is no longer a space. Leaving the kind alone
+        // would give a column that renders as notes but reads as a rest to
+        // anything inspecting it later.
+        ...(row.kind === "rest" ? { kind: "notes" as const } : {}),
+        ...(changed ? { techniques: map } : {}),
+      },
+      inner,
+    );
+  }, ctx);
+
+  return updated;
 }
 
 /** Remove one string from a column, deleting the column if it empties. */
@@ -407,13 +440,52 @@ export async function unstackNote(
   stringIndex: number,
   ctx: MutateContext = {},
 ): Promise<void> {
+  const key = String(stringIndex);
   const frets = { ...event.frets };
-  delete frets[String(stringIndex)];
+  delete frets[key];
   if (Object.keys(frets).length === 0) {
     await deleteRow("events", event.id, ctx);
     return;
   }
-  await patchRow("events", event.id, { frets }, ctx);
+  const techniques = { ...event.techniques };
+  const hadTechniques = key in techniques;
+  delete techniques[key];
+  await patchRow("events", event.id, hadTechniques ? { frets, techniques } : { frets }, ctx);
+}
+
+/**
+ * Turn one decoration on or off for one string of a column.
+ *
+ * Takes an id, never a row, and reads inside the transaction: two quick taps
+ * serialise, the second seeing the first, so they land as on then off. Only
+ * `techniques` is patched, and nothing is written when nothing changes.
+ */
+export async function toggleDecoration(
+  eventId: string,
+  stringIndex: number,
+  decoration: Decoration,
+  ctx: MutateContext = {},
+): Promise<void> {
+  const key = String(stringIndex);
+  await mutateBatch(async (inner) => {
+    const row = (await inner.db.events.get(eventId)) as EventRow | undefined;
+    if (!row || row.deletedAt) return;
+    if (row.frets[key] === undefined) return;
+
+    const list = row.techniques[key] ?? [];
+    let next: Technique[];
+    if (list.includes(decoration)) {
+      next = list.filter((t) => t !== decoration);
+    } else {
+      if (list.length >= MAX_TECHNIQUES_PER_STRING) return;
+      next = [...list, decoration];
+    }
+
+    const map: TechniqueMap = { ...row.techniques };
+    if (next.length === 0) delete map[key];
+    else map[key] = next;
+    await patchRow("events", eventId, { techniques: map }, inner);
+  }, ctx);
 }
 
 export async function setColumnRepeat(

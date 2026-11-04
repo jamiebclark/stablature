@@ -125,12 +125,19 @@ export function Sheet({
   // Whether the press now ending began on the backdrop. The click that finishes
   // the press which OPENED the sheet (a long press) never did, so it must not dismiss.
   const pressBeganOnBackdrop = useRef(false);
+  // Whether a press began anywhere inside the dialog. A pointer click whose press
+  // began elsewhere (a long press on the staff, released over a control the
+  // sheet opened under the finger) is not a tap on that control.
+  const pressBeganInside = useRef(false);
 
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
-    else if (!open && dialog.open) dialog.close();
+    if (open && !dialog.open) {
+      // A press record from an earlier opening must not license this one's release.
+      pressBeganInside.current = false;
+      dialog.showModal();
+    } else if (!open && dialog.open) dialog.close();
   }, [open]);
 
   return (
@@ -138,15 +145,27 @@ export function Sheet({
       ref={ref}
       aria-label={label}
       onClose={onClose}
+      onPointerCancel={() => {
+        pressBeganInside.current = false;
+      }}
       onPointerDown={(e) => {
+        pressBeganInside.current = true;
         pressBeganOnBackdrop.current = e.target === e.currentTarget;
+      }}
+      onClickCapture={(e) => {
+        const stray = e.detail !== 0 && !pressBeganInside.current;
+        pressBeganInside.current = false;
+        if (stray) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
       }}
       onClick={(e) => {
         const dismiss = pressBeganOnBackdrop.current && e.target === e.currentTarget;
         pressBeganOnBackdrop.current = false;
         if (dismiss) e.currentTarget.close();
       }}
-      className="m-0 mt-auto w-full max-w-none rounded-t-xl border border-border-subtle bg-bg p-0 text-text backdrop:bg-black/50"
+      className="m-0 mt-auto max-h-dvh w-full max-w-none overflow-y-auto overscroll-contain rounded-t-xl border border-border-subtle bg-bg p-0 text-text backdrop:bg-black/50"
     >
       {open ? children : null}
     </dialog>

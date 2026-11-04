@@ -36,7 +36,7 @@ export function LatchStrip({ latches, lit, target, onToggle, disabled = false }:
             aria-pressed={armed}
             aria-label={latch.ariaLabel}
             title={latch.title}
-            className={`whitespace-nowrap rounded px-1 py-1.5 text-[0.7rem] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+            className={`whitespace-nowrap rounded px-1 py-1.5 ${latch.transition ? "font-mono text-sm leading-[1.05rem]" : "text-[0.7rem]"} font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
               armed
                 ? "border border-accent bg-accent text-accent-text"
                 : "border border-border-subtle bg-bg-raised text-text"

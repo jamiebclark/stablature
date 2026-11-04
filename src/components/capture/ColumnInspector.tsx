@@ -18,7 +18,7 @@ export interface ColumnInspectorProps {
 export function ColumnInspector({ properties, ctx, title, onClose, onActionDone }: ColumnInspectorProps) {
   return (
     <div data-testid="column-inspector" className="flex flex-col gap-3 p-4">
-      <div className="flex items-center justify-between">
+      <div className="sticky top-0 z-10 flex items-center justify-between bg-bg">
         <h2 className="text-sm font-semibold">{title}</h2>
         <Button variant="ghost" className="px-2 py-1 text-xs" onClick={onClose}>
           close
@@ -28,7 +28,7 @@ export function ColumnInspector({ properties, ctx, title, onClose, onActionDone 
         <div
           key={property.id}
           data-property-row
-          className="flex items-center justify-between gap-3 border-b border-border-subtle pb-3"
+          className="flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle pb-3"
         >
           <span className="text-sm text-text-dim">{property.label}</span>
           <Control property={property} ctx={ctx} onClose={onClose} onActionDone={onActionDone} />
@@ -80,6 +80,8 @@ function Control({
       );
     case "text":
       return <TextControl property={property} ctx={ctx} />;
+    case "toggles":
+      return <ToggleGrid property={property} ctx={ctx} />;
     case "action":
       return (
         <Button
@@ -128,5 +130,42 @@ function TextControl({ property, ctx }: { property: ColumnProperty; ctx: Propert
         set
       </Button>
     </form>
+  );
+}
+
+function ToggleGrid({ property, ctx }: { property: ColumnProperty; ctx: PropertyContext }) {
+  return (
+    <div className="flex w-full flex-col gap-2">
+      {(property.toggles?.(ctx) ?? []).map((group) => (
+        <div
+          key={group.stringIndex}
+          data-testid="decoration-group"
+          data-string={group.stringIndex}
+          className="flex items-center gap-2"
+        >
+          <span className="w-6 shrink-0 text-center font-mono text-sm text-text-dim">
+            {group.label}
+          </span>
+          <div className="grid min-w-0 flex-1 grid-cols-6 gap-1">
+            {group.toggles.map((toggle) => (
+              <button
+                key={toggle.value.decoration}
+                type="button"
+                aria-pressed={toggle.on}
+                aria-label={toggle.ariaLabel}
+                onClick={() => void property.commit(ctx, toggle.value)}
+                className={`min-h-11 min-w-0 rounded-md border px-0.5 text-xs ${
+                  toggle.on
+                    ? "border-accent bg-accent text-accent-text"
+                    : "border-border-subtle bg-bg-raised text-text"
+                }`}
+              >
+                {toggle.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }

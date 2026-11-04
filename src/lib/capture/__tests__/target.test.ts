@@ -75,6 +75,7 @@ describe("appliesTo", () => {
   const table: Record<Scope, Record<CursorTarget["kind"], boolean>> = {
     "column-property": { "no-part": false, "no-column": false, playable: true, barline: false },
     "next-note": { "no-part": false, "no-column": false, playable: true, barline: false },
+    transition: { "no-part": false, "no-column": false, playable: true, barline: true },
     part: { "no-part": false, "no-column": true, playable: true, barline: true },
   };
 
@@ -102,5 +103,15 @@ describe("targetEvent", () => {
 
   it("returns undefined for a target with no event even when the scope applies", () => {
     expect(targetEvent("part", { kind: "no-column" })).toBeUndefined();
+  });
+});
+
+describe("transition scope", () => {
+  it("applies to playable and barline targets only", () => {
+    const ev = { id: "e" } as EventRow;
+    expect(appliesTo("transition", { kind: "no-part" })).toBe(false);
+    expect(appliesTo("transition", { kind: "no-column" })).toBe(false);
+    expect(appliesTo("transition", { kind: "playable", event: ev })).toBe(true);
+    expect(appliesTo("transition", { kind: "barline", event: ev })).toBe(true);
   });
 });

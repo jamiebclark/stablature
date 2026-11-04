@@ -67,7 +67,10 @@ function staffRow(layout: TabLayout, places: Placed[], stringIndex: number): str
       // Pad with rails rather than spaces so the string reads as continuous.
       body += (text ?? "").padEnd(place.width, RAIL).replace(/ /g, RAIL);
     }
-    if (index < layout.columns.length - 1) body += RAIL;
+    // A connector replaces the one rail in the gap before the next column.
+    if (index < layout.columns.length - 1) {
+      body += layout.columns[index + 1].connectors[stringIndex] ?? RAIL;
+    }
   });
 
   return `${body}${RAIL}`;

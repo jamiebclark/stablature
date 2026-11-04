@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { EventRow } from "@/lib/model";
 import type { CursorTarget } from "../target";
 import { appliesTo } from "../target";
-import { litLatches } from "../latches";
+import { litLatches, type LatchId } from "../latches";
 
 const syncMeta = { updatedAt: "", deletedAt: null, fieldClocks: {}, serverSeq: 0 } as const;
 
@@ -29,7 +29,7 @@ const targets: Record<CursorTarget["kind"], CursorTarget> = {
 };
 
 describe("litLatches", () => {
-  const armed = new Set<"stack">(["stack"]);
+  const armed = new Set<LatchId>(["stack"]);
 
   for (const kind of Object.keys(targets) as CursorTarget["kind"][]) {
     it(`is a subset of armed and only contains applicable latches for ${kind}`, () => {

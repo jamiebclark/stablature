@@ -21,7 +21,6 @@ async function copyFirst(page: Page) {
 
 test.describe("INV-010 r2", () => {
   test("paste with the cursor mid-part keeps the latch, as main does", async ({ page }) => {
-    test.fail(true, "MINOR F14 in review.md: the prune reads the transient no-column target. Remove once fixed.");
     test.setTimeout(15_000);
     await startCapturing(page);
     await fret(page, "E", 7).click();

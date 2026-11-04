@@ -21,6 +21,7 @@
 
 import { fretAt, type AnnotationRow, type EventKind, type EventRow } from "../model";
 import { stringCount, type Tuning } from "../tunings";
+import { decorate, drawnDecorations, drawnTransition } from "./techniques";
 
 /** Expanded draws every repetition; compact collapses them to `7x8`. */
 export type Density = "expanded" | "compact";
@@ -46,6 +47,10 @@ export interface TabColumn {
   repetition: number;
   /** The stored repeat count, so compact rendering can label it. */
   repeat: number;
+  /** One entry per string, top first: the glyph in the gap BEFORE this column. */
+  connectors: (string | null)[];
+  /** What a screen reader reads. Words and numbers, never affix characters. */
+  description: string;
 }
 
 export interface TabLayout {
@@ -65,10 +70,45 @@ export interface LayoutOptions {
   density?: Density;
 }
 
-function cellText(event: EventRow, stringIndex: number): string | null {
+function fretText(event: EventRow, stringIndex: number): string | null {
   const value = fretAt(event.frets, stringIndex);
   if (value === undefined) return null;
   return String(value);
+}
+
+function storedFor(event: EventRow, stringIndex: number): readonly string[] {
+  const list = event.techniques?.[String(stringIndex)];
+  return Array.isArray(list) ? list : [];
+}
+
+function joinWords(words: string[]): string {
+  if (words.length <= 1) return words.join("");
+  return `${words.slice(0, -1).join(", ")} and ${words[words.length - 1]}`;
+}
+
+/** Screen-reader text: words and numbers, never the affix characters. */
+function describeColumn(
+  frets: (string | null)[],
+  stored: (readonly string[])[],
+  connectors: (string | null)[],
+  repeatedTimes: number,
+): string {
+  const parts: string[] = [];
+  frets.forEach((fret, index) => {
+    if (fret === null) return;
+    const words: string[] = [];
+    if (connectors[index]) {
+      const transition = drawnTransition(stored[index]);
+      if (transition) words.push(transition.words);
+    }
+    for (const decoration of drawnDecorations(stored[index])) words.push(decoration.words);
+    parts.push(
+      `string ${index + 1} fret ${fret}${words.length ? ` with ${joinWords(words)}` : ""}`,
+    );
+  });
+  if (parts.length === 0) return "Empty column";
+  const text = parts.join(", ");
+  return repeatedTimes > 1 ? `${text}, repeated ${repeatedTimes} times` : text;
 }
 
 /**
@@ -101,6 +141,9 @@ export function layoutPart({
 
   const columns: TabColumn[] = [];
   let barNumber = 1;
+  // Which strings have sounded so far. Spaces and barlines do not reset this,
+  // so `5 7` and `5|7` still join; repetitions of a column feed each other.
+  const played = Array.from({ length: strings }, () => false);
 
   for (const event of events) {
     if (event.kind === "barline") {
@@ -115,20 +158,37 @@ export function layoutPart({
         tupletCount: null,
         repetition: 0,
         repeat: 1,
+        connectors: Array.from({ length: strings }, () => null),
+        description: "Barline",
       });
       // Everything after this barline belongs to the next bar.
       barNumber += 1;
       continue;
     }
 
-    const base = Array.from({ length: strings }, (_, i) => cellText(event, i));
+    const frets = Array.from({ length: strings }, (_, i) => fretText(event, i));
+    const stored = Array.from({ length: strings }, (_, i) => storedFor(event, i));
+    const transitions = stored.map((list) => drawnTransition(list));
+    const decorated = frets.map((text, i) => (text === null ? null : decorate(text, stored[i])));
     const chord = chords.get(event.id) ?? null;
     const repeat = Math.max(1, event.repeat);
+
+    // Read before marking, so a note is never its own source.
+    const takeConnectors = (): (string | null)[] => {
+      const connectors = transitions.map((t, i) =>
+        t && frets[i] !== null && played[i] ? t.glyph : null,
+      );
+      frets.forEach((text, i) => {
+        if (text !== null) played[i] = true;
+      });
+      return connectors;
+    };
 
     if (density === "compact" && repeat > 1) {
       // Suffix the repeat onto whichever strings are actually played, so a
       // chord repeated eight times reads as one labelled column.
-      const cells = base.map((text) => (text === null ? null : `${text}x${repeat}`));
+      const cells = decorated.map((text) => (text === null ? null : `${text}x${repeat}`));
+      const connectors = takeConnectors();
       columns.push({
         eventId: event.id,
         kind: event.kind,
@@ -140,16 +200,19 @@ export function layoutPart({
         tupletCount: event.tupletCount,
         repetition: 0,
         repeat,
+        connectors,
+        description: describeColumn(frets, stored, connectors, repeat),
       });
       continue;
     }
 
     for (let repetition = 0; repetition < repeat; repetition += 1) {
+      const connectors = takeConnectors();
       columns.push({
         eventId: event.id,
         kind: event.kind,
-        cells: base,
-        width: Math.max(1, ...base.map((c) => c?.length ?? 1)),
+        cells: decorated,
+        width: Math.max(1, ...decorated.map((c) => c?.length ?? 1)),
         barNumber,
         // The chord is a property of the position, not of every repetition.
         chord: repetition === 0 ? chord : null,
@@ -157,6 +220,8 @@ export function layoutPart({
         tupletCount: event.tupletCount,
         repetition,
         repeat,
+        connectors,
+        description: describeColumn(frets, stored, connectors, 1),
       });
     }
   }
