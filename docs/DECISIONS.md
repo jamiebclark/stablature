@@ -138,6 +138,30 @@ rated MINOR): `Am7-D7`, `(c) 1999-2004`, `m.1-4`, `1-2-3-4-`. Each names its lin
 one tap to delete, and none is read as notes. Hyphen-joined chord lists are the likeliest
 to appear and the cheapest to narrow. Try a real web tab before judging this one.
 
+### Entry 4: ascii-import, browser check (PR #4)
+
+Checked at a true 375×667 viewport, dark and light (same iframe and token copy), on a
+six-string song and a new empty song. Pasting was simulated by setting the box's value,
+so a real paste gesture is still owed (quickstart §7), as is the 30-second phone timing
+(SC-005) and the box with the phone keyboard up.
+
+Holds: **Paste tab** and **+ part** share one line; the empty song's two buttons sit
+together; 16px text in the box, so no iOS focus zoom from it; a 200-character line stays
+inside its box and refusal with no sideways page scroll; refusals show line number, text
+and reason legibly; the preview scrolls inside itself; the ignored list reads well in
+light (`#5c5c66`, 14px). A two-system, eight-bar paste with commentary read as 8 bars, 40
+columns with three ignored lines listed; a real import added part C and closed the box.
+
+**Worth your eye:**
+
+- **`|-` draws as one `⊢` glyph.** JetBrains Mono's ligatures are on (`font-variant-ligatures:
+  normal`), so in the paste box and refusal lines, tab text is not shown as typed. Here that
+  misleads: the whole point of those views is to show the characters. Added to entry 7.
+- **A chord line refuses with the wrong reason.** `Am7-D7` above a staff says "This
+  character is not part of the tab notation", which does not tell you it took a chord list
+  for a tab row. This is the false refusal noted above, seen on a real shape. Added to entry 7.
+- An empty song shows **Paste tab** twice, once in the header and once in the panel. Harmless.
+
 ## 2026-11-02 — session with Jamie away
 
 ### Process
