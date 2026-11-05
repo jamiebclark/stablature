@@ -40,6 +40,15 @@ export interface SongExportOptions {
 }
 
 /**
+ * Whether a line is a part heading as `songToText` writes it: a flush-left
+ * label, optional primes, an optional name after two spaces, and an optional
+ * `(variant of X)` after three. Kept beside the writer so the two agree.
+ */
+export function isPartHeading(line: string): boolean {
+  return /^[A-Z]{1,2}'*(?:  \S.*?)?(?:   \(variant of [A-Z]{1,2}'*\))?$/.test(line);
+}
+
+/**
  * Render the song.
  *
  * Arrangement first, matching the song screen: the form is the thing you need

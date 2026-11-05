@@ -6,7 +6,7 @@
  * arrives at. A *decoration* (vibrato, bend, ...) belongs to a single note, so
  * it is drawn as an affix on that note's cell.
  *
- * Only `layout.ts` and the capture descriptors read this module; the ASCII
+ * Only `layout.ts`, the capture descriptors and the ASCII reader read this module; the ASCII
  * serialiser and the staff component place what the layout hands them and
  * never look at a technique themselves.
  */
