@@ -162,6 +162,40 @@ columns with three ignored lines listed; a real import added part C and closed t
   for a tab row. This is the false refusal noted above, seen on a real shape. Added to entry 7.
 - An empty song shows **Paste tab** twice, once in the header and once in the panel. Harmless.
 
+### Entry 5: rhythm-and-tempo, browser check (PR #5)
+
+Checked at a true 375×667 viewport, dark and light, plus a greyscale filter on light, on
+a six-string part with all six durations set and 96 bpm. Touch is simulated, and nothing
+here proves timing or sound; I could not listen to the click.
+
+Holds: the capture header's tempo control is findable (`no tempo`, then the value); the
+tempo sheet shows its reading large, and real clicks gave a clear out-of-range message;
+all six duration positions fit on one line at 54×44 each; the rhythm row reads on the
+play view in both themes and in greyscale, so nothing depends on colour; the click bar sits
+below the tab rather than on it, and its controls are 44px high; Start gives Stop, a
+beat dot and a silent-switch hint; Stop returns to Start. No sideways page scroll.
+
+Not checked: a long title against the tempo control, the lit position in the inspector,
+accent and soft beats told apart (I only saw the plain beat), the song-page rhythm row, and
+a tempo read from real taps. Simulated taps did not register on the pad.
+
+**Worth your eye:**
+
+- **Rhythm marks sit left of their notes.** Measured text centres: marks at 55, 72, 91, 109,
+  138, 165 against notes at 60, 79, 97, 119, 146, 173, so 5 to 10px left in 18 to 27px
+  columns. The cells line up; the text in them does not. In a dense part a mark could read
+  as belonging to the column before. Added to entry 7.
+- **The marks are small:** 10.4px, the same size as the bracket numerals.
+
+**Owed to a real phone:** click audible over a played bass; silent switch; airplane mode from
+the home screen; screen stays on for five minutes; lock and incoming call stop it cleanly;
+fast tapping neither zooms nor drops taps.
+
+**Flaky test on main.** `review-redraw-ledger.test.ts` (from entry 4) runs at the default 5s
+timeout. It passes alone, 26 of 26 in about 14s, but "row 1" timed out twice in the
+pre-commit run while the runner was busy, blocking a docs commit. It is the same class as
+entry 5's F17. Nothing is wrong with the parser. Added to entry 7.
+
 ## 2026-11-02 — session with Jamie away
 
 ### Process
