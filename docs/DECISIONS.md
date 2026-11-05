@@ -196,6 +196,44 @@ timeout. It passes alone, 26 of 26 in about 14s, but "row 1" timed out twice in 
 pre-commit run while the runner was busy, blocking a docs commit. It is the same class as
 entry 5's F17. Nothing is wrong with the parser. Added to entry 7.
 
+### Entry 6: reading-aids, browser check (PR #6)
+
+Checked at a true 375×667 viewport on the song page, in dark, and in light with a greyscale
+filter, on a variant with one column removed, two added and a chord added. Play view
+checked in dark and without a variant.
+
+Holds: the control row fits with export, BPM, density and the view control; note names and
+intervals were correct against the frets and against `Am` (`5`, `1`, `b3`, `b7`, `4`); with no
+chord the intervals view shows note names and says so; marked columns read at a glance,
+including in greyscale; the caption read `1 changed, 2 added, 1 removed`, which was right.
+No sideways page scroll.
+
+Not checked: variant marks on the play view (variants are not offered in the arrangement's
+add buttons, so I could not put one there), the `·` mark, a print preview, the caption's
+fit there, and a classic Windows scrollbar past the card's width.
+
+**Worth your eye:**
+
+- **The view control is 28px high**, like the density control beside it. Above the 24px floor,
+  under 44px. Entry 7's audit should pick it up; it was not named in that entry.
+- **Accidentals are all sharps**: `A#` and `D#` in a part with no chord or key. Correct, not
+  always what a player would write.
+
+### Entry 6: calls made while you were away (2026-11-05)
+
+- **Timeouts in three test files, by hand.** **Worth your eye.** Entry 4's heavy sweeps ran on
+  the default 5s and failed the commit hook while another project loaded the CPU. I added
+  `vi.setConfig({ testTimeout: 120_000 })` to three files. No assertion moved. The review then
+  caught that this broke entry 6's own guard, which it fixed in the plan and the guard.
+- **Rebased PR #6 and force-pushed its branch.** The 1.9.0 release conflicted, and the branch had
+  flipped `package.json` and `ci.yml` to CRLF. I kept the new scripts and main's line endings.
+- **The 20ms budget stayed.** CI failed at 25.06ms and 23.39ms on a shared runner while the
+  desktop passed. SC-009 says "on a desktop", so the check arguably measures the wrong machine,
+  but I did not change a failing check. T073 sped up `compareVariants` instead, through
+  implement and review, and CI passed. **Worth your eye:** the budget may flake on CI again;
+  whether it belongs there is your call.
+- **Set PR #6's title to `feat(...)`** so a two-commit squash still releases.
+
 ## 2026-11-02 — session with Jamie away
 
 ### Process
