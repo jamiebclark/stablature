@@ -15,7 +15,7 @@ import { parseChord } from "@/lib/chords";
 import { type AnnotationRow, type EventRow, type PartRow } from "@/lib/model";
 import { compareParts, type Op } from "@/lib/reading/compare";
 import { layoutReading } from "@/lib/reading/labels";
-import { playedColumns } from "@/lib/reading/played";
+import { playedColumns, signatureOf } from "@/lib/reading/played";
 import { type LayoutOptions } from "@/lib/tab/layout";
 import { stringCount } from "@/lib/tunings";
 import { staffMarks } from "@/lib/reading/marks";
@@ -1090,3 +1090,133 @@ describe("settleEdits (the slide)", () => {
     });
   });
 });
+
+// T073: pack's fast path may never number two columns alike that the signature tells apart.
+{
+let serial = 0;
+const col = (over: Partial<EventRow> = {}) =>
+  ({
+    id: `c${++serial}`, kind: "notes", frets: {}, techniques: {}, repeat: 1, durationHint: null,
+    tupletId: null, tupletCount: null, groupKind: null, ...over,
+  }) as unknown as EventRow;
+const P = { id: "p", label: "A" } as unknown as PartRow;
+const V = { id: "v", label: "B" } as unknown as PartRow;
+const reportsSame = (a: EventRow, b: EventRow, strings: number) =>
+  compareParts({ part: P, events: [a], annotations: [] }, { part: V, events: [b], annotations: [] }, strings).ops.every(
+    (op) => op.kind === "same",
+  );
+const FRETS: (number | "x" | undefined)[] = [undefined, 7, 36, "x"];
+const TECHNIQUES: (string[] | undefined)[] = [undefined, [], ["bend"], ["bend", "bend"], ["bend", "vibrato"], ["vibrato", "bend"]];
+function validColumns(): EventRow[] {
+  const out: EventRow[] = [];
+  for (const kind of ["notes", "rest"] as const) {
+    for (const durationHint of [null, "8", "q"] as const) {
+      for (const tupletId of [null, "g"]) {
+        for (const first of FRETS) {
+          for (const second of FRETS) {
+            for (const technique of TECHNIQUES) {
+              const frets: Record<string, number | "x"> = {};
+              if (first !== undefined) frets["0"] = first;
+              if (second !== undefined) frets["1"] = second;
+              out.push(
+                col({
+                  kind,
+                  durationHint,
+                  tupletId,
+                  tupletCount: tupletId ? 3 : null,
+                  frets,
+                  techniques: technique ? { "0": technique } as EventRow["techniques"] : {},
+                }),
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+  return out;
+}
+/** One of each class under the old signature is enough for a pair sweep: more would only repeat it. */
+function byOldSignature(columns: EventRow[], strings: number): EventRow[] {
+  const seen = new Map<string, EventRow>();
+  for (const column of columns) {
+    const signature = signatureOf(column, strings, "");
+    if (!seen.has(signature)) seen.set(signature, column);
+  }
+  return [...seen.values()];
+}
+
+describe("T073 pairs: Same exactly when the signature before T073 was equal", () => {
+  for (const strings of [6, 9]) {
+    it(`every valid column against every other, ${strings} strings`, () => {
+      const columns = validColumns();
+      // Every column against each class: a class holds columns of both paths, so this crosses them.
+      const classes = byOldSignature(columns, strings);
+      let pairs = 0;
+      const wrong: string[] = [];
+      for (const a of columns) {
+        const sa = signatureOf(a, strings, "");
+        for (const b of classes) {
+          pairs += 1;
+          const want = sa === signatureOf(b, strings, "");
+          if (reportsSame(a, b, strings) !== want && wrong.length < 5) wrong.push(`${JSON.stringify(a)} / ${JSON.stringify(b)}`);
+        }
+      }
+      expect(wrong).toEqual([]);
+      expect(pairs).toBeGreaterThan(1_000);
+    }, 120_000);
+  }
+});
+describe("T073 words: a column keeps its own repetition", () => {
+  it("a repeated column names its chord on the first pass only", () => {
+    const a = col({ frets: { "0": 5 }, repeat: 2 });
+    const b = col({ frets: { "0": 7 }, repeat: 2 });
+    const chord = (anchor: EventRow, value: string) =>
+      [{ id: `n${++serial}`, anchorEventId: anchor.id, kind: "chord", value }] as unknown as AnnotationRow[];
+    const { ops } = compareParts(
+      { part: P, events: [a], annotations: chord(a, "Am") },
+      { part: V, events: [b], annotations: chord(b, "G") },
+      6,
+    );
+    expect(ops.map((op) => (op.kind === "changed" ? op.words : op.kind))).toEqual([
+      "fret 5 to fret 7 on string 1, chord Am to G",
+      "fret 5 to fret 7 on string 1",
+    ]);
+  });
+});
+
+describe("T073 twins: no two frets share a number", () => {
+  it("every fret 0 to 70 and x on each of eight strings, against every other on that string", () => {
+    const values: (number | "x")[] = [...Array.from({ length: 71 }, (_, i) => i), "x"];
+    for (let s = 0; s < 8; s += 1) {
+      for (const a of values) {
+        for (const b of values) {
+          const same = reportsSame(col({ frets: { [String(s)]: a } }), col({ frets: { [String(s)]: b } }), 8);
+          if (same !== (a === b)) throw new Error(`string ${s}: ${a} against ${b} read ${same ? "Same" : "changed"}`);
+        }
+      }
+    }
+  }, 120_000);
+
+  // Past eight strings the number would need more than 53 bits, so the low strings would round away.
+  it("one fret apart on any string, with every other string held high, from 1 to 12 strings", () => {
+    for (let strings = 1; strings <= 12; strings += 1) {
+      const full: Record<string, number | "x"> = {};
+      for (let s = 0; s < strings; s += 1) full[String(s)] = 36;
+      for (let s = 0; s < strings; s += 1) {
+        for (const kind of ["notes", "rest"] as const) {
+          const a = col({ kind, frets: { ...full } });
+          const b = col({ kind, frets: { ...full, [String(s)]: 35 } });
+          if (reportsSame(a, b, strings)) throw new Error(`${strings} strings, string ${s}, ${kind}: read Same`);
+        }
+      }
+    }
+  });
+
+  it("a note on the top string never meets a rest or a note on the next", () => {
+    expect(reportsSame(col({ kind: "rest" }), col({ frets: {} }), 8)).toBe(false);
+    expect(reportsSame(col({ frets: { "0": 0 } }), col({ frets: { "1": 0 } }), 8)).toBe(false);
+    expect(reportsSame(col({ kind: "rest", frets: { "7": 64 } }), col({ frets: { "6": 1 } }), 8)).toBe(false);
+  });
+});
+}

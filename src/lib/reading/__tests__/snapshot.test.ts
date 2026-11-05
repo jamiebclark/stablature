@@ -12,8 +12,8 @@ import { db, StablatureDb } from "@/lib/local/db";
 import { appendNote, createBand, createPart, createSong, createTuningFromPreset, createVariant, setChord } from "@/lib/local/editing";
 import { useSongContent } from "@/lib/local/hooks";
 import { insertRow, mutateBatch } from "@/lib/local/mutate";
-import { listEvents, type SongContent } from "@/lib/local/queries";
-import type { PartRow, TuningRow } from "@/lib/model";
+import { listEvents, listSongContent, type SongContent } from "@/lib/local/queries";
+import type { AnnotationRow, EventRow, PartRow, TuningRow } from "@/lib/model";
 import { compareVariants } from "@/lib/reading/compare";
 import { layoutReading } from "@/lib/reading/labels";
 import { staffMarks } from "@/lib/reading/marks";
@@ -199,4 +199,49 @@ describe("INV-015 a variant arriving by sync", () => {
     await waitFor(() => expect(result.current?.annotationsByPart[rows.parts[0]!.id]?.length).toBeGreaterThan(0));
     expect(rendered.filter((line) => line !== "Same as A")).toEqual([]);
   });
+});
+
+// The write is queued in the same tick as the read, which every test above awaits away.
+const stamp = { updatedAt: "", deletedAt: null, fieldClocks: {}, serverSeq: 0 };
+const partOf = (label: string) =>
+  ({ ...stamp, id: "p", bandId: "b", songId, label, name: null, rank: "a", variantOfPartId: null, notes: null }) as unknown as PartRow;
+const eventOf = (fret: number) =>
+  ({
+    ...stamp, id: "e", bandId: "b", partId: "p", rank: "a", kind: "notes", frets: { 0: fret }, techniques: {}, repeat: 1,
+    durationHint: null, tupletId: null, tupletCount: null, groupKind: null,
+  }) as unknown as EventRow;
+const chordOf = (value: string) =>
+  ({ ...stamp, id: "c", bandId: "b", partId: "p", anchorEventId: "e", kind: "chord", value }) as unknown as AnnotationRow;
+
+describe("a write landing during the read (INV-015)", () => {
+  beforeEach(async () => {
+    await db.open();
+    for (const table of [db.parts, db.events, db.annotations]) await table.clear();
+    await db.parts.put(partOf("old"));
+    await db.events.put(eventOf(1));
+    await db.annotations.put(chordOf("Am"));
+  });
+
+  it("is all in or all out, at every point a read can be overtaken", async () => {
+    for (let round = 0; round < 40; round += 1) {
+      await db.parts.put(partOf("old"));
+      await db.events.put(eventOf(1));
+      await db.annotations.put(chordOf("Am"));
+      const read = listSongContent(songId);
+      // Each rung lets the read get a little further before the write is queued.
+      for (let step = 0; step < round % 8; step += 1) await Promise.resolve();
+      const write = db.transaction("rw", [db.parts, db.events, db.annotations], async () => {
+        await db.parts.put(partOf("new"));
+        await db.events.put(eventOf(2));
+        await db.annotations.put(chordOf("Em"));
+      });
+      const [content] = await Promise.all([read, write]);
+      const seen = [
+        content.parts[0].label,
+        content.eventsByPart.p?.[0]?.frets[0],
+        content.annotationsByPart.p?.[0]?.value,
+      ];
+      expect([JSON.stringify(["old", 1, "Am"]), JSON.stringify(["new", 2, "Em"])], `round ${round}`).toContain(JSON.stringify(seen));
+    }
+  }, 120_000);
 });

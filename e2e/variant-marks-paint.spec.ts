@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { fret } from "./capture-surface-helpers";
-import { choose, n, seedReadable, seedSong } from "./reading-helpers";
+import { bar, choose, n, seedReadable, seedSong } from "./reading-helpers";
 
 /** INV-032/034/010-font: what the variant marks actually paint, in both themes and in print. */
 
@@ -177,3 +177,39 @@ for (const scheme of ["dark", "light"] as const) {
     }
   });
 }
+
+const printTokens = (page: Page) =>
+  page.evaluate(() => {
+    const root = getComputedStyle(document.documentElement);
+    return {
+      tint: root.getPropertyValue("--diff-tint").trim(),
+      ink: root.getPropertyValue("--diff-ink").trim(),
+    };
+  });
+
+test("INV-034 the tokens are the print values in dark, and the screen values off paper", async ({ page }) => {
+  test.setTimeout(120_000);
+  const { playUrl } = await seedSong(
+    page,
+    [
+      { key: "a", label: "A", columns: [n(5), n(7), bar(), n(8)] },
+      { key: "v", label: "A'", variantOf: "a", columns: [n(5), n(9), bar(), n(8)] },
+    ],
+    [{ part: "v" }],
+  );
+  await page.goto(playUrl);
+  await expect(page.getByTestId("variant-line")).toBeVisible();
+
+  await page.emulateMedia({ media: "screen", colorScheme: "dark" });
+  expect(await printTokens(page)).toEqual({ tint: "#1b2f45", ink: "#8ecbff" });
+
+  await page.emulateMedia({ media: "print", colorScheme: "dark" });
+  expect(await printTokens(page)).toEqual({ tint: "#fff", ink: "#000" });
+  // What the tokens are for: the marked cell's mask and its mark, on paper, in dark.
+  const painted = await page.evaluate(() => {
+    const column = document.querySelector('[data-diff="changed"]')!;
+    const mark = column.querySelector('[data-testid="tab-diff"]') ?? column;
+    return { mark: getComputedStyle(mark).color };
+  });
+  expect(painted.mark).toBe("rgb(0, 0, 0)");
+});

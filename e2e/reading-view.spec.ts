@@ -1,8 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
+import { parseTab } from "../src/lib/tab/parse";
 import { addNotes, selectColumns } from "./grouping-helpers";
 import { emptySong, pasteTab } from "./import-helpers";
 import { startCapturing } from "./capture-surface-helpers";
-import { bar, choose, columnTexts, dump, dumpDatabase, idb, n, remember, seedReadable, seedSong, view, VIEWS, type EntrySpec, type PartSpec } from "./reading-helpers";
+import { bar, choose, columnTexts, dump, dumpDatabase, idb, n, remember, seedReadable, seedSong, view, VIEWS, type Col, type EntrySpec, type PartSpec } from "./reading-helpers";
 // The review probes ran with a 120 s test timeout; the sweeps need it.
 test.setTimeout(120_000);
 
@@ -503,4 +504,117 @@ for (const [name, install] of Object.entries(NO_STORAGE)) {
     await expect(page).toHaveURL(songUrl);
     await expect(page.getByTestId("staff-view-intervals")).toHaveAttribute("aria-pressed", "true");
   });
+}
+
+// INV-002: the paste reader over each exported text reads back the stored frets, in every view and density.
+{
+  const PARENT: Col[] = [n(5), n(7), n(8), bar(), n(5), n(7), n(8)];
+  /** `*` on the 9, `+` on the 10, `−1` on the 8 that went. */
+  const VARIANT: Col[] = [n(5), n(7), n(9), n(10), bar(), n(5), n(7)];
+  const PARTS: PartSpec[] = [
+    { key: "a", label: "A", columns: PARENT },
+    { key: "v", label: "A'", variantOf: "a", columns: VARIANT },
+  ];
+
+  const played = (columns: Col[]) =>
+    columns.filter((c) => c.kind !== "barline").map((c) => Object.values(c.frets ?? {})[0]);
+
+  test("INV-002 the text copied in every view reads back as the stored frets, marks and all", async ({ page }) => {
+    test.setTimeout(120_000);
+    await page.addInitScript(() => {
+      const w = window as unknown as { __copied: string[] };
+      w.__copied = [];
+      Object.defineProperty(navigator, "clipboard", {
+        value: { writeText: async (text: string) => void w.__copied.push(text) },
+        configurable: true,
+      });
+    });
+    await seedSong(page, PARTS, [{ part: "a" }, { part: "v" }]);
+    await expect(page.getByTestId("tab-diff").first()).toBeVisible();
+
+    for (const density of ["expanded", "compact"] as const) {
+      await page.getByRole("button", { name: density, exact: true }).click();
+      for (const view of VIEWS) {
+        await choose(page, view);
+        await page.getByRole("button", { name: /^(Copy text|Copied)$/ }).click();
+        await expect
+          .poll(() => page.evaluate(() => (window as unknown as { __copied: string[] }).__copied.length))
+          .toBeGreaterThan(0);
+        const text = await page.evaluate(() => (window as unknown as { __copied: string[] }).__copied.splice(0)[0]);
+
+        // One part's staff at a time: that is what a person pastes into a part.
+        const lines = text.split(/\r?\n/);
+        const staves: string[][] = [];
+        for (const line of lines) {
+          if (!/\|/.test(line)) continue;
+          const last = staves[staves.length - 1];
+          if (!last || last.length === 5) staves.push([line]);
+          else last.push(line);
+        }
+        const read = staves.map((rows) => {
+          const parsed = parseTab(rows.join("\n"));
+          expect(parsed.ok, `${density}, ${view}: ${rows.join(" / ")}`).toBe(true);
+          if (!parsed.ok) return [];
+          return parsed.clipboard.columns
+            .filter((c) => c.kind === "notes")
+            .map((c) => Object.values(c.frets)[0]);
+        });
+        expect(read, `${density}, ${view}`).toEqual([played(PARENT), played(VARIANT)]);
+      }
+    }
+  });
+}
+
+// INV-005: a tab left on frets never shows a fret to a reader whose remembered view is notes, even for one commit.
+{
+  const watch = (page: Page) =>
+    page.addInitScript(() => {
+      const w = window as unknown as { __texts: string[] };
+      w.__texts = [];
+      const read = () => {
+        for (const column of document.querySelectorAll('[data-testid="tab-column"]')) {
+          w.__texts.push((column as HTMLElement).textContent ?? "");
+        }
+      };
+      new MutationObserver(read).observe(document, { subtree: true, childList: true, characterData: true });
+    });
+
+  for (const surface of ["song page", "play view"] as const) {
+    test(`INV-005 no fret number from the old view: ${surface}`, async ({ page, context }) => {
+      test.setTimeout(120_000);
+      await watch(page);
+      const { songUrl, playUrl } = await seedSong(
+        page,
+        [{ key: "a", label: "A", columns: [n(9), n(10), bar(), n(9)] }],
+        [{ part: "a" }],
+      );
+      await choose(page, "notes");
+      await choose(page, "frets");
+      await page.getByRole("link", { name: "Band" }).click();
+      await expect(page.getByTestId("staff-view")).toHaveCount(0);
+
+      const second = await context.newPage();
+      await second.goto(songUrl);
+      await choose(second, "notes");
+      await second.close();
+
+      await page.evaluate(() => void ((window as unknown as { __texts: string[] }).__texts.length = 0));
+      await page.locator(`a[href$="${new URL(songUrl).pathname}"]`).first().click();
+      await expect(page).toHaveURL(songUrl);
+      if (surface === "play view") {
+        await page.goto(`${songUrl}`);
+        await page.getByRole("link", { name: "Band" }).click();
+        await expect(page.getByTestId("staff-view")).toHaveCount(0);
+        await page.evaluate(() => void ((window as unknown as { __texts: string[] }).__texts.length = 0));
+        await page.locator(`a[href$="${new URL(songUrl).pathname}"]`).first().click();
+        await page.locator('a[href$="/play"]').first().click();
+        await expect(page).toHaveURL(playUrl);
+      }
+      await expect(page.getByTestId("staff-view-notes")).toHaveAttribute("aria-pressed", "true");
+      await expect(page.getByTestId("tab-column").first()).toBeVisible();
+      const texts = await page.evaluate(() => (window as unknown as { __texts: string[] }).__texts);
+      expect(texts.length).toBeGreaterThan(0);
+      expect(texts.filter((t) => /\d/.test(t))).toEqual([]);
+    });
+  }
 }

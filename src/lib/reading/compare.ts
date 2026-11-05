@@ -9,7 +9,7 @@ import { readDuration } from "../rhythm/durations";
 import { DECORATIONS, TRANSITIONS } from "../tab/techniques";
 import type { SongContent } from "../local/queries";
 import { alignColumns } from "./align";
-import { columnKey, playedColumns, type ColumnParts, type PlayedColumn } from "./played";
+import { columnKey, playedColumns, type ColumnParts, type Interner, type PlayedColumn } from "./played";
 
 export interface PartInput {
   part: PartRow;
@@ -265,11 +265,23 @@ const BARLINE = "barline";
 
 function interning() {
   const table = new Map<string, number>();
-  const intern = (s: string) => {
+  const packed = new Map<number, number>();
+  let count = 0;
+  const intern: Interner = (s: string) => {
     let id = table.get(s);
     if (id === undefined) {
-      id = table.size;
+      id = count;
+      count += 1;
       table.set(s, id);
+    }
+    return id;
+  };
+  intern.packed = (key: number) => {
+    let id = packed.get(key);
+    if (id === undefined) {
+      id = count;
+      count += 1;
+      packed.set(key, id);
     }
     return id;
   };

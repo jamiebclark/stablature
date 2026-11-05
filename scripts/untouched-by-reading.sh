@@ -13,7 +13,7 @@ paths=(
   src/lib/arrangement src/components/capture
   src/components/app/PasteTab.tsx src/components/app/ExportSong.tsx
   src/components/rhythm src/components/ui/index.tsx public/sw.js
-  src/lib/tab/__tests__ src/lib/export/__tests__
+  src/lib/export/__tests__
 )
 for p in "${paths[@]}"; do
   changed="$(git diff main --stat -- "$p"; git ls-files --others --exclude-standard -- "$p")"
@@ -29,6 +29,16 @@ outside="$(git diff main -U0 -- src/lib/sync/client.ts | awk '
 # every hunk header must sit inside applyRemoteRows (git names the enclosing function after the second @@)
 bad="$(printf '%s\n' "$outside" | grep -v '^$' | grep -v 'applyRemoteRows' || true)"
 if [ -n "$bad" ]; then printf 'CHANGED src/lib/sync/client.ts outside applyRemoteRows\n%s\n' "$bad"; status=1; else printf 'zero diff  src/lib/sync/client.ts outside applyRemoteRows\n'; fi
+# src/lib/tab/__tests__: three sweep tests take a `vi` import, one comment and one setConfig timeout, and
+# nothing else (plan.md Deviations 15). Any other file, or any other line, fails.
+t=src/lib/tab/__tests__
+changed="$(git diff main --stat -- "$t" ':(exclude)'$t/review-damaged-notation-string.test.ts ':(exclude)'$t/review-every-cell-of-a-system.test.ts ':(exclude)'$t/review-redraw-ledger.test.ts; git ls-files --others --exclude-standard -- "$t")"
+bad="$(git diff main -U0 -- $t/review-damaged-notation-string.test.ts $t/review-every-cell-of-a-system.test.ts $t/review-redraw-ledger.test.ts | grep -E '^[+-]' | grep -vE '^(\+\+\+|---)'   | grep -vxF -e '-import { describe, expect, it } from "vitest";' -e '+import { describe, expect, it, vi } from "vitest";'       -e '+// A sweep of this size outlasts the default 5s timeout on a loaded machine; it asserts nothing about speed.'       -e '+vi.setConfig({ testTimeout: 120_000 });' -e '+' || true)"
+if [ -n "$changed$bad" ]; then printf 'CHANGED %s (beyond the three timeouts)
+%s
+%s
+' "$t" "$changed" "$bad"; status=1; else printf 'zero diff  %s (apart from three timeouts)
+' "$t"; fi
 # src/app apart from globals.css
 changed="$(git diff main --stat -- src/app ':(exclude)src/app/globals.css'; git ls-files --others --exclude-standard -- src/app ':(exclude)src/app/globals.css')"
 if [ -n "$changed" ]; then printf 'CHANGED src/app\n%s\n' "$changed"; status=1; else printf 'zero diff  src/app (apart from globals.css)\n'; fi
