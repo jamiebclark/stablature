@@ -280,3 +280,40 @@ Events gain an optional `groupKind` (absent = ratio-derived tuplet, `plain` = a 
 ---
 
 _Entries below are added as the day goes._
+
+### Usability pass: re-pinned e2e (spec 007, FR-065)
+
+Each assertion below pinned a size the usability pass changed on purpose. None was weakened to hide a regression; the new value is what the contract names.
+
+- `grouping-band.spec.ts`: selection controls `≤ 36.5` → `≤ 44.5` (all controls are `--control`, 44px). The barline-tap band test was **re-read, not re-pinned**: the band is now `flex-col-reverse`, and six strings fit at 667, so it now runs at 375×553 where the band still overflows and the swipe moves it.
+- `capture-surface.spec.ts` chord form open + tuplet: band overflow `≤ 0` → `≤ 8`. Rows are 44px; the band scrolls under the one overflow rule rather than clipping. Strings-clipped bound unchanged.
+- `rhythm-capture-height.spec.ts`: header `37` → `45` (the merged title row).
+- `techniques-layout.spec.ts`: strip `38.8` → `39`, chip `30.8` → `31` (rounding to the new tokens).
+- `grouping-queued-row.spec.ts`: `all synced` no longer renders, so the two waits became "no `N unsynced` text"; the Postgres poll is still the real check.
+
+### Usability pass: floors and reach (spec 007, US2)
+
+- **`* { min-width: 0 }` moved into `@layer base`.** Unlayered, it beat every `min-w-*` utility, so no minimum width in the app ever applied (the capture back button computed to 0px). Now a `min-w-*` utility wins and the reset still applies elsewhere. Checked by the full mobile e2e run.
+- **Floor walker (`INV-006`) reads "44 wide or as wide as its label" as: a control with text may be as wide as its label but never under 24px; an icon-only control meets the width.** Sentence links are the named list in `usability-helpers.ts`; the list was corrected to the real link texts ("Create one", "what is stored", "the terms", "Sign in", "privacy").
+- **`INV-008` counts neighbours in the same row only.** Toolbar rows are 46px around 44px controls, so a control in the next row is 2px away by design and is not a mis-tap neighbour.
+- **Paste box on touch:** the status line moves above the box. On focus the status scrolls to the top and the panel gains `--kb-inset` bottom padding, so there is room to scroll it clear of the keyboard.
+- **`INV-013` ignores controls inside a scroller** (the neck, the staff): the scroller's edge cuts them, and the scroller is inside the insets. `PageHeader`'s back link lost its `-ml-2`, which put it 1px into the landscape inset.
+- **Accepted:** none. Every walker finding was fixed.
+
+### Usability pass: reading the staff (spec 007, US3)
+
+- **Chord symbols are never truncated; a column widens instead.** Width is `calc(<w>ch + var(--col-pad) + max(0px, <chars> * var(--chord-ch) + var(--chord-gap) - room))`, where `room` is what the symbol owns (`chordRooms` in `src/lib/reading/staff.ts`). Only the screen widens; `layoutPart` and the export are untouched (`INV-015`).
+- **Numerals, rhythm marks and bar numbers are 12px.** The bracket hook is 0.2rem (was 0.3rem), so on the touch row (0.95rem) the 12px numeral ends exactly at the line's top. `--text-dim` replaces `--text-faint` for the bracket and numeral.
+- **`barNumbers` is wired on the song page only so far**; the play view takes it with the wrapped staff (T080/T081). `wrap` is accepted but draws nothing different until T080.
+- **Baseline:** only `markup:*` entries of `baseline.json` were re-recorded (`RECORD_MARKUP=1 npx vitest run .../frets-unchanged.test.ts`); layout, ASCII, description and songText entries did not move.
+- **Specs moved:** `techniques-surfaces.spec.ts` INV-003 measured column padding as a literal `0.6rem`; it now reads `--col-pad`. No other old spec needed a size changed.
+- **`INV-018` waits for transitions:** it polls, since a button's colour transition otherwise reads mid-fade.
+
+### Usability pass: reaching the tab (spec 007, US4)
+
+- **Panels:** `Panel` (song-tools, song-arrange) and the click cluster's own button (`panel-play-cluster`, in `ClickBar`) carry the test id on the button itself, which has `aria-expanded`. `openTools`/`openCluster`/`openArrange` in `usability-helpers.ts` click it only when collapsed, and wait up to 3s for it to exist.
+- **Song page height:** `PageHeader` `mb-5` → `mb-3`, song `main` `pt-3`, the arrangement heading `mb-1` and the tools row `mb-2`, so the first staff is at y ≤ 520 at 375×667 with both panels shut (SC-010).
+- **Part card shows `{bpm} bpm` for now** (`part-heading`); it becomes `partHeading` text with T062.
+- **Old specs moved (T061):** `click-bar-at-size`, `click-bar-fit`, `click-layout` (a fine pointer reads the 32px toolbar floor, touch stays 44; the follow chip sits in the open cluster, so `openCluster` first; the fit check's "touches" test only compares controls on the same row), `tempo-sheet-and-tempo` (`openTools` before the BPM field), `reading-helpers`, `reading-layout`, `reading-view`, `reading-sync`, `capture` (`openTools`/`openCluster`/`openArrange` after navigation). `songWorld` opens the arrange panel first.
+- **T061 finished:** `reading-helpers.columnTexts` and the in-page digit watchers in `reading-view` drop the bar-number label (a label above a column, not its content); `choose` opens the cluster on the play view; `reading-view`, `reading-sync` and `sync` call `openTools`/`openCluster` before reaching the control or BPM; `reading-view` uses `a[href$="/play"]:visible` (the header link is absent on touch); `reading-layout` INV-014 finds the carried chord by `.text-accent` (the row no longer truncates) and INV-036 ignores `data-column` ids and bar-number digits (they differ by pass). Product fix: the play view shows `ViewControl` only when the song has an arrangement (INV-007).
+- **US7 (reader):** `parse.ts` gains `joinedByQuality` (one line in `readsAsProse`), the `chords-joined` code and `looksJoined`, mapped in `failed`. Spec 004's probes still fail only the 19 recorded; F75 "apart from a staff" is 39 of 202 (was 43). `spec004-holds.test.ts` is timing-sensitive, so it runs as `npm run test:spec004`, not in `npm test` (it flaked other tests under load and the pre-commit hook). `e2e/import-flow` calls `openTools` before the density buttons (they moved into the tools panel, T044). The INV-028 mutation (accept `A7-D7` in `joinedByQuality`) is caught by `spec004-holds`, not by `paste-joined-chords`: those lines stay refused through another path.
