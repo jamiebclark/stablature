@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/jamiebclark/stablature/compare/v1.9.0...v1.10.0) (2026-11-05)
+
+
+### Features
+
+* **reading-aids:** note names, intervals, and seeing what a variant changed ([#6](https://github.com/jamiebclark/stablature/issues/6)) ([46760fd](https://github.com/jamiebclark/stablature/commit/46760fd92636d60a3587dbcddb08ed5c40dd8eba))
+
 # [1.9.0](https://github.com/jamiebclark/stablature/compare/v1.8.0...v1.9.0) (2026-11-05)
 
 
