@@ -11,9 +11,12 @@
  * The oracle is the spec's: one row more than the song has strings cannot be `ready` unless a row
  * went missing.
  */
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { readTab } from "@/lib/tab/reading";
 import { presetById } from "@/lib/tunings";
+
+// A sweep of this size outlasts the default 5s timeout on a loaded machine; it asserts nothing about speed.
+vi.setConfig({ testTimeout: 120_000 });
 
 const ALPHABET = [..."-|5x()<>~hp/\\tbmsr^?.="];
 const ctx = { tuning: presetById("bass4-e")!, bandTunings: [], songEvents: [] };

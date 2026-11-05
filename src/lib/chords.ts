@@ -50,6 +50,8 @@ export interface Chord {
   root: number;
   /** Slash-chord bass as a pitch class, or null when none was written. */
   bass: number | null;
+  /** The slash bass as typed (first letter upper case), or null. Spelt by the writer, not re-derived. */
+  bassName: string | null;
   /** The quality this matched, normalised, e.g. "m7". Empty means major. */
   quality: string;
   /** Root first, then ascending. */
@@ -208,6 +210,8 @@ const MODIFIERS: Record<string, Modifier> = {
 const QUALITY_KEYS = Object.keys(QUALITIES)
   .filter((key) => key !== "")
   .sort((a, b) => b.length - a.length);
+/** Every quality key the parser knows, so a test can walk them all. */
+export const CHORD_QUALITIES: readonly string[] = Object.keys(QUALITIES);
 const MODIFIER_KEYS = Object.keys(MODIFIERS).sort((a, b) => b.length - a.length);
 
 const NOTE_ONLY = /^[A-G][#b]?$/;
@@ -359,7 +363,9 @@ export function parseChord(symbol: string): Chord | null {
 
   const bass = bassText ? notePitchClass(bassText) : null;
 
-  return { symbol: trimmed, root, bass, quality: matchedQuality, tones };
+  const bassName = bassText ? bassText[0].toUpperCase() + bassText.slice(1) : null;
+
+  return { symbol: trimmed, root, bass, bassName, quality: matchedQuality, tones };
 }
 
 /**
@@ -389,17 +395,51 @@ export function chordToneNames(chord: Chord): string[] {
 }
 
 /**
- * The chord in force at a column.
+ * Which chord symbol sits on which column.
+ *
+ * The one reading of where a chord is anchored: the staff's chord row, the chord in force and the
+ * comparison all call this. Annotations that are not chords, or have no anchor, are skipped; when two
+ * sit on one anchor the last wins, as the chord row has always drawn it.
+ */
+export function anchoredChords(annotations: readonly AnnotationRow[]): Map<string, string> {
+  const anchored = new Map<string, string>();
+  for (const annotation of annotations) {
+    if (annotation.kind !== "chord") continue;
+    if (!annotation.anchorEventId) continue;
+    anchored.set(annotation.anchorEventId, annotation.value);
+  }
+  return anchored;
+}
+
+/**
+ * The chord in force at every column, in one pass.
  *
  * A chord symbol is anchored to one column but means "from here until the next
- * one", so the fretboard cannot just ask for the chord on the column under the
- * cursor -- it has to look back. That is also why this walks `events` rather
- * than the annotations: the answer depends on column order, and only the events
- * carry it.
+ * one", so the answer depends on column order, and only the events carry it.
+ * A symbol this module cannot read still ends the one before it (it is in force, as text); a blank one
+ * ends it and puts nothing in force. A column with nothing in force is absent from the map.
  *
- * `events` must be in rank order, which is how the local queries return them.
- * Annotations with a null anchor are skipped, since the column is optional in
- * storage and an unanchored chord is not in force anywhere.
+ * `events` must be in rank order and must be the WHOLE part: a slice starting after the anchor would
+ * otherwise read no chord. Anchors that are not among `events` (deleted on another device) are ignored.
+ */
+export function chordsInForce(
+  events: readonly EventRow[],
+  annotations: readonly AnnotationRow[],
+): Map<string, string> {
+  const anchored = anchoredChords(annotations);
+  const inForceAt = new Map<string, string>();
+  let inForce: string | null = null;
+  for (const event of events) {
+    const here = anchored.get(event.id);
+    if (here !== undefined) inForce = here.trim() === "" ? null : here;
+    if (inForce !== null) inForceAt.set(event.id, inForce);
+  }
+  return inForceAt;
+}
+
+/**
+ * The chord in force at a column, for the fretboard: a lookup in `chordsInForce`, so the staff and the
+ * fretboard cannot disagree. Null for no column, or a column this part does not have.
  */
 export function chordInForceAt(
   events: readonly EventRow[],
@@ -407,23 +447,5 @@ export function chordInForceAt(
   eventId: string | null,
 ): string | null {
   if (eventId === null) return null;
-
-  const anchored = new Map<string, string>();
-  for (const annotation of annotations) {
-    if (annotation.kind !== "chord") continue;
-    if (annotation.anchorEventId === null) continue;
-    anchored.set(annotation.anchorEventId, annotation.value);
-  }
-  if (anchored.size === 0) return null;
-
-  let inForce: string | null = null;
-  for (const event of events) {
-    const here = anchored.get(event.id);
-    if (here !== undefined) inForce = here;
-    if (event.id === eventId) return inForce;
-  }
-
-  // The cursor is pointing at a column this part does not have -- deleted on
-  // another device, most likely. Claiming a chord would be a guess.
-  return null;
+  return chordsInForce(events, annotations).get(eventId) ?? null;
 }

@@ -69,6 +69,7 @@ export async function applyRemoteRows(
   const clock = getClock();
   let applied = 0;
 
+  const batches: { table: (typeof SYNCED_TABLES)[number]; parsed: SyncedRow[] }[] = [];
   for (const table of SYNCED_TABLES) {
     const incoming = rows[table];
     if (!incoming || incoming.length === 0) continue;
@@ -78,9 +79,13 @@ export async function applyRemoteRows(
       const result = ROW_SCHEMAS[table].safeParse(candidate);
       if (result.success) parsed.push(result.data as SyncedRow);
     }
-    if (parsed.length === 0) continue;
+    if (parsed.length > 0) batches.push({ table, parsed });
+  }
+  if (batches.length === 0) return 0;
 
-    await database.transaction("rw", [database[table]], async () => {
+  // One transaction, so a reader sees a part with its columns and chords, or none of them.
+  await database.transaction("rw", batches.map(({ table }) => database[table]), async () => {
+    for (const { table, parsed } of batches) {
       for (const remote of parsed) {
         // Fold the remote clock in before merging, so a later local edit is
         // ordered after what we have just learned about rather than tying with
@@ -94,8 +99,8 @@ export async function applyRemoteRows(
         await database[table].put(merged as never);
         applied += 1;
       }
-    });
-  }
+    }
+  });
 
   return applied;
 }

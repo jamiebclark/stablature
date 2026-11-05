@@ -9,28 +9,32 @@
  * one actually goes.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GitBranch, Pencil, Play, Trash2 } from "lucide-react";
 import { ArrangementEditor } from "@/components/arrangement/ArrangementEditor";
 import { ExportSong } from "@/components/app/ExportSong";
 import { PasteTab } from "@/components/app/PasteTab";
+import { ViewControl } from "@/components/reading/ViewControl";
+import { useStaffView } from "@/components/reading/useStaffView";
+import { VariantLine } from "@/components/reading/VariantLine";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader } from "@/components/ui";
 import { createPart, createVariant } from "@/lib/local/editing";
 import {
   useArrangement,
   useBarCounts,
-  useParts,
   useSong,
+  useSongContent,
   useSongs,
-  useSongAnnotations,
-  useSongEvents,
   useSongTuning,
   useTunings,
 } from "@/lib/local/hooks";
 import { deleteRow, patchRow } from "@/lib/local/mutate";
-import type { PartRow } from "@/lib/model";
+import type { AnnotationRow, EventRow, PartRow } from "@/lib/model";
+import { compareVariants, type VariantComparison } from "@/lib/reading/compare";
+import { staffMarks } from "@/lib/reading/marks";
+import type { StaffView } from "@/lib/reading/view";
 import type { Density } from "@/lib/tab/layout";
 import { stringLabels } from "@/lib/tunings";
 
@@ -39,16 +43,24 @@ export function SongView({ songId }: { songId: string }) {
   const tuning = useSongTuning(song);
   const tunings = useTunings(song?.bandId);
   const bandSongs = useSongs(song?.bandId);
-  const parts = useParts(songId);
+  const content = useSongContent(songId);
+  const parts = content?.parts;
+  const eventsByPart = content?.eventsByPart;
+  const annotationsByPart = content?.annotationsByPart;
   const entries = useArrangement(songId);
-  const eventsByPart = useSongEvents(songId);
-  const annotationsByPart = useSongAnnotations(songId);
+  const [view] = useStaffView();
   const barCounts = useBarCounts(songId);
 
   const [density, setDensity] = useState<Density>("expanded");
   const [pasting, setPasting] = useState(false);
   const [scrollTo, setScrollTo] = useState<string | null>(null);
   const router = useRouter();
+
+  // Compared once per read of the song, and only when the whole song has arrived (FR-026).
+  const comparisons = useMemo(
+    () => (content && tuning ? compareVariants(content, tuning) : null),
+    [content, tuning],
+  );
 
   const hasScrollTarget = scrollTo !== null && (parts?.some((p) => p.id === scrollTo) ?? false);
   useEffect(() => {
@@ -137,6 +149,12 @@ export function SongView({ songId }: { songId: string }) {
           />
         ) : null}
 
+        {tuning && parts && eventsByPart && entries && view !== "frets" ? (
+          <span className="text-xs text-text-dim no-print" data-testid="export-note">
+            Exports use fret numbers
+          </span>
+        ) : null}
+
         <div className="ml-auto flex overflow-hidden rounded-md border border-border-subtle">
           {(["expanded", "compact"] as const).map((option) => (
             <button
@@ -156,6 +174,8 @@ export function SongView({ songId }: { songId: string }) {
             </button>
           ))}
         </div>
+
+        {tuning ? <ViewControl /> : null}
       </div>
 
       <section className="mb-8">
@@ -231,6 +251,8 @@ export function SongView({ songId }: { songId: string }) {
                   annotations={annotationsByPart?.[part.id] ?? []}
                   tuning={tuning}
                   density={density}
+                  view={view}
+                  comparison={comparisons?.get(part.id)}
                   songId={songId}
                 />
               </li>
@@ -249,14 +271,18 @@ function PartCard({
   annotations,
   tuning,
   density,
+  view,
+  comparison,
   songId,
 }: {
   part: PartRow;
   parts: readonly PartRow[];
-  events: NonNullable<ReturnType<typeof useSongEvents>>[string];
-  annotations: NonNullable<ReturnType<typeof useSongAnnotations>>[string];
+  events: readonly EventRow[];
+  annotations: readonly AnnotationRow[];
   tuning: ReturnType<typeof useSongTuning>;
   density: Density;
+  view: StaffView;
+  comparison: VariantComparison | undefined;
   songId: string;
 }) {
   const [renaming, setRenaming] = useState(false);
@@ -266,8 +292,16 @@ function PartCard({
     ? parts.find((candidate) => candidate.id === part.variantOfPartId)
     : undefined;
 
+  const marks = useMemo(
+    () =>
+      comparison
+        ? staffMarks(comparison, { events, fromBar: null, toBar: null, density })
+        : null,
+    [comparison, events, density],
+  );
+
   return (
-    <Card>
+    <Card className="relative">
       <div className="mb-2 flex flex-wrap items-center gap-2">
         <span className="rounded bg-bg-sunken px-2 py-0.5 font-mono text-sm font-semibold">
           {part.label}
@@ -339,10 +373,12 @@ function PartCard({
           density={density}
           surface="raised"
           showRhythm
+          reading={{ view, partEvents: events, marks }}
         />
       ) : (
         <p className="text-xs text-text-faint">Add a tuning to draw this part.</p>
       )}
+      {marks ? <VariantLine text={marks.line} /> : null}
     </Card>
   );
 }

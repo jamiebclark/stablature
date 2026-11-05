@@ -15,6 +15,9 @@
 import { useMemo } from "react";
 import { ButtonLink, EmptyState, Loading, PageHeader } from "@/components/ui";
 import { ClickBar } from "@/components/rhythm/ClickBar";
+import { ViewControl } from "@/components/reading/ViewControl";
+import { useStaffView } from "@/components/reading/useStaffView";
+import { VariantLine } from "@/components/reading/VariantLine";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { expandArrangement, parseArrangement } from "@/lib/arrangement/expand";
 import { drawnPasses } from "@/lib/arrangement/passes";
@@ -22,10 +25,11 @@ import {
   useArrangement,
   useParts,
   useSong,
-  useSongAnnotations,
-  useSongEvents,
+  useSongContent,
   useSongTuning,
 } from "@/lib/local/hooks";
+import { compareVariants } from "@/lib/reading/compare";
+import { staffMarks } from "@/lib/reading/marks";
 import { stringLabels } from "@/lib/tunings";
 
 export function PlayView({ songId }: { songId: string }) {
@@ -33,14 +37,22 @@ export function PlayView({ songId }: { songId: string }) {
   const tuning = useSongTuning(song);
   const parts = useParts(songId);
   const entries = useArrangement(songId);
-  const eventsByPart = useSongEvents(songId);
-  const annotationsByPart = useSongAnnotations(songId);
+  const content = useSongContent(songId);
+  const eventsByPart = content?.eventsByPart;
+  const annotationsByPart = content?.annotationsByPart;
+  const [view] = useStaffView();
 
   const steps = useMemo(
     () => (entries ? expandArrangement(parseArrangement(entries)) : []),
     [entries],
   );
   const passes = useMemo(() => drawnPasses(steps, eventsByPart ?? {}), [steps, eventsByPart]);
+
+  // Compared once per read of the song; a pass is marked only when its part is a compared variant.
+  const comparisons = useMemo(
+    () => (content && tuning ? compareVariants(content, tuning) : null),
+    [content, tuning],
+  );
 
   if (song === undefined || parts === undefined || entries === undefined) return <Loading />;
   if (!song) {
@@ -73,10 +85,24 @@ export function PlayView({ songId }: { songId: string }) {
           </ButtonLink>
         </EmptyState>
       ) : (
+        <>
+        {tuning ? <ViewControl className="mb-3 w-max" /> : null}
+        {content === undefined && view !== "frets" ? (
+          <Loading />
+        ) : (
         <ol className="grid gap-4">
           {passes.map(({ step, events }, index) => {
             const part = partsById.get(step.partId);
             const previous = passes[index - 1]?.step;
+            const comparison = comparisons?.get(step.partId);
+            const marks = comparison
+              ? staffMarks(comparison, {
+                  events,
+                  fromBar: step.fromBar,
+                  toBar: step.toBar,
+                  density: "expanded",
+                })
+              : null;
 
             // Only announce a section when it actually changes, or a repeated
             // chorus would shout its name at every pass.
@@ -91,7 +117,7 @@ export function PlayView({ songId }: { songId: string }) {
                   </p>
                 ) : null}
 
-                <div className="rounded-lg border border-border-subtle bg-bg-raised p-3">
+                <div className="relative rounded-lg border border-border-subtle bg-bg-raised p-3">
                   <div className="mb-1.5 flex items-baseline gap-2">
                     <span className="font-mono text-sm font-semibold">
                       {part?.label ?? "?"}
@@ -118,13 +144,17 @@ export function PlayView({ songId }: { songId: string }) {
                       annotations={annotationsByPart?.[step.partId] ?? []}
                       surface="raised"
                       showRhythm
+                      reading={{ view, partEvents: eventsByPart?.[step.partId] ?? events, marks }}
                     />
                   ) : null}
+                  {marks ? <VariantLine text={marks.line} /> : null}
                 </div>
               </li>
             );
           })}
         </ol>
+        )}
+        </>
       )}
 
       <ClickBar song={song} passes={passes} notationReady={eventsByPart !== undefined} />
