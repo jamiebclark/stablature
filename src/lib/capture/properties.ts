@@ -1,17 +1,19 @@
 import {
   bumpColumnRepeat,
   deleteColumn,
+  setColumnDuration,
   setChord,
   toggleDecoration,
   ungroupTuplet,
 } from "@/lib/local/editing";
+import { DURATIONS, nextDuration, readDuration, type DurationId } from "@/lib/rhythm/durations";
 import { groupNumber, type AnnotationRow, type EventRow, type PartRow } from "@/lib/model";
 import { DECORATIONS, type Decoration } from "@/lib/tab/techniques";
 import { noteLabel } from "@/lib/pitch";
 import type { Tuning } from "@/lib/tunings";
 import { appliesTo, type CursorTarget, type Scope } from "./target";
 
-export type ColumnPropertyId = "repeat" | "chord" | "decorations" | "group" | "delete";
+export type ColumnPropertyId = "repeat" | "duration" | "chord" | "decorations" | "group" | "delete";
 
 export interface PropertyContext {
   readonly part: Pick<PartRow, "id" | "bandId">;
@@ -42,12 +44,20 @@ export interface ColumnToggleGroup {
   readonly toggles: readonly ColumnToggle[];
 }
 
+export interface ColumnSegment {
+  /** Handed back to `commit` unchanged. */
+  readonly value: DurationId;
+  readonly label: string;
+  readonly ariaLabel: string;
+  readonly on: boolean;
+}
+
 export interface ColumnProperty {
   readonly id: ColumnPropertyId;
   readonly label: string;
   readonly ariaLabel: string;
   readonly scope: Scope;
-  readonly control: "stepper" | "text" | "action" | "toggles";
+  readonly control: "stepper" | "text" | "action" | "toggles" | "segments";
   readonly destructive: boolean;
   /** Current value for display. `null` for an action, or for "not set". */
   read(ctx: PropertyContext): string | number | null;
@@ -60,8 +70,12 @@ export interface ColumnProperty {
   commit(ctx: PropertyContext, value: PropertyValue): Promise<void>;
   /** Declared by a "toggles" control. */
   toggles?(ctx: PropertyContext): readonly ColumnToggleGroup[];
+  /** Declared by a "segments" control: one row of exclusive choices. */
+  segments?(ctx: PropertyContext): readonly ColumnSegment[];
   /** Replaces `label` in the row's left cell. Absent means `label`. */
   heading?(ctx: PropertyContext): string;
+  /** Rows the sheet holds at its foot, in view however tall the sheet is. Absent means they scroll. */
+  readonly pinned?: boolean;
   /** Narrows `scope` for one column. Absent means every column the scope allows. */
   appliesToColumn?(event: EventRow): boolean;
 }
@@ -149,12 +163,35 @@ export const COLUMN_PROPERTIES: readonly ColumnProperty[] = [
     },
   },
   {
+    id: "duration",
+    label: "duration",
+    ariaLabel: "note duration",
+    scope: "column-property",
+    control: "segments",
+    destructive: false,
+    pinned: true,
+    read: (ctx) => readDuration(ctx.event.durationHint)?.id ?? null,
+    segments: (ctx) => {
+      const lit = readDuration(ctx.event.durationHint)?.id ?? null;
+      return DURATIONS.map((d) => ({
+        value: d.id,
+        label: d.mark,
+        ariaLabel: d.words,
+        on: d.id === lit,
+      }));
+    },
+    commit: async (ctx, value) => {
+      await setColumnDuration(ctx.event.id, nextDuration(ctx.event.durationHint, value as DurationId));
+    },
+  },
+  {
     id: "delete",
     label: "delete",
     ariaLabel: "delete column",
     scope: "part",
     control: "action",
     destructive: true,
+    pinned: true,
     read: () => null,
     commit: async (ctx) => {
       await deleteColumn(ctx.event.id);

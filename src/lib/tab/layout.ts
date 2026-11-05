@@ -21,6 +21,7 @@
 
 import { fretAt, groupNumber, type AnnotationRow, type EventKind, type EventRow } from "../model";
 import { stringCount, type Tuning } from "../tunings";
+import { readDuration, type Duration } from "../rhythm/durations";
 import { decorate, drawnDecorations, drawnTransition } from "./techniques";
 
 /** Expanded draws every repetition; compact collapses them to `7x8`. */
@@ -49,6 +50,8 @@ export interface TabColumn {
   repetition: number;
   /** The stored repeat count, so compact rendering can label it. */
   repeat: number;
+  /** The stored duration, read through the table; null when unset or unknown. Never affects position. */
+  duration: Duration | null;
   /** One entry per string, top first: the glyph in the gap BEFORE this column. */
   connectors: (string | null)[];
   /** What a screen reader reads. Words and numbers, never affix characters. */
@@ -94,6 +97,7 @@ function describeColumn(
   stored: (readonly string[])[],
   connectors: (string | null)[],
   repeatedTimes: number,
+  durationWords: string | null = null,
 ): string {
   const parts: string[] = [];
   frets.forEach((fret, index) => {
@@ -108,9 +112,10 @@ function describeColumn(
       `string ${index + 1} fret ${fret}${words.length ? ` with ${joinWords(words)}` : ""}`,
     );
   });
-  if (parts.length === 0) return "Empty column";
+  const spoken = durationWords ? `, ${durationWords}` : "";
+  if (parts.length === 0) return `Empty column${spoken}`;
   const text = parts.join(", ");
-  return repeatedTimes > 1 ? `${text}, repeated ${repeatedTimes} times` : text;
+  return (repeatedTimes > 1 ? `${text}, repeated ${repeatedTimes} times` : text) + spoken;
 }
 
 /**
@@ -161,6 +166,7 @@ export function layoutPart({
         bracketNumber: null,
         repetition: 0,
         repeat: 1,
+        duration: null,
         connectors: Array.from({ length: strings }, () => null),
         description: "Barline",
       });
@@ -175,6 +181,7 @@ export function layoutPart({
     const decorated = frets.map((text, i) => (text === null ? null : decorate(text, stored[i])));
     const chord = chords.get(event.id) ?? null;
     const repeat = Math.max(1, event.repeat);
+    const duration = readDuration(event.durationHint);
 
     // Read before marking, so a note is never its own source.
     const takeConnectors = (): (string | null)[] => {
@@ -204,8 +211,9 @@ export function layoutPart({
         bracketNumber: event.tupletId ? groupNumber(event) : null,
         repetition: 0,
         repeat,
+        duration,
         connectors,
-        description: describeColumn(frets, stored, connectors, repeat),
+        description: describeColumn(frets, stored, connectors, repeat, duration?.words ?? null),
       });
       continue;
     }
@@ -225,8 +233,9 @@ export function layoutPart({
         bracketNumber: event.tupletId ? groupNumber(event) : null,
         repetition,
         repeat,
+        duration,
         connectors,
-        description: describeColumn(frets, stored, connectors, 1),
+        description: describeColumn(frets, stored, connectors, 1, duration?.words ?? null),
       });
     }
   }

@@ -34,6 +34,8 @@ import { useRouter } from "next/navigation";
 import { groupOffer, TRIPLET_REFUSAL } from "@/lib/capture/grouping";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { Button, Input, Loading, Sheet } from "@/components/ui";
+import { TempoControl } from "@/components/rhythm/TempoControl";
+import { readDuration } from "@/lib/rhythm/durations";
 import {
   columnRange,
   copyColumns,
@@ -163,6 +165,7 @@ export function CaptureScreen({
   const focused = afterId
     ? columns.find((event) => event.id === afterId)
     : undefined;
+  const cursorDuration = readDuration(focused?.durationHint);
   /** Repeats and chords are meaningless on a barline. */
   const editable: EventRow | undefined =
     focused?.kind === "barline" ? undefined : focused;
@@ -325,6 +328,7 @@ export function CaptureScreen({
         >
           &larr; {song.title}
         </button>
+        <TempoControl song={song} variant="header" />
         <span className="shrink-0 font-mono text-[0.7rem] text-text-faint">
           {pending ? `${pending} unsynced` : "all synced"}
         </span>
@@ -447,6 +451,11 @@ export function CaptureScreen({
               title="Not a chord this app can read"
             >
               {chordSymbol} &mdash; not a chord I know
+            </span>
+          ) : null}
+          {!refused && cursorDuration ? (
+            <span data-testid="cursor-duration" className="shrink-0 font-mono text-text-dim">
+              {cursorDuration.words}
             </span>
           ) : null}
           {columns.length > 0 ? (

@@ -1909,7 +1909,7 @@ test.describe("probe FR-017-024-inspector-scope-and-keyboard", () => {
 
     await mouseHold(page, columns(page).nth(2));
     await expect(openDialog(page)).toHaveAttribute("aria-label", "Column");
-    await expect(inspector(page).locator("[data-property-row]")).toHaveCount(3);
+    await expect(inspector(page).locator("[data-property-row]")).toHaveCount(4);
   });
 
   test("FR-024 the inspector is operable and dismissible by keyboard alone", async ({
@@ -1923,7 +1923,7 @@ test.describe("probe FR-017-024-inspector-scope-and-keyboard", () => {
 
     // Tab order reaches every control inside the sheet, and focus never leaves it.
     const seen = new Set<string>();
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 18; i++) {
       await page.keyboard.press("Tab");
       const where = await page.evaluate(() => {
         const a = document.activeElement as HTMLElement | null;

@@ -65,6 +65,7 @@ describe("propertiesFor", () => {
     expect(propertiesFor(targets.playable).map((p) => p.id)).toEqual([
       "repeat",
       "chord",
+      "duration",
       "delete",
     ]);
   });
@@ -81,6 +82,6 @@ describe("propertiesFor", () => {
 
 describe("COLUMN_PROPERTIES", () => {
   it("declares repeat, chord, decorations, group, delete in that order", () => {
-    expect(COLUMN_PROPERTIES.map((p) => p.id)).toEqual(["repeat", "chord", "decorations", "group", "delete"]);
+    expect(COLUMN_PROPERTIES.map((p) => p.id)).toEqual(["repeat", "chord", "decorations", "group", "duration", "delete"]);
   });
 });

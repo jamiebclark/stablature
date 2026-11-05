@@ -338,6 +338,7 @@ function PartCard({
           annotations={annotations}
           density={density}
           surface="raised"
+          showRhythm
         />
       ) : (
         <p className="text-xs text-text-faint">Add a tuning to draw this part.</p>

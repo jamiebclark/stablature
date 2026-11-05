@@ -347,7 +347,7 @@ A five-string riff is pasted into a song set to the band's four-string tuning, a
 - **Any change to the export.** `toAscii` already works, including where its chord row overwrites itself.
 - **Pasting into an existing part**, at the cursor or otherwise.
 - **Notation the app does not have.** Bend targets, `s` slides, release marks, repeat signs and palm-mute span rows stay refused or ignored. Each is a later decision about what the app stores, not about parsing.
-- **Reading durations from text.** Entry `rhythm-and-tempo`.
+- **Reading durations from text.** Answered by FR-017 of entry 005 (`rhythm-and-tempo`); see its plan Deviation 14.
 - **Creating a custom tuning.** The app has no such screen, and labels do not give octaves.
 - **Permissions for viewers.** The song screen does not gate any other write by role, and this entry does not start. The server's existing rule applies.
 
