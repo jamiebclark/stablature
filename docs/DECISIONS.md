@@ -118,6 +118,19 @@ the Postgres sync item, was run by the review, not by me.
   layout. The capture toolbars stay as a judgement call for that spec, because capture
   speed depends on one-tap controls.
 
+### Entry 4: ascii-import, line classification (2026-11-04)
+
+**Worth your eye.** Five reviews each found a blocker in how the parser tells a tab row
+from commentary (13, 6, 3, 5, then 1 finding). I had planned to refuse any block the
+parser could not place with certainty. I dropped that: refusing every line touching a
+staff would refuse the lyric line between systems, which Story 2 scenarios 5 and 7
+require. I took review F61's choice instead (T082): a line holding both a note and a
+rail or pipe counts as a row. The cost is that lines like `-- Verse 2 --` move from
+listed to refused, which is safe and cheap to overturn.
+
+Still read as commentary on purpose (F62): `5 7 5 7`, `(5) (7)` and `5-sl-7`. They are
+the declared edge of the rule. Reopen them on a real paste, not a wider sweep.
+
 ## 2026-11-02 — session with Jamie away
 
 ### Process
