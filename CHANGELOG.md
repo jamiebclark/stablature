@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/jamiebclark/stablature/compare/v1.8.0...v1.9.0) (2026-11-05)
+
+
+### Features
+
+* **rhythm-and-tempo:** durations, tap tempo and a click ([#5](https://github.com/jamiebclark/stablature/issues/5)) ([eec2f54](https://github.com/jamiebclark/stablature/commit/eec2f54ee08a1fbf230acafbb093bcff526882df))
+
 # [1.8.0](https://github.com/jamiebclark/stablature/compare/v1.7.0...v1.8.0) (2026-11-05)
 
 
