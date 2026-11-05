@@ -14,14 +14,22 @@
  */
 
 import { z } from "zod";
-import { GROUP_KINDS, MAX_TUPLET_COLUMNS, MIN_GROUP_COLUMNS, SYNCED_TABLES } from "../model";
+import {
+  GROUP_KINDS,
+  MAX_CHORD_LENGTH,
+  MAX_FRET,
+  MAX_REPEAT,
+  MAX_TUPLET_COLUMNS,
+  MIN_GROUP_COLUMNS,
+  SYNCED_TABLES,
+} from "../model";
 
 /** Fixed-width HLC: 15 digits, 4 hex, node id. See hlc.ts. */
 const hlc = z.string().regex(/^\d{15}:[0-9a-f]{4}:[0-9a-z]{1,32}$/, "malformed HLC");
 
 const id = z.string().uuid();
 const rank = z.string().min(1).max(400);
-const shortText = z.string().max(200);
+const shortText = z.string().max(MAX_CHORD_LENGTH);
 const longText = z.string().max(20_000);
 
 /**
@@ -45,7 +53,7 @@ const note = z.object({
 });
 
 /** A fret, or a dead note. 36 is well past any real instrument. */
-const fretValue = z.union([z.number().int().min(0).max(36), z.literal("x")]);
+const fretValue = z.union([z.number().int().min(0).max(MAX_FRET), z.literal("x")]);
 
 const stringIndexKey = z.string().regex(/^\d{1,2}$/);
 
@@ -97,7 +105,7 @@ export const eventRowSchema = z.object({
   techniques: z.record(stringIndexKey, z.array(z.string().max(32)).max(8)),
   // Capped so one row cannot be made to expand into a million columns and
   // wedge every client that renders it.
-  repeat: z.number().int().min(1).max(512),
+  repeat: z.number().int().min(1).max(MAX_REPEAT),
   durationHint: z.enum(["w", "h", "q", "8", "16", "32"]).nullable(),
   tupletId: id.nullable(),
   tupletCount: z.number().int().min(MIN_GROUP_COLUMNS).max(MAX_TUPLET_COLUMNS).nullable(),
@@ -122,7 +130,7 @@ export const arrangementEntryRowSchema = z.object({
   rank,
   kind: z.enum(["part", "section_start", "section_end", "text"]),
   partId: id.nullable(),
-  repeat: z.number().int().min(1).max(512),
+  repeat: z.number().int().min(1).max(MAX_REPEAT),
   fromBar: z.number().int().min(1).max(9999).nullable(),
   toBar: z.number().int().min(1).max(9999).nullable(),
   lastRepeatPartId: id.nullable(),

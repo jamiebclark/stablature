@@ -21,10 +21,11 @@ export const TUNINGS = [
 export async function startWith(
   page: Page,
   tuning: { family: string; preset: string; strings: number },
+  bandName = "Hollow Crown",
 ) {
   await page.setViewportSize({ width: 375, height: 667 });
   await page.goto("/");
-  await page.getByLabel("Band name").fill("Hollow Crown");
+  await page.getByLabel("Band name").fill(bandName);
   await page.getByRole("button", { name: "Add band" }).click();
   await expect(page).toHaveURL(/\/bands\/[0-9a-f-]+$/);
   const bandUrl = page.url();

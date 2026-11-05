@@ -263,3 +263,8 @@ export function isEmptyColumn(frets: FretMap): boolean {
 export function isLive<T extends SyncMeta>(row: T): boolean {
   return row.deletedAt === null;
 }
+
+/** Caps the sync wire enforces; the ASCII reader checks the same ones. */
+export const MAX_FRET = 36;
+export const MAX_REPEAT = 512;
+export const MAX_CHORD_LENGTH = 200;

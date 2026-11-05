@@ -11,6 +11,7 @@
  * like anything else.
  */
 
+import { ZERO_HLC } from "../hlc";
 import { newId } from "../ids";
 import type {
   AnnotationKind,
@@ -22,9 +23,9 @@ import type {
   PartRow,
   TechniqueMap,
 } from "../model";
-import { ranksBetween } from "../rank";
+import { ranksBetween, type Rank } from "../rank";
 import { db as defaultDb, type StablatureDb } from "./db";
-import { insertRow, mutateBatch, patchRow, type MutateContext } from "./mutate";
+import { insertRow, mutateBatch, patchRow, type MutateContext, type NewRow } from "./mutate";
 
 const CLIPBOARD_KEY = "clipboard";
 
@@ -126,6 +127,88 @@ export async function readClipboard(
 }
 
 /**
+ * The rows a clipboard becomes, without writing them.
+ *
+ * Shared by the real paste and by `draftPart`, so a preview of a paste and the
+ * paste itself cannot drift. Each tuplet group gets a fresh id, and an
+ * annotation whose anchor column is missing is skipped.
+ */
+export function rowsFromClipboard(
+  part: Pick<PartRow, "id" | "bandId">,
+  clipboard: Clipboard,
+  ranks: readonly Rank[],
+  mintId: () => string,
+): { events: NewRow<"events">[]; annotations: NewRow<"annotations">[] } {
+  const tupletIds = new Map<number, string>();
+  const events: NewRow<"events">[] = [];
+
+  for (const [position, column] of clipboard.columns.entries()) {
+    let tupletId: string | null = null;
+    if (column.tupletGroup !== null) {
+      // A fresh id per group, so a pasted triplet is its own tuplet rather
+      // than being welded to the one it was copied from.
+      if (!tupletIds.has(column.tupletGroup)) tupletIds.set(column.tupletGroup, mintId());
+      tupletId = tupletIds.get(column.tupletGroup)!;
+    }
+
+    events.push({
+      id: mintId(),
+      bandId: part.bandId,
+      partId: part.id,
+      rank: ranks[position],
+      kind: column.kind,
+      frets: { ...column.frets },
+      techniques: { ...column.techniques },
+      repeat: column.repeat,
+      durationHint: column.durationHint,
+      tupletId,
+      tupletCount: column.tupletCount,
+      groupKind: column.groupKind ?? null,
+    });
+  }
+
+  const annotations: NewRow<"annotations">[] = [];
+  for (const annotation of clipboard.annotations) {
+    const anchor = events[annotation.columnIndex];
+    if (!anchor) continue;
+    annotations.push({
+      id: mintId(),
+      bandId: part.bandId,
+      partId: part.id,
+      anchorEventId: anchor.id,
+      kind: annotation.kind,
+      value: annotation.value,
+    });
+  }
+
+  return { events, annotations };
+}
+
+/**
+ * What pasting this clipboard into an empty part would produce, as rows that
+ * were never written. Calls `rowsFromClipboard`, so it is the paste's own
+ * output with placeholder ids and empty sync metadata.
+ */
+export function draftPart(clipboard: Clipboard): {
+  events: EventRow[];
+  annotations: AnnotationRow[];
+} {
+  const part = { id: "draft-part", bandId: "draft-band" };
+  let counter = 0;
+  const rows = rowsFromClipboard(
+    part,
+    clipboard,
+    ranksBetween(null, null, clipboard.columns.length),
+    () => `draft-${counter++}`,
+  );
+  const meta = { updatedAt: ZERO_HLC, deletedAt: null, fieldClocks: {}, serverSeq: 0 };
+  return {
+    events: rows.events.map((row) => ({ ...row, ...meta })) as EventRow[],
+    annotations: rows.annotations.map((row) => ({ ...row, ...meta })) as AnnotationRow[],
+  };
+}
+
+/**
  * Paste a clipboard in at the cursor.
  *
  * All the ranks are generated up front in one call, so the pasted run is
@@ -148,58 +231,17 @@ export async function pasteClipboard(
   const after = events[resolved + 1];
 
   const ranks = ranksBetween(before?.rank ?? null, after?.rank ?? null, clipboard.columns.length);
-  const tupletIds = new Map<number, string>();
+  const { events: newEvents, annotations: newAnnotations } = rowsFromClipboard(
+    part,
+    clipboard,
+    ranks,
+    newId,
+  );
   const inserted: EventRow[] = [];
 
   await mutateBatch(async (inner) => {
-    for (const [position, column] of clipboard.columns.entries()) {
-      let tupletId: string | null = null;
-      if (column.tupletGroup !== null) {
-        // A fresh id per group, so a pasted triplet is its own tuplet rather
-        // than being welded to the one it was copied from.
-        if (!tupletIds.has(column.tupletGroup)) {
-          tupletIds.set(column.tupletGroup, newId());
-        }
-        tupletId = tupletIds.get(column.tupletGroup)!;
-      }
-
-      const row = await insertRow(
-        "events",
-        {
-          id: newId(),
-          bandId: part.bandId,
-          partId: part.id,
-          rank: ranks[position],
-          kind: column.kind,
-          frets: { ...column.frets },
-          techniques: { ...column.techniques },
-          repeat: column.repeat,
-          durationHint: column.durationHint,
-          tupletId,
-          tupletCount: column.tupletCount,
-          groupKind: column.groupKind ?? null,
-        },
-        inner,
-      );
-      inserted.push(row);
-    }
-
-    for (const annotation of clipboard.annotations) {
-      const anchor = inserted[annotation.columnIndex];
-      if (!anchor) continue;
-      await insertRow(
-        "annotations",
-        {
-          id: newId(),
-          bandId: part.bandId,
-          partId: part.id,
-          anchorEventId: anchor.id,
-          kind: annotation.kind,
-          value: annotation.value,
-        },
-        inner,
-      );
-    }
+    for (const input of newEvents) inserted.push(await insertRow("events", input, inner));
+    for (const input of newAnnotations) await insertRow("annotations", input, inner);
   }, ctx);
 
   return inserted;

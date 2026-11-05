@@ -9,11 +9,12 @@
  * one actually goes.
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GitBranch, Pencil, Play, Trash2 } from "lucide-react";
 import { ArrangementEditor } from "@/components/arrangement/ArrangementEditor";
 import { ExportSong } from "@/components/app/ExportSong";
+import { PasteTab } from "@/components/app/PasteTab";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader } from "@/components/ui";
 import { createPart, createVariant } from "@/lib/local/editing";
@@ -22,6 +23,7 @@ import {
   useBarCounts,
   useParts,
   useSong,
+  useSongs,
   useSongAnnotations,
   useSongEvents,
   useSongTuning,
@@ -36,6 +38,7 @@ export function SongView({ songId }: { songId: string }) {
   const song = useSong(songId);
   const tuning = useSongTuning(song);
   const tunings = useTunings(song?.bandId);
+  const bandSongs = useSongs(song?.bandId);
   const parts = useParts(songId);
   const entries = useArrangement(songId);
   const eventsByPart = useSongEvents(songId);
@@ -43,7 +46,15 @@ export function SongView({ songId }: { songId: string }) {
   const barCounts = useBarCounts(songId);
 
   const [density, setDensity] = useState<Density>("expanded");
+  const [pasting, setPasting] = useState(false);
+  const [scrollTo, setScrollTo] = useState<string | null>(null);
   const router = useRouter();
+
+  const hasScrollTarget = scrollTo !== null && (parts?.some((p) => p.id === scrollTo) ?? false);
+  useEffect(() => {
+    if (!scrollTo || !hasScrollTarget) return;
+    document.getElementById(`part-${scrollTo}`)?.scrollIntoView({ block: "nearest" });
+  }, [scrollTo, hasScrollTarget]);
 
   if (song === undefined) return <Loading />;
   if (!song) {
@@ -166,29 +177,53 @@ export function SongView({ songId }: { songId: string }) {
       <section>
         <div className="mb-2 flex items-center justify-between">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-text-dim">Parts</h2>
-          <Button
-            className="no-print"
-            onClick={async () => {
-              const created = await createPart(song);
-              router.push(`/songs/${songId}/capture/${created.id}`);
-            }}
-          >
-            + part
-          </Button>
+          <div className="flex gap-2 no-print">
+            <Button className="no-print" onClick={() => setPasting((open) => !open)}>
+              Paste tab
+            </Button>
+            <Button
+              className="no-print"
+              onClick={async () => {
+                const created = await createPart(song);
+                router.push(`/songs/${songId}/capture/${created.id}`);
+              }}
+            >
+              + part
+            </Button>
+          </div>
         </div>
+
+        {pasting && parts !== undefined && eventsByPart !== undefined && tunings !== undefined && bandSongs !== undefined ? (
+          <PasteTab
+            song={song}
+            tuning={tuning}
+            tunings={tunings}
+            bandSongs={bandSongs}
+            parts={parts}
+            eventsByPart={eventsByPart}
+            density={density}
+            onClose={() => setPasting(false)}
+            onImported={setScrollTo}
+          />
+        ) : null}
 
         {parts === undefined || eventsByPart === undefined ? (
           <Loading />
         ) : parts.length === 0 ? (
           <EmptyState title="No parts yet.">
-            <ButtonLink href={`/songs/${songId}/capture`} variant="primary">
-              Start capturing
-            </ButtonLink>
+            <div className="flex flex-wrap justify-center gap-2">
+              <ButtonLink href={`/songs/${songId}/capture`} variant="primary">
+                Start capturing
+              </ButtonLink>
+              <Button className="no-print" onClick={() => setPasting(true)}>
+                Paste tab
+              </Button>
+            </div>
           </EmptyState>
         ) : (
           <ul className="grid gap-3">
             {parts.map((part) => (
-              <li key={part.id}>
+              <li key={part.id} id={`part-${part.id}`}>
                 <PartCard
                   part={part}
                   parts={parts}
