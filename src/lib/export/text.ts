@@ -7,8 +7,9 @@
  * message, print, or keep in a file is not. It is also the format that will
  * still open in ten years.
  *
- * Built from the same `toAscii` the on-screen staff shares a layout with, so
- * what gets exported is what you were looking at.
+ * Built from the same `toAscii` the on-screen staff shares a layout with. The
+ * export is always the fret-number tab: the notes and intervals reading views
+ * are display only, so they never change what gets exported.
  */
 
 import { describeArrangement, parseArrangement } from "../arrangement/expand";

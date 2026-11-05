@@ -181,6 +181,36 @@ export async function listAnnotationsBySong(
   return byPart;
 }
 
+/** A song's parts with their columns and chords, read together. */
+export interface SongContent {
+  parts: PartRow[];
+  eventsByPart: Record<string, EventRow[]>;
+  annotationsByPart: Record<string, AnnotationRow[]>;
+}
+
+/**
+ * Parts, columns and annotations in ONE read transaction.
+ *
+ * Three separate live queries can each commit on their own render, so a consumer could hold a part whose
+ * columns have not arrived, or columns whose chords have not. One transaction means one answer: every part
+ * has its columns and its chords, or the caller has nothing yet.
+ */
+export async function listSongContent(
+  songId: string,
+  database: StablatureDb = defaultDb,
+): Promise<SongContent> {
+  return database.transaction("r", [database.parts, database.events, database.annotations], async () => {
+    const parts = await listParts(songId, database);
+    const eventsByPart: Record<string, EventRow[]> = {};
+    const annotationsByPart: Record<string, AnnotationRow[]> = {};
+    for (const part of parts) {
+      eventsByPart[part.id] = await listEvents(part.id, database);
+      annotationsByPart[part.id] = await listAnnotations(part.id, database);
+    }
+    return { parts, eventsByPart, annotationsByPart };
+  });
+}
+
 /** Bar count per part, which bounds the arrangement's bar-range controls. */
 export async function barCountsBySong(
   songId: string,

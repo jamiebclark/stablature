@@ -12,11 +12,14 @@
  * copy makes, across every row at once. A row dropped to commentary is the same defect, so a line
  * the reader listed as ignored must not hold a note and a rail (INV-009).
  */
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { draftPart } from "@/lib/local/clipboard";
 import { toAscii } from "@/lib/tab/ascii";
 import { parseTab, type ParsedTab } from "@/lib/tab/parse";
 import { presetById, type Tuning } from "@/lib/tunings";
+
+// A sweep of this size outlasts the default 5s timeout on a loaded machine; it asserts nothing about speed.
+vi.setConfig({ testTimeout: 120_000 });
 
 type Read = Extract<ParsedTab, { ok: true }>;
 

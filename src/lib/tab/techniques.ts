@@ -6,9 +6,9 @@
  * arrives at. A *decoration* (vibrato, bend, ...) belongs to a single note, so
  * it is drawn as an affix on that note's cell.
  *
- * Only `layout.ts`, the capture descriptors and the ASCII reader read this module; the ASCII
- * serialiser and the staff component place what the layout hands them and
- * never look at a technique themselves.
+ * Only `layout.ts`, `reading/compare.ts` (which reads the word tables), the capture descriptors and the
+ * ASCII reader read this module; the ASCII serialiser and the staff component place what the layout
+ * hands them and never look at a technique themselves.
  */
 
 import type { Technique } from "../model";
@@ -86,14 +86,24 @@ export function drawnDecorations(stored: readonly string[]): readonly Decoration
   return READING_ORDER.filter((id) => present.has(id)).map((id) => BY_ID.get(id)!);
 }
 
-/** The fret text with its affixes, in the fixed order, for any stored order. */
-export function decorate(fret: string, stored: readonly string[]): string {
+const IS_LETTER = /^[A-Za-z]$/;
+
+/**
+ * The fret text with its affixes, in the fixed order, for any stored order.
+ *
+ * `separator` goes between a letter affix and the text it touches, on the side the letter sits (the
+ * reading views pass `a middle dot` so `A` plus palm mute cannot be read as the chord `Am`). Symbol affixes never
+ * take one. The default is no separator, which is exactly what frets draw.
+ */
+export function decorate(fret: string, stored: readonly string[], separator = ""): string {
   const present = new Set(stored);
   let text = fret;
   for (const id of WRAP_ORDER) {
     if (!present.has(id)) continue;
     const spec = BY_ID.get(id)!;
-    text = `${spec.before}${text}${spec.after}`;
+    const before = IS_LETTER.test(spec.before) ? `${spec.before}${separator}` : spec.before;
+    const after = IS_LETTER.test(spec.after) ? `${separator}${spec.after}` : spec.after;
+    text = `${before}${text}${after}`;
   }
   return text;
 }

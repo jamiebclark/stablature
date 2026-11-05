@@ -2,9 +2,11 @@
  * Turns stored events into something drawable.
  *
  * This is the one place that knows how a part becomes columns on a page, and
- * it is deliberately free of React so the same layout drives the on-screen
- * staff, the ASCII serialiser (which is also how the renderer is tested), and
- * eventually printing and export.
+ * it is deliberately free of React. `layoutWith` is the one builder: `layoutPart` calls it with the fret
+ * writer, which is what the on-screen staff in frets and the ASCII serialiser (also how the renderer is
+ * tested) draw; `reading/labels.ts` calls it with a note or interval writer for the reading views. Only
+ * the cell's pitch text differs between them, so widths, repeats and positions cannot drift apart.
+ * The ASCII serialiser and the export never take a writer: they always draw frets.
  *
  * The two jobs that are not obvious:
  *
@@ -20,6 +22,7 @@
  */
 
 import { fretAt, groupNumber, type AnnotationRow, type EventKind, type EventRow } from "../model";
+import { anchoredChords } from "../chords";
 import { stringCount, type Tuning } from "../tunings";
 import { readDuration, type Duration } from "../rhythm/durations";
 import { decorate, drawnDecorations, drawnTransition } from "./techniques";
@@ -68,6 +71,25 @@ export interface TabLayout {
   density: Density;
 }
 
+/**
+ * What differs between views of the same part: the text of one played cell. Everything else -- bars,
+ * repeats, connectors, widths -- is `layoutWith`'s, so a view cannot move a column.
+ */
+export interface CellWriter {
+  /** The pitch text for one played cell, before decorations. */
+  pitch(event: EventRow, stringIndex: number, fret: string, stored: readonly string[]): string;
+  /** Passed to `decorate`. */
+  separator: string;
+  /** Words for the screen reader, or null. Null keeps the description as it is today. */
+  words(event: EventRow, stringIndex: number, fret: string, stored: readonly string[]): string | null;
+}
+
+const FRET_WRITER: CellWriter = {
+  pitch: (_event, _stringIndex, fret) => fret,
+  separator: "",
+  words: () => null,
+};
+
 export interface LayoutOptions {
   events: readonly EventRow[];
   tuning: Tuning;
@@ -98,6 +120,7 @@ function describeColumn(
   connectors: (string | null)[],
   repeatedTimes: number,
   durationWords: string | null = null,
+  shown: (string | null)[] = [],
 ): string {
   const parts: string[] = [];
   frets.forEach((fret, index) => {
@@ -109,7 +132,7 @@ function describeColumn(
     }
     for (const decoration of drawnDecorations(stored[index])) words.push(decoration.words);
     parts.push(
-      `string ${index + 1} fret ${fret}${words.length ? ` with ${joinWords(words)}` : ""}`,
+      `string ${index + 1} fret ${fret}${shown[index] ? ` shown as ${shown[index]}` : ""}${words.length ? ` with ${joinWords(words)}` : ""}`,
     );
   });
   const spoken = durationWords ? `, ${durationWords}` : "";
@@ -127,24 +150,22 @@ function labelsFor(tuning: Tuning): string[] {
 }
 
 /**
- * Lay out a part.
+ * Lay out a part as frets. The signature every caller knows; the work is `layoutWith`'s.
  *
  * `events` must already be in rank order -- the local queries return them that
  * way, and re-sorting here would hide a caller that forgot.
  */
-export function layoutPart({
-  events,
-  tuning,
-  annotations = [],
-  density = "expanded",
-}: LayoutOptions): TabLayout {
+export function layoutPart(options: LayoutOptions): TabLayout {
+  return layoutWith(options, FRET_WRITER);
+}
+
+/** The one builder. `writer` decides the text of each played cell; nothing else. */
+export function layoutWith(
+  { events, tuning, annotations = [], density = "expanded" }: LayoutOptions,
+  writer: CellWriter,
+): TabLayout {
   const strings = stringCount(tuning);
-  const chords = new Map<string, string>();
-  for (const annotation of annotations) {
-    if (annotation.kind === "chord" && annotation.anchorEventId) {
-      chords.set(annotation.anchorEventId, annotation.value);
-    }
-  }
+  const chords = anchoredChords(annotations);
 
   const columns: TabColumn[] = [];
   let barNumber = 1;
@@ -178,7 +199,14 @@ export function layoutPart({
     const frets = Array.from({ length: strings }, (_, i) => fretText(event, i));
     const stored = Array.from({ length: strings }, (_, i) => storedFor(event, i));
     const transitions = stored.map((list) => drawnTransition(list));
-    const decorated = frets.map((text, i) => (text === null ? null : decorate(text, stored[i])));
+    const decorated = frets.map((text, i) =>
+      text === null
+        ? null
+        : decorate(writer.pitch(event, i, text, stored[i]), stored[i], writer.separator),
+    );
+    const shown = frets.map((text, i) =>
+      text === null ? null : writer.words(event, i, text, stored[i]),
+    );
     const chord = chords.get(event.id) ?? null;
     const repeat = Math.max(1, event.repeat);
     const duration = readDuration(event.durationHint);
@@ -213,7 +241,7 @@ export function layoutPart({
         repeat,
         duration,
         connectors,
-        description: describeColumn(frets, stored, connectors, repeat, duration?.words ?? null),
+        description: describeColumn(frets, stored, connectors, repeat, duration?.words ?? null, shown),
       });
       continue;
     }
@@ -235,7 +263,7 @@ export function layoutPart({
         repeat,
         duration,
         connectors,
-        description: describeColumn(frets, stored, connectors, 1, duration?.words ?? null),
+        description: describeColumn(frets, stored, connectors, 1, duration?.words ?? null, shown),
       });
     }
   }

@@ -1,0 +1,138 @@
+diff --git a/src/lib/sync/client.ts b/src/lib/sync/client.ts
+index 5b7f018..bbceb87 100644
+--- a/src/lib/sync/client.ts
++++ b/src/lib/sync/client.ts
+@@ -69,6 +69,7 @@ export async function applyRemoteRows(
+   const clock = getClock();
+   let applied = 0;
+ 
++  const batches: { table: (typeof SYNCED_TABLES)[number]; parsed: SyncedRow[] }[] = [];
+   for (const table of SYNCED_TABLES) {
+     const incoming = rows[table];
+     if (!incoming || incoming.length === 0) continue;
+@@ -78,9 +79,13 @@ export async function applyRemoteRows(
+       const result = ROW_SCHEMAS[table].safeParse(candidate);
+       if (result.success) parsed.push(result.data as SyncedRow);
+     }
+-    if (parsed.length === 0) continue;
++    if (parsed.length > 0) batches.push({ table, parsed });
++  }
++  if (batches.length === 0) return 0;
+ 
+-    await database.transaction("rw", [database[table]], async () => {
++  // One transaction, so a reader sees a part with its columns and chords, or none of them.
++  await database.transaction("rw", batches.map(({ table }) => database[table]), async () => {
++    for (const { table, parsed } of batches) {
+       for (const remote of parsed) {
+         // Fold the remote clock in before merging, so a later local edit is
+         // ordered after what we have just learned about rather than tying with
+@@ -94,8 +99,8 @@ export async function applyRemoteRows(
+         await database[table].put(merged as never);
+         applied += 1;
+       }
+-    });
+-  }
++    }
++  });
+ 
+   return applied;
+ }
+diff --git a/src/lib/local/hooks.ts b/src/lib/local/hooks.ts
+index 7157cc8..1aa7738 100644
+--- a/src/lib/local/hooks.ts
++++ b/src/lib/local/hooks.ts
+@@ -15,7 +15,6 @@
+  */
+ 
+ import { useLiveQuery } from "dexie-react-hooks";
+-import { useEffect, useRef, useState } from "react";
+ import { readClipboard, type Clipboard } from "./clipboard";
+ import type {
+   AnnotationRow,
+@@ -108,25 +107,8 @@ export function useSongAnnotations(
+ 
+ /** Parts, columns and chords of a song from one read, so a render never sees them out of step. */
+ export function useSongContent(songId: string | undefined): SongContent | undefined {
+-  const read = useLiveQuery(() => (songId ? listSongContent(songId) : undefined), [songId]);
+-  const settled = useRef<{ songId: string | undefined; content: SongContent | undefined }>({ songId, content: undefined });
+-  const [stuck, setStuck] = useState(false);
+-  const syncing = read?.syncing === true;
+-  // A tab killed mid-pull leaves `syncing` behind. Past this long it is no longer a pull in flight.
+-  useEffect(() => {
+-    if (!syncing) {
+-      setStuck(false);
+-      return;
+-    }
+-    const timer = setTimeout(() => setStuck(true), STUCK_SYNC_MS);
+-    return () => clearTimeout(timer);
+-  }, [syncing, songId]);
+-  if (settled.current.songId !== songId) settled.current = { songId, content: undefined };
+-  if (read && (!syncing || stuck)) settled.current.content = read;
+-  return read ? settled.current.content : undefined;
+-}
+-
+-const STUCK_SYNC_MS = 10_000;
++  return useLiveQuery(() => (songId ? listSongContent(songId) : undefined), [songId]);
++}
+ 
+ /** Bar count per part, used to bound the arrangement bar-range controls. */
+ export function useBarCounts(songId: string | undefined): Record<string, number> | undefined {
+diff --git a/src/lib/local/queries.ts b/src/lib/local/queries.ts
+index c31f5f7..eca8f6b 100644
+--- a/src/lib/local/queries.ts
++++ b/src/lib/local/queries.ts
+@@ -23,7 +23,6 @@ import type {
+   SongRow,
+   TuningRow,
+ } from "../model";
+-import { getStatus } from "../sync/client";
+ import { db as defaultDb, type StablatureDb } from "./db";
+ 
+ function live<T extends SyncMeta>(rows: T[]): T[] {
+@@ -187,8 +186,6 @@ export interface SongContent {
+   parts: PartRow[];
+   eventsByPart: Record<string, EventRow[]>;
+   annotationsByPart: Record<string, AnnotationRow[]>;
+-  /** The sync status read in the same transaction: true while a pull may be landing in pieces. */
+-  syncing?: boolean;
+ }
+ 
+ /**
+@@ -202,10 +199,7 @@ export async function listSongContent(
+   songId: string,
+   database: StablatureDb = defaultDb,
+ ): Promise<SongContent> {
+-  return database.transaction("r", [database.parts, database.events, database.annotations, database.meta], async () => {
+-    // Content and status are one snapshot: a pull commits parts, then columns, then chords, and a read in
+-    // between must say so (INV-015).
+-    const syncing = (await getStatus(database)).state === "syncing";
++  return database.transaction("r", [database.parts, database.events, database.annotations], async () => {
+     const parts = await listParts(songId, database);
+     const eventsByPart: Record<string, EventRow[]> = {};
+     const annotationsByPart: Record<string, AnnotationRow[]> = {};
+@@ -213,7 +207,7 @@ export async function listSongContent(
+       eventsByPart[part.id] = await listEvents(part.id, database);
+       annotationsByPart[part.id] = await listAnnotations(part.id, database);
+     }
+-    return { parts, eventsByPart, annotationsByPart, syncing };
++    return { parts, eventsByPart, annotationsByPart };
+   });
+ }
+ 
+diff --git a/src/lib/reading/view.ts b/src/lib/reading/view.ts
+index 554002f..2ce2869 100644
+--- a/src/lib/reading/view.ts
++++ b/src/lib/reading/view.ts
+@@ -53,9 +53,10 @@ function notify() {
+ /** Never throws. */
+ export function setStaffView(view: StaffView): void {
+   current = readStaffView(view);
+-  unwritten = false;
++  const target = store();
++  unwritten = target === null;
+   try {
+-    store()?.setItem(STAFF_VIEW_KEY, current);
++    target?.setItem(STAFF_VIEW_KEY, current);
+   } catch {
+     unwritten = true;
+     // Refused (quota, private mode): the screen still changes, the choice just is not remembered.

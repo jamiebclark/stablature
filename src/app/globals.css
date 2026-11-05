@@ -39,6 +39,14 @@
   --selection: #4a3714;
 
   /*
+   * What a variant changed. Blue, because amber already means the accent and the selection band. Explicit
+   * colours, never opacity over a surface. The tint goes on string cells only (a chord label on the
+   * light tint would fall under 4.5:1); the ink colours the mark row.
+   */
+  --diff-tint: #1b2f45;
+  --diff-ink: #8ecbff;
+
+  /*
    * Fretboard tiers, as explicit colours rather than opacity over a surface.
    * They were `bg-raised` at 25% and 60%, which works on near-black and
    * collapses on near-white -- in the light theme the whole neck washed out
@@ -73,6 +81,8 @@
     --tab-line: #c9c9c2;
     --tab-bar: #8a8a84;
     --selection: #fbe4bb;
+    --diff-tint: #d9ecff;
+    --diff-ink: #0b4f8a;
     --fret-cell: #ffffff;
     --fret-cell-inlay: #eaeae2;
     --fret-number: #6b6b74;
@@ -260,6 +270,45 @@ button,
   background: var(--selection);
 }
 
+/*
+ * A column a variant changed or added. The cells wrapper takes the tint and the number masks are
+ * repainted to match, as selection does. Placed after the raised-surface rule at equal specificity.
+ */
+.tab-diff-cells {
+  background: var(--diff-tint);
+}
+
+.tab-staff .tab-diff-cells .tab-cell > span {
+  background: var(--diff-tint);
+  font-weight: 700;
+}
+
+/* The mark row: `*`, `+`, or a removal count, in its own row under the rhythm row. */
+.tab-diff-mark {
+  color: var(--diff-ink);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-align: center;
+  height: 1.1rem;
+  line-height: 1.1rem;
+}
+
+/* Where columns were removed: the staff's rail runs through, the gap says how many. */
+.tab-removal {
+  color: var(--diff-ink);
+}
+
+/* What the staff is showing, and how a variant differs. In the card, plain text. */
+.staff-caption {
+  color: var(--text-dim);
+  font-size: 0.75rem;
+}
+
+.variant-line {
+  color: var(--text-dim);
+  font-size: 0.75rem;
+}
+
 .tab-bracket {
   border-color: var(--text-faint);
 }
@@ -314,6 +363,10 @@ button,
     --text-dim: #333;
     --tab-line: #999;
     --tab-bar: #000;
+    /* The print rule on :root loses to the light theme's selector, which is harmless (its values are
+       print-safe); resolving these here is what makes a dark-theme print correct. */
+    --diff-tint: #fff;
+    --diff-ink: #000;
   }
 
   .no-print {

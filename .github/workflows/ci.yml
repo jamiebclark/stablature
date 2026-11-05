@@ -58,6 +58,9 @@ jobs:
 
       - run: npm test
 
+      # Wall-clock budgets (20 ms, 50 ms) cannot share a machine with the parallel run, so they run alone.
+      - run: npm run test:budget
+
       - name: Apply migrations
         # The script uses --env-file-if-exists, so it works here without a
         # .env.local and locally with one.

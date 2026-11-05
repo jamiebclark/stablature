@@ -8,6 +8,10 @@
  * tests over the ASCII output are therefore tests of this component's layout
  * too.
  *
+ * What is exported is what you see in fret numbers. A reader's view (note names, intervals) is a different
+ * writer into the same builder, passed as `reading`; capture and the paste preview pass nothing and draw
+ * exactly as before. This file never imports techniques.
+ *
  * Strings are drawn as lines with the fret numbers masking them (see
  * globals.css) rather than as rows of dashes, which is what makes it read as
  * tab rather than as a terminal.
@@ -16,9 +20,36 @@
 import { Fragment, useEffect, useMemo, useRef } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import type { AnnotationRow, EventRow } from "@/lib/model";
-import { layoutPart, tupletSpans, type Density } from "@/lib/tab/layout";
+import { layoutPart, tupletSpans, type Density, type TabLayout } from "@/lib/tab/layout";
+import { layoutReading, type ReadingLayout } from "@/lib/reading/labels";
+import type { StaffView } from "@/lib/reading/view";
+import type { ColumnMark, StaffMarks } from "@/lib/reading/marks";
 import type { Tuning } from "@/lib/tunings";
 import { useLongPress } from "@/components/capture/useLongPress";
+
+export interface StaffReading {
+  view: StaffView;
+  /** Every event of the part, for the chord in force. */
+  partEvents: readonly EventRow[];
+  /** What a variant changed against its parent. Drawn in either view. */
+  marks?: StaffMarks | null;
+}
+
+/** What the caption says, from how many named cells had a chord to read against. */
+function captionFor(view: StaffView, cover: ReadingLayout["chordCover"]): string | null {
+  if (view === "notes") return "Note names";
+  if (view !== "intervals") return null;
+  switch (cover) {
+    case "all":
+      return "Intervals from the chord in force";
+    case "some":
+      return "Intervals, and note names where no chord";
+    case "none":
+      return "Note names: no chords to read against";
+    default:
+      return "Intervals";
+  }
+}
 
 export interface TabStaffProps {
   events: readonly EventRow[];
@@ -48,6 +79,8 @@ export interface TabStaffProps {
   surface?: "base" | "raised";
   /** Draws a duration mark row under the strings. Off for capture and export. */
   showRhythm?: boolean;
+  /** A reading view. Absent, or frets, draws the fret numbers as always. */
+  reading?: StaffReading;
 }
 
 export function TabStaff({
@@ -63,11 +96,19 @@ export function TabStaff({
   followTail = false,
   surface = "base",
   showRhythm = false,
+  reading,
 }: TabStaffProps) {
-  const layout = useMemo(
-    () => layoutPart({ events, tuning, annotations, density }),
-    [events, tuning, annotations, density],
+  const readingView = reading && reading.view !== "frets" ? reading.view : null;
+  const partEvents = reading?.partEvents;
+  const layout: TabLayout | ReadingLayout = useMemo(
+    () =>
+      readingView && partEvents
+        ? layoutReading({ view: readingView, events, partEvents, tuning, annotations, density })
+        : layoutPart({ events, tuning, annotations, density }),
+    [events, tuning, annotations, density, readingView, partEvents],
   );
+  const caption =
+    readingView && "chordCover" in layout ? captionFor(readingView, (layout as ReadingLayout).chordCover) : null;
   const spans = useMemo(() => tupletSpans(layout), [layout]);
 
   const scroller = useRef<HTMLDivElement>(null);
@@ -91,6 +132,7 @@ export function TabStaff({
   const hasChords = layout.columns.some((column) => column.chord !== null);
   const hasTuplets = spans.length > 0;
   const hasRhythm = showRhythm && layout.columns.some((column) => column.duration !== null);
+  const marks = reading?.marks && reading.marks.any ? reading.marks : null;
 
   const showCaret = insertAfterEventId !== undefined;
   /*
@@ -105,6 +147,11 @@ export function TabStaff({
   /** Which tuplet span, if any, a column sits in -- for drawing the bracket. */
   const spanAt = (index: number) =>
     spans.find((span) => index >= span.start && index <= span.end);
+
+  // A removal after the last column is still inside its group when the group counts more than it holds.
+  const lastSpan = spanAt(layout.columns.length - 1);
+  const endsInOpenGroup =
+    !!lastSpan && lastSpan.count !== null && lastSpan.count > lastSpan.end - lastSpan.start + 1;
 
   return (
     <div className="tab-staff" data-surface={surface} data-testid="tab-staff">
@@ -145,8 +192,22 @@ export function TabStaff({
               layout.columns.map((column, index) => {
                 const span = spanAt(index);
                 const previous = layout.columns[index - 1];
+                const key = `${column.eventId}-${column.repetition}`;
+                const removed = marks?.removals.get(key) ?? 0;
+                const mark = marks?.columns.get(key);
                 return (
-                  <Fragment key={`${column.eventId}-${column.repetition}`}>
+                  <Fragment key={key}>
+                  {marks && removed > 0 ? (
+                    <RemovalGap
+                      count={removed}
+                      parent={marks.parentLabel}
+                      showChordRow={hasChords}
+                      showTupletRow={hasTuplets}
+                      showRhythmRow={hasRhythm}
+                      stringCount={layout.stringCount}
+                      bracket={!!span && !!previous && spanAt(index - 1) === span}
+                    />
+                  ) : null}
                   {column.connectors.some(Boolean) ? (
                     <Gap
                       connectors={column.connectors}
@@ -170,6 +231,7 @@ export function TabStaff({
                     showChordRow={hasChords}
                     showTupletRow={hasTuplets}
                     rhythm={hasRhythm ? (column.duration?.mark ?? "") : null}
+                    diff={marks ? { mark, parent: marks.parentLabel } : null}
                     tuplet={
                       span
                         ? {
@@ -196,9 +258,28 @@ export function TabStaff({
                 );
               })
             )}
+            {marks && marks.removedAtEnd > 0 ? (
+              <RemovalGap
+                count={marks.removedAtEnd}
+                parent={marks.parentLabel}
+                showChordRow={hasChords}
+                showTupletRow={hasTuplets}
+                showRhythmRow={hasRhythm}
+                stringCount={layout.stringCount}
+                bracket={endsInOpenGroup}
+              />
+            ) : null}
           </div>
         </div>
       </div>
+      {caption ? (
+        <p
+          data-testid="staff-caption"
+          className="absolute bottom-0 right-3 whitespace-nowrap text-[0.65rem] leading-3 text-text-dim"
+        >
+          {caption}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -221,6 +302,8 @@ interface ColumnProps {
   showTupletRow: boolean;
   /** The mark text ("" for none), or null when the row is not drawn at all. */
   rhythm: string | null;
+  /** Null when the mark row is not drawn; otherwise this column's mark, if it has one. */
+  diff: { mark: ColumnMark | undefined; parent: string } | null;
   tuplet: { count: number | null; start: boolean; end: boolean; labelled: boolean } | null;
   onSelect?: () => void;
   onInspect?: () => void;
@@ -237,10 +320,14 @@ function Column({
   showChordRow,
   showTupletRow,
   rhythm,
+  diff,
   tuplet,
   onSelect,
   onInspect,
 }: ColumnProps) {
+  const mark = diff?.mark;
+  if (mark && diff) label = `${label}. ${markWords(mark, diff.parent)}`;
+  const diffStatus = mark?.status;
   // Sized in `ch` so a two-digit fret gets twice the room and the staff stays
   // aligned, exactly as in the ASCII output.
   const style = { width: `calc(${width}ch + 0.6rem)` };
@@ -277,7 +364,7 @@ function Column({
         </div>
       ) : null}
 
-      <div className={barline ? "tab-barline" : undefined}>
+      <div className={[barline ? "tab-barline" : "", mark ? "tab-diff-cells" : ""].filter(Boolean).join(" ") || undefined}>
         {cells.map((text, index) => (
           <div key={index} className="tab-cell">
             {barline ? null : text === null ? null : <span>{text}</span>}
@@ -293,6 +380,12 @@ function Column({
           {rhythm}
         </div>
       ) : null}
+
+      {diff ? (
+        <div className="tab-diff-mark" data-testid="tab-diff" aria-hidden>
+          {mark ? (mark.status === "added" ? "+" : "*") : ""}
+        </div>
+      ) : null}
     </>
   );
 
@@ -304,6 +397,7 @@ function Column({
         data-testid="tab-column"
         data-selected={selected ? "true" : undefined}
         data-barline={barline ? "true" : undefined}
+        data-diff={diffStatus}
         role="img"
         aria-label={label}
       >
@@ -325,6 +419,7 @@ function Column({
         barline={barline}
         active={active}
         label={label}
+        diff={diffStatus}
       >
         {body}
       </InspectableColumn>
@@ -340,6 +435,7 @@ function Column({
       data-testid="tab-column"
       data-selected={selected ? "true" : undefined}
       data-barline={barline ? "true" : undefined}
+      data-diff={diffStatus}
       aria-label={label}
       aria-current={active ? "true" : undefined}
     >
@@ -358,6 +454,7 @@ function InspectableColumn({
   barline,
   active,
   label,
+  diff,
   children,
 }: {
   style: CSSProperties;
@@ -368,6 +465,7 @@ function InspectableColumn({
   barline: boolean;
   active: boolean;
   label: string;
+  diff: ColumnMark["status"] | undefined;
   children: ReactNode;
 }) {
   const press = useLongPress({ onLongPress: onInspect });
@@ -396,6 +494,7 @@ function InspectableColumn({
       data-testid="tab-column"
       data-selected={selected ? "true" : undefined}
       data-barline={barline ? "true" : undefined}
+      data-diff={diff}
       aria-label={label}
       aria-current={active ? "true" : undefined}
     >
@@ -449,6 +548,68 @@ function Gap({
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+/** What a screen reader hears after the description of a column. */
+function markWords(mark: ColumnMark, parent: string): string {
+  if (mark.status === "added") return `Added, not in ${parent}`;
+  const words = mark.words ? `: ${mark.words}` : "";
+  if (mark.total > 1 && mark.count < mark.total) {
+    return `Changed from ${parent} in ${mark.count} of ${mark.total} repetitions${words}`;
+  }
+  return `Changed from ${parent}${words}`;
+}
+
+/**
+ * Where the parent had columns the variant lacks. The rail of the strings runs through; the mark row
+ * says how many. Not interactive, so it takes no part in selection.
+ */
+function RemovalGap({
+  count,
+  parent,
+  showChordRow,
+  showTupletRow,
+  showRhythmRow,
+  stringCount,
+  bracket,
+}: {
+  count: number;
+  parent: string;
+  showChordRow: boolean;
+  showTupletRow: boolean;
+  showRhythmRow: boolean;
+  stringCount: number;
+  /** The gap sits inside a group, so the group's line runs across it like a connector's does. */
+  bracket: boolean;
+}) {
+  return (
+    <div
+      style={{ width: "3ch" }}
+      className="tab-removal shrink-0"
+      data-testid="tab-removal"
+      role="img"
+      aria-label={`${count} ${count === 1 ? "column" : "columns"} removed from ${parent} here`}
+    >
+      {showChordRow ? <div className="h-[1.1rem]" /> : null}
+      {showTupletRow ? (
+        <div className="relative h-[1.1rem]">
+          {bracket ? (
+            <div
+              className="tab-bracket absolute inset-x-0 bottom-[0.2rem] border-t"
+              style={{ height: "0.3rem" }}
+            />
+          ) : null}
+        </div>
+      ) : null}
+      <div>
+        {Array.from({ length: stringCount }, (_, index) => (
+          <div key={index} className="tab-cell" />
+        ))}
+      </div>
+      {showRhythmRow ? <div className="h-[1.1rem]" /> : null}
+      <div className="tab-diff-mark">{`−${count}`}</div>
     </div>
   );
 }

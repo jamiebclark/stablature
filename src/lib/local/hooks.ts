@@ -37,10 +37,12 @@ import {
   listBands,
   listEvents,
   listParts,
+  listSongContent,
   listSongs,
   listTunings,
   pendingWriteCount,
   resolveTuning,
+  type SongContent,
 } from "./queries";
 
 export function useBands(): BandRow[] | undefined {
@@ -101,6 +103,11 @@ export function useSongAnnotations(
   songId: string | undefined,
 ): Record<string, AnnotationRow[]> | undefined {
   return useLiveQuery(() => (songId ? listAnnotationsBySong(songId) : undefined), [songId]);
+}
+
+/** Parts, columns and chords of a song from one read, so a render never sees them out of step. */
+export function useSongContent(songId: string | undefined): SongContent | undefined {
+  return useLiveQuery(() => (songId ? listSongContent(songId) : undefined), [songId]);
 }
 
 /** Bar count per part, used to bound the arrangement bar-range controls. */
