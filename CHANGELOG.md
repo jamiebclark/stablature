@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/jamiebclark/stablature/compare/v1.7.0...v1.8.0) (2026-11-05)
+
+
+### Features
+
+* **ascii-import:** import ASCII tab by pasting text ([#4](https://github.com/jamiebclark/stablature/issues/4)) ([8460e06](https://github.com/jamiebclark/stablature/commit/8460e06a86c2bc6f968c8345143d02aa9c3a78af))
+
 # [1.7.0](https://github.com/jamiebclark/stablature/compare/v1.6.0...v1.7.0) (2026-11-04)
 
 
