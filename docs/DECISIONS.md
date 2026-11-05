@@ -131,6 +131,13 @@ listed to refused, which is safe and cheap to overturn.
 Still read as commentary on purpose (F62): `5 7 5 7`, `(5) (7)` and `5-sl-7`. They are
 the declared edge of the rule. Reopen them on a real paste, not a wider sweep.
 
+**Worth your eye, added after round 9.** Each round has moved the parser toward refusing,
+and that has a cost in real pastes. Of 202 ordinary lines from tab headers, chord charts
+and footers, each standing alone, 42 now refuse the whole paste until deleted (review F75,
+rated MINOR): `Am7-D7`, `(c) 1999-2004`, `m.1-4`, `1-2-3-4-`. Each names its line, costs
+one tap to delete, and none is read as notes. Hyphen-joined chord lists are the likeliest
+to appear and the cheapest to narrow. Try a real web tab before judging this one.
+
 ## 2026-11-02 — session with Jamie away
 
 ### Process
