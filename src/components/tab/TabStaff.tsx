@@ -46,6 +46,8 @@ export interface TabStaffProps {
   followTail?: boolean;
   /** Raised surfaces need the fret-number mask to match their background. */
   surface?: "base" | "raised";
+  /** Draws a duration mark row under the strings. Off for capture and export. */
+  showRhythm?: boolean;
 }
 
 export function TabStaff({
@@ -60,6 +62,7 @@ export function TabStaff({
   onInspectColumn,
   followTail = false,
   surface = "base",
+  showRhythm = false,
 }: TabStaffProps) {
   const layout = useMemo(
     () => layoutPart({ events, tuning, annotations, density }),
@@ -87,6 +90,7 @@ export function TabStaff({
 
   const hasChords = layout.columns.some((column) => column.chord !== null);
   const hasTuplets = spans.length > 0;
+  const hasRhythm = showRhythm && layout.columns.some((column) => column.duration !== null);
 
   const showCaret = insertAfterEventId !== undefined;
   /*
@@ -165,6 +169,7 @@ export function TabStaff({
                     selected={selectedEventIds?.has(column.eventId) ?? false}
                     showChordRow={hasChords}
                     showTupletRow={hasTuplets}
+                    rhythm={hasRhythm ? (column.duration?.mark ?? "") : null}
                     tuplet={
                       span
                         ? {
@@ -214,6 +219,8 @@ interface ColumnProps {
   selected: boolean;
   showChordRow: boolean;
   showTupletRow: boolean;
+  /** The mark text ("" for none), or null when the row is not drawn at all. */
+  rhythm: string | null;
   tuplet: { count: number | null; start: boolean; end: boolean; labelled: boolean } | null;
   onSelect?: () => void;
   onInspect?: () => void;
@@ -229,6 +236,7 @@ function Column({
   selected,
   showChordRow,
   showTupletRow,
+  rhythm,
   tuplet,
   onSelect,
   onInspect,
@@ -276,6 +284,15 @@ function Column({
           </div>
         ))}
       </div>
+
+      {rhythm !== null ? (
+        <div
+          className="h-[1.1rem] text-[0.65rem] text-text-dim"
+          data-testid="tab-rhythm"
+        >
+          {rhythm}
+        </div>
+      ) : null}
     </>
   );
 

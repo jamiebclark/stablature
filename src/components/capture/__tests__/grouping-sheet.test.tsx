@@ -67,11 +67,12 @@ describe("INV-018", () => {
     expect(sheetRows(w, after[1]).labels).toContain("tuplet of 3");
     expect(sheetRows(w, after[2]).labels).toContain("tuplet of 3");
   });
-  it("the row sits just before delete", async () => {
+  it("the row sits just before duration, which sits just before delete (review F2: nothing variable below the duration row)", async () => {
     const w = await world();
     const all = await build(w, "nn");
     await groupSelection(w.part.id, all[0].id, all[1].id, "plain", w.ctx);
     const { ids } = sheetRows(w, (await rows(w))[0]);
-    expect(ids.indexOf("group")).toBe(ids.indexOf("delete") - 1);
+    expect(ids.indexOf("group")).toBe(ids.indexOf("duration") - 1);
+    expect(ids.indexOf("duration")).toBe(ids.indexOf("delete") - 1);
   });
 });

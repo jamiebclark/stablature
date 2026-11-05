@@ -15,6 +15,7 @@ import { newId } from "../ids";
 import type {
   AnnotationRow,
   BandRow,
+  DurationHint,
   EventRow,
   FretMap,
   FretValue,
@@ -40,6 +41,7 @@ import {
   patchRow,
   type MutateContext,
 } from "./mutate";
+import { db as defaultDb } from "./db";
 
 /* ---------- naming ---------- */
 
@@ -506,6 +508,27 @@ export async function bumpColumnRepeat(
   ctx: MutateContext = {},
 ): Promise<void> {
   await setColumnRepeat(event.id, Math.max(1, event.repeat + delta), ctx);
+}
+
+/** Absolute: the caller decides the toggle from what was on screen. Moves only this field's clock. */
+export async function setColumnDuration(
+  eventId: string,
+  duration: DurationHint | null,
+  ctx: MutateContext = {},
+): Promise<void> {
+  await patchRow("events", eventId, { durationHint: duration }, ctx);
+}
+
+/** One write, and none when the song already has this tempo. Returns whether it wrote. */
+export async function setSongTempo(
+  songId: string,
+  bpm: number,
+  ctx: MutateContext = {},
+): Promise<boolean> {
+  const song = await (ctx.db ?? defaultDb).songs.get(songId);
+  if (song && song.bpm === bpm) return false;
+  await patchRow("songs", songId, { bpm }, ctx);
+  return true;
 }
 
 export async function appendBarline(

@@ -1,0 +1,56 @@
+control-quarter              suite=KILLED
+no-fraction                  suite=KILLED
+no-repeat-gate               suite=KILLED
+no-size-gate                 suite=KILLED
+fit-rounds-up                suite=KILLED
+seventeen-reads              suite=KILLED
+mixed-numbers-read           suite=KILLED
+plain-once-per-song          suite=KILLED
+plain-soft-every-hit         suite=KILLED
+first-level-wins             suite=KILLED
+repeat-counts-once           suite=KILLED
+empty-bar-ends-score         suite=KILLED
+bar-rounds-to-beat           suite=KILLED
+length-lost-at-gap           suite=KILLED
+census-whole-bar-only        suite=KILLED
+ranges-ignored               suite=KILLED
+plain-ignores-length         suite=KILLED
+count-in-of-three            suite=KILLED
+follow-off-ignored           suite=KILLED
+gap-boundary                 suite=KILLED
+half-boundary                suite=KILLED
+double-boundary              suite=KILLED
+ten-taps                     suite=KILLED
+equal-tap-counts             suite=KILLED
+reading-floors               suite=KILLED
+too-slow-any-run             suite=KILLED
+tap-floor-is-stored          suite=SURVIVED
+stored-top-is-400            suite=KILLED
+half-tempo-usable            suite=KILLED
+unknown-reads-quarter        suite=KILLED
+tap-never-clears             suite=KILLED
+behind-unnoticed             suite=KILLED
+dry-queue-silent             suite=KILLED
+tempo-no-floor               suite=KILLED
+tempo-old-gap                suite=KILLED
+time-rounds-to-ms            suite=SURVIVED
+second-start-restarts        suite=KILLED
+stop-keeps-timers            suite=KILLED
+stop-keeps-queue             suite=SURVIVED
+stop-leaves-clock            suite=KILLED
+stale-ready-begins           suite=KILLED
+no-start-timeout             suite=KILLED
+stale-loss-stops             suite=KILLED
+silent-not-swapped           suite=KILLED
+# Round 2 write mutants: suite is the feature suite, whole is every src test, probes is this directory.
+paste-drops-duration         suite=SURVIVED  whole-suite=SURVIVED  probes=KILLED
+copy-drops-duration          suite=SURVIVED  whole-suite=SURVIVED  probes=KILLED
+variant-drops-duration       suite=SURVIVED  whole-suite=SURVIVED  probes=KILLED
+insert-inherits-duration     suite=SURVIVED  whole-suite=SURVIVED  probes=KILLED
+append-inherits-duration     suite=SURVIVED  whole-suite=SURVIVED  probes=KILLED
+barline-inherits-duration    suite=SURVIVED  whole-suite=SURVIVED  probes=KILLED
+stack-clears-duration        suite=KILLED    whole-suite=-         probes=-
+unstack-clears-duration      suite=SURVIVED  whole-suite=SURVIVED  probes=KILLED
+duration-writes-repeat       suite=SURVIVED  whole-suite=SURVIVED  probes=KILLED
+tempo-rewrites-same-value    suite=SURVIVED  whole-suite=SURVIVED  probes=KILLED
+tempo-reports-no-write       suite=SURVIVED  whole-suite=SURVIVED  probes=KILLED

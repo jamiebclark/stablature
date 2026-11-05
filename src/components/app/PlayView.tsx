@@ -14,8 +14,10 @@
 
 import { useMemo } from "react";
 import { ButtonLink, EmptyState, Loading, PageHeader } from "@/components/ui";
+import { ClickBar } from "@/components/rhythm/ClickBar";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { expandArrangement, parseArrangement } from "@/lib/arrangement/expand";
+import { drawnPasses } from "@/lib/arrangement/passes";
 import {
   useArrangement,
   useParts,
@@ -24,7 +26,6 @@ import {
   useSongEvents,
   useSongTuning,
 } from "@/lib/local/hooks";
-import { eventsInBars } from "@/lib/tab/layout";
 import { stringLabels } from "@/lib/tunings";
 
 export function PlayView({ songId }: { songId: string }) {
@@ -39,6 +40,7 @@ export function PlayView({ songId }: { songId: string }) {
     () => (entries ? expandArrangement(parseArrangement(entries)) : []),
     [entries],
   );
+  const passes = useMemo(() => drawnPasses(steps, eventsByPart ?? {}), [steps, eventsByPart]);
 
   if (song === undefined || parts === undefined || entries === undefined) return <Loading />;
   if (!song) {
@@ -72,11 +74,9 @@ export function PlayView({ songId }: { songId: string }) {
         </EmptyState>
       ) : (
         <ol className="grid gap-4">
-          {steps.map((step, index) => {
+          {passes.map(({ step, events }, index) => {
             const part = partsById.get(step.partId);
-            const all = eventsByPart?.[step.partId] ?? [];
-            const events = eventsInBars(all, step.fromBar, step.toBar);
-            const previous = steps[index - 1];
+            const previous = passes[index - 1]?.step;
 
             // Only announce a section when it actually changes, or a repeated
             // chorus would shout its name at every pass.
@@ -117,6 +117,7 @@ export function PlayView({ songId }: { songId: string }) {
                       tuning={tuning}
                       annotations={annotationsByPart?.[step.partId] ?? []}
                       surface="raised"
+                      showRhythm
                     />
                   ) : null}
                 </div>
@@ -125,6 +126,8 @@ export function PlayView({ songId }: { songId: string }) {
           })}
         </ol>
       )}
+
+      <ClickBar song={song} passes={passes} notationReady={eventsByPart !== undefined} />
     </main>
   );
 }
