@@ -47,6 +47,7 @@ export type RefusalCode =
   | "chord-collision"
   | "chord-no-column"
   | "chord-too-long"
+  | "chords-joined"
   | "several-parts"
   | "no-staff"
   | "no-notes"
@@ -116,6 +117,8 @@ const REASONS: Record<string, string> = {
   "chord-collision": "Two chords land on the same column.",
   "chord-no-column": "There is no column for this chord to sit over.",
   "chord-too-long": `A chord is at most ${MAX_CHORD_LENGTH} characters.`,
+  "chords-joined":
+    "This looks like chords joined by hyphens. Use spaces between them, on a line apart from the staff, or delete it.",
   "several-parts": "This looks like more than one part. Paste one part at a time.",
   "no-staff": "No tab was found in this text.",
   "no-notes": "The staff has no notes on it.",
@@ -564,6 +567,38 @@ function readsAsBlockRow(raw: string): boolean {
 }
 
 /**
+ * Whether a line is two or more chord symbols joined by single hyphens with some letter straight
+ * after a root, as `Am7-D7` (contracts/reader.md section 1). `A7-D7` has none, so it stays refused.
+ */
+function joinedByQuality(text: string): boolean {
+  const pieces = text.split("-");
+  if (pieces.length < 2 || pieces.some((p) => p === "N.C." || !/^[A-G]/.test(p) || parseChord(p) === null)) return false;
+  return pieces.some((p) => /^[A-G][#b]?[a-z]/.test(p));
+}
+
+/**
+ * Whether a refused line is chords joined by hyphens: no spaces, an uppercase root, no closing
+ * hyphen, and it partitions into two or more chord symbols, each pair separated by one hyphen.
+ * A symbol may hold a hyphen of its own, so `D-7-G-7` is `D-7` and `G-7`.
+ */
+function looksJoined(line: string): boolean {
+  const t = line.trim();
+  if (t === "" || /s/.test(t) || !/^[A-G]/.test(t) || t.endsWith("-")) return false;
+  const symbols: number[] = [0];
+  for (let end = 1; end <= t.length; end += 1) {
+    symbols[end] = -1;
+    for (let from = Math.max(0, end - 24); from < end; from += 1) {
+      if (symbols[from] < 0 || (from > 0 && t[from] !== "-")) continue;
+      const symbol = t.slice(from > 0 ? from + 1 : from, end);
+      if (/^[A-G]/.test(symbol) && symbol !== "N.C." && parseChord(symbol) !== null) {
+        symbols[end] = Math.max(symbols[end], symbols[from] + 1);
+      }
+    }
+  }
+  return symbols[t.length] >= 2;
+}
+
+/**
  * Whether a line is positively something other than a damaged row (reader.md section 2, S5): only
  * numbers and `. / :`, only chord symbols, or a word of two letters or more that is not a
  * note name. A line opening or closing on a rail or pipe never is.
@@ -572,6 +607,7 @@ function readsAsProse(raw: string): boolean {
   const t = raw.trim();
   if (/^[-\u2014\u2013\u2212|]|[-\u2014\u2013\u2212|]$/.test(t)) return false;
   if (/^[\d\s./:]+$/.test(t)) return true;
+  if (joinedByQuality(t)) return true;
   if (tokens(t).every((k) => isChord(k.text))) return true;
   return [...t.matchAll(/(?<![\p{L}\p{N}])\p{L}{2,}(?![\p{L}\p{N}])/gu)].some((m) => !NOTE_NAME.test(m[0]));
 }
@@ -746,7 +782,7 @@ function failed(refusals: Refusal[]): ParsedTab {
     const key = r.line === null ? "paste" : String(r.line);
     if (seen.has(key)) continue;
     seen.add(key);
-    unique.push(r);
+    unique.push(r.line !== null && looksJoined(r.text) ? refusal(r.line, r.text, "chords-joined") : r);
   }
   unique.sort((a, b) => (a.line ?? 0) - (b.line ?? 0));
   return { ok: false, refusals: unique };

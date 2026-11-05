@@ -10,6 +10,7 @@
 import { useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { Button, Card } from "@/components/ui";
+import { useKeyboardInset } from "@/components/ui/useKeyboardInset";
 import { draftPart } from "@/lib/local/clipboard";
 import { nextPartLabel } from "@/lib/local/editing";
 import { importTab } from "@/lib/local/importing";
@@ -75,6 +76,25 @@ export function PasteTab({
   );
 
   const label = nextPartLabel(parts);
+  // A browser that scrolls the box into view should stop below the status line, not under it.
+  const statusLine = useRef<HTMLParagraphElement>(null);
+  const [statusHeight, setStatusHeight] = useState(0);
+  // While the box has focus the keyboard covers the foot of the screen: make room to scroll above it, and
+  // bring the status line to the top, where what is said about the text stays in view while it is typed.
+  const [typing, setTyping] = useState(false);
+  useKeyboardInset(typing);
+  const reveal = () => {
+    const show = () => requestAnimationFrame(() => statusLine.current?.scrollIntoView?.({ block: "start" }));
+    show();
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const again = () => {
+      vv.removeEventListener("resize", again);
+      show();
+    };
+    vv.addEventListener("resize", again);
+    setTimeout(() => vv.removeEventListener("resize", again), 1000);
+  };
 
   let status = "Paste tab here.";
   let action: string | null = null;
@@ -94,6 +114,9 @@ export function PasteTab({
     }
   }
   if (failure) status = failure;
+  useEffect(() => {
+    setStatusHeight(statusLine.current?.offsetHeight ?? 0);
+  }, [status]);
 
   async function submit() {
     if (busy.current || reading.kind !== "ready") return;
@@ -117,8 +140,17 @@ export function PasteTab({
   }
 
   return (
-    <div data-testid="paste-tab" className="mb-4 min-w-0 no-print">
+    <div data-testid="paste-tab" className="mb-4 min-w-0 no-print" style={{ paddingBottom: "var(--kb-inset, 0px)" }}>
       <Card className="min-w-0">
+        <p
+          ref={statusLine}
+          role="status"
+          aria-live="polite"
+          className="mb-2 text-sm text-text"
+        >
+          {status}
+        </p>
+
         <textarea
           ref={box}
           aria-label="Tab text"
@@ -132,12 +164,14 @@ export function PasteTab({
           autoCorrect="off"
           autoCapitalize="off"
           spellCheck={false}
-          className="w-full overflow-x-auto rounded border border-border-subtle bg-bg-sunken p-2 font-mono text-base text-text"
+          onFocus={() => {
+            setTyping(true);
+            reveal();
+          }}
+          onBlur={() => setTyping(false)}
+          style={{ scrollMarginTop: statusHeight }}
+          className="max-h-[30dvh] w-full overflow-x-auto rounded border border-border-subtle bg-bg-sunken p-2 font-mono text-base text-text tab-text fine:max-h-none"
         />
-
-        <p role="status" aria-live="polite" className="my-2 text-sm text-text">
-          {status}
-        </p>
 
         {reading.kind === "refused" ? (
           <ul data-testid="paste-refusals" className="mb-2 grid min-w-0 gap-2">
@@ -146,7 +180,7 @@ export function PasteTab({
               .map((r, index) => (
                 <li key={index} data-line={r.line ?? undefined} className="min-w-0 text-sm">
                   <span className="font-semibold text-danger">line {r.line}</span>
-                  <code className="block overflow-x-auto whitespace-pre rounded bg-bg-sunken px-2 py-1 font-mono text-text">
+                  <code className="block overflow-x-auto whitespace-pre rounded bg-bg-sunken px-2 py-1 font-mono text-text tab-text">
                     {r.text}
                   </code>
                   <span className="text-text">{r.reason}</span>
@@ -188,7 +222,7 @@ export function PasteTab({
                 {reading.ignored.map((note, index) => (
                   <li key={index} data-line={note.line} className="min-w-0">
                     line {note.line}:{" "}
-                    <code className="block overflow-x-auto whitespace-pre font-mono">
+                    <code className="block overflow-x-auto whitespace-pre font-mono tab-text">
                       {note.text}
                     </code>
                   </li>
