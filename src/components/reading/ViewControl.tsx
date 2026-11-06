@@ -23,7 +23,7 @@ export function ViewControl({ className = "" }: { className?: string }) {
           data-testid={`staff-view-${option}`}
           aria-pressed={view === option}
           onClick={() => setView(option)}
-          className={`px-2.5 py-1.5 text-xs ${
+          className={`min-h-(--control) px-3 text-xs ${
             view === option ? "bg-accent font-semibold text-accent-text underline" : "text-text-dim"
           }`}
         >

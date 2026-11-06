@@ -20,7 +20,18 @@
 import { Fragment, useEffect, useMemo, useRef } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import type { AnnotationRow, EventRow } from "@/lib/model";
-import { layoutPart, tupletSpans, type Density, type TabLayout } from "@/lib/tab/layout";
+import {
+  layoutPart,
+  tupletSpans,
+  type Density,
+  type TabLayout,
+} from "@/lib/tab/layout";
+import {
+  barRuns,
+  barStarts,
+  chordRooms,
+  type ChordRoom,
+} from "@/lib/reading/staff";
 import { layoutReading, type ReadingLayout } from "@/lib/reading/labels";
 import type { StaffView } from "@/lib/reading/view";
 import type { ColumnMark, StaffMarks } from "@/lib/reading/marks";
@@ -36,7 +47,10 @@ export interface StaffReading {
 }
 
 /** What the caption says, from how many named cells had a chord to read against. */
-function captionFor(view: StaffView, cover: ReadingLayout["chordCover"]): string | null {
+function captionFor(
+  view: StaffView,
+  cover: ReadingLayout["chordCover"],
+): string | null {
   if (view === "notes") return "Note names";
   if (view !== "intervals") return null;
   switch (cover) {
@@ -81,6 +95,20 @@ export interface TabStaffProps {
   showRhythm?: boolean;
   /** A reading view. Absent, or frets, draws the fret numbers as always. */
   reading?: StaffReading;
+  /**
+   * Bumped by the caller just before a write that makes a group. The next
+   * group to appear is scrolled into view; arrivals with no bump (sync, a part
+   * change) move nothing.
+   */
+  revealGroups?: number;
+  /** Bumped by the caller when a key moved the cursor: the caret is then scrolled into view. A tap moves nothing. */
+  keepCaretInView?: number;
+  /** Draws a bar number row. `offset` is added to each column's `barNumber`. Off for capture and the paste preview. */
+  barNumbers?: { offset: number };
+  /** Breaks at barlines across as many lines as it needs. Play view only; the wrapped markup is drawn there. */
+  wrap?: boolean;
+  /** Which pass this is, written on the wrapper for the reading position. */
+  pass?: number;
 }
 
 export function TabStaff({
@@ -97,26 +125,44 @@ export function TabStaff({
   surface = "base",
   showRhythm = false,
   reading,
+  revealGroups = 0,
+  keepCaretInView = 0,
+  barNumbers,
+  wrap = false,
+  pass,
 }: TabStaffProps) {
   const readingView = reading && reading.view !== "frets" ? reading.view : null;
   const partEvents = reading?.partEvents;
   const layout: TabLayout | ReadingLayout = useMemo(
     () =>
       readingView && partEvents
-        ? layoutReading({ view: readingView, events, partEvents, tuning, annotations, density })
+        ? layoutReading({
+            view: readingView,
+            events,
+            partEvents,
+            tuning,
+            annotations,
+            density,
+          })
         : layoutPart({ events, tuning, annotations, density }),
     [events, tuning, annotations, density, readingView, partEvents],
   );
   const caption =
-    readingView && "chordCover" in layout ? captionFor(readingView, (layout as ReadingLayout).chordCover) : null;
+    readingView && "chordCover" in layout
+      ? captionFor(readingView, (layout as ReadingLayout).chordCover)
+      : null;
   const spans = useMemo(() => tupletSpans(layout), [layout]);
 
   const scroller = useRef<HTMLDivElement>(null);
+  const drawnGroups = useRef<Set<string> | null>(null);
+  const revealed = useRef(revealGroups);
+  const kept = useRef(keepCaretInView);
   const columnCount = layout.columns.length;
   // Drawn width: the widest cells plus any connector gaps, so a widened tail
   // (a decorated note, a new connector) stays in view too.
   const drawnWidth = layout.columns.reduce(
-    (total, column) => total + column.width + (column.connectors.some(Boolean) ? 1 : 0),
+    (total, column) =>
+      total + column.width + (column.connectors.some(Boolean) ? 1 : 0),
     0,
   );
 
@@ -129,9 +175,39 @@ export function TabStaff({
     el.scrollLeft = el.scrollWidth;
   }, [followTail, columnCount, drawnWidth]);
 
+  useEffect(() => {
+    const ids = new Set(spans.map((span) => span.tupletId));
+    const before = drawnGroups.current;
+    drawnGroups.current = ids;
+    if (!before || revealGroups === revealed.current) return;
+    const fresh = spans.find((span) => !before.has(span.tupletId));
+    if (!fresh) return;
+    revealed.current = revealGroups;
+    // Markup is pinned by the frets baseline, so find the bracket by order rather than by an id attribute.
+    const el =
+      scroller.current?.querySelectorAll("[data-start]")[spans.indexOf(fresh)];
+    el?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [spans, revealGroups]);
+
+  useEffect(() => {
+    if (keepCaretInView === kept.current) return;
+    kept.current = keepCaretInView;
+    scroller.current
+      ?.querySelector('[data-testid="tab-caret"]')
+      ?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [keepCaretInView, insertAfterEventId]);
+
+  const rooms = useMemo(() => chordRooms(layout.columns), [layout]);
+  const starts = useMemo(() => barStarts(layout.columns), [layout]);
+  const runs = useMemo(
+    () => (wrap ? barRuns(layout.columns) : []),
+    [wrap, layout],
+  );
+  const hasBarRow = !!barNumbers && layout.columns.length > 0;
   const hasChords = layout.columns.some((column) => column.chord !== null);
   const hasTuplets = spans.length > 0;
-  const hasRhythm = showRhythm && layout.columns.some((column) => column.duration !== null);
+  const hasRhythm =
+    showRhythm && layout.columns.some((column) => column.duration !== null);
   const marks = reading?.marks && reading.marks.any ? reading.marks : null;
 
   const showCaret = insertAfterEventId !== undefined;
@@ -141,7 +217,9 @@ export function TabStaff({
    * appear to drop the note into the middle of it.
    */
   const caretAfterIndex = insertAfterEventId
-    ? layout.columns.findLastIndex((column) => column.eventId === insertAfterEventId)
+    ? layout.columns.findLastIndex(
+        (column) => column.eventId === insertAfterEventId,
+      )
     : -1;
 
   /** Which tuplet span, if any, a column sits in -- for drawing the bracket. */
@@ -151,15 +229,194 @@ export function TabStaff({
   // A removal after the last column is still inside its group when the group counts more than it holds.
   const lastSpan = spanAt(layout.columns.length - 1);
   const endsInOpenGroup =
-    !!lastSpan && lastSpan.count !== null && lastSpan.count > lastSpan.end - lastSpan.start + 1;
+    !!lastSpan &&
+    lastSpan.count !== null &&
+    lastSpan.count > lastSpan.end - lastSpan.start + 1;
+
+  const renderColumn = (
+    column: TabLayout["columns"][number],
+    index: number,
+  ) => {
+    const span = spanAt(index);
+    const previous = layout.columns[index - 1];
+    const key = `${column.eventId}-${column.repetition}`;
+    const removed = marks?.removals.get(key) ?? 0;
+    const mark = marks?.columns.get(key);
+    return (
+      <Fragment key={key}>
+        {marks && removed > 0 ? (
+          <RemovalGap
+            count={removed}
+            parent={marks.parentLabel}
+            showBarRow={hasBarRow}
+            showChordRow={hasChords}
+            showTupletRow={hasTuplets}
+            showRhythmRow={hasRhythm}
+            stringCount={layout.stringCount}
+            bracket={!!span && !!previous && spanAt(index - 1) === span}
+          />
+        ) : null}
+        {column.connectors.some(Boolean) ? (
+          <Gap
+            connectors={column.connectors}
+            showBarRow={hasBarRow}
+            showChordRow={hasChords}
+            showTupletRow={hasTuplets}
+            bracket={!!span && !!previous && spanAt(index - 1) === span}
+            selected={selectedEventIds?.has(column.eventId) ?? false}
+            active={
+              column.eventId === activeEventId &&
+              previous?.eventId === column.eventId
+            }
+          />
+        ) : null}
+        <Column
+          label={column.description}
+          cells={column.cells}
+          width={columnWidth(column.width, rooms.get(index))}
+          wrap={wrap}
+          columnKey={key}
+          barNumber={
+            hasBarRow
+              ? starts.has(index)
+                ? column.barNumber + barNumbers.offset
+                : null
+              : undefined
+          }
+          chord={column.chord}
+          barline={column.kind === "barline"}
+          active={column.eventId === activeEventId}
+          selected={selectedEventIds?.has(column.eventId) ?? false}
+          showChordRow={hasChords}
+          showTupletRow={hasTuplets}
+          rhythm={hasRhythm ? (column.duration?.mark ?? "") : null}
+          diff={marks ? { mark, parent: marks.parentLabel } : null}
+          tuplet={
+            span
+              ? {
+                  count: span.count,
+                  start: index === span.start,
+                  end: index === span.end,
+                  // Centred over the middle column of the span. On
+                  // the first one it sits above the opening note
+                  // rather than above the bracket it labels.
+                  labelled: index === Math.floor((span.start + span.end) / 2),
+                }
+              : null
+          }
+          onSelect={
+            onSelectColumn ? () => onSelectColumn(column.eventId) : undefined
+          }
+          onInspect={
+            onInspectColumn ? () => onInspectColumn(column.eventId) : undefined
+          }
+        />
+        {showCaret && caretAfterIndex === index ? (
+          <Caret
+            stringCount={layout.stringCount}
+            offset={offsetFor(hasBarRow, hasChords, hasTuplets)}
+          />
+        ) : null}
+      </Fragment>
+    );
+  };
+  const endRemoval =
+    marks && marks.removedAtEnd > 0 ? (
+      <RemovalGap
+        count={marks.removedAtEnd}
+        parent={marks.parentLabel}
+        showBarRow={hasBarRow}
+        showChordRow={hasChords}
+        showTupletRow={hasTuplets}
+        showRhythmRow={hasRhythm}
+        stringCount={layout.stringCount}
+        bracket={endsInOpenGroup}
+      />
+    ) : null;
+
+  if (wrap) {
+    const labelRows = (
+      <>
+        {hasBarRow ? <div className="h-[var(--staff-row)]" /> : null}
+        {hasChords ? <div className="h-[var(--staff-row)]" /> : null}
+        {hasTuplets ? <div className="h-[var(--staff-row)]" /> : null}
+        {layout.stringLabels.map((label, index) => (
+          <div
+            key={index}
+            className="tab-cell justify-end pr-1 text-right text-xs text-text-dim"
+          >
+            <span className="bg-transparent px-0">{label}</span>
+          </div>
+        ))}
+        {hasRhythm ? <div className="h-[var(--staff-row)]" /> : null}
+        {marks ? <div className="tab-diff-mark" /> : null}
+      </>
+    );
+    // A line holds one or more bars, but in print a bar wider than the page wraps onto more lines, so the
+    // gutter carries spare blocks for those; the surplus is clipped.
+    const blocks = Math.max(runs.length, 1) + Math.min(layout.columns.length, 40);
+    return (
+      <div
+        className="tab-staff tab-staff-wrapped"
+        data-surface={surface}
+        data-testid="tab-staff"
+        data-pass={pass}
+      >
+        <div className="tab-wrapped-body">
+          <div className="tab-gutter" aria-hidden>
+            {Array.from({ length: blocks }, (_, index) => (
+              <div key={index} className="tab-gutter-block">
+                {labelRows}
+              </div>
+            ))}
+          </div>
+          <div className="tab-lines" role="group" aria-label="Tablature">
+            {layout.columns.length === 0 ? (
+              <div className="tab-bar-run">
+                <EmptyStaff
+                  stringCount={layout.stringCount}
+                  offset={offsetFor(hasBarRow, hasChords, hasTuplets)}
+                />
+              </div>
+            ) : (
+              runs.map((run, runIndex) => (
+                <div key={run.start} className="tab-bar-run">
+                  {layout.columns
+                    .slice(run.start, run.end + 1)
+                    .map((column, offset) =>
+                      renderColumn(column, run.start + offset),
+                    )}
+                  {runIndex === runs.length - 1 ? endRemoval : null}
+                </div>
+              ))
+            )}
+            <div className="tab-lines-end" />
+          </div>
+        </div>
+        {caption ? (
+          <p
+            data-testid="staff-caption"
+            className="absolute bottom-0 right-3 whitespace-nowrap text-[0.65rem] leading-3 text-text-dim"
+          >
+            {caption}
+          </p>
+        ) : null}
+      </div>
+    );
+  }
 
   return (
-    <div className="tab-staff" data-surface={surface} data-testid="tab-staff">
+    <div
+      className="tab-staff"
+      data-surface={surface}
+      data-testid="tab-staff"
+      data-pass={pass}
+    >
       <div className="flex items-stretch gap-1">
         {/* String labels stay put while the staff scrolls. */}
         <div
           className="shrink-0 pr-1 text-right text-xs text-text-dim"
-          style={{ paddingTop: offsetFor(hasChords, hasTuplets) }}
+          style={{ paddingTop: offsetFor(hasBarRow, hasChords, hasTuplets) }}
           aria-hidden
         >
           {layout.stringLabels.map((label, index) => (
@@ -179,96 +436,19 @@ export function TabStaff({
             {showCaret && insertAfterEventId === null ? (
               <Caret
                 stringCount={layout.stringCount}
-                offset={offsetFor(hasChords, hasTuplets)}
+                offset={offsetFor(hasBarRow, hasChords, hasTuplets)}
               />
             ) : null}
 
             {layout.columns.length === 0 ? (
               <EmptyStaff
                 stringCount={layout.stringCount}
-                offset={offsetFor(hasChords, hasTuplets)}
+                offset={offsetFor(hasBarRow, hasChords, hasTuplets)}
               />
             ) : (
-              layout.columns.map((column, index) => {
-                const span = spanAt(index);
-                const previous = layout.columns[index - 1];
-                const key = `${column.eventId}-${column.repetition}`;
-                const removed = marks?.removals.get(key) ?? 0;
-                const mark = marks?.columns.get(key);
-                return (
-                  <Fragment key={key}>
-                  {marks && removed > 0 ? (
-                    <RemovalGap
-                      count={removed}
-                      parent={marks.parentLabel}
-                      showChordRow={hasChords}
-                      showTupletRow={hasTuplets}
-                      showRhythmRow={hasRhythm}
-                      stringCount={layout.stringCount}
-                      bracket={!!span && !!previous && spanAt(index - 1) === span}
-                    />
-                  ) : null}
-                  {column.connectors.some(Boolean) ? (
-                    <Gap
-                      connectors={column.connectors}
-                      showChordRow={hasChords}
-                      showTupletRow={hasTuplets}
-                      bracket={!!span && !!previous && spanAt(index - 1) === span}
-                      selected={selectedEventIds?.has(column.eventId) ?? false}
-                      active={
-                        column.eventId === activeEventId && previous?.eventId === column.eventId
-                      }
-                    />
-                  ) : null}
-                  <Column
-                    label={column.description}
-                    cells={column.cells}
-                    width={column.width}
-                    chord={column.chord}
-                    barline={column.kind === "barline"}
-                    active={column.eventId === activeEventId}
-                    selected={selectedEventIds?.has(column.eventId) ?? false}
-                    showChordRow={hasChords}
-                    showTupletRow={hasTuplets}
-                    rhythm={hasRhythm ? (column.duration?.mark ?? "") : null}
-                    diff={marks ? { mark, parent: marks.parentLabel } : null}
-                    tuplet={
-                      span
-                        ? {
-                            count: span.count,
-                            start: index === span.start,
-                            end: index === span.end,
-                            // Centred over the middle column of the span. On
-                            // the first one it sits above the opening note
-                            // rather than above the bracket it labels.
-                            labelled: index === Math.floor((span.start + span.end) / 2),
-                          }
-                        : null
-                    }
-                    onSelect={onSelectColumn ? () => onSelectColumn(column.eventId) : undefined}
-                    onInspect={onInspectColumn ? () => onInspectColumn(column.eventId) : undefined}
-                  />
-                  {showCaret && caretAfterIndex === index ? (
-                    <Caret
-                      stringCount={layout.stringCount}
-                      offset={offsetFor(hasChords, hasTuplets)}
-                    />
-                  ) : null}
-                  </Fragment>
-                );
-              })
+              layout.columns.map(renderColumn)
             )}
-            {marks && marks.removedAtEnd > 0 ? (
-              <RemovalGap
-                count={marks.removedAtEnd}
-                parent={marks.parentLabel}
-                showChordRow={hasChords}
-                showTupletRow={hasTuplets}
-                showRhythmRow={hasRhythm}
-                stringCount={layout.stringCount}
-                bracket={endsInOpenGroup}
-              />
-            ) : null}
+            {endRemoval}
           </div>
         </div>
       </div>
@@ -285,15 +465,33 @@ export function TabStaff({
 }
 
 /** Height of the rows drawn above the staff, so the labels line up with it. */
-function offsetFor(hasChords: boolean, hasTuplets: boolean): string {
-  const rows = (hasChords ? 1 : 0) + (hasTuplets ? 1 : 0);
-  return `${rows * 1.1}rem`;
+function offsetFor(
+  hasBarRow: boolean,
+  hasChords: boolean,
+  hasTuplets: boolean,
+): string {
+  const rows = (hasBarRow ? 1 : 0) + (hasChords ? 1 : 0) + (hasTuplets ? 1 : 0);
+  return `calc(${rows} * var(--staff-row))`;
+}
+
+/** A column's width: its cells plus padding, widened only as far as its chord symbol needs. */
+function columnWidth(width: number, room: ChordRoom | undefined): string {
+  const base = `${width}ch + var(--col-pad)`;
+  if (!room) return `calc(${base})`;
+  const have = `${room.roomChars}ch + ${room.roomColumns} * var(--col-pad)`;
+  return `calc(${base} + max(0px, ${room.chars} * var(--chord-ch) + var(--chord-gap) - (${have})))`;
 }
 
 interface ColumnProps {
   label: string;
   cells: (string | null)[];
-  width: number;
+  /** A CSS length: see `columnWidth`. */
+  width: string;
+  /** Wrapped staff: the column may grow to fill its line. */
+  wrap?: boolean;
+  columnKey: string;
+  /** The number to print at this column's left, or null when it opens no bar; undefined when the row is not drawn. */
+  barNumber?: number | null;
   chord: string | null;
   barline: boolean;
   active: boolean;
@@ -304,7 +502,12 @@ interface ColumnProps {
   rhythm: string | null;
   /** Null when the mark row is not drawn; otherwise this column's mark, if it has one. */
   diff: { mark: ColumnMark | undefined; parent: string } | null;
-  tuplet: { count: number | null; start: boolean; end: boolean; labelled: boolean } | null;
+  tuplet: {
+    count: number | null;
+    start: boolean;
+    end: boolean;
+    labelled: boolean;
+  } | null;
   onSelect?: () => void;
   onInspect?: () => void;
 }
@@ -313,6 +516,9 @@ function Column({
   label,
   cells,
   width,
+  wrap = false,
+  columnKey,
+  barNumber,
   chord,
   barline,
   active,
@@ -330,21 +536,35 @@ function Column({
   const diffStatus = mark?.status;
   // Sized in `ch` so a two-digit fret gets twice the room and the staff stays
   // aligned, exactly as in the ASCII output.
-  const style = { width: `calc(${width}ch + 0.6rem)` };
+  const style: CSSProperties = wrap ? { flex: `1 0 ${width}` } : { width };
 
   const body = (
     <>
+      {barNumber !== undefined ? (
+        <div
+          className="relative h-[var(--staff-row)] whitespace-nowrap text-[12px] leading-[12px] text-text-dim"
+          data-testid={barNumber === null ? undefined : "tab-bar-number"}
+          style={
+            barNumber === null
+              ? undefined
+              : { minWidth: `calc(${String(barNumber).length} * 0.45rem)` }
+          }
+        >
+          {barNumber}
+        </div>
+      ) : null}
+
       {showChordRow ? (
-        <div className="h-[1.1rem] truncate text-[0.7rem] font-semibold text-accent">
+        <div className="relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent">
           {chord}
         </div>
       ) : null}
 
       {showTupletRow ? (
-        <div className="relative h-[1.1rem]">
+        <div className="relative h-[var(--staff-row)]">
           {tuplet ? (
             <div
-              className="tab-bracket absolute inset-x-0 bottom-[0.2rem] border-t"
+              className="tab-bracket absolute inset-x-0 bottom-0 border-t"
               data-testid="tab-bracket"
               data-start={tuplet.start ? "" : undefined}
               style={{
@@ -352,19 +572,25 @@ function Column({
                 borderRightWidth: tuplet.end ? 1 : 0,
                 borderLeftStyle: "solid",
                 borderRightStyle: "solid",
-                height: "0.3rem",
+                height: "0.2rem",
               }}
             />
           ) : null}
           {tuplet?.labelled && tuplet.count !== null ? (
-            <div className="tab-bracket-label absolute inset-x-0 top-0 text-center text-[0.65rem] leading-[0.9rem]">
+            <div className="tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]">
               {tuplet.count}
             </div>
           ) : null}
         </div>
       ) : null}
 
-      <div className={[barline ? "tab-barline" : "", mark ? "tab-diff-cells" : ""].filter(Boolean).join(" ") || undefined}>
+      <div
+        className={
+          [barline ? "tab-barline" : "", mark ? "tab-diff-cells" : ""]
+            .filter(Boolean)
+            .join(" ") || undefined
+        }
+      >
         {cells.map((text, index) => (
           <div key={index} className="tab-cell">
             {barline ? null : text === null ? null : <span>{text}</span>}
@@ -374,7 +600,7 @@ function Column({
 
       {rhythm !== null ? (
         <div
-          className="h-[1.1rem] text-[0.65rem] text-text-dim"
+          className="tab-rhythm flex h-[var(--staff-row)] items-center justify-center text-[12px] leading-none"
           data-testid="tab-rhythm"
         >
           {rhythm}
@@ -395,6 +621,7 @@ function Column({
         style={style}
         className={columnClass(active, selected)}
         data-testid="tab-column"
+        data-column={columnKey}
         data-selected={selected ? "true" : undefined}
         data-barline={barline ? "true" : undefined}
         data-diff={diffStatus}
@@ -416,6 +643,7 @@ function Column({
         onSelect={onSelect}
         onInspect={onInspect}
         selected={selected}
+        columnKey={columnKey}
         barline={barline}
         active={active}
         label={label}
@@ -433,6 +661,7 @@ function Column({
       style={style}
       className={className}
       data-testid="tab-column"
+      data-column={columnKey}
       data-selected={selected ? "true" : undefined}
       data-barline={barline ? "true" : undefined}
       data-diff={diffStatus}
@@ -451,6 +680,7 @@ function InspectableColumn({
   onSelect,
   onInspect,
   selected,
+  columnKey,
   barline,
   active,
   label,
@@ -462,6 +692,7 @@ function InspectableColumn({
   onSelect: () => void;
   onInspect: () => void;
   selected: boolean;
+  columnKey: string;
   barline: boolean;
   active: boolean;
   label: string;
@@ -482,7 +713,10 @@ function InspectableColumn({
       onPointerCancel={press.onPointerCancel}
       onContextMenu={press.onContextMenu}
       onKeyDown={(event) => {
-        if (event.key === "ContextMenu" || (event.key === "F10" && event.shiftKey)) {
+        if (
+          event.key === "ContextMenu" ||
+          (event.key === "F10" && event.shiftKey)
+        ) {
           event.preventDefault();
           onInspect();
         }
@@ -492,6 +726,7 @@ function InspectableColumn({
       style={style}
       className={`select-none ${className}`}
       data-testid="tab-column"
+      data-column={columnKey}
       data-selected={selected ? "true" : undefined}
       data-barline={barline ? "true" : undefined}
       data-diff={diff}
@@ -510,6 +745,7 @@ function InspectableColumn({
  */
 function Gap({
   connectors,
+  showBarRow,
   showChordRow,
   showTupletRow,
   bracket,
@@ -517,6 +753,7 @@ function Gap({
   active,
 }: {
   connectors: (string | null)[];
+  showBarRow: boolean;
   showChordRow: boolean;
   showTupletRow: boolean;
   bracket: boolean;
@@ -530,13 +767,14 @@ function Gap({
       data-testid="tab-connector"
       aria-hidden
     >
-      {showChordRow ? <div className="h-[1.1rem]" /> : null}
+      {showBarRow ? <div className="h-[var(--staff-row)]" /> : null}
+      {showChordRow ? <div className="h-[var(--staff-row)]" /> : null}
       {showTupletRow ? (
-        <div className="relative h-[1.1rem]">
+        <div className="relative h-[var(--staff-row)]">
           {bracket ? (
             <div
-              className="tab-bracket absolute inset-x-0 bottom-[0.2rem] border-t"
-              style={{ height: "0.3rem" }}
+              className="tab-bracket absolute inset-x-0 bottom-0 border-t"
+              style={{ height: "0.2rem" }}
             />
           ) : null}
         </div>
@@ -569,6 +807,7 @@ function markWords(mark: ColumnMark, parent: string): string {
 function RemovalGap({
   count,
   parent,
+  showBarRow,
   showChordRow,
   showTupletRow,
   showRhythmRow,
@@ -577,6 +816,7 @@ function RemovalGap({
 }: {
   count: number;
   parent: string;
+  showBarRow: boolean;
   showChordRow: boolean;
   showTupletRow: boolean;
   showRhythmRow: boolean;
@@ -592,13 +832,14 @@ function RemovalGap({
       role="img"
       aria-label={`${count} ${count === 1 ? "column" : "columns"} removed from ${parent} here`}
     >
-      {showChordRow ? <div className="h-[1.1rem]" /> : null}
+      {showBarRow ? <div className="h-[var(--staff-row)]" /> : null}
+      {showChordRow ? <div className="h-[var(--staff-row)]" /> : null}
       {showTupletRow ? (
-        <div className="relative h-[1.1rem]">
+        <div className="relative h-[var(--staff-row)]">
           {bracket ? (
             <div
-              className="tab-bracket absolute inset-x-0 bottom-[0.2rem] border-t"
-              style={{ height: "0.3rem" }}
+              className="tab-bracket absolute inset-x-0 bottom-0 border-t"
+              style={{ height: "0.2rem" }}
             />
           ) : null}
         </div>
@@ -608,23 +849,36 @@ function RemovalGap({
           <div key={index} className="tab-cell" />
         ))}
       </div>
-      {showRhythmRow ? <div className="h-[1.1rem]" /> : null}
+      {showRhythmRow ? <div className="h-[var(--staff-row)]" /> : null}
       <div className="tab-diff-mark">{`−${count}`}</div>
     </div>
   );
 }
 
 function columnClass(active: boolean, selected: boolean): string | undefined {
-  const classes = [selected ? "tab-column-selected" : null, active ? "tab-column-active" : null]
+  const classes = [
+    selected ? "tab-column-selected" : null,
+    active ? "tab-column-active" : null,
+  ]
     .filter(Boolean)
     .join(" ");
   return classes || undefined;
 }
 
 /** The insertion point: where the next tap puts a note. */
-function Caret({ stringCount, offset }: { stringCount: number; offset: string }) {
+function Caret({
+  stringCount,
+  offset,
+}: {
+  stringCount: number;
+  offset: string;
+}) {
   return (
-    <div className="relative w-0.5 shrink-0" data-testid="tab-caret" aria-hidden>
+    <div
+      className="relative w-0.5 shrink-0"
+      data-testid="tab-caret"
+      aria-hidden
+    >
       <div style={{ paddingTop: offset }}>
         <div
           className="w-0.5 rounded-full bg-accent"
@@ -635,7 +889,13 @@ function Caret({ stringCount, offset }: { stringCount: number; offset: string })
   );
 }
 
-function EmptyStaff({ stringCount, offset }: { stringCount: number; offset: string }) {
+function EmptyStaff({
+  stringCount,
+  offset,
+}: {
+  stringCount: number;
+  offset: string;
+}) {
   return (
     <div style={{ paddingTop: offset, width: "6ch" }}>
       {Array.from({ length: stringCount }, (_, index) => (

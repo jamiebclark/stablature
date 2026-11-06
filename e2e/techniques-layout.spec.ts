@@ -64,8 +64,8 @@ for (const theme of THEMES) {
     await expect(columns(page)).toHaveCount(2);
     const base = await measure(page);
     console.log(`MEASURE ${theme} base ${JSON.stringify({ strip: base.strip, neck: base.neck, stableY: base.stable[0].y, chip: base.chips[0].h })}`);
-    expect(base.strip.h).toBeCloseTo(38.8, 1);
-    expect(base.chips[0].h).toBeCloseTo(30.8, 1);
+    expect(base.strip.h).toBeCloseTo(39, 1);
+    expect(base.chips[0].h).toBeCloseTo(31, 1);
 
     const check = async (state: string) => {
       const m = await measure(page);

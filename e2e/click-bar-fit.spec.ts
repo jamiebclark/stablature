@@ -1,3 +1,4 @@
+import { openCluster } from "./usability-helpers";
 /**
  * INV-040 / FR-026, round 2. T064 gave Start and the beat box 144px, so at 375 the bar's three slots
  * now share 343px. `INV-040-bar-at-size.spec.ts` asks only that each control's box is on the screen,
@@ -21,6 +22,7 @@ const measure = (page: Page, ids: string[]) =>
       out.push({
         id,
         x: Math.round(box.x),
+        y: Math.round(box.y),
         right: Math.round(box.right),
         w: Math.round(box.width),
         h: Math.round(box.height),
@@ -33,41 +35,46 @@ const measure = (page: Page, ids: string[]) =>
     return out;
   }, ids);
 
-type Row = { id: string; x: number; right: number; w: number; h: number; lines: number; spills: boolean; words: string };
+type Row = { id: string; x: number; y: number; right: number; w: number; h: number; lines: number; spills: boolean; words: string };
 
-function problems(rows: Row[], where: string) {
+function problems(rows: Row[], where: string, floor: number) {
   const out: string[] = [];
   const sorted = [...rows].sort((a, b) => a.x - b.x);
   for (const [i, r] of sorted.entries()) {
     if (r.right > 375 - 16) out.push(`${where}: ${r.id} ends at ${r.right}, past the bar's edge at 359`);
     if (r.right > 375) out.push(`${where}: ${r.id} ends at ${r.right}, off the screen`);
-    if (r.h < 44) out.push(`${where}: ${r.id} is ${r.h} high`);
+    if (r.h < floor) out.push(`${where}: ${r.id} is ${r.h} high`);
     if (r.id !== "click-beat" && r.lines !== 1) out.push(`${where}: ${r.id} "${r.words}" takes ${r.lines} lines`);
     if (r.id !== "click-beat" && r.spills) out.push(`${where}: ${r.id} "${r.words}" spills its box`);
-    if (i > 0 && r.x <= sorted[i - 1].right) out.push(`${where}: ${r.id} touches ${sorted[i - 1].id}`);
+    // The follow choice sits in the open panel, on its own row above the bar's row, so only controls that share a row can touch.
+    const before = sorted[i - 1];
+    if (before && r.x <= before.right && r.y < before.y + before.h && before.y < r.y + r.h) out.push(`${where}: ${r.id} touches ${before.id}`);
   }
   return out;
 }
 
-const IDLE = ["click-start", "click-follow", "tempo-control"];
-const RUNNING = ["click-beat", "click-stop", "tempo-control"];
+const IDLE = ["click-start", "click-follow", "tempo-control", "panel-play-cluster"];
+const RUNNING = ["click-beat", "click-stop", "tempo-control", "panel-play-cluster"];
 
 const sideways = (page: Page) =>
   page.evaluate(() => ({ page: document.documentElement.scrollWidth, screen: innerWidth }));
 
 for (const bpm of [96, 120, 400, 999, null]) {
-  test(`INV-040 the bar fits at 375 with ${bpm ?? "no"} tempo, in every state`, async ({ page }) => {
+  test(`INV-040 the bar fits at 375 with ${bpm ?? "no"} tempo, in every state`, async ({ page, isMobile }) => {
+    // 44 on touch; a fine pointer reads the density floor (32 for a toolbar control).
+    const floor = isMobile ? 44 : 32;
     await page.setViewportSize({ width: 375, height: 667 });
     await recorder(page);
     const { playUrl } = await seed(page, cols("q", "q", "q", "q"), { bpm });
     await page.goto(playUrl);
+    await openCluster(page);
     await expect(page.getByTestId("click-follow")).toBeVisible();
     const found: string[] = [];
     const look = async (ids: string[], where: string) => {
       const rows = (await measure(page, ids)) as unknown as Row[];
       const side = await sideways(page);
       console.log(`BAR ${where}: ${JSON.stringify(rows.map((r) => [r.id, r.x, r.right, r.lines]))} page ${side.page}/${side.screen}`);
-      found.push(...problems(rows, where));
+      found.push(...problems(rows, where, floor));
       // Against 375, not innerWidth: on a phone the layout viewport grows with the page, so they always match.
       if (side.page > 375) found.push(`${where}: the page is ${side.page} wide on a 375 screen`);
     };

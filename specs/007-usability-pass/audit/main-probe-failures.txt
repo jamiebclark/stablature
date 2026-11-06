@@ -1,0 +1,33 @@
+# Spec 004 probes on unedited code (46760fd), 2026-11-05
+# 19 expected failures (quickstart §5); a 20th, 'wrapped lines and prose in turn', is a timing flake (82.9 ms vs 81.4 ms bound)
+INV-002-fret-over-the-range-says-so.test.ts > INV-002 fret text over the range says so > 100
+INV-002-fret-over-the-range-says-so.test.ts > INV-002 fret text over the range says so > 1000
+INV-002-fret-over-the-range-says-so.test.ts > INV-002 fret text over the range says so > 105
+INV-002-fret-over-the-range-says-so.test.ts > INV-002 fret text over the range says so > 205
+INV-006-rails-only-every-spelling.test.ts > INV-006 an empty row is counted however it is spelled > 5 rows on bass4-e, minus sign at row 1
+INV-006-rails-only-every-spelling.test.ts > INV-006 an empty row is counted however it is spelled > 5 rows on bass4-e, minus sign at row 5
+INV-006-rails-only-every-spelling.test.ts > INV-006 an empty row is counted however it is spelled > 6 rows on bass5-b, minus sign at row 1
+INV-006-rails-only-every-spelling.test.ts > INV-006 an empty row is counted however it is spelled > 6 rows on bass5-b, minus sign at row 6
+INV-006-rails-only-every-spelling.test.ts > INV-006 an empty row is counted however it is spelled > through the write: the note on the paste's second row is stored on the second string
+INV-008-true-reason.test.ts > INV-008 rows of equal length are not told they differ in length > dead notes
+INV-008-true-reason.test.ts > INV-008 rows of equal length are not told they differ in length > one note on each string
+INV-008-true-reason.test.ts > INV-008 rows of equal length are not told they differ in length > one note on each string, closing pipes
+INV-009-pipe-touching-a-wrapped-cell.test.ts > INV-009 a pipe touching a cell is as good as a pipe touching a digit > Gtr:|(5)--(7) refuses
+INV-009-pipe-touching-a-wrapped-cell.test.ts > INV-009 a pipe touching a cell is as good as a pipe touching a digit > Gtr:|t5-t7 refuses
+INV-009-pipe-touching-a-wrapped-cell.test.ts > INV-009 a pipe touching a cell is as good as a pipe touching a digit > Guitar|(5)--(7) refuses
+INV-009-pipe-touching-a-wrapped-cell.test.ts > INV-009 a pipe touching a cell is as good as a pipe touching a digit > Guitar|<12>-<14> refuses
+INV-014-030-wrapped-cells-only-s6-claims.test.ts > INV-030 a line of many runs stays linear > wrapped lines and prose in turn
+INV-015-016-chord-over-a-bare-bracket.test.ts > INV-015 INV-016 a chord above a bare bracket digit, from the real export > C-9 reads back
+INV-015-016-chord-over-a-bare-bracket.test.ts > INV-015 INV-016 a chord above a bare bracket digit, from the real export > D-7 reads back
+INV-015-016-chord-over-a-bare-bracket.test.ts > INV-015 INV-016 a chord above a bare bracket digit, from the real export > E-7 reads back
+
+# F75 by kind
+apart from a staff, 43 of 202 refuse
+header: 4 of 28: E-A-D-G   D-A-D-G   Eb-Ab-Db-Gb   -1/2 step
+sections: 0 of 43: 
+chords: 20 of 35: G-D-Em-C   C-G-Am-F   G-D-Em7-C   Am7-D7   Am7-D7-Gmaj7   Dm7-G7-Cmaj7   E5-G5-A5   C-G7   G7-C   D7-G   A7-D7-E7   Bm7-5   Am7-5   F#m7-B7   | Am | F | C | G |   |Am|F|C|G|   | Am7 | D7 | G |   | G | D | x2   |G7|C7|   | G7 | C7 |
+counts: 2 of 14: 1-2-3-4-   -1-2-3-4-
+bars: 12 of 27: (1-4)   [1-4]   m.1-4   m1-4   (x2-3)   x2-   1st-2nd   1st-   3rd-4th   (1st-2nd)   V1-V2   A1-A2
+times: 1 of 9: (1:04-1:32)
+legend: 0 of 24: 
+footer: 4 of 22: (c) 1999-2004   CD1-07   +1 -1   -2

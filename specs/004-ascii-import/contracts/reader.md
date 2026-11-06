@@ -1,5 +1,7 @@
 # Contract: reading tab text
 
+> *Amended by spec 007 (see `specs/007-usability-pass/contracts/reader.md`): `parse.ts` gains `joinedByQuality`, `looksJoined` and the refusal code `chords-joined`; `readsAsProse` and `failed` change with them.*
+
 **Normative** for `src/lib/tab/parse.ts`. The notation itself is defined in
 `specs/002-playing-techniques/contracts/notation.md` and
 `specs/003-generalised-grouping/contracts/notation.md`, and is not restated here. Where this file

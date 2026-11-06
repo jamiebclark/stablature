@@ -1,3 +1,4 @@
+import { openCluster, openTools } from "./usability-helpers";
 import { appendFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { expect, test, type Browser, type Page } from "@playwright/test";
@@ -104,6 +105,8 @@ async function twoDevices(browser: Browser) {
   await second.goto(songUrl);
   await expect(second.getByTestId("tab-column").first()).toBeVisible({ timeout: 30_000 });
   await expect(second.getByTestId("tab-column")).toHaveCount(3, { timeout: 30_000 });
+  await openTools(first);
+  await openTools(second);
   return { first, second, songUrl, partUrl };
 }
 
@@ -188,6 +191,7 @@ async function signedInWithASong(browser: Browser) {
   await fret(page, "E", 7).click();
   await expect(page.getByTestId("tab-column")).toHaveCount(1);
   await page.goto(songUrl);
+  await openTools(page);
   await page.getByRole("button", { name: "Each part once" }).click();
   await expect(page.getByTestId("roadmap-chip")).toHaveCount(1);
   await expect.poll(() => outbox(page), { timeout: 30_000 }).toBe(0);
@@ -367,6 +371,7 @@ test("INV-015 a pull slower than the stuck timer still lands whole", async ({ br
     await expect(page.getByTestId("tab-column").first()).toBeVisible();
     await work();
     await page.goto(songUrl);
+    await openTools(page);
     await expect(page.getByTestId("tab-staff").first()).toBeVisible(WAIT);
   };
   const addColumn = async (page: Page, count: number) => {
@@ -475,6 +480,7 @@ test("INV-015 a pull slower than the stuck timer still lands whole", async ({ br
         await expect.poll(() => outbox(first), WAIT).toBe(0);
         if (surface === "play view") await first.goto(`${songUrl}/play`);
         await expect(first.getByTestId("tab-column").first()).toBeVisible(WAIT);
+        if (surface === "song page") await openTools(first);
         await choose(first, view);
         await record(first);
 
@@ -521,6 +527,7 @@ test("INV-015 a pull slower than the stuck timer still lands whole", async ({ br
     await fret(page, "E", 7).click();
     await expect(page.getByTestId("tab-column")).toHaveCount(1);
     await page.goto(songUrl);
+    await openTools(page);
     await page.getByRole("button", { name: "Each part once" }).click();
     await expect(page.getByTestId("roadmap-chip")).toHaveCount(1);
     const outbox = () => idb<number>(page, `return (await all("outbox")).length;`);
@@ -529,6 +536,7 @@ test("INV-015 a pull slower than the stuck timer still lands whole", async ({ br
     await expect(page.getByTestId("tab-column").first()).toBeVisible();
     // Let the start-up sync finish, or its own bookkeeping would read as a change.
     await page.waitForTimeout(1_500);
+    await openCluster(page);
 
     /** Every table, leaving out the sync engine's own status and clock-driven bookkeeping in `meta`. */
     const tables = async () => {

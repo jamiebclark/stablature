@@ -1,3 +1,4 @@
+import { openTools } from "./usability-helpers";
 import { randomUUID } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
 import postgres from "postgres";
@@ -181,6 +182,7 @@ test("two devices editing offline both survive the merge", async ({ browser }) =
   // Both devices land on the page they will edit *before* the network goes,
   // because until the service worker ships a hard navigation offline fails.
   await firstPage.goto(songUrl);
+  await openTools(firstPage);
   await expect(firstPage.getByLabel("Beats per minute")).toBeVisible();
 
   // Now offline, and each changes something different about the same song.
@@ -225,6 +227,7 @@ test("two devices editing offline both survive the merge", async ({ browser }) =
   await expect(firstPage.getByTestId("roadmap-chip")).toHaveCount(1, { timeout: 25_000 });
   await expect(firstPage.getByLabel("Beats per minute")).toHaveValue("122");
   await secondPage.reload();
+  await openTools(secondPage);
   await expect(secondPage.getByLabel("Beats per minute")).toHaveValue("122", {
     timeout: 25_000,
   });

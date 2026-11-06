@@ -134,7 +134,7 @@ The riff is captured and the capturer has stopped playing. They want to look at 
 
 **Vertical budget and presentation**
 
-- **FR-026**: The capture screen MUST continue to fit the viewport without page-level scrolling: header, part chips, staff, status row, optional chord form, controls row, latch strip and neck.
+- **FR-026**: The capture screen MUST continue to fit the viewport without page-level scrolling: header, part chips, staff, status row, optional chord form, controls row, latch strip and neck. *(Amended by spec 007: the list of rows is now header, part chips, staff, status row, optional chord form, selection or controls row, latch strip and neck, with the toolbars grouped into rows that sit in the top half at five strings; the first six-string staff row moves 10 to 19px. The page still does not scroll at 375×667, see 003 FR-020.)*
 - **FR-027**: The height the latch strip costs MUST come out of the staff's scroll area, not out of the neck. The neck's own height MUST be unchanged.
 - **FR-028**: The staff MUST continue to show every string of a five-string tuning, plus the chord row when chords are present, without the staff area scrolling vertically at the smallest supported phone viewport.
 - **FR-029**: Every new or changed surface MUST be legible in both the light and the dark theme, verified in a browser at actual size on a phone viewport — not through a magnified crop. (Repo convention: "browser testing is part of done", `docs/DECISIONS.md`.)

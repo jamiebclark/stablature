@@ -6,6 +6,7 @@
  * path Dexie cannot see.
  */
 import { expect, test, type Page } from "@playwright/test";
+import { openCluster } from "./usability-helpers";
 import {
   cols,
   dump,
@@ -219,6 +220,7 @@ test("INV-030 a run through every stage, the follow choice and the endings write
   await recorder(page);
   const { playUrl } = await seed(page, cols("q", "q", "|", null), { bpm: 240 });
   await page.goto(playUrl);
+  await openCluster(page);
   await expect(page.getByTestId("click-follow")).toBeVisible();
   await page.waitForTimeout(500);
   const before = await dump(page);
@@ -232,6 +234,7 @@ test("INV-030 a run through every stage, the follow choice and the endings write
   await page.getByTestId("click-start").click();
   await expect(state(page)).toHaveText("Plain beat.", { timeout: 5000 });
   await page.getByTestId("click-stop").click();
+  await openCluster(page);
   await page.getByTestId("click-follow").click();
   await page.getByTestId("click-start").click();
   await expect(state(page)).toHaveText("Plain beat.", { timeout: 5000 });
@@ -289,6 +292,7 @@ test("INV-041 sixteen beats add no announcement; each change is one; the beat is
   await recorder(page);
   const { playUrl } = await seed(page, cols("q", "q", "|", null), { bpm: 240 });
   await page.goto(playUrl);
+  await openCluster(page);
   await expect(page.getByTestId("click-follow")).toBeVisible();
   await page.evaluate(() => {
     const w = window as unknown as { __said: string[] };

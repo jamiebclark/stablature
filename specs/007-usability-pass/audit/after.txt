@@ -1,0 +1,420 @@
+
+## arrangement-entry
+- 375x667: page 375x2046; targets 41, under24 0, 24-44 7, topHalf 12, beyondFold 15
+    24-44: A×2last: C 43.2x48.4 | B 26.4x48.4 | One fewer repeat 40x44 | One more repeat 40x44 | Move later 38.1x44 | Privacy 37x44 | Terms 31x44
+    inputs: Beats per minute 16px bottom 239 | sameC 16px bottom 555 UNDER-KB (kb top 407)
+    staves: 288/325 288/335 288/307
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x1990; targets 41, under24 0, 24-44 7, topHalf 16, beyondFold 9
+    24-44: A×2last: C 43.2x48.4 | B 26.4x48.4 | One fewer repeat 40x44 | One more repeat 40x44 | Move later 38.1x44 | Privacy 37x44 | Terms 31x44
+    wrapped: Play view x2
+    inputs: Beats per minute 16px bottom 239 | sameC 16px bottom 499 (kb top 508)
+    staves: 303/325 303/335 303/307
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## band-songs
+- 375x667: page 375x667; targets 10, under24 0, 24-44 2, topHalf 6, beyondFold 0
+    24-44: Privacy 37x44 | Terms 31x44
+    wrapped: Bands x2
+    inputs: Song title 16px bottom 211 (kb top 407)
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x844; targets 10, under24 0, 24-44 2, topHalf 8, beyondFold 0
+    24-44: Privacy 37x44 | Terms 31x44
+    wrapped: Bands x2
+    inputs: Song title 16px bottom 211 (kb top 508)
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## bands-empty
+- 375x667: page 375x667; targets 5, under24 0, 24-44 2, topHalf 3, beyondFold 0
+    24-44: Privacy 37x44 | Terms 31x44
+    inputs: Band name 16px bottom 161 (kb top 407)
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x844; targets 5, under24 0, 24-44 2, topHalf 3, beyondFold 0
+    24-44: Privacy 37x44 | Terms 31x44
+    inputs: Band name 16px bottom 161 (kb top 508)
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## bands-list
+- 375x667: page 375x667; targets 6, under24 0, 24-44 2, topHalf 4, beyondFold 0
+    24-44: Privacy 37x44 | Terms 31x44
+    inputs: Band name 16px bottom 161 (kb top 407)
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x844; targets 6, under24 0, 24-44 2, topHalf 6, beyondFold 0
+    24-44: Privacy 37x44 | Terms 31x44
+    inputs: Band name 16px bottom 161 (kb top 508)
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## capture-4-rest
+- 375x667: page 375x667; targets 20, under24 0, 24-44 10, topHalf 6, beyondFold 0
+    24-44: A 36x44 | ⇤ start 46.7x24 | end ⇥ 44x24 | Repeat one more time 32x44 | ×4 43.8x44 | stack notes onto the marked column 70.2x31 | hammer-on 70.2x31 | pull-off 70.2x31 | slide up 70.2x31 | slide down 70.2x31
+    clipped: −×1+ (clip +11)
+    staves: 330/330
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x844; targets 20, under24 0, 24-44 10, topHalf 4, beyondFold 0
+    24-44: A 36x44 | ⇤ start 46.7x24 | end ⇥ 44x24 | Repeat one more time 32x44 | ×4 43.8x44 | stack notes onto the marked column 73.2x31 | hammer-on 73.2x31 | pull-off 73.2x31 | slide up 73.2x31 | slide down 73.2x31
+    staves: 345/345
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## capture-5-rest
+- 375x667: page 375x667; targets 20, under24 0, 24-44 10, topHalf 10, beyondFold 0
+    24-44: A 36x44 | ⇤ start 46.7x24 | end ⇥ 44x24 | Repeat one more time 32x44 | ×4 43.8x44 | stack notes onto the marked column 70.2x31 | hammer-on 70.2x31 | pull-off 70.2x31 | slide up 70.2x31 | slide down 70.2x31
+    clipped: −×1+ (clip +11)
+    staves: 330/330
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x844; targets 20, under24 0, 24-44 10, topHalf 4, beyondFold 0
+    24-44: A 36x44 | ⇤ start 46.7x24 | end ⇥ 44x24 | Repeat one more time 32x44 | ×4 43.8x44 | stack notes onto the marked column 73.2x31 | hammer-on 73.2x31 | pull-off 73.2x31 | slide up 73.2x31 | slide down 73.2x31
+    staves: 345/345
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## capture-6-rest
+- 375x667: page 375x667; targets 20, under24 0, 24-44 10, topHalf 15, beyondFold 0
+    24-44: A 36x44 | ⇤ start 46.7x24 | end ⇥ 44x24 | Repeat one more time 32x44 | ×4 43.8x44 | stack notes onto the marked column 70.2x31 | hammer-on 70.2x31 | pull-off 70.2x31 | slide up 70.2x31 | slide down 70.2x31
+    clipped: −×1+ (clip +11)
+    staves: 330/330
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x844; targets 20, under24 0, 24-44 10, topHalf 4, beyondFold 0
+    24-44: A 36x44 | ⇤ start 46.7x24 | end ⇥ 44x24 | Repeat one more time 32x44 | ×4 43.8x44 | stack notes onto the marked column 73.2x31 | hammer-on 73.2x31 | pull-off 73.2x31 | slide up 73.2x31 | slide down 73.2x31
+    staves: 345/345
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## capture-chord-form
+- 375x667: page 375x667; targets 23, under24 0, 24-44 10, topHalf 18, beyondFold 0
+    24-44: A 36x44 | ⇤ start 46.7x24 | end ⇥ 44x24 | Repeat one more time 32x44 | ×4 43.8x44 | stack notes onto the marked column 70.2x31 | hammer-on 70.2x31 | pull-off 70.2x31 | slide up 70.2x31 | slide down 70.2x31
+    clipped: −×1+ (clip +11)
+    inputs: Chord 16px bottom 249 (kb top 407)
+    staves: 330/330
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x844; targets 23, under24 0, 24-44 10, topHalf 9, beyondFold 0
+    24-44: A 36x44 | ⇤ start 46.7x24 | end ⇥ 44x24 | Repeat one more time 32x44 | ×4 43.8x44 | stack notes onto the marked column 73.2x31 | hammer-on 73.2x31 | pull-off 73.2x31 | slide up 73.2x31 | slide down 73.2x31
+    inputs: Chord 16px bottom 426 (kb top 508)
+    staves: 345/345
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## capture-selecting
+- 375x667: page 375x667; targets 13, under24 0, 24-44 4, topHalf 13, beyondFold 0
+    24-44: A 36x44 | Make a tuplet of 4 36x44 | Group with no number 36x44 | cancel 42.1x44
+    staves: 330/330
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x844; targets 13, under24 0, 24-44 4, topHalf 4, beyondFold 0
+    24-44: A 36x44 | Make a tuplet of 4 36x44 | Group with no number 36x44 | cancel 42.1x44
+    staves: 345/345
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## inspector
+- 375x667: page 375x667; targets 11, under24 0, 24-44 2, topHalf 1, beyondFold 0
+    24-44: repeat count: one fewer 40x44 | repeat count: one more 40x44
+    clipped: −×1+ (clip +11)
+    inputs: chord symbol 16px bottom 467 UNDER-KB (kb top 407)
+    staves: 330/330
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x844; targets 11, under24 0, 24-44 2, topHalf 0, beyondFold 0
+    24-44: repeat count: one fewer 40x44 | repeat count: one more 40x44
+    inputs: chord symbol 16px bottom 644 UNDER-KB (kb top 508)
+    staves: 345/345
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## join
+- 375x667: page 375x667; targets 6, under24 0, 24-44 2, topHalf 4, beyondFold 0
+    24-44: Privacy 37x44 | Terms 31x44
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x844; targets 6, under24 0, 24-44 2, topHalf 6, beyondFold 0
+    24-44: Privacy 37x44 | Terms 31x44
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## offline
+- 375x667: page 375x667; targets 5, under24 0, 24-44 2, topHalf 3, beyondFold 0
+    24-44: Privacy 37x44 | Terms 31x44
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x844; targets 5, under24 0, 24-44 2, topHalf 3, beyondFold 0
+    24-44: Privacy 37x44 | Terms 31x44
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## paste-refused
+- 375x667: page 375x2362; targets 36, under24 0, 24-44 4, topHalf 12, beyondFold 16
+    24-44: A×2last: C 43.2x48.4 | B 26.4x48.4 | Privacy 37x44 | Terms 31x44
+    wrapped: Band x2 | Copy text x2 | Download x2 | + variant x2 | Edit x2 | Delete part A x2 | Delete part B x2 | Delete part C x2
+    inputs: Beats per minute 16px bottom -335 | Tab text 16px bottom 248 (kb top 407)
+    staves: 288/325 288/335 288/307
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x2296; targets 36, under24 0, 24-44 4, topHalf 17, beyondFold 16
+    24-44: A×2last: C 43.2x48.4 | B 26.4x48.4 | Privacy 37x44 | Terms 31x44
+    wrapped: Band x2 | Copy text x2 | Download x2 | Play view x2
+    inputs: Beats per minute 16px bottom -279 | Tab text 16px bottom 238 (kb top 508)
+    staves: 303/325 303/335 303/307
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## play
+- 375x667: page 375x2087; targets 7, under24 0, 24-44 2, topHalf 3, beyondFold 2
+    24-44: Privacy 37x44 | Terms 31x44
+    staves: 289/289 289/289 289/289 289/289
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x2087; targets 7, under24 0, 24-44 2, topHalf 3, beyondFold 2
+    24-44: Privacy 37x44 | Terms 31x44
+    staves: 304/304 304/304 304/304 304/304
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## privacy
+- 375x667: page 375x2451; targets 5, under24 1, 24-44 2, topHalf 2, beyondFold 3
+    under24: the terms 58.8x19
+    24-44: Privacy 37x44 | Terms 31x44
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x2428; targets 5, under24 0, 24-44 3, topHalf 2, beyondFold 3
+    24-44: the terms 345.9x41.8 | Privacy 37x44 | Terms 31x44
+    wrapped: the terms x2
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## sign-in
+- 375x667: page 375x667; targets 8, under24 1, 24-44 2, topHalf 4, beyondFold 0
+    under24: Create one 57.7x16
+    24-44: Privacy 37x44 | Terms 31x44
+    inputs:  16px bottom 266 |  16px bottom 342 (kb top 407)
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x844; targets 8, under24 1, 24-44 2, topHalf 5, beyondFold 0
+    under24: Create one 57.7x16
+    24-44: Privacy 37x44 | Terms 31x44
+    inputs:  16px bottom 266 |  16px bottom 342 (kb top 508)
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## sign-up
+- 375x667: page 375x748; targets 11, under24 3, 24-44 2, topHalf 4, beyondFold 2
+    under24: what is stored 73.9x16 | the terms 50.4x16 | Sign in 36.1x16
+    24-44: Privacy 37x44 | Terms 31x44
+    inputs:  16px bottom 266 |  16px bottom 342 |  16px bottom 418 UNDER-KB (kb top 407)
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x844; targets 11, under24 3, 24-44 2, topHalf 5, beyondFold 0
+    under24: what is stored 73.9x16 | the terms 50.4x16 | Sign in 36.1x16
+    24-44: Privacy 37x44 | Terms 31x44
+    inputs:  16px bottom 266 |  16px bottom 342 |  16px bottom 418 (kb top 508)
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## song
+- 375x667: page 375x1858; targets 34, under24 0, 24-44 4, topHalf 12, beyondFold 9
+    24-44: A×2last: C 43.2x48.4 | B 26.4x48.4 | Privacy 37x44 | Terms 31x44
+    inputs: Beats per minute 16px bottom 239 (kb top 407)
+    staves: 288/325 288/335 288/307
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x1802; targets 34, under24 0, 24-44 4, topHalf 17, beyondFold 9
+    24-44: A×2last: C 43.2x48.4 | B 26.4x48.4 | Privacy 37x44 | Terms 31x44
+    wrapped: Play view x2
+    inputs: Beats per minute 16px bottom 239 (kb top 508)
+    staves: 303/325 303/335 303/307
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## tempo-sheet
+- 375x667: page 375x2087; targets 2, under24 0, 24-44 0, topHalf 0, beyondFold 2
+    staves: 289/289 289/289 289/289 289/289
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x2087; targets 2, under24 0, 24-44 0, topHalf 0, beyondFold 2
+    staves: 304/304 304/304 304/304 304/304
+    staffFont: {"family":"\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, m","size":"16px","ligatures":"none"}
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## terms
+- 375x667: page 375x1449; targets 5, under24 1, 24-44 2, topHalf 2, beyondFold 3
+    under24: privacy 43.6x19
+    24-44: Privacy 37x44 | Terms 31x44
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x1449; targets 5, under24 1, 24-44 2, topHalf 2, beyondFold 3
+    under24: privacy 43.6x19
+    24-44: Privacy 37x44 | Terms 31x44
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## tunings
+- 375x667: page 375x1042; targets 17, under24 0, 24-44 2, topHalf 4, beyondFold 4
+    24-44: Privacy 37x44 | Terms 31x44
+    wrapped: Delete B Standard (Bass 5) x2 | Add Drop A x2 | Add Drop G x2 | Add Drop F x2
+    lowContrast dark 0: 
+    lowContrast light 0: 
+- 390x844: page 390x1022; targets 17, under24 0, 24-44 2, topHalf 10, beyondFold 2
+    24-44: Privacy 37x44 | Terms 31x44
+    wrapped: Delete B Standard (Bass 5) x2 | Add Drop A x2 | Add Drop G x2 | Add Drop F x2
+    lowContrast dark 0: 
+    lowContrast light 0: 
+
+## budget
+budget-4-chord.json capture-title-row flex=45; tab-band flex=261.6; status-row flex=26; toolbar-stable flex=46; toolbar-contextual flex=46; DIALOG m-0=0; DIV contents=0
+   staff 134.4 stableButton 44 latch 39 grid 202.4 fret 36
+budget-4.json capture-title-row flex=45; tab-band flex=261.6; status-row flex=26; toolbar-stable flex=46; toolbar-contextual flex=46; DIALOG m-0=0; DIV contents=0
+   staff 116.8 stableButton 44 latch 39 grid 202.4 fret 36
+budget-5-chord.json capture-title-row flex=45; tab-band flex=225.6; status-row flex=26; toolbar-stable flex=46; toolbar-contextual flex=46; DIALOG m-0=0; DIV contents=0
+   staff 159.2 stableButton 44 latch 39 grid 238.4 fret 36
+budget-5.json capture-title-row flex=45; tab-band flex=225.6; status-row flex=26; toolbar-stable flex=46; toolbar-contextual flex=46; DIALOG m-0=0; DIV contents=0
+   staff 141.6 stableButton 44 latch 39 grid 238.4 fret 36
+budget-6-chord.json capture-title-row flex=45; tab-band flex=189.6; status-row flex=26; toolbar-stable flex=46; toolbar-contextual flex=46; DIALOG m-0=0; DIV contents=0
+   staff 184 stableButton 44 latch 39 grid 274.4 fret 36
+budget-6.json capture-title-row flex=45; tab-band flex=189.6; status-row flex=26; toolbar-stable flex=46; toolbar-contextual flex=46; DIALOG m-0=0; DIV contents=0
+   staff 166.4 stableButton 44 latch 39 grid 274.4 fret 36
+defects.json {
+ "status": {
+  "h": 26,
+  "scroll": 375,
+  "client": 375,
+  "kids": [
+   {
+    "t": "stacking onto the marked column",
+    "right": 178,
+    "w": 166,
+    "clipped": false
+   },
+   {
+    "t": "F#m7b5",
+    "right": 223,
+    "w": 40,
+    "clipped": false
+   },
+   {
+    "t": "F# A C E",
+    "right": 264,
+    "w": 38,
+    "clipped": true
+   },
+   {
+    "t": "⇤ start",
+    "right": 315,
+    "w": 47,
+    "clipped": false
+   },
+   {
+    "t": "end ⇥",
+    "right": 363,
+    "w": 44,
+    "clipped": false
+   }
+  ]
+ },
+ "labels": []
+}
+long-press.json {
+ "onBarline": {
+  "details": 0,
+  "contextual": 0
+ }
+}
+candidate-4-553.json {"before":{"band":147.6,"staff":134.4,"overflow":0,"spare":13.2,"neckTop":312},"after":{"band":0,"staff":0,"overflow":0,"spare":0,"neckTop":164},"band":{"pageOver":0,"band":0,"strings":4,"clippedPx":0,"scrollable":0,"stringsClipped":0}}
+candidate-4-667.json {"before":{"band":261.6,"staff":134.4,"overflow":0,"spare":127.2,"neckTop":426},"after":{"band":0,"staff":0,"overflow":0,"spare":0,"neckTop":164},"band":{"pageOver":0,"band":0,"strings":4,"clippedPx":0,"scrollable":0,"stringsClipped":0}}
+candidate-5-553.json {"before":{"band":111.6,"staff":159.2,"overflow":51,"spare":-47.6,"neckTop":276},"after":{"band":0,"staff":0,"overflow":0,"spare":0,"neckTop":164},"band":{"pageOver":0,"band":0,"strings":5,"clippedPx":0,"scrollable":0,"stringsClipped":0}}
+candidate-5-667.json {"before":{"band":225.6,"staff":159.2,"overflow":0,"spare":66.4,"neckTop":390},"after":{"band":0,"staff":0,"overflow":0,"spare":0,"neckTop":164},"band":{"pageOver":0,"band":0,"strings":5,"clippedPx":0,"scrollable":0,"stringsClipped":0}}
+candidate-6-553.json {"before":{"band":75.6,"staff":184,"overflow":112,"spare":-108.4,"neckTop":240},"after":{"band":0,"staff":0,"overflow":0,"spare":0,"neckTop":164},"band":{"pageOver":0,"band":0,"strings":6,"clippedPx":0,"scrollable":0,"stringsClipped":0}}
+candidate-6-667.json {"before":{"band":189.6,"staff":184,"overflow":0,"spare":5.6,"neckTop":354},"after":{"band":0,"staff":0,"overflow":0,"spare":0,"neckTop":164},"band":{"pageOver":0,"band":0,"strings":6,"clippedPx":0,"scrollable":0,"stringsClipped":0}}
+candidate-7-553.json {"before":{"band":39.6,"staff":208.8,"overflow":173,"spare":-169.2,"neckTop":204},"after":{"band":0,"staff":0,"overflow":0,"spare":0,"neckTop":164},"band":{"pageOver":0,"band":0,"strings":7,"clippedPx":0,"scrollable":0,"stringsClipped":0}}
+candidate-7-667.json {"before":{"band":153.6,"staff":208.8,"overflow":59,"spare":-55.2,"neckTop":318},"after":{"band":0,"staff":0,"overflow":0,"spare":0,"neckTop":164},"band":{"pageOver":0,"band":0,"strings":7,"clippedPx":0,"scrollable":0,"stringsClipped":0}}
+candidate-selecting.json {"fit":{"band":189.8,"staff":184,"overflow":0,"spare":5.8,"neckTop":354},"row":{"client":375,"scroll":375,"kids":[{"n":"copy","w":54.1,"right":62},{"n":"cut","w":45,"right":111},{"n":"delete","w":61.8,"right":177},{"n":"Make a tuplet of 3","w":28,"right":209},{"n":"Group with no number","w":28,"right":241},{"n":"Ungroup","w":57,"right":302},{"n":"cancel","w":42.1,"right":367}]}}
+reading-desktop.json {"play":{"vw":1280,"vh":800,"staffTop":154,"staffHeight":311,"strip":{"client":1194,"scroll":1194},"clickBar":77,"columnWidth":16.9,"coarse":false},"capture":{"fine":true,"neck":214,"band":412,"strip":{"client":1235,"scroll":2346}},"narrow":{"fine":true,"client":500,"scroll":865}}
+reading-phone.json {"song":{"vw":375,"vh":667,"staffTop":674,"staffHeight":177,"strip":{"client":288,"scroll":2744},"clickBar":null,"columnWidth":19.2,"coarse":true},"play":{"vw":375,"vh":667,"staffTop":178,"staffHeight":3008,"strip":{"client":289,"scroll":289},"clickBar":77,"columnWidth":32.1,"coarse":true},"jetbrains":{"vw":375,"vh":667,"staffTop":178,"staffHeight":3008,"strip":{"client":289,"scroll":289},"clickBar":77,"columnWidth":32.1,"coarse":true}}
+refusals.json {
+ "Am7-D7 | above": "REFUSED bad-character: This character is not part of the tab notation.",
+ "Am7-D7 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; bad-character: This character is not part of the tab notation.",
+ "Am7-D7 | gap": "REFUSED bad-character: This character is not part of the tab notation.",
+ "Am7-D7-G | above": "REFUSED bad-character: This character is not part of the tab notation.",
+ "Am7-D7-G | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; bad-character: This character is not part of the tab notation.",
+ "Am7-D7-G | gap": "REFUSED bad-character: This character is not part of the tab notation.",
+ "Cmaj7-Fmaj7 | above": "REFUSED bad-character: This character is not part of the tab notation.",
+ "Cmaj7-Fmaj7 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; bad-character: This character is not part of the tab notation.",
+ "Cmaj7-Fmaj7 | gap": "REFUSED bad-character: This character is not part of the tab notation.",
+ "D-7-G-7 | above": "REFUSED bad-character: This character is not part of the tab notation.",
+ "D-7-G-7 | below": "REFUSED bad-character: This character is not part of the tab notation.",
+ "D-7-G-7 | gap": "REFUSED bad-character: This character is not part of the tab notation.",
+ "A7-D7 | above": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "A7-D7 | below": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "A7-D7 | gap": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "E5-A5 | above": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "E5-A5 | below": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "E5-A5 | gap": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "Am-G | above": "read; ignored 1, columns 2",
+ "Am-G | below": "read; ignored 1, columns 2",
+ "Am-G | gap": "read; ignored 1, columns 2",
+ "A-G | above": "read; ignored 1, columns 2",
+ "A-G | below": "read; ignored 1, columns 2",
+ "A-G | gap": "read; ignored 1, columns 2",
+ "G5-7 | above": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "G5-7 | below": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "G5-7 | gap": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "E-5-7 | above": "REFUSED row-length: The strings are not all the same length.",
+ "E-5-7 | below": "REFUSED row-length: The strings are not all the same length.",
+ "E-5-7 | gap": "REFUSED lone-row: A staff needs at least two strings.",
+ "(c) 1999-2004 | above": "REFUSED bad-character: This character is not part of the tab notation.",
+ "(c) 1999-2004 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; bad-character: This character is not part of the tab notation.",
+ "(c) 1999-2004 | gap": "REFUSED bad-character: This character is not part of the tab notation.",
+ "1999-2004 | above": "REFUSED fret-range: Frets go from 0 to 36.",
+ "1999-2004 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; fret-range: Frets go from 0 to 36.",
+ "1999-2004 | gap": "read; ignored 1, columns 2",
+ "1-2-3-4- | above": "REFUSED labels-mixed: Some strings are labelled and some are not.",
+ "1-2-3-4- | below": "REFUSED labels-mixed: Some strings are labelled and some are not.",
+ "1-2-3-4- | gap": "REFUSED lone-row: A staff needs at least two strings.",
+ "1-2-3-4 | above": "REFUSED labels-mixed: Some strings are labelled and some are not.",
+ "1-2-3-4 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; row-length: The strings are not all the same length.",
+ "1-2-3-4 | gap": "read; ignored 1, columns 2",
+ "Intro: Am7-D7 | above": "read; ignored 1, columns 2",
+ "Intro: Am7-D7 | below": "read; ignored 1, columns 2",
+ "Intro: Am7-D7 | gap": "read; ignored 1, columns 2",
+ "x2-x4 | above": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "x2-x4 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; run-together: Notes run together here. Put a rail between them.",
+ "x2-x4 | gap": "read; ignored 1, columns 2",
+ "Verse 2 | above": "read; ignored 1, columns 2",
+ "Verse 2 | below": "read; ignored 1, columns 2",
+ "Verse 2 | gap": "read; ignored 1, columns 2",
+ "Am7 - D7 | above": "REFUSED bad-character: This character is not part of the tab notation.",
+ "Am7 - D7 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; bad-character: This character is not part of the tab notation.",
+ "Am7 - D7 | gap": "read; ignored 1, columns 2"
+}

@@ -1,3 +1,4 @@
+import { openTools } from "./usability-helpers";
 /**
  * INV-006 (position half), SC-010. Base part on the A string: 3, 5, h7 (spec US3 scenario 6).
  * Members: delete the source by toolbar, inspector, selection delete, cut, and from a second
@@ -141,6 +142,7 @@ test("a variant carries the transition", async ({ page }) => {
   await page.goto(songUrl);
   await page.getByRole("button", { name: /variant/ }).first().click();
   await expect(page.getByText(/variant of/)).toBeVisible();
+  await openTools(page);
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: /Download/ }).click();
   const chunks: Buffer[] = [];

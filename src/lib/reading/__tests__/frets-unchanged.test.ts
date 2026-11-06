@@ -9,7 +9,7 @@
  */
 import "fake-indexeddb/auto";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, describe, expect, it, vi } from "vitest";
@@ -105,9 +105,17 @@ describe("frets are unchanged (INV-001, INV-002, INV-018), after every harvested
         }
         for (const [field, hash] of Object.entries(row)) {
           checked++;
+          // RECORD_MARKUP=1 re-records ONLY markup entries (007 T018); every other field must still match.
+          if (process.env.RECORD_MARKUP === "1" && field.startsWith("markup:")) {
+            want[field] = hash;
+            continue;
+          }
           if (want[field] !== hash) bad.push(`${id}:${density}:${field}`);
         }
       }
+    }
+    if (process.env.RECORD_MARKUP === "1") {
+      writeFileSync(new URL("./baseline.json", import.meta.url), JSON.stringify(baseline, null, 1) + "\n");
     }
     expect(bad.slice(0, 10)).toEqual([]);
     expect(checked).toBe(Object.keys(baseline.entries).length * 8);

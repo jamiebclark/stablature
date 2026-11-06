@@ -69,7 +69,8 @@ for (const theme of ["light", "dark"] as const) {
 
       const first = await withoutThisEntry(page);
       expect(first.scroll).toBe(true);
-      expect(first.header?.[3]).toBe(37);
+      // Usability pass (FR-065): the merged title row is 45px (was the 37px header).
+      expect(first.header?.[3]).toBe(45);
       const staffHeight = first.staff?.[3];
 
       // Mid-part: walk the cursor over none and each of D.

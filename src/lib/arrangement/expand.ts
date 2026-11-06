@@ -116,6 +116,24 @@ export interface ArrangementStep {
   toBar: number | null;
   /** Enclosing section labels, outermost first. */
   sections: string[];
+  /** One per enclosing named section, outermost first. A read-side derivation; nothing is stored. */
+  visits: SectionVisit[];
+}
+
+export interface SectionVisit {
+  /** As typed. */
+  label: string;
+  /** Which time through, from 1, counted over the whole song by trimmed, case-folded name. */
+  time: number;
+  /** This step is the first one played in that visit. */
+  opens: boolean;
+}
+
+interface OpenVisit {
+  label: string;
+  key: string;
+  time: number | null;
+  opened: boolean;
 }
 
 /**
@@ -126,14 +144,20 @@ export interface ArrangementStep {
  */
 export function expandArrangement(nodes: readonly ArrangementNode[]): ArrangementStep[] {
   const steps: ArrangementStep[] = [];
+  const timesByName = new Map<string, number>();
 
-  const walk = (list: readonly ArrangementNode[], sections: string[]): void => {
+  const walk = (list: readonly ArrangementNode[], sections: string[], open: OpenVisit[]): void => {
     for (const node of list) {
       if (node.kind === "text") continue;
 
       if (node.kind === "section") {
         for (let pass = 0; pass < node.repeat; pass += 1) {
-          walk(node.children, node.label ? [...sections, node.label] : sections);
+          const label = node.label;
+          // Each pass is its own visit. It only counts once a step is played inside it.
+          const visit: OpenVisit | null = label?.trim()
+            ? { label, key: label.trim().toLowerCase(), time: null, opened: false }
+            : null;
+          walk(node.children, label ? [...sections, label] : sections, visit ? [...open, visit] : open);
         }
         continue;
       }
@@ -143,6 +167,15 @@ export function expandArrangement(nodes: readonly ArrangementNode[]): Arrangemen
         // flourish on the 4th" means, and it is why the variant is referenced
         // here rather than duplicated into the arrangement.
         const isFinalPass = pass === node.repeat;
+        const visits = open.map((visit) => {
+          if (visit.time === null) {
+            visit.time = (timesByName.get(visit.key) ?? 0) + 1;
+            timesByName.set(visit.key, visit.time);
+          }
+          const opens = !visit.opened;
+          visit.opened = true;
+          return { label: visit.label, time: visit.time, opens };
+        });
         steps.push({
           partId: isFinalPass && node.lastRepeatPartId ? node.lastRepeatPartId : node.partId,
           entryId: node.entryId,
@@ -151,12 +184,13 @@ export function expandArrangement(nodes: readonly ArrangementNode[]): Arrangemen
           fromBar: node.fromBar,
           toBar: node.toBar,
           sections,
+          visits,
         });
       }
     }
   };
 
-  walk(nodes, []);
+  walk(nodes, [], []);
   return steps;
 }
 
@@ -214,7 +248,7 @@ function describeBars(fromBar: number | null, toBar: number | null): string | nu
   return `to bar ${toBar}`;
 }
 
-function ordinal(n: number): string {
+export function ordinal(n: number): string {
   const suffix = n % 100 >= 11 && n % 100 <= 13 ? "th" : ["th", "st", "nd", "rd"][n % 10] ?? "th";
   return `${n}${suffix}`;
 }

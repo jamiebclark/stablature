@@ -223,7 +223,7 @@ On the play view, `A x4 with a flourish on the 4th` draws four staves. The first
 
 **The view control**
 
-- **FR-001**: The song page and the play view MUST each offer a three-way control choosing frets, notes or intervals. It MUST be hidden from print. The current choice MUST be plain from the control itself, not from colour alone.
+- **FR-001**: The song page and the play view MUST each offer a three-way control choosing frets, notes or intervals. It MUST be hidden from print. The current choice MUST be plain from the control itself, not from colour alone. *(Amended by spec 007: the control is in the tools panel of the song page and the click cluster of the play view, one tap away; it is shown on the play view only when the song has an arrangement.)*
 - **FR-002**: The default MUST be frets. In frets, every staff MUST draw exactly as it does today.
 - **FR-003**: The choice MUST be one per device, shared by the song page and the play view and by every song. It MUST be remembered on that device and MUST NOT reach any synced table, the sync queue or the server, or need a migration.
 - **FR-004**: Only the staves on the song page and the play view MUST follow the choice. The capture screen and the paste preview MUST stay in fret numbers, because a capturer is placing fingers and a preview is promising what will be stored.

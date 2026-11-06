@@ -1,45 +1,35 @@
 import { describe, expect, it } from "vitest";
 import type { EventRow } from "@/lib/model";
-import { nextCursorAfterDelete } from "../cursor";
+import { cursorBar, cursorStep } from "../cursor";
 
-const syncMeta = { updatedAt: "", deletedAt: null, fieldClocks: {}, serverSeq: 0 } as const;
+const col = (id: string, kind: EventRow["kind"] = "notes") => ({ id, kind }) as EventRow;
+const columns = [col("a"), col("b"), col("bar1", "barline"), col("c"), col("d")];
 
-function event(id: string): EventRow {
-  return {
-    ...syncMeta,
-    id,
-    bandId: "band-1",
-    partId: "part-1",
-    rank: id,
-    kind: "notes",
-    frets: {},
-    techniques: {},
-    repeat: 1,
-    durationHint: null,
-    tupletId: null,
-    tupletCount: null,
-  };
-}
-
-const a = event("a");
-const b = event("b");
-const c = event("c");
-const columns = [a, b, c];
-
-describe("nextCursorAfterDelete", () => {
-  it("keeps tracking the tail when the cursor is end", () => {
-    expect(nextCursorAfterDelete(columns, b.id, "end")).toBe("end");
+describe("cursorStep", () => {
+  it("steps by stored column", () => {
+    expect(cursorStep(columns, "a", 1)).toBe("b");
+    expect(cursorStep(columns, "b", -1)).toBe("a");
   });
-
-  it("moves to the previous column when the deleted column had one", () => {
-    expect(nextCursorAfterDelete(columns, b.id, b.id)).toBe(a.id);
+  it("back from the first gives null, on from the last gives end", () => {
+    expect(cursorStep(columns, "a", -1)).toBeNull();
+    expect(cursorStep(columns, "d", 1)).toBe("end");
   });
-
-  it("moves to the start when the deleted column was first", () => {
-    expect(nextCursorAfterDelete(columns, a.id, a.id)).toBe(null);
+  it("end steps back to the previous column; null steps on to the first", () => {
+    expect(cursorStep(columns, "end", -1)).toBe("c");
+    expect(cursorStep(columns, null, 1)).toBe("a");
+    expect(cursorStep(columns, null, -1)).toBeNull();
   });
+});
 
-  it("leaves the cursor unchanged when it is on some other column", () => {
-    expect(nextCursorAfterDelete(columns, b.id, c.id)).toBe(c.id);
+describe("cursorBar", () => {
+  it("goes to the first column of the bar", () => {
+    expect(cursorBar(columns, "a", 1)).toBe("c");
+    expect(cursorBar(columns, "d", -1)).toBe("c");
+    expect(cursorBar(columns, "c", -1)).toBe("a");
+  });
+  it("stops at the ends the way a column step does", () => {
+    expect(cursorBar(columns, "b", -1)).toBe("a");
+    expect(cursorBar(columns, "a", -1)).toBeNull();
+    expect(cursorBar(columns, "d", 1)).toBe("end");
   });
 });

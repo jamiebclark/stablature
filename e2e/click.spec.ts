@@ -1,3 +1,4 @@
+import { openCluster } from "./usability-helpers";
 import { expect, test } from "@playwright/test";
 import { installRecorder, recorded, seedPlayable } from "./click-helpers";
 import { cols, seed } from "./rhythm-probe-helpers";
@@ -239,6 +240,7 @@ test.describe("the click", () => {
     test("follow off gives the plain beat from the first click; the choice resets on returning", async ({ page }) => {
       await installRecorder(page);
       const { songUrl } = await seedPlayable(page, { durations: [2, 2] });
+      await openCluster(page);
       await page.getByTestId("click-follow").click();
       await expect(page.getByTestId("click-follow")).toHaveAttribute("aria-pressed", "false");
       await expect(page.getByTestId("click-state")).toHaveText("Click is a plain beat.");
@@ -250,6 +252,7 @@ test.describe("the click", () => {
       await page.getByTestId("click-stop").click();
       await page.goto(songUrl);
       await page.goto(`${songUrl}/play`);
+      await openCluster(page);
       await expect(page.getByTestId("click-follow")).toHaveAttribute("aria-pressed", "true");
     });
   });

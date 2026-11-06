@@ -4,6 +4,7 @@
  * INV-027 always there, offline and with no permission.
  */
 import { expect, test, type Page } from "@playwright/test";
+import { openTools } from "./usability-helpers";
 import {
   TUNINGS,
   dumpStore,
@@ -56,6 +57,7 @@ test.describe("INV-022 nothing is written until the tap", () => {
     const before = await dumpStore(page);
     await pasteTab(page, RICH);
     await expect(importButton(page)).toBeVisible();
+    await openTools(page);
     await page.getByRole("button", { name: /compact/i }).first().click();
     await page.getByRole("button", { name: /expanded/i }).first().click();
     await page.goto("/");
@@ -70,6 +72,7 @@ test.describe("INV-021 the new part is what the preview drew", () => {
     await pasteTab(page, RICH);
     await expect(importButton(page)).toBeVisible();
     const expanded = await readStaffText(page, "preview");
+    await openTools(page);
     await page.getByRole("button", { name: /compact/i }).first().click();
     await expect.poll(() => readStaffText(page, "preview")).not.toBe(expanded);
     const compact = await readStaffText(page, "preview");

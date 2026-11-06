@@ -30,7 +30,7 @@ export function ColumnInspector({ properties, ctx, title, onClose, onActionDone 
     <div data-testid="column-inspector" className="flex max-h-[calc(100dvh-2px)] flex-col gap-3 p-4">
       <div className="flex shrink-0 items-center justify-between bg-bg">
         <h2 className="text-sm font-semibold">{title}</h2>
-        <Button variant="ghost" className="px-2 py-1 text-xs" onClick={onClose}>
+        <Button variant="ghost" className="min-w-(--control) px-2 text-xs" onClick={onClose}>
           close
         </Button>
       </div>
@@ -60,7 +60,7 @@ function Control({
         <div className="flex items-center overflow-hidden rounded-md border border-border-subtle">
           <button
             type="button"
-            className="px-3 py-2 text-sm"
+            className="min-h-(--control) min-w-10 px-3 text-sm"
             aria-label={`${property.ariaLabel}: one fewer`}
             onClick={() => void property.commit(ctx, -1)}
           >
@@ -75,7 +75,7 @@ function Control({
           </span>
           <button
             type="button"
-            className="px-3 py-2 text-sm"
+            className="min-h-(--control) min-w-10 px-3 text-sm"
             aria-label={`${property.ariaLabel}: one more`}
             onClick={() => void property.commit(ctx, 1)}
           >
@@ -117,8 +117,23 @@ function TextControl({ property, ctx }: { property: ColumnProperty; ctx: Propert
     // Keep anything typed while the write was in flight.
     setDraft((now) => (now === value ? null : now));
   }, [current]);
+  const formRef = useRef<HTMLFormElement>(null);
+  // The keyboard lands after focus, so reveal once now and once more a frame after the viewport next resizes.
+  const reveal = () => {
+    const show = () => requestAnimationFrame(() => formRef.current?.scrollIntoView({ block: "nearest" }));
+    show();
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const again = () => {
+      vv.removeEventListener("resize", again);
+      show();
+    };
+    vv.addEventListener("resize", again);
+    setTimeout(() => vv.removeEventListener("resize", again), 1000);
+  };
   return (
     <form
+      ref={formRef}
       className="flex gap-2"
       onSubmit={async (e) => {
         e.preventDefault();
@@ -130,6 +145,7 @@ function TextControl({ property, ctx }: { property: ColumnProperty; ctx: Propert
       <Input
         value={draft ?? current}
         onChange={(e) => setDraft(e.target.value)}
+        onFocus={reveal}
         aria-label={property.ariaLabel}
         className="w-32"
       />

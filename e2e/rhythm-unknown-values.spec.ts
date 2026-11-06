@@ -1,3 +1,4 @@
+import { openTools } from "./usability-helpers";
 /**
  * INV-005 / FR-007. U x {inspector, cursor status, song expanded, song compact, play view, the walk},
  * and `undefined` on an old row: no error, no lit position, no mark, no rewrite. Then a tap on `8`.
@@ -37,6 +38,7 @@ for (const u of U) {
     await page.goto(songUrl);
     await expect(page.getByTestId("tab-column").first()).toBeVisible();
     await expect(page.getByTestId("tab-rhythm")).toHaveCount(0);
+    await openTools(page);
     await page.getByRole("button", { name: "compact" }).click();
     await expect(page.getByTestId("tab-rhythm")).toHaveCount(0);
 

@@ -5,6 +5,7 @@
  */
 import { expect, test, type Page } from "@playwright/test";
 import { generateNKeysBetween } from "fractional-indexing";
+import { openCluster } from "./usability-helpers";
 import { cols, idb, level, rec, recorder, seed, writeColumns, type Col } from "./rhythm-probe-helpers";
 
 const BEATS: Record<string, number> = { w: 4, h: 2, q: 1, "8": 0.5, "16": 0.25, "32": 0.125 };
@@ -182,6 +183,7 @@ test("INV-036 fall to plain, by ear and on screen: no break in time, never back"
   await recorder(page);
   const { playUrl } = await seed(page, cols("q", "q", "q", "8", "|", null, "q", "|", "q", "q", "q", "q"), { bpm: 240 });
   await page.goto(playUrl);
+  await openCluster(page);
   await expect(page.getByTestId("click-follow")).toBeVisible();
   await page.getByTestId("click-start").click();
   await expect(page.getByTestId(STATE)).toHaveText("Following the notation.", { timeout: 3000 });
@@ -214,6 +216,7 @@ for (const c of [
     const { playUrl } = await seed(page, c.list, { bpm: 120, arrange: c.arrange });
     await page.goto(playUrl);
     await expect(page.getByTestId("click-start")).toBeEnabled();
+    await openCluster(page);
     await expect(page.getByTestId("click-follow")).toHaveCount(c.offered ? 1 : 0);
     await expect(page.getByTestId(STATE)).toHaveText(c.offered ? WORDS.follows : WORDS.plain);
     if (c.offered) {
@@ -232,6 +235,7 @@ test("INV-038 follow off: a timed song is plain from the first click, and says s
   await recorder(page);
   const { playUrl } = await seed(page, cols("q", "q", "|", "q", "q"), { bpm: 240 });
   await page.goto(playUrl);
+  await openCluster(page);
   await page.getByTestId("click-follow").click();
   await page.getByTestId("click-start").click();
   await expect(page.getByTestId(STATE)).toHaveText("Counting in.");

@@ -33,6 +33,8 @@ export interface ClickEngine {
   setTempo(bpm: number): void;
   /** Clicks whose time has arrived, oldest first, removed from the display queue. */
   due(): readonly QueuedClick[];
+  /** The tick now, between the last click shown and the next one queued. Null before the first click. Reads only. */
+  playhead(): number | null;
 }
 
 export interface EngineDeps {
@@ -58,6 +60,7 @@ export function createEngine(deps: EngineDeps = {}): ClickEngine {
   let pending: StreamClick | null = null;
   let last: { tick: number; time: number } | null = null;
   let queue: QueuedClick[] = [];
+  let shown: QueuedClick | null = null;
   let timer: unknown = null;
   let startTimer: unknown = null;
   let generation = 0;
@@ -87,6 +90,7 @@ export function createEngine(deps: EngineDeps = {}): ClickEngine {
     pending = null;
     last = null;
     queue = [];
+    shown = null;
     closing?.close();
     setState("idle");
     emit({ kind: "stopped", reason });
@@ -182,7 +186,19 @@ export function createEngine(deps: EngineDeps = {}): ClickEngine {
       const now = clock.now();
       let n = 0;
       while (n < queue.length && queue[n].time <= now) n++;
-      return n === 0 ? [] : queue.splice(0, n);
+      if (n === 0) return [];
+      const taken = queue.splice(0, n);
+      shown = taken[taken.length - 1];
+      return taken;
+    },
+    playhead() {
+      if (!clock || !shown) return null;
+      const next = queue[0];
+      if (!next) return shown.tick;
+      const span = next.time - shown.time;
+      if (span <= 0) return shown.tick;
+      const fraction = Math.min(1, Math.max(0, (clock.now() - shown.time) / span));
+      return shown.tick + fraction * (next.tick - shown.tick);
     },
   };
 }

@@ -1,3 +1,4 @@
+import { openTools } from "./usability-helpers";
 /**
  * INV-016: the sheet disturbs nothing, on capture x {cursor mid-part, latch armed, selection open,
  * chord draft open} x {closed with no set, set}.
@@ -84,6 +85,7 @@ test("INV-017 a tapped tempo behaves as a typed one on every surface and in ever
   expect((await outbox(page)).length).toBe(clean + 1);
 
   await page.goto(songUrl);
+  await openTools(page);
   await expect(page.getByRole("spinbutton", { name: "Beats per minute" })).toHaveValue("118");
   const bandId = await idb<string>(
     page,
@@ -100,6 +102,7 @@ test("INV-017 a tapped tempo behaves as a typed one on every surface and in ever
   await expect(page.getByTestId("click-start")).toBeEnabled();
 
   await page.goto(songUrl);
+  await openTools(page);
   await page.getByRole("spinbutton", { name: "Beats per minute" }).fill("119");
   await expect.poll(async () => (await songRows(page))[0].bpm).toBe(119);
   const typed = (await songRows(page))[0];
@@ -154,6 +157,7 @@ test("INV-018 typing 120.5 on the song page reads as no tempo on the play view",
   await recorder(page);
   const { songUrl, playUrl } = await seed(page, cols(null), { bpm: 120 });
   await page.goto(songUrl);
+  await openTools(page);
   await page.getByRole("spinbutton", { name: "Beats per minute" }).fill("120.5");
   await expect.poll(async () => (await songRows(page))[0].bpm).toBe(120.5);
   await page.goto(playUrl);

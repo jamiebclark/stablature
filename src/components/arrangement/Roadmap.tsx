@@ -51,12 +51,18 @@ function Nodes({ nodes, parts, activeEntryId, onSelectEntry }: RoadmapProps) {
     <>
       {nodes.map((node) => {
         if (node.kind === "text") {
-          return (
-            <span
+          const cueClass = "self-center px-1 text-xs italic text-text-dim";
+          return onSelectEntry ? (
+            <button
               key={node.entryId}
-              className="self-center px-1 text-xs italic text-text-dim"
-              onClick={onSelectEntry ? () => onSelectEntry(node.entryId) : undefined}
+              type="button"
+              onClick={() => onSelectEntry(node.entryId)}
+              className={`${cueClass} min-h-(--control) text-left`}
             >
+              {node.label}
+            </button>
+          ) : (
+            <span key={node.entryId} className={cueClass}>
               {node.label}
             </span>
           );
@@ -73,7 +79,7 @@ function Nodes({ nodes, parts, activeEntryId, onSelectEntry }: RoadmapProps) {
               <button
                 type="button"
                 onClick={onSelectEntry ? () => onSelectEntry(node.entryId) : undefined}
-                className="self-center text-left"
+                className="min-h-(--control) self-center text-left"
               >
                 <span className="block text-[0.6rem] uppercase tracking-wide text-text-faint">
                   {node.label ?? "section"}
@@ -107,7 +113,7 @@ function Nodes({ nodes, parts, activeEntryId, onSelectEntry }: RoadmapProps) {
             type="button"
             onClick={onSelectEntry ? () => onSelectEntry(node.entryId) : undefined}
             data-testid="roadmap-chip"
-            className={`rounded-md border px-2 py-1 text-left transition ${
+            className={`min-h-(--control) rounded-md border px-2 py-1 text-left transition ${
               active
                 ? "border-accent bg-accent-dim/30"
                 : "border-border-subtle bg-bg-raised hover:border-border-strong"

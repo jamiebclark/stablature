@@ -13,7 +13,7 @@ export default function OfflinePage() {
         This page has not been opened on this device before, so there is nothing cached
         to show. Anything you have already captured is safe and still here.
       </p>
-      <Link href="/" className="text-sm text-accent hover:underline">
+      <Link href="/" className="inline-flex min-h-(--control) items-center text-sm text-accent hover:underline">
         Back to your bands
       </Link>
     </main>

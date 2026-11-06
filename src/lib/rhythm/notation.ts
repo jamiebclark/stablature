@@ -81,6 +81,7 @@ function readBar(
   bar: readonly EventRow[],
   groups: Map<string, Group | null>,
   startedPlain: Set<string>,
+  hit?: (eventId: string, repetition: number, at: number) => void,
 ): { clicks: ScoreClick[]; length: number } | null {
   const levels = new Map<number, ClickLevel>();
   const put = (tick: number, level: ClickLevel) => {
@@ -107,6 +108,7 @@ function readBar(
     }
     const hits = Math.max(1, e.repeat);
     for (let h = 0; h < hits; h++) {
+      hit?.(e.id, h, at);
       if (counted || (firstOfPlain && h === 0)) put(at, "soft");
       at += hitTicks;
     }
@@ -120,12 +122,27 @@ function readBar(
   return { clicks, length: at };
 }
 
-/** Reads the passes as timed notation, ending at the first bar that cannot be timed. */
-export function readNotation(passes: readonly DrawnPass[]): Score {
-  const clicks: ScoreClick[] = [];
+/** One column of the passes, with where it sounds. */
+export interface ColumnTick {
+  /** From the first moment of the first bar, the same zero as `ScoreClick.tick`. */
+  readonly tick: number;
+  /** Index into the passes. */
+  readonly pass: number;
+  readonly eventId: string;
+  readonly repetition: number;
+}
+
+interface Sink {
+  click(tick: number, level: ClickLevel): void;
+  column(column: ColumnTick): void;
+}
+
+/** The one walk over the passes, ending at the first bar that cannot be timed. */
+function walk(passes: readonly DrawnPass[], sink: Sink): { lengthTicks: number; timedFromStart: boolean } {
   let offset = 0;
   let timed = false;
-  for (const pass of passes) {
+  for (let p = 0; p < passes.length; p++) {
+    const pass = passes[p];
     const groups = census(pass.events);
     const startedPlain = new Set<string>();
     const bars: EventRow[][] = [[]];
@@ -135,12 +152,60 @@ export function readNotation(passes: readonly DrawnPass[]): Score {
     }
     for (const bar of bars) {
       if (bar.length === 0) continue;
-      const read = readBar(bar, groups, startedPlain);
-      if (!read) return { clicks, lengthTicks: offset, timedFromStart: timed };
-      for (const c of read.clicks) clicks.push({ tick: offset + c.tick, level: c.level });
+      const hits: ColumnTick[] = [];
+      const read = readBar(bar, groups, startedPlain, (eventId, repetition, at) =>
+        hits.push({ tick: offset + at, pass: p, eventId, repetition }),
+      );
+      if (!read) return { lengthTicks: offset, timedFromStart: timed };
+      for (const c of read.clicks) sink.click(offset + c.tick, c.level);
+      for (const h of hits) sink.column(h);
       offset += read.length;
       timed = true;
     }
   }
-  return { clicks, lengthTicks: offset, timedFromStart: timed };
+  return { lengthTicks: offset, timedFromStart: timed };
+}
+
+/** Reads the passes as timed notation, ending at the first bar that cannot be timed. */
+export function readNotation(passes: readonly DrawnPass[]): Score {
+  const clicks: ScoreClick[] = [];
+  const end = walk(passes, { click: (tick, level) => clicks.push({ tick, level }), column: () => {} });
+  return { clicks, ...end };
+}
+
+/** Every timed column in the passes, sorted by tick, ending with the last timed column. */
+export function notationColumns(passes: readonly DrawnPass[]): ColumnTick[] {
+  const columns: ColumnTick[] = [];
+  walk(passes, { click: () => {}, column: (c) => columns.push(c) });
+  return columns;
+}
+
+/**
+ * Beats in every bar of a part, or null when they are not all timed and the same whole number of beats.
+ * A leading or trailing empty bar is skipped; an empty bar in the middle gives null.
+ */
+export function beatsPerBar(events: readonly EventRow[]): number | null {
+  const groups = census(events);
+  const startedPlain = new Set<string>();
+  const bars: EventRow[][] = [[]];
+  for (const e of events) {
+    if (e.kind === "barline") bars.push([]);
+    else if (playable(e)) bars[bars.length - 1].push(e);
+  }
+  let first = 0;
+  let last = bars.length - 1;
+  while (first <= last && bars[first].length === 0) first++;
+  while (last >= first && bars[last].length === 0) last--;
+  if (first > last) return null;
+  let length: number | null = null;
+  for (let i = first; i <= last; i++) {
+    if (bars[i].length === 0) return null;
+    const read = readBar(bars[i], groups, startedPlain);
+    if (!read) return null;
+    if (length !== null && read.length !== length) return null;
+    length = read.length;
+  }
+  if (length === null || length <= 0) return null;
+  const beats = length / TICKS_PER_BEAT;
+  return Number.isInteger(beats) ? beats : null;
 }

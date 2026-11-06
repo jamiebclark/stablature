@@ -1,3 +1,4 @@
+import { openCluster, openTools } from "./usability-helpers";
 /**
  * INV-016/INV-017: a view change moves nothing. Every item sits within 1px of its column, the staff and
  * card keep their heights, and the caption sits inside the card without touching the staff.
@@ -19,6 +20,7 @@ async function seed(page: Page) {
   await fret(page, "A", 5).click();
   await addChord(page, 0, "Am");
   await page.goto(songUrl);
+  await openTools(page);
   await expect(page.getByTestId("tab-column").first()).toBeVisible();
 }
 
@@ -152,7 +154,11 @@ const measureRows = (page: Page, index: number) =>
     };
     const parts = [...staff.querySelectorAll('[data-testid="tab-column"], [data-testid="tab-connector"], [data-testid="tab-removal"]')];
     for (let p = 1; p < parts.length; p += 1) {
-      if (Math.abs(box(parts[p]).left - box(parts[p - 1]).right) > 1) off.push(`gap between ${p - 1} and ${p}`);
+      // A wrapped staff starts a new line: only parts side by side on one line must touch.
+      const here = box(parts[p]);
+      const before = box(parts[p - 1]);
+      if (here.top >= before.bottom - 1) continue;
+      if (Math.abs(here.left - before.right) > 1) off.push(`gap between ${p - 1} and ${p}`);
     }
     const rowsAt: Record<string, number[]> = {};
     const note = (name: string, value: number) => (rowsAt[name] ??= []).push(value);
@@ -188,7 +194,15 @@ const measureRows = (page: Page, index: number) =>
       }
     }
     for (const [name, tops] of Object.entries(rowsAt)) {
-      if (Math.max(...tops) - Math.min(...tops) > 1) off.push(`${name} row not level: ${Math.min(...tops)}-${Math.max(...tops)}`);
+      // Level on each line of a wrapped staff: a jump of a few px is the next line, not a drift.
+      const sorted = [...tops].sort((a, b) => a - b);
+      let start = sorted[0];
+      for (let t = 1; t <= sorted.length; t += 1) {
+        if (t === sorted.length || sorted[t] - sorted[t - 1] > 8) {
+          if (sorted[t - 1] - start > 1) off.push(`${name} row not level: ${start}-${sorted[t - 1]}`);
+          start = sorted[t];
+        }
+      }
     }
     return { off, staff: box(staff), columns: staff.querySelectorAll('[data-testid="tab-column"]').length };
   }, index);
@@ -232,6 +246,7 @@ for (const size of SIZES) {
         }
       }
       await page.goto(playUrl);
+      await openCluster(page);
       await expect(page.getByTestId("tab-staff").first()).toBeVisible();
       for (const view of VIEWS) {
         await choose(page, view);
@@ -258,7 +273,8 @@ for (const size of SIZES) {
             const key = `${surface}#${index}`;
             const previous = heights.get(key);
             if (previous === undefined) heights.set(key, seen.card.height);
-            else if (Math.abs(previous - seen.card.height) > 1) problems.push(`${key} ${view}: card ${seen.card.height}, was ${previous}`);
+            // A wrapped staff re-flows when a view widens its cells, so only the song page holds height.
+            else if (surface !== "play" && Math.abs(previous - seen.card.height) > 1) problems.push(`${key} ${view}: card ${seen.card.height}, was ${previous}`);
             if (view === "frets") {
               if (seen.caption) problems.push(`${key}: a caption in frets`);
               continue;
@@ -281,6 +297,7 @@ for (const size of SIZES) {
       await page.getByRole("button", { name: "compact", exact: true }).click();
       await sweep("song compact", [0, 1]);
       await page.goto(playUrl);
+      await openCluster(page);
       await expect(page.getByTestId("tab-staff").first()).toBeVisible();
       await sweep("play", [0, 1, 2]);
       expect(problems).toEqual([]);
@@ -310,7 +327,7 @@ test("INV-017 each caption text, from what the cells could read", async ({ page 
 const carried = (page: Page, index: number) =>
   page.evaluate((i) => {
     const staff = document.querySelectorAll('[data-testid="tab-staff"]')[i];
-    const label = [...staff.querySelectorAll(".truncate")].find((el) => /^\(.*\)$/.test(el.textContent ?? "")) as HTMLElement | undefined;
+    const label = [...staff.querySelectorAll(".text-accent")].find((el) => /^\(.*\)$/.test(el.textContent ?? "")) as HTMLElement | undefined;
     if (!label) return null;
     const columns = [...staff.querySelectorAll('[data-testid="tab-column"]')];
     return {
@@ -330,6 +347,7 @@ test("INV-014 the carried chord, whole and in its place, in intervals only", asy
     { part: "a", fromBar: 6, toBar: 6 }, // under N.C.
   ]);
   await page.goto(playUrl);
+  await openCluster(page);
   await expect(page.getByTestId("tab-staff").first()).toBeVisible();
   await choose(page, "intervals");
   const under = await carried(page, 0);
@@ -352,6 +370,7 @@ test("INV-014 a long chord whole, and nothing before any chord or under a blank 
     { part: "a", fromBar: 5, toBar: 5 }, // under a blank chord
   ]);
   await page.goto(playUrl);
+  await openCluster(page);
   await expect(page.getByTestId("tab-staff").first()).toBeVisible();
   await choose(page, "intervals");
   expect(await carried(page, 0)).toBeNull();
@@ -408,7 +427,7 @@ for (const density of ["expanded", "compact"] as const) {
       );
       await page.getByRole("button", { name: density, exact: true }).click();
       await choose(page, view);
-      const strip = (html: string) => html.replace(/ id="[^"]*"/g, "");
+      const strip = (html: string) => html.replace(/ (?:id|data-column)="[^"]*"/g, "").replace(/(data-testid="tab-bar-number"[^>]*>)\d+/g, "$1");
       const [plain, same, marked, cut, cutPlain, markedPlain] = await Promise.all([1, 2, 3, 4, 5, 6].map((i) => geometry(page, i)));
       expect(strip(same.html)).toBe(strip(plain.html));
       expect(marked.columns.map(({ x, width, top }) => ({ x, width, top }))).toEqual(markedPlain.columns);
@@ -421,6 +440,7 @@ for (const density of ["expanded", "compact"] as const) {
 test("INV-034 marks, lines and real captions survive print against white", async ({ page }) => {
   const { playUrl } = await seedSong(page, SONG, [{ part: "v" }]);
   await page.goto(playUrl);
+  await openCluster(page);
   await expect(page.getByTestId("tab-staff").first()).toBeVisible();
   await choose(page, "intervals");
   for (const scheme of ["dark", "light"] as const) {

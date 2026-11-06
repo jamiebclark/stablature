@@ -27,6 +27,25 @@ function words(reading: TapReading): string {
   }
 }
 
+/**
+ * Set closes the sheet, and a second tap of a double tap then lands on whatever was behind it (a
+ * fret, a column). For a moment after the sheet goes, presses are eaten before anything sees them,
+ * except on the tempo control and inside a sheet, so opening it again is never refused.
+ */
+const SHIELD_MS = 300;
+const PRESSES = ["pointerdown", "pointerup", "mousedown", "mouseup", "touchstart", "touchend", "click"];
+function shieldPresses() {
+  const eat = (e: Event) => {
+    if (e.target instanceof Element && e.target.closest('[data-testid="tempo-control"], dialog')) return;
+    e.stopPropagation();
+    e.preventDefault();
+  };
+  for (const type of PRESSES) window.addEventListener(type, eat, true);
+  setTimeout(() => {
+    for (const type of PRESSES) window.removeEventListener(type, eat, true);
+  }, SHIELD_MS);
+}
+
 export function TempoControl({ song, variant }: TempoControlProps) {
   const [open, setOpen] = useState(false);
   const tempo = usableTempo(song.bpm);
@@ -40,8 +59,8 @@ export function TempoControl({ song, variant }: TempoControlProps) {
         onClick={() => setOpen(true)}
         className={
           variant === "header"
-            ? "-my-2 shrink-0 py-2 font-mono text-[0.7rem] text-text-dim hover:text-accent"
-            : "h-11 shrink-0 rounded-md border border-border-subtle bg-bg-raised px-3 font-mono text-sm text-text-dim"
+            ? "min-h-(--control) min-w-(--control) shrink-0 px-1 font-mono text-[0.7rem] text-text-dim hover:text-accent"
+            : "min-h-(--control) shrink-0 rounded-md border border-border-subtle bg-bg-raised px-3 font-mono text-sm text-text-dim"
         }
       >
         {tempo === null ? "no tempo" : `${tempo} bpm`}
@@ -121,6 +140,7 @@ function TempoSheet({ song, onClose }: { song: Pick<SongRow, "id" | "bpm">; onCl
             onClick={async () => {
               await setSongTempo(song.id, reading.bpm);
               onClose();
+              shieldPresses();
             }}
           >
             Set {reading.bpm} bpm

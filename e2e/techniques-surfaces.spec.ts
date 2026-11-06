@@ -1,3 +1,4 @@
+import { openTools } from "./usability-helpers";
 /**
  * INV-005: one fixture holding 4 transitions, 6 decorations, a repeated column, a barline, a
  * chord symbol and a triplet, on capture staff, song page expanded, song page compact and the
@@ -96,6 +97,7 @@ test("INV-005 one fixture, four surfaces, both densities", async ({ page }) => {
   await expect(connectors(page).first()).toBeVisible();
   expect(await domRow(page, 0, 2), "song expanded").toBe(want);
 
+  await openTools(page);
   await page.getByRole("button", { name: "compact" }).click();
   await expect(connectors(page)).toHaveCount(4);
   const compact = "t(<5>)b~mh7p5~/7\\5x433" + "3";
@@ -137,15 +139,21 @@ test("INV-003 no connector, and exactly the plain width", async ({ page }) => {
     const ch = probe.getBoundingClientRect().width;
     probe.remove();
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const padProbe = document.createElement("div");
+    padProbe.style.width = "var(--col-pad)";
+    staff.append(padProbe);
+    const pad = padProbe.getBoundingClientRect().width;
+    padProbe.remove();
     return {
       ch,
       rem,
+      pad,
       widths: [...staff.querySelectorAll('[data-testid="tab-column"]')].map(
         (e) => e.getBoundingClientRect().width,
       ),
     };
   });
-  const plain = [1, 2, 1, 2].map((w) => w * m.ch + 0.6 * m.rem);
+  const plain = [1, 2, 1, 2].map((w) => w * m.ch + m.pad);
   m.widths.forEach((w, i) => expect(w).toBeCloseTo(plain[i], 1));
 });
 
@@ -224,6 +232,7 @@ test("INV-023 compact repeated, with no affix read out", async ({ page }) => {
   await page.getByTitle("Four of these").click();
   await expect(columns(page)).toHaveCount(4);
   await page.goto(songUrl);
+  await openTools(page);
   await page.getByRole("button", { name: "compact" }).click();
   await expect(columns(page)).toHaveCount(1);
   await expect(columns(page).first()).toHaveAttribute(

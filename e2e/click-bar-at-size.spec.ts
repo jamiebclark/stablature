@@ -1,3 +1,4 @@
+import { openCluster } from "./usability-helpers";
 /**
  * INV-040 / FR-026: every control of the bar reachable and >=44px at the top, middle and end of a
  * 40-pass song, not covering the last staff at rest, not printed, no horizontal page scroll, on
@@ -8,9 +9,11 @@ import { expect, test, type Page } from "@playwright/test";
 import { cols, recorder, seed } from "./rhythm-probe-helpers";
 
 async function reachable(page: Page, id: string, where: string) {
+  // 44 on touch; a fine pointer reads the density floor for a toolbar control.
+  const floor = (await page.evaluate(() => matchMedia("(pointer: fine)").matches)) ? 32 : 44;
   const loc = page.getByTestId(id);
   const box = (await loc.boundingBox())!;
-  expect(box.height, `${id} height ${where}`).toBeGreaterThanOrEqual(44);
+  expect(box.height, `${id} height ${where}`).toBeGreaterThanOrEqual(floor);
   expect(box.x, `${id} left ${where}`).toBeGreaterThanOrEqual(0);
   const width = await page.evaluate(() => innerWidth);
   expect(box.x + box.width, `${id} right edge ${where}`).toBeLessThanOrEqual(width);
@@ -45,6 +48,7 @@ for (const size of [
       await recorder(page);
       const { playUrl } = await seed(page, cols("q", "q", "|", "q", "q"), { bpm: 120, passes: 40 });
       await page.goto(playUrl);
+      await openCluster(page);
       await expect(page.getByTestId("click-follow")).toBeVisible();
       for (const f of [0, 0.5, 1]) {
         await scrollAt(page, f);
@@ -91,6 +95,7 @@ test("INV-040 no tempo beside the follow chip: reachable, and nothing sideways",
   await recorder(page);
   const { playUrl } = await seed(page, cols("q", "q", "q", "q"), { bpm: null, passes: 40 });
   await page.goto(playUrl);
+  await openCluster(page);
   await expect(page.getByTestId("click-follow")).toBeVisible();
   for (const id of ["click-start", "click-follow", "tempo-control"]) {
     await reachable(page, id, "no tempo");
