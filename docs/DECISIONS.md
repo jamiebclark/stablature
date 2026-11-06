@@ -234,6 +234,37 @@ fit there, and a classic Windows scrollbar past the card's width.
   whether it belongs there is your call.
 - **Set PR #6's title to `feat(...)`** so a two-commit squash still releases.
 
+### Browser check: usability-pass (PR #7, `8de435d`)
+
+Checked in Chrome from the verify worktree on a 375×667 same-origin iframe. The harness has a mouse pointer, so it shows the fine-pointer sizes. Touch sizes come from the e2e suite, not from this check.
+
+**Works**
+
+- Capture, six strings with a bracket, shows all six strings at 375×667 with no swipe, in both themes. The page does not scroll.
+- Song page: tools and add-to-arrangement panels collapse and leave the parts in view.
+- Play view wraps at 375 and at 1280, with bar numbers. No sideways page scroll.
+- Highlight with the click following the notation: a solid 2px outlined column, clear in both themes, moves with the beat, stays above the control bar, and does not look like a selection. Tested with a real click after setting quarter notes on part B in the test origin's database.
+- Selection row: copy, cut, delete and cancel all show.
+- Help overlay lists only what works on the play view.
+
+**Defects, for Jamie (not fixed)**
+
+- The help overlay has no padding. `KeyboardHelp.tsx:55` lacks the `p-4` that `TempoSheet` has, because `Sheet` is `p-0`. The heading, keys and Close button sit against the sheet's edge at every width. One class.
+- With four parts, the capture title gives way to `← …` at 375, so capture shows no song name. This follows from F28's fix, where the title yields first. Worth your eye: whether the name matters more than seeing a fourth chip.
+- At 1280 on a short song, the play view's control bar sits directly under the card, mid-page. It is sticky, so it only reaches the bottom on a long song.
+- A part whose notes lack durations gets no highlight and no way to find out why beyond `Click is a plain beat.` This is FR-053 as written.
+
+**Calls made, worth your eye**
+
+- `--chord-ch` is 7px, not 6.72px. Linux Chrome at 1× rounds glyph advances to whole pixels, which failed 14 CI tests. Not reproducible on Windows: the arithmetic matched CI's -4.96 and CI passed after the change. It costs 0.28px per character on columns a chord label widens.
+- I split T072 and T106, cleared a stale block on T062, removed a false block on T181, and added T153 to T156, T173, T182 and T183 by hand.
+- I ran T181's remaining slices myself outside the pipeline and ticked it, recording one failure not on its exception list. Review round 4 ruled it a test race in an untouched file (FU27).
+- T121 was written so the double tap had to be fixed in the product, with its test left alone.
+
+**Not checked**
+
+Status row with stack armed, chord-tone contrast in the light theme, mouse density at 500×800, landscape capture, print preview, and sideways scrolling of a bar wider than a line on Windows. T114 stays owed for these. T108 to T113 are owed to a real phone. 33 non-gating follow-ups are in `specs/007-usability-pass/review.md`.
+
 ## 2026-11-02 — session with Jamie away
 
 ### Process
