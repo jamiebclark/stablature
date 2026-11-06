@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openTools } from "./usability-helpers";
 import {
   PHONE,
   THEMES,
@@ -207,7 +208,9 @@ test.describe("bracket legibility and alignment (US1)", () => {
     await selectColumns(page, 0, 2);
     await tupletControl(page).click();
     const offsets = await page.getByTestId("tab-staff").evaluate((staff) => {
-      const labels = [...staff.querySelectorAll("[aria-hidden] > .tab-cell")];
+      const labels = [...staff.querySelectorAll(
+          "[aria-hidden] > .tab-cell, .tab-gutter-block:first-child > .tab-cell",
+        )];
       const first = staff.querySelector('[data-testid="tab-column"]')!;
       const cells = [...first.querySelectorAll(".tab-cell")];
       return labels.map(
@@ -301,7 +304,9 @@ test.describe("raised surfaces: contrast and label alignment (US1 remainder)", (
       .getByTestId("tab-staff")
       .first()
       .evaluate((staff) => {
-        const labels = [...staff.querySelectorAll("[aria-hidden] > .tab-cell")];
+        const labels = [...staff.querySelectorAll(
+          "[aria-hidden] > .tab-cell, .tab-gutter-block:first-child > .tab-cell",
+        )];
         const cells = [
           ...staff
             .querySelector('[data-testid="tab-column"]')!
@@ -369,6 +374,7 @@ test.describe("raised surfaces: contrast and label alignment (US1 remainder)", (
         }) => {
           const songUrl = await captured(page, kind, chord);
           await page.goto(songUrl);
+          await openTools(page);
           await page.getByRole("button", { name: density, exact: true }).click();
           await expect(brackets(page).first()).toBeVisible({ timeout: 15000 });
           if (kind === "plain")

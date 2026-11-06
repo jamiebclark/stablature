@@ -1,4 +1,5 @@
 /** Shared drivers for e2e/capture-surface.spec.ts (adopted from the review probes). */
+import { openTools } from "./usability-helpers";
 import { expect, type Locator, type Page } from "@playwright/test";
 
 export const BASS5 = "B Standard";
@@ -146,6 +147,7 @@ export async function touchHold(
 export async function exportText(page: Page, songUrl: string): Promise<string> {
   const back = page.url();
   await page.goto(songUrl);
+  await openTools(page);
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: /Download/ }).click();
   const stream = await (await download).createReadStream();

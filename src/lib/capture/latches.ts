@@ -116,6 +116,13 @@ export function statusFor(lit: ReadonlySet<LatchId>): string | null {
   return lits.map((l) => l.statusShort ?? l.label).join(" + ");
 }
 
+/** The short words for what is lit, for the row while a digit waits. Null when nothing is lit. */
+export function statusShortFor(lit: ReadonlySet<LatchId>): string | null {
+  const lits = LATCHES.filter((l) => lit.has(l.id));
+  if (lits.length === 0) return null;
+  return lits.map((l) => l.statusShort ?? l.label).join(" + ");
+}
+
 /** True while the cursor names a column the live query has not delivered. */
 export function cursorPending(
   afterId: string | null,

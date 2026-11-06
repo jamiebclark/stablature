@@ -16,6 +16,7 @@ import { usePathname } from "next/navigation";
 import { signOut, useSession } from "@/lib/auth-client";
 import { usePendingWrites } from "@/lib/local/hooks";
 import { useSyncStatus } from "@/lib/sync/hooks";
+import { HelpOpen } from "@/components/keys/HelpOpen";
 import { Logo } from "./Logo";
 
 export function TopBar() {
@@ -27,25 +28,29 @@ export function TopBar() {
   if (pathname?.endsWith("/capture") || pathname?.includes("/capture/")) return null;
 
   return (
-    <div className="border-b border-border-subtle bg-bg-raised no-print">
-      <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-2.5">
-        <Link href="/" className="text-sm hover:text-accent" aria-label="stablature, home">
+    <div
+      className="border-b border-border-subtle bg-bg-raised no-print"
+      style={{ paddingTop: "var(--safe-top)", paddingLeft: "var(--safe-left)", paddingRight: "var(--safe-right)" }}
+    >
+      <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-1">
+        <Link href="/" className="inline-flex min-h-(--control) items-center text-sm hover:text-accent" aria-label="stablature, home">
           <Logo />
         </Link>
 
         <div className="flex items-center gap-3 text-xs">
+          <HelpOpen />
           <SyncBadge pending={pending ?? 0} state={status?.state} message={status?.message} />
 
           {isPending ? null : session ? (
             <button
               type="button"
               onClick={() => signOut()}
-              className="text-text-dim hover:text-accent"
+              className="inline-flex min-h-(--control) items-center px-2 text-text-dim hover:text-accent"
             >
               Sign out
             </button>
           ) : (
-            <Link href="/sign-in" className="text-text-dim hover:text-accent">
+            <Link href="/sign-in" className="inline-flex min-h-(--control) items-center px-2 text-text-dim hover:text-accent">
               Sign in
             </Link>
           )}

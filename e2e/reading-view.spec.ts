@@ -1,3 +1,4 @@
+import { openCluster, openTools } from "./usability-helpers";
 import { expect, test, type Page } from "@playwright/test";
 import { parseTab } from "../src/lib/tab/parse";
 import { addNotes, selectColumns } from "./grouping-helpers";
@@ -50,15 +51,17 @@ test("a remembered view is there on first paint, with no fret flash and no hydra
   page.on("console", (m) => m.type() === "error" && problems.push(m.text()));
   page.on("pageerror", (e) => problems.push(String(e)));
   await page.addInitScript(() => {
+    const columnText = (c: HTMLElement) => { const k = c.cloneNode(true) as HTMLElement; k.querySelectorAll('[data-testid="tab-bar-number"]').forEach((e) => e.remove()); return k.textContent ?? ""; };
     const seen: string[] = [];
     (window as unknown as { __seen: string[] }).__seen = seen;
     new MutationObserver(() => {
-      document.querySelectorAll('[data-testid="tab-column"]').forEach((c) => seen.push((c.textContent ?? "").trim()));
+      document.querySelectorAll('[data-testid="tab-column"]').forEach((c) => seen.push(columnText(c as HTMLElement).trim()));
     }).observe(document, { childList: true, subtree: true, characterData: true });
   });
 
   for (const url of [songUrl, `${songUrl}/play`, songUrl]) {
     await page.goto(url);
+    await (url.endsWith("/play") ? openCluster(page) : openTools(page));
     await expect(view(page, "notes")).toHaveAttribute("aria-pressed", "true");
     const seen = await page.evaluate(() => (window as unknown as { __seen: string[] }).__seen);
     expect(seen.filter((t) => /\d/.test(t))).toEqual([]);
@@ -183,6 +186,7 @@ for (const surface of ["song page", "play view"] as const) {
   test(`INV-003 a hundred changes reach no table, queue or write: ${surface}`, async ({ page }) => {
     const { playUrl } = await seedSong(page, MARKED, ENTRIES);
     if (surface === "play view") await page.goto(playUrl);
+    await (surface === "play view" ? openCluster(page) : openTools(page));
     await expect(page.getByTestId("staff-view")).toBeVisible();
     await page.waitForTimeout(600);
     const before = await dump(page);
@@ -194,6 +198,7 @@ for (const surface of ["song page", "play view"] as const) {
       await page.getByTestId(`staff-view-${VIEWS[(i + 1) % 3]}`).click();
       if (i === 50) {
         await page.reload();
+        await (surface === "play view" ? openCluster(page) : openTools(page));
         await expect(page.getByTestId("staff-view")).toBeVisible();
       }
     }
@@ -238,11 +243,12 @@ for (const view of ["notes", "intervals"] as const) {
 /** Records every column text from the first node on. */
 const watch = (page: Page) =>
   page.addInitScript(() => {
+    const columnText = (c: HTMLElement) => { const k = c.cloneNode(true) as HTMLElement; k.querySelectorAll('[data-testid="tab-bar-number"]').forEach((e) => e.remove()); return k.textContent ?? ""; };
     const w = window as unknown as { __texts: string[] };
     w.__texts = [];
     const read = () => {
       for (const column of document.querySelectorAll('[data-testid="tab-column"]')) {
-        w.__texts.push((column as HTMLElement).textContent ?? "");
+        w.__texts.push(columnText(column as HTMLElement));
       }
     };
     new MutationObserver(read).observe(document, { subtree: true, childList: true, characterData: true });
@@ -282,6 +288,7 @@ for (const [view, surface] of (["notes", "intervals"] as const).flatMap((v) => (
 
     // In app, from the band page, and on to the play view by its link.
     await page.goto(songUrl);
+    await openTools(page);
     await expect(page.getByTestId("tab-column").first()).toBeVisible();
     await page.getByRole("link", { name: "Band" }).click();
     await expect(page).not.toHaveURL(songUrl);
@@ -292,7 +299,7 @@ for (const [view, surface] of (["notes", "intervals"] as const).flatMap((v) => (
     await settle("in-app link from the band page");
     if (surface === "play view") {
       await forget(page);
-      await page.locator('a[href$="/play"]').first().click();
+      await page.locator('a[href$="/play"]:visible').first().click();
       await expect(page).toHaveURL(/\/play/);
       await settle("in-app link between the two");
     }
@@ -359,6 +366,7 @@ for (const [name, install] of Object.entries(STORAGE)) {
     const { songUrl } = await seedSong(page, MARKED, ENTRIES);
     await page.addInitScript(install);
     await page.goto(songUrl);
+    await openTools(page);
     await expect(page.getByTestId("staff-view-frets")).toHaveAttribute("aria-pressed", "true");
     // The first line of a column is its chord, so read the cell.
     const firstCell = async () => (await cells(page))[0].split("\n").at(-1);
@@ -375,6 +383,7 @@ for (const stored of ["sideways", "", "null", "NOTES", '{"view":"notes"}']) {
     const { songUrl } = await seedSong(page, MARKED, ENTRIES);
     await remember(page, stored);
     await page.goto(songUrl);
+    await openTools(page);
     await expect(page.getByTestId("staff-view-frets")).toHaveAttribute("aria-pressed", "true");
   });
 }
@@ -386,6 +395,7 @@ for (const theme of ["dark", "light"] as const) {
       await page.emulateMedia({ colorScheme: theme });
       const { playUrl } = await seedSong(page, MARKED, ENTRIES);
       if (surface === "play view") await page.goto(playUrl);
+      await (surface === "play view" ? openCluster(page) : openTools(page));
       const set = page.getByTestId("staff-view");
       await expect(set).toBeVisible();
       for (const view of VIEWS) {
@@ -450,11 +460,13 @@ test("INV-007 no control on a song with no tuning, on either page", async ({ pag
 test("INV-007 no control on a play view with no arrangement", async ({ page }) => {
   const { playUrl, songUrl } = await seedSong(page, MARKED, []);
   await page.goto(playUrl);
+  await openCluster(page);
   await expect(page.getByRole("heading").first()).toBeVisible();
   await page.waitForTimeout(300);
   await expect(page.getByTestId("tab-staff")).toHaveCount(0);
   await expect(page.getByTestId("staff-view")).toHaveCount(0);
   await page.goto(songUrl);
+  await openTools(page);
   await expect(page.getByTestId("staff-view")).toBeVisible();
 });
 
@@ -495,6 +507,7 @@ for (const [name, install] of Object.entries(NO_STORAGE)) {
     const { songUrl } = await seedSong(page, ACROSS_PARTS, ACROSS_ENTRIES);
     await page.addInitScript(install);
     await page.goto(songUrl);
+    await openTools(page);
     await choose(page, "notes");
     await page.getByRole("link", { name: "Play view" }).click();
     await expect(page).toHaveURL(/\/play$/);
@@ -569,11 +582,12 @@ for (const [name, install] of Object.entries(NO_STORAGE)) {
 {
   const watch = (page: Page) =>
     page.addInitScript(() => {
+      const columnText = (c: HTMLElement) => { const k = c.cloneNode(true) as HTMLElement; k.querySelectorAll('[data-testid="tab-bar-number"]').forEach((e) => e.remove()); return k.textContent ?? ""; };
       const w = window as unknown as { __texts: string[] };
       w.__texts = [];
       const read = () => {
         for (const column of document.querySelectorAll('[data-testid="tab-column"]')) {
-          w.__texts.push((column as HTMLElement).textContent ?? "");
+          w.__texts.push(columnText(column as HTMLElement));
         }
       };
       new MutationObserver(read).observe(document, { subtree: true, childList: true, characterData: true });
@@ -607,7 +621,7 @@ for (const [name, install] of Object.entries(NO_STORAGE)) {
         await expect(page.getByTestId("staff-view")).toHaveCount(0);
         await page.evaluate(() => void ((window as unknown as { __texts: string[] }).__texts.length = 0));
         await page.locator(`a[href$="${new URL(songUrl).pathname}"]`).first().click();
-        await page.locator('a[href$="/play"]').first().click();
+        await page.locator('a[href$="/play"]:visible').first().click();
         await expect(page).toHaveURL(playUrl);
       }
       await expect(page.getByTestId("staff-view-notes")).toHaveAttribute("aria-pressed", "true");

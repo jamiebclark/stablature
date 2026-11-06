@@ -11,6 +11,9 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useRef } from "react";
 import type { ComponentProps, ReactNode } from "react";
+import { usePanel } from "@/components/reading/usePanel";
+import type { PanelId } from "@/lib/reading/panels";
+import { useKeyboardInset } from "./useKeyboardInset";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 
@@ -24,7 +27,7 @@ const VARIANTS: Record<Variant, string> = {
 const BASE =
   // whitespace-nowrap because these sit in tight flex rows next to inputs, and
   // a wrapped label ("Add" over "band") reads as a layout bug.
-  "inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40";
+  "inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap min-h-(--control) rounded-md px-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40";
 
 export function Button({
   variant = "secondary",
@@ -45,7 +48,7 @@ export function ButtonLink({
 export function Input({ className = "", ...props }: ComponentProps<"input">) {
   return (
     <input
-      className={`w-full rounded-md border border-border-subtle bg-bg-raised px-3 py-2 text-sm text-text placeholder:text-text-faint focus:border-accent focus:outline-none ${className}`}
+      className={`w-full min-h-(--control) rounded-md border border-border-subtle bg-bg-raised px-3 text-text placeholder:text-text-faint focus:border-accent focus:outline-none ${className}`}
       {...props}
     />
   );
@@ -66,29 +69,72 @@ export function PageHeader({
   subtitle,
   back,
   actions,
+  touchBar = false,
 }: {
   title: ReactNode;
   subtitle?: ReactNode;
   back?: { href: string; label: string };
   actions?: ReactNode;
+  /** The actions also live in a bar at the foot of the page on touch, so the header shows them on a fine pointer only. */
+  touchBar?: boolean;
 }) {
   return (
-    <header className="mb-5 flex flex-wrap items-start justify-between gap-3">
-      <div className="min-w-0">
+    <header className="mb-3">
+      <div className="flex items-center gap-2">
         {back ? (
           <Link
             href={back.href}
-            className="mb-1 inline-flex items-center gap-1 text-xs text-text-dim hover:text-accent no-print"
+            className="inline-flex min-h-(--control) min-w-(--control) shrink-0 items-center justify-center gap-1 px-2 text-xs text-text-dim hover:text-accent no-print"
           >
-            <ArrowLeft size={13} aria-hidden />
+            <ArrowLeft size={14} aria-hidden />
             {back.label}
           </Link>
         ) : null}
-        <h1 className="truncate text-xl font-semibold tracking-tight">{title}</h1>
-        {subtitle ? <p className="mt-0.5 text-sm text-text-dim">{subtitle}</p> : null}
+        <h1 className="line-clamp-2 min-w-0 flex-1 text-xl font-semibold tracking-tight">{title}</h1>
+        {actions ? (
+          <div className={`shrink-0 gap-2 no-print ${touchBar ? "hidden fine:flex" : "flex"}`}>{actions}</div>
+        ) : null}
       </div>
-      {actions ? <div className="flex shrink-0 gap-2 no-print">{actions}</div> : null}
+      {subtitle ? <p className="mt-0.5 text-sm text-text-dim">{subtitle}</p> : null}
     </header>
+  );
+}
+
+/**
+ * A collapsible group of controls. The body stays mounted (`hidden`, not removed) so what is inside keeps
+ * its state and stays findable. Open or closed is remembered on this device.
+ */
+export function Panel({
+  id,
+  label,
+  className = "",
+  children,
+}: {
+  id: PanelId;
+  label: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = usePanel(id);
+  return (
+    <div className={`no-print ${className}`}>
+      <button
+        type="button"
+        data-testid={`panel-${id}`}
+        aria-expanded={open}
+        aria-controls={`panel-${id}-body`}
+        onClick={() => setOpen(!open)}
+        className="inline-flex min-h-(--control) w-full items-center justify-between gap-2 rounded-md border border-border-subtle bg-bg-raised px-3 text-sm font-medium text-text"
+      >
+        {label}
+        <span aria-hidden className="text-text-dim">
+          {open ? "−" : "+"}
+        </span>
+      </button>
+      <div id={`panel-${id}-body`} data-testid={`panel-${id}-body`} hidden={!open} className="mt-2">
+        {children}
+      </div>
+    </div>
   );
 }
 
@@ -122,6 +168,7 @@ export function Sheet({
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  useKeyboardInset(open);
   // Whether the press now ending began on the backdrop. The click that finishes
   // the press which OPENED the sheet (a long press) never did, so it must not dismiss.
   const pressBeganOnBackdrop = useRef(false);
@@ -165,7 +212,8 @@ export function Sheet({
         pressBeganOnBackdrop.current = false;
         if (dismiss) e.currentTarget.close();
       }}
-      className="m-0 mt-auto max-h-dvh w-full max-w-none overflow-y-auto overscroll-contain rounded-t-xl border border-border-subtle bg-bg p-0 text-text backdrop:bg-black/50"
+      style={{ marginBottom: "var(--kb-inset, 0px)", maxHeight: "calc(100dvh - var(--kb-inset, 0px))", paddingBottom: "var(--safe-bottom)", paddingLeft: "var(--safe-left)", paddingRight: "var(--safe-right)" }}
+      className="m-0 mt-auto w-full max-w-none overflow-y-auto overscroll-contain rounded-t-xl border border-border-subtle bg-bg p-0 text-text backdrop:bg-black/50"
     >
       {open ? children : null}
     </dialog>

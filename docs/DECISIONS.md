@@ -290,6 +290,7 @@ Each assertion below pinned a size the usability pass changed on purpose. None w
 - `rhythm-capture-height.spec.ts`: header `37` → `45` (the merged title row).
 - `techniques-layout.spec.ts`: strip `38.8` → `39`, chip `30.8` → `31` (rounding to the new tokens).
 - `grouping-queued-row.spec.ts`: `all synced` no longer renders, so the two waits became "no `N unsynced` text"; the Postgres poll is still the real check.
+- `click-running.spec.ts` and `click-every-ending.spec.ts`: each now calls `openCluster(page)` before reaching the click cluster's controls (the Capture link, the tempo and click buttons). The cluster is collapsed behind `panel-play-cluster` on a phone, so the control is not in the page until the button is pressed; the assertions on what the click does when running or ending are unchanged.
 
 ### Usability pass: floors and reach (spec 007, US2)
 
@@ -317,3 +318,44 @@ Each assertion below pinned a size the usability pass changed on purpose. None w
 - **Old specs moved (T061):** `click-bar-at-size`, `click-bar-fit`, `click-layout` (a fine pointer reads the 32px toolbar floor, touch stays 44; the follow chip sits in the open cluster, so `openCluster` first; the fit check's "touches" test only compares controls on the same row), `tempo-sheet-and-tempo` (`openTools` before the BPM field), `reading-helpers`, `reading-layout`, `reading-view`, `reading-sync`, `capture` (`openTools`/`openCluster`/`openArrange` after navigation). `songWorld` opens the arrange panel first.
 - **T061 finished:** `reading-helpers.columnTexts` and the in-page digit watchers in `reading-view` drop the bar-number label (a label above a column, not its content); `choose` opens the cluster on the play view; `reading-view`, `reading-sync` and `sync` call `openTools`/`openCluster` before reaching the control or BPM; `reading-view` uses `a[href$="/play"]:visible` (the header link is absent on touch); `reading-layout` INV-014 finds the carried chord by `.text-accent` (the row no longer truncates) and INV-036 ignores `data-column` ids and bar-number digits (they differ by pass). Product fix: the play view shows `ViewControl` only when the song has an arrangement (INV-007).
 - **US7 (reader):** `parse.ts` gains `joinedByQuality` (one line in `readsAsProse`), the `chords-joined` code and `looksJoined`, mapped in `failed`. Spec 004's probes still fail only the 19 recorded; F75 "apart from a staff" is 39 of 202 (was 43). `spec004-holds.test.ts` is timing-sensitive, so it runs as `npm run test:spec004`, not in `npm test` (it flaked other tests under load and the pre-commit hook). `e2e/import-flow` calls `openTools` before the density buttons (they moved into the tools panel, T044). The INV-028 mutation (accept `A7-D7` in `joinedByQuality`) is caught by `spec004-holds`, not by `paste-joined-chords`: those lines stay refused through another path.
+
+### Usability pass: amendments to earlier specs (spec 007, FR-064, FR-065)
+
+Each earlier requirement below carries an `Amended by spec 007` note on its own line; `npm run check:usability-amendments` pins that.
+
+| Spec | Requirement | Before | After |
+|---|---|---|---|
+| 003 | FR-020, SC-009, plan INV-013 | Six strings: at most one string out of view, swipe to reach | Four, five and six strings stay in view with a chord row and a bracket row; swipe is for seven strings or a shorter screen (FR-020 reworded exactly as 007 FR-064) |
+| 001 | FR-026 | Rows listed as header, chips, staff, status, chord form, controls, latch strip, neck | Same rows, grouped; toolbars 10 to 19px closer to the neck; still no page scroll |
+| 002 | SC-006 | "toolbar position unchanged" | Rows move up 10 to 19px and grow to the touch floor; chips still one line |
+| 004 | contracts/reader.md, INV-010 | Ordinary-line cost 43 of 202 | 39 of 202; hyphen-joined chords are refused as `chords-joined` |
+| 005 | FR-013 to FR-015, FR-026 | Marks 10.4px left of their notes; click bar always open | Marks 12px under their notes; bar is a cluster behind one 44px button |
+| 006 | FR-001 | View control always visible | In the tools panel (song page) and the cluster (play view, only when the song has an arrangement) |
+
+Deviations 1 to 19 of the plan that change an earlier decision are those above plus: light `--accent` `#b45309` → `#a74d08` (1); `PageHeader` one row everywhere (5); section name in the pass's head row (8); paste status above the box (10); `Tuning` in the tools panel (19); the hint `tap a column to insert after it` removed (15); a hidden scrollbar on a bar wider than a line (7).
+
+Pinned tests that moved with these (none deleted, none weakened): `baseline.json` (markup entries only), `capture-surface.spec.ts`, `rhythm-capture-height.spec.ts`, `techniques-layout.spec.ts`, `grouping-band.spec.ts`, `grouping-layout.spec.ts`, `grouping-controls.spec.ts`, `grouping-queued-row.spec.ts`, `click-bar-at-size.spec.ts`, `click-bar-fit.spec.ts`, `click-layout.spec.ts`, `click-bar.test.tsx`, `reading-view.spec.ts`, `reading-layout.spec.ts`, `reading-sync.spec.ts`, `reading-helpers.ts`, `variant-marks.spec.ts`, `tempo-sheet-and-tempo.spec.ts`, `rhythm-marks.spec.ts`, `rhythm-unknown-values.spec.ts`, `capture.spec.ts`, `sync.spec.ts`, `techniques-surfaces.spec.ts`, `grouping-surfaces.spec.ts`, `TabStaff.test.tsx`. Where one has not needed an edit, it is named here because the plan expected it might.
+
+Audit, before and after (375×667, production build): targets under 24px went from 7 on the song page to 0 and chord labels are no longer cut. Full figures: `specs/007-usability-pass/audit/before.txt`, `after.txt`, `outcomes.md`.
+
+### Usability pass: guards that fail by design (Deviation 12)
+
+`check:untouched`, `check:untouched-rhythm` and `check:untouched-reading` (guards for specs 004 to 006) report CHANGED on this branch because they name files this entry changes on purpose. None runs in CI. `check:untouched-usability` is the guard for this entry and is clean; its parse.ts check now treats a doc comment as belonging to the declaration it precedes.
+
+## 007 T118 — neck baseline height gets a fine-pointer figure
+
+`e2e/capture-surface.spec.ts` INV-011 failed on the desktop project by 23.98px. Cause: FR-023's fine-pointer frets (`--fret: 2rem`, 32px against 36px), six strings, 24px shorter. Not a layout defect. Before: one baseline, `NECK_HEIGHT_BASELINE_PX` = 238.390625. After: that figure stays for the coarse pointer (touch sizing unchanged); a fine pointer has `NECK_HEIGHT_BASELINE_FINE_PX` = 214.40625, picked by `(pointer: fine)`.
+
+## 007 T119 — inspector parity spec opens the tools panel before Download
+
+"inspector parity with the toolbar" (x6, desktop) timed out finding the Download button. The product is right: spec 007 moved export into the song page's tools panel. The spec's own `exportText` (a copy of the helper) did not call `openTools`. Added the call; all 42 runs pass on both projects. No product change.
+
+## 007 T120 — wrapped play view: one product fix, two stale expectations
+
+`e2e/reading-layout.spec.ts` INV-016 (play view frets, pass 1) and INV-017 failed on the play view, which wraps its staves (007).
+- **Product fix:** the wrapped staff was `position: relative`, so its caption anchored to the staff and sat 12px over the last line. A new `.tab-wrapped-body` carries the positioning and the gutter; the caption now anchors to the card, as it does unwrapped.
+- **Stale, amended:** INV-016's "gap between" and "row level" checks assumed one line. They now apply per line (a new line is a jump of more than 8px, or a part that starts below the last). INV-017's "card height holds across views" now covers the song page only: on a wrapped staff, notes and intervals cells are wider than frets and can need another line (play #0 at 375px: 248.7px in frets, 425.5px in notes). Holding height there would mean padding every column to the widest view, which costs the density FR-023 asks for.
+
+## 007 T121 — a double tap on Set no longer reaches the screen behind the sheet
+
+The second tap of a double tap on Set, 40 to 160ms after the first, landed after the sheet had closed and added a column. Fixed in `TempoControl.tsx`: when Set closes the sheet, presses are eaten at the window for 300ms (`shieldPresses`), except on the tempo control and inside a sheet, so reopening the sheet is never refused. The test is unchanged. The sheet component itself is untouched, so no other sheet gains the delay.

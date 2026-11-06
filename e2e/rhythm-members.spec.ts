@@ -1,3 +1,4 @@
+import { openCluster } from "./usability-helpers";
 /**
  * The members the first pass of probes left: INV-006 a chord symbol x {4, 5, 6 strings}; INV-016 the
  * play view, idle and each state the click runs in, x {closed with no set, set}; INV-001 the paste
@@ -69,7 +70,10 @@ for (const s of STATES) {
       const { playUrl } = await seed(page, cols(...s.list), { bpm: 60 });
       await page.goto(playUrl);
       await expect(page.getByTestId("click-start")).toBeEnabled();
-      if (s.follow === false) await page.getByTestId("click-follow").click();
+      if (s.follow === false) {
+        await openCluster(page);
+        await page.getByTestId("click-follow").click();
+      }
       const url = page.url();
       const running = s.words !== null || s.slow === true;
       if (running) {

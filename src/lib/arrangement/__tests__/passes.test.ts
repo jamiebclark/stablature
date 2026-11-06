@@ -45,6 +45,7 @@ describe("drawnPasses", () => {
       fromBar,
       toBar,
       sections,
+      visits: [],
     });
     const steps = [
       step("A", null, null, []),

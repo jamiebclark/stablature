@@ -1,3 +1,4 @@
+import { openTools } from "./usability-helpers";
 /**
  * INV-010, INV-011, INV-012, and the surface half of INV-001. On every reading surface: each column's
  * mark against the stored value, inside its column, no column widened; six distinct texts; contrast
@@ -70,7 +71,10 @@ for (const surface of ["song expanded", "song compact", "play"] as const) {
     const go = async () => {
       await page.goto(surface === "play" ? playUrl : songUrl);
       await expect(page.getByTestId("tab-column").first()).toBeVisible();
-      if (surface === "song compact") await page.getByRole("button", { name: "compact" }).click();
+      if (surface === "song compact") {
+        await openTools(page);
+        await page.getByRole("button", { name: "compact" }).click();
+      }
     };
     await go();
     const want = expected(density);

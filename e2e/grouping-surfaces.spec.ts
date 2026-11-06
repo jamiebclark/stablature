@@ -7,6 +7,7 @@
  * line and on a gap segment; no opacity below 1 on the line or its ancestors.
  */
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { openTools } from "./usability-helpers";
 import {
   addNotes,
   brackets,
@@ -46,7 +47,9 @@ const alignment = (page: Page) =>
     .getByTestId("tab-staff")
     .first()
     .evaluate((staff) => {
-      const labels = [...staff.querySelectorAll("[aria-hidden] > .tab-cell")];
+      const labels = [...staff.querySelectorAll(
+          "[aria-hidden] > .tab-cell, .tab-gutter-block:first-child > .tab-cell",
+        )];
       const cells = [
         ...staff.querySelector('[data-testid="tab-column"]')!.querySelectorAll(".tab-cell"),
       ];
@@ -72,6 +75,7 @@ test.describe("INV-022", () => {
         await expectSurface(page, kind);
 
         await page.goto(songUrl);
+        await openTools(page);
         await page.getByRole("button", { name: "expanded", exact: true }).click();
         await expectSurface(page, kind);
         await page.getByRole("button", { name: "compact", exact: true }).click();
@@ -123,6 +127,7 @@ test.describe("INV-023", () => {
         expect(await expectUnbroken(page.locator(".tab-bracket"))).toBe(10);
 
         await page.goto(songUrl);
+        await openTools(page);
         await page.getByRole("button", { name: "compact", exact: true }).click();
         await expect(brackets(page)).toHaveCount(1);
         await expect(page.locator(".tab-bracket-label")).toHaveCount(kind === "plain" ? 0 : 1);

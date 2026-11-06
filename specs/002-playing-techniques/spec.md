@@ -223,7 +223,7 @@ The capturer has stack armed with the cursor in the middle of a part, and pastes
 - **SC-003**: Each of the ten techniques can be captured through the interface, and appears with the same glyph in the same position on the staff and in the text export, in both densities.
 - **SC-004**: For every part with no techniques, the text export is character-for-character identical to today, and every existing export test passes unedited.
 - **SC-005**: Every row of every exported part is the same length, whichever techniques it contains.
-- **SC-006**: On a 375×667 viewport in both themes, five chips each show their whole label on one line, with the strip height, the neck height and the toolbar position unchanged from before.
+- **SC-006**: On a 375×667 viewport in both themes, five chips each show their whole label on one line, with the strip height, the neck height and the toolbar position unchanged from before. *(Amended by spec 007: "toolbar position unchanged" no longer holds. Rows moved up by 10 to 19px (status y=217 → at most 207; stable row y=251 → 232 or less) and rows grew to the 44px touch floor. The chips still show their whole label on one line.)*
 - **SC-007**: On a 375×667 viewport, a column with every string played has every decoration toggle reachable and the sheet can be closed.
 - **SC-008**: A reader looking at the staff at actual size on a phone, in both themes, can tell all four connectors apart and tell a tap from a hammer-on, confirmed by a person-level browser check.
 - **SC-009**: An armed latch survives a mid-part paste every time, and disarms every time the cursor's column is deleted from elsewhere.

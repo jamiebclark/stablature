@@ -1,0 +1,484 @@
+
+## arrangement-entry
+- 375x667: page 375x1894; targets 43, under24 7, 24-44 35, topHalf 13, beyondFold 18
+    under24: Sign in 36.1x16 | Band 43.8x16 | main riff 51.4x20 | the long bridge section 143.5x20 | name this part 89.1x20 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Play view 105.9x38 | Capture 74.2x38 | Beats per minute 75x38 | Copy text 108x38 | Download 111.8x38 | expanded 72.2x28 | compact 65.7x28 | frets 44.4x28 | notes 49.3x28 | intervals 64.1x28 | A×2last: C 43.2x48.4 | B 26.4x48.4 | Done 58x36 | One fewer repeat 29.6x32 | One more repeat 29.6x32 | sameC 71x35 | Part of it 81.1x38 | Move later 38.1x38 | Remove 75x38 | Add part A to the arrangement 50.1x38 | Add part B to the arrangement 50.1x38 | Section name 185x38 | + section 84.9x38
+    clipped: Em7 (ellipsis +4) | Cmaj7 (ellipsis +14) | Am7 (ellipsis +5) | Dsus4 (ellipsis +12) | Cmaj7 (ellipsis +5)
+    wrapped: Band x2 | Play view x2 | Copy text x2 | Download x2 | + variant x2 | Edit x2 | Delete part B x2 | Delete part C x2
+    inputs: Beats per minute 14px bottom 251 | sameC 14px bottom 549 UNDER-KB | Section name 14px bottom 705 UNDER-KB | Cue 14px bottom 751 UNDER-KB (kb top 407)
+    staves: 287/292 287/300 287/292
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 7: 6 unsynced 12px 3.46 | 3 10.4px 3.46 | variant of A 12px 3.46 | A 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 7: 6 unsynced 12px 3.42 | 3 10.4px 3.42 | variant of A 12px 3.42 | A 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+- 390x844: page 390x1844; targets 43, under24 7, 24-44 35, topHalf 16, beyondFold 9
+    under24: Sign in 36.1x16 | Band 43.8x16 | main riff 51.4x20 | the long bridge section 143.5x20 | name this part 89.1x20 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Play view 105.9x38 | Capture 74.2x38 | Beats per minute 75x38 | Copy text 108x38 | Download 111.8x38 | expanded 72.2x28 | compact 65.7x28 | frets 44.4x28 | notes 49.3x28 | intervals 64.1x28 | A×2last: C 43.2x48.4 | B 26.4x48.4 | Done 58x36 | One fewer repeat 29.6x32 | One more repeat 29.6x32 | sameC 71x35 | Part of it 81.1x38 | Move later 38.1x38 | Remove 75x38 | Add part A to the arrangement 50.1x38 | Add part B to the arrangement 50.1x38 | Section name 185x38 | + section 84.9x38
+    clipped: Em7 (ellipsis +4) | Cmaj7 (ellipsis +14) | Am7 (ellipsis +5) | Dsus4 (ellipsis +12) | Cmaj7 (ellipsis +5)
+    wrapped: Band x2 | Play view x2 | + variant x2 | Edit x2 | Delete part A x2
+    inputs: Beats per minute 14px bottom 251 | sameC 14px bottom 499 | Section name 14px bottom 655 UNDER-KB | Cue 14px bottom 701 UNDER-KB (kb top 508)
+    staves: 302/302 302/302 302/302
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 7: 6 unsynced 12px 3.46 | 3 10.4px 3.46 | variant of A 12px 3.46 | A 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 7: 6 unsynced 12px 3.42 | 3 10.4px 3.42 | variant of A 12px 3.42 | A 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+
+## band-songs
+- 375x667: page 375x667; targets 10, under24 4, 24-44 6, topHalf 6, beyondFold 0
+    under24: Sign in 36.1x16 | Bands 48.9x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Tunings 96.3x38 | Song title 249.9x38 | Invite a bandmate 161.7x38 | A very long song title that a band really would  222.8x24 | Capture 74.2x36
+    clipped: A very long song title that a  (ellipsis +142)
+    wrapped: Bands x2 | Tunings x2 | Invite a bandmate x2
+    inputs: Song title 14px bottom 251 (kb top 407)
+    lowContrast dark 4: 3 unsynced 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 4: 3 unsynced 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+- 390x844: page 390x844; targets 10, under24 4, 24-44 6, topHalf 8, beyondFold 0
+    under24: Sign in 36.1x16 | Bands 48.9x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Tunings 96.3x38 | Song title 264.9x38 | Invite a bandmate 161.7x38 | A very long song title that a band really would  237.8x24 | Capture 74.2x36
+    clipped: A very long song title that a  (ellipsis +127)
+    wrapped: Bands x2 | Tunings x2 | Invite a bandmate x2
+    inputs: Song title 14px bottom 251 (kb top 508)
+    lowContrast dark 4: 3 unsynced 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 4: 3 unsynced 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+
+## bands-empty
+- 375x667: page 375x667; targets 5, under24 3, 24-44 2, topHalf 3, beyondFold 0
+    under24: Sign in 36.1x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Band name 248.7x38
+    inputs: Band name 14px bottom 155 (kb top 407)
+    lowContrast dark 4: Name your band above to  12px 3.74 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 4: Name your band above to  12px 3.3 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+- 390x844: page 390x844; targets 5, under24 3, 24-44 2, topHalf 3, beyondFold 0
+    under24: Sign in 36.1x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Band name 263.7x38
+    inputs: Band name 14px bottom 155 (kb top 508)
+    lowContrast dark 4: Name your band above to  12px 3.74 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 4: Name your band above to  12px 3.3 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+
+## bands-list
+- 375x667: page 375x667; targets 6, under24 3, 24-44 2, topHalf 4, beyondFold 0
+    under24: Sign in 36.1x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Band name 248.7x38
+    inputs: Band name 14px bottom 155 (kb top 407)
+    lowContrast dark 5: 3 unsynced 12px 3.46 | the-hollow-crown-rehears 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 5: 3 unsynced 12px 3.42 | the-hollow-crown-rehears 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+- 390x844: page 390x844; targets 6, under24 3, 24-44 2, topHalf 6, beyondFold 0
+    under24: Sign in 36.1x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Band name 263.7x38
+    inputs: Band name 14px bottom 155 (kb top 508)
+    lowContrast dark 5: 3 unsynced 12px 3.46 | the-hollow-crown-rehears 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 5: 3 unsynced 12px 3.42 | the-hollow-crown-rehears 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+
+## capture-4-rest
+- 375x667: page 375x667; targets 20, under24 3, 24-44 17, topHalf 6, beyondFold 0
+    under24: ← Dirge 50.6x20 | ⇤ start 46.7x20.8 | end ⇥ 43.5x20.8
+    24-44: Tempo: not given 53.8x32.8 | A 28.4x28 | Add a part 63.8x36 | space 83.6x38 | Barline 44x36 | select 83.2x38 | Delete the last column 41x33 | Triplet 44x36 | Repeat one more time 29.6x32 | ×4 43.8x38 | chord symbol 112.5x38 | Open column details 43x44 | stack notes onto the marked column 70.2x30.8 | hammer-on 70.2x30.8 | pull-off 70.2x30.8 | slide up 70.2x30.8 | slide down 70.2x30.8
+    wrapped: select x2 | paste x2
+    staves: 329/329
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 48: 13 unsynced 11.2px 3.74 | adding at the end 11.2px 3.74 | 0 9.6px 3.82 | 1 9.6px 3.82 | 2 9.6px 3.82 | 4 9.6px 3.82 | 6 9.6px 3.82 | 8 9.6px 3.82
+    lowContrast light 29: 13 unsynced 11.2px 3.3 | adding at the end 11.2px 3.3 | 0 9.6px 3.02 | 1 9.6px 3.02 | 2 9.6px 3.02 | 4 9.6px 3.02 | 6 9.6px 3.02 | 8 9.6px 3.02
+- 390x844: page 390x844; targets 20, under24 3, 24-44 17, topHalf 4, beyondFold 0
+    under24: ← Dirge 50.6x20 | ⇤ start 46.7x20.8 | end ⇥ 43.5x20.8
+    24-44: Tempo: not given 53.8x32.8 | A 28.4x28 | Add a part 63.8x36 | space 83.6x38 | Barline 44x36 | select 83.2x38 | Delete the last column 41x33 | Triplet 44x36 | Repeat one more time 29.6x32 | ×4 43.8x38 | chord symbol 112.5x38 | Open column details 43x44 | stack notes onto the marked column 73.2x30.8 | hammer-on 73.2x30.8 | pull-off 73.2x30.8 | slide up 73.2x30.8 | slide down 73.2x30.8
+    wrapped: space x2 | select x2 | paste x2 | Triplet x2
+    staves: 344/344
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 48: 13 unsynced 11.2px 3.74 | adding at the end 11.2px 3.74 | 0 9.6px 3.82 | 1 9.6px 3.82 | 2 9.6px 3.82 | 4 9.6px 3.82 | 6 9.6px 3.82 | 8 9.6px 3.82
+    lowContrast light 29: 13 unsynced 11.2px 3.3 | adding at the end 11.2px 3.3 | 0 9.6px 3.02 | 1 9.6px 3.02 | 2 9.6px 3.02 | 4 9.6px 3.02 | 6 9.6px 3.02 | 8 9.6px 3.02
+
+## capture-5-rest
+- 375x667: page 375x667; targets 20, under24 3, 24-44 17, topHalf 10, beyondFold 0
+    under24: ← Dirge 50.6x20 | ⇤ start 46.7x20.8 | end ⇥ 43.5x20.8
+    24-44: Tempo: not given 53.8x32.8 | A 28.4x28 | Add a part 63.8x36 | space 83.6x38 | Barline 44x36 | select 83.2x38 | Delete the last column 41x33 | Triplet 44x36 | Repeat one more time 29.6x32 | ×4 43.8x38 | chord symbol 112.5x38 | Open column details 43x44 | stack notes onto the marked column 70.2x30.8 | hammer-on 70.2x30.8 | pull-off 70.2x30.8 | slide up 70.2x30.8 | slide down 70.2x30.8
+    wrapped: select x2 | paste x2
+    staves: 329/329
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 48: 13 unsynced 11.2px 3.74 | adding at the end 11.2px 3.74 | 0 9.6px 3.82 | 1 9.6px 3.82 | 2 9.6px 3.82 | 4 9.6px 3.82 | 6 9.6px 3.82 | 8 9.6px 3.82
+    lowContrast light 29: 13 unsynced 11.2px 3.3 | adding at the end 11.2px 3.3 | 0 9.6px 3.02 | 1 9.6px 3.02 | 2 9.6px 3.02 | 4 9.6px 3.02 | 6 9.6px 3.02 | 8 9.6px 3.02
+- 390x844: page 390x844; targets 20, under24 3, 24-44 17, topHalf 4, beyondFold 0
+    under24: ← Dirge 50.6x20 | ⇤ start 46.7x20.8 | end ⇥ 43.5x20.8
+    24-44: Tempo: not given 53.8x32.8 | A 28.4x28 | Add a part 63.8x36 | space 83.6x38 | Barline 44x36 | select 83.2x38 | Delete the last column 41x33 | Triplet 44x36 | Repeat one more time 29.6x32 | ×4 43.8x38 | chord symbol 112.5x38 | Open column details 43x44 | stack notes onto the marked column 73.2x30.8 | hammer-on 73.2x30.8 | pull-off 73.2x30.8 | slide up 73.2x30.8 | slide down 73.2x30.8
+    wrapped: space x2 | select x2 | paste x2 | Triplet x2
+    staves: 344/344
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 48: 13 unsynced 11.2px 3.74 | adding at the end 11.2px 3.74 | 0 9.6px 3.82 | 1 9.6px 3.82 | 2 9.6px 3.82 | 4 9.6px 3.82 | 6 9.6px 3.82 | 8 9.6px 3.82
+    lowContrast light 29: 13 unsynced 11.2px 3.3 | adding at the end 11.2px 3.3 | 0 9.6px 3.02 | 1 9.6px 3.02 | 2 9.6px 3.02 | 4 9.6px 3.02 | 6 9.6px 3.02 | 8 9.6px 3.02
+
+## capture-6-rest
+- 375x667: page 375x667; targets 20, under24 3, 24-44 17, topHalf 15, beyondFold 0
+    under24: ← Dirge 50.6x20 | ⇤ start 46.7x20.8 | end ⇥ 43.5x20.8
+    24-44: Tempo: not given 53.8x32.8 | A 28.4x28 | Add a part 63.8x36 | space 83.6x38 | Barline 44x36 | select 83.2x38 | Delete the last column 41x33 | Triplet 44x36 | Repeat one more time 29.6x32 | ×4 43.8x38 | chord symbol 112.5x38 | Open column details 43x44 | stack notes onto the marked column 70.2x30.8 | hammer-on 70.2x30.8 | pull-off 70.2x30.8 | slide up 70.2x30.8 | slide down 70.2x30.8
+    wrapped: select x2 | paste x2
+    staves: 329/329
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 49: 13 unsynced 11.2px 3.74 | adding at the end 11.2px 3.74 | 0 9.6px 3.82 | 1 9.6px 3.82 | 2 9.6px 3.82 | 4 9.6px 3.82 | 6 9.6px 3.82 | 8 9.6px 3.82
+    lowContrast light 29: 13 unsynced 11.2px 3.3 | adding at the end 11.2px 3.3 | 0 9.6px 3.02 | 1 9.6px 3.02 | 2 9.6px 3.02 | 4 9.6px 3.02 | 6 9.6px 3.02 | 8 9.6px 3.02
+- 390x844: page 390x844; targets 20, under24 3, 24-44 17, topHalf 6, beyondFold 0
+    under24: ← Dirge 50.6x20 | ⇤ start 46.7x20.8 | end ⇥ 43.5x20.8
+    24-44: Tempo: not given 53.8x32.8 | A 28.4x28 | Add a part 63.8x36 | space 83.6x38 | Barline 44x36 | select 83.2x38 | Delete the last column 41x33 | Triplet 44x36 | Repeat one more time 29.6x32 | ×4 43.8x38 | chord symbol 112.5x38 | Open column details 43x44 | stack notes onto the marked column 73.2x30.8 | hammer-on 73.2x30.8 | pull-off 73.2x30.8 | slide up 73.2x30.8 | slide down 73.2x30.8
+    wrapped: space x2 | select x2 | paste x2 | Triplet x2
+    staves: 344/344
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 49: 13 unsynced 11.2px 3.74 | adding at the end 11.2px 3.74 | 0 9.6px 3.82 | 1 9.6px 3.82 | 2 9.6px 3.82 | 4 9.6px 3.82 | 6 9.6px 3.82 | 8 9.6px 3.82
+    lowContrast light 29: 13 unsynced 11.2px 3.3 | adding at the end 11.2px 3.3 | 0 9.6px 3.02 | 1 9.6px 3.02 | 2 9.6px 3.02 | 4 9.6px 3.02 | 6 9.6px 3.02 | 8 9.6px 3.02
+
+## capture-chord-form
+- 375x667: page 375x667; targets 23, under24 3, 24-44 20, topHalf 18, beyondFold 0
+    under24: ← Dirge 50.6x20 | ⇤ start 46.7x20.8 | end ⇥ 43.5x20.8
+    24-44: Tempo: not given 53.8x32.8 | A 28.4x28 | Add a part 63.8x36 | Chord 225x38 | Set 44.1x38 | Cancel 65.9x38 | space 83.6x38 | Barline 44x36 | select 83.2x38 | Delete the marked column 41x33 | Triplet 44x36 | Repeat one more time 29.6x32 | ×4 43.8x38 | chord symbol 112.5x38 | Open column details 43x44 | stack notes onto the marked column 70.2x30.8 | hammer-on 70.2x30.8 | pull-off 70.2x30.8 | slide up 70.2x30.8 | slide down 70.2x30.8
+    wrapped: select x2 | paste x2
+    inputs: Chord 14px bottom 230 (kb top 407)
+    staves: 329/329
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 48: 13 unsynced 11.2px 3.74 | 0 9.6px 3.82 | 1 9.6px 3.82 | 2 9.6px 3.82 | 4 9.6px 3.82 | 6 9.6px 3.82 | 8 9.6px 3.82 | 10 9.6px 3.82
+    lowContrast light 28: 13 unsynced 11.2px 3.3 | 0 9.6px 3.02 | 1 9.6px 3.02 | 2 9.6px 3.02 | 4 9.6px 3.02 | 6 9.6px 3.02 | 8 9.6px 3.02 | 10 9.6px 3.02
+- 390x844: page 390x844; targets 23, under24 3, 24-44 20, topHalf 9, beyondFold 0
+    under24: ← Dirge 50.6x20 | ⇤ start 46.7x20.8 | end ⇥ 43.5x20.8
+    24-44: Tempo: not given 53.8x32.8 | A 28.4x28 | Add a part 63.8x36 | Chord 240x38 | Set 44.1x38 | Cancel 65.9x38 | space 83.6x38 | Barline 44x36 | select 83.2x38 | Delete the marked column 41x33 | Triplet 44x36 | Repeat one more time 29.6x32 | ×4 43.8x38 | chord symbol 112.5x38 | Open column details 43x44 | stack notes onto the marked column 73.2x30.8 | hammer-on 73.2x30.8 | pull-off 73.2x30.8 | slide up 73.2x30.8 | slide down 73.2x30.8
+    wrapped: space x2 | select x2 | paste x2 | Triplet x2
+    inputs: Chord 14px bottom 407 (kb top 508)
+    staves: 344/344
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 48: 13 unsynced 11.2px 3.74 | 0 9.6px 3.82 | 1 9.6px 3.82 | 2 9.6px 3.82 | 4 9.6px 3.82 | 6 9.6px 3.82 | 8 9.6px 3.82 | 10 9.6px 3.82
+    lowContrast light 28: 13 unsynced 11.2px 3.3 | 0 9.6px 3.02 | 1 9.6px 3.02 | 2 9.6px 3.02 | 4 9.6px 3.02 | 6 9.6px 3.02 | 8 9.6px 3.02 | 10 9.6px 3.02
+
+## capture-selecting
+- 375x667: page 375x667; targets 13, under24 1, 24-44 12, topHalf 13, beyondFold 0
+    under24: ← Dirge 50.6x20
+    24-44: Tempo: not given 53.8x32.8 | A 28.4x28 | Add a part 63.8x36 | space 83.6x38 | Barline 44x36 | Delete the marked column 41x33 | copy 54.1x36 | cut 45x36 | delete 61.8x36 | Make a tuplet of 4 28x36 | Group with no number 28x36 | cancel 42.1x36
+    wrapped: select x2 | paste x2 | copy x2 | cut x2 | delete x2
+    staves: 329/329
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 48: 13 unsynced 11.2px 3.74 | 0 9.6px 3.82 | 1 9.6px 3.82 | 2 9.6px 3.82 | 4 9.6px 3.82 | 6 9.6px 3.82 | 8 9.6px 3.82 | 10 9.6px 3.82
+    lowContrast light 28: 13 unsynced 11.2px 3.3 | 0 9.6px 3.02 | 1 9.6px 3.02 | 2 9.6px 3.02 | 4 9.6px 3.02 | 6 9.6px 3.02 | 8 9.6px 3.02 | 10 9.6px 3.02
+- 390x844: page 390x844; targets 13, under24 1, 24-44 12, topHalf 4, beyondFold 0
+    under24: ← Dirge 50.6x20
+    24-44: Tempo: not given 53.8x32.8 | A 28.4x28 | Add a part 63.8x36 | space 83.6x38 | Barline 44x36 | Delete the marked column 41x33 | copy 54.1x36 | cut 45x36 | delete 61.8x36 | Make a tuplet of 4 28x36 | Group with no number 28x36 | cancel 42.1x36
+    wrapped: space x2 | select x2 | paste x2 | Make a tuplet of 4 x2
+    staves: 344/344
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 48: 13 unsynced 11.2px 3.74 | 0 9.6px 3.82 | 1 9.6px 3.82 | 2 9.6px 3.82 | 4 9.6px 3.82 | 6 9.6px 3.82 | 8 9.6px 3.82 | 10 9.6px 3.82
+    lowContrast light 28: 13 unsynced 11.2px 3.3 | 0 9.6px 3.02 | 1 9.6px 3.02 | 2 9.6px 3.02 | 4 9.6px 3.02 | 6 9.6px 3.02 | 8 9.6px 3.02 | 10 9.6px 3.02
+
+## inspector
+- 375x667: page 375x667; targets 11, under24 0, 24-44 5, topHalf 0, beyondFold 0
+    24-44: close 51.5x32 | repeat count: one fewer 33.6x36 | repeat count: one more 33.6x36 | chord symbol 185x38 | delete column 63.4x36
+    wrapped: select x2 | paste x2
+    inputs: chord symbol 14px bottom 475 UNDER-KB (kb top 407)
+    staves: 329/329
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 48: 13 unsynced 11.2px 3.74 | 0 9.6px 3.82 | 1 9.6px 3.82 | 2 9.6px 3.82 | 4 9.6px 3.82 | 6 9.6px 3.82 | 8 9.6px 3.82 | 10 9.6px 3.82
+    lowContrast light 28: 13 unsynced 11.2px 3.3 | 0 9.6px 3.02 | 1 9.6px 3.02 | 2 9.6px 3.02 | 4 9.6px 3.02 | 6 9.6px 3.02 | 8 9.6px 3.02 | 10 9.6px 3.02
+- 390x844: page 390x844; targets 11, under24 0, 24-44 5, topHalf 0, beyondFold 0
+    24-44: close 51.5x32 | repeat count: one fewer 33.6x36 | repeat count: one more 33.6x36 | chord symbol 185x38 | delete column 63.4x36
+    wrapped: space x2 | select x2 | paste x2 | Triplet x2
+    inputs: chord symbol 14px bottom 652 UNDER-KB (kb top 508)
+    staves: 344/344
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 48: 13 unsynced 11.2px 3.74 | 0 9.6px 3.82 | 1 9.6px 3.82 | 2 9.6px 3.82 | 4 9.6px 3.82 | 6 9.6px 3.82 | 8 9.6px 3.82 | 10 9.6px 3.82
+    lowContrast light 28: 13 unsynced 11.2px 3.3 | 0 9.6px 3.02 | 1 9.6px 3.02 | 2 9.6px 3.02 | 4 9.6px 3.02 | 6 9.6px 3.02 | 8 9.6px 3.02 | 10 9.6px 3.02
+
+## join
+- 375x667: page 375x667; targets 6, under24 3, 24-44 3, topHalf 4, beyondFold 0
+    under24: Sign in 36.1x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Sign in 309x36
+    lowContrast dark 3: stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 3: stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+- 390x844: page 390x844; targets 6, under24 3, 24-44 3, topHalf 6, beyondFold 0
+    under24: Sign in 36.1x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Sign in 318x36
+    lowContrast dark 3: stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 3: stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+
+## offline
+- 375x667: page 375x667; targets 5, under24 4, 24-44 1, topHalf 3, beyondFold 0
+    under24: Sign in 36.1x16 | Back to your bands 118.3x19 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24
+    lowContrast dark 3: stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 3: stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+- 390x844: page 390x844; targets 5, under24 4, 24-44 1, topHalf 5, beyondFold 0
+    under24: Sign in 36.1x16 | Back to your bands 118.3x19 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24
+    lowContrast dark 3: stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 3: stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+
+## paste-refused
+- 375x667: page 375x2244; targets 38, under24 7, 24-44 29, topHalf 13, beyondFold 15
+    under24: Sign in 36.1x16 | Band 43.8x16 | main riff 51.4x20 | the long bridge section 143.5x20 | name this part 89.1x20 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Play view 105.9x38 | Capture 74.2x38 | Beats per minute 75x38 | Copy text 108x38 | Download 111.8x38 | expanded 72.2x28 | compact 65.7x28 | frets 44.4x28 | notes 49.3x28 | intervals 64.1x28 | A×2last: C 43.2x48.4 | B 26.4x48.4 | Add part A to the arrangement 50.1x38 | Add part B to the arrangement 50.1x38 | Section name 185x38 | + section 84.9x38 | Cue 185x38 | Paste tab 84.2x38 | + part 65.8x38 | Cancel 67.9x38 | + variant 104.1x38 | Edit 71.4x38 | Delete part A 86x38
+    clipped: Em7 (ellipsis +4) | Cmaj7 (ellipsis +14) | Am7 (ellipsis +5) | Dsus4 (ellipsis +12) | Cmaj7 (ellipsis +5)
+    wrapped: Band x2 | Play view x2 | Copy text x2 | Download x2 | + variant x2 | Edit x2 | Delete part A x2
+    inputs: Beats per minute 14px bottom -117 | Section name 14px bottom 171 | Cue 14px bottom 217 | Tab text 16px bottom 522 UNDER-KB (kb top 407)
+    staves: 287/292 287/300 287/292
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 7: 6 unsynced 12px 3.46 | 3 10.4px 3.46 | variant of A 12px 3.46 | A 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 7: 6 unsynced 12px 3.42 | 3 10.4px 3.42 | variant of A 12px 3.42 | A 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+- 390x844: page 390x2174; targets 38, under24 7, 24-44 29, topHalf 16, beyondFold 14
+    under24: Sign in 36.1x16 | Band 43.8x16 | main riff 51.4x20 | the long bridge section 143.5x20 | name this part 89.1x20 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Play view 105.9x38 | Capture 74.2x38 | Beats per minute 75x38 | Copy text 108x38 | Download 111.8x38 | expanded 72.2x28 | compact 65.7x28 | frets 44.4x28 | notes 49.3x28 | intervals 64.1x28 | A×2last: C 43.2x48.4 | B 26.4x48.4 | Add part A to the arrangement 50.1x38 | Add part B to the arrangement 50.1x38 | Section name 185x38 | + section 84.9x38 | Cue 185x38 | Paste tab 84.2x38 | + part 65.8x38 | Cancel 67.9x38 | + variant 104.1x38 | Edit 71.4x38 | Delete part A 86x38
+    clipped: Em7 (ellipsis +4) | Cmaj7 (ellipsis +14) | Am7 (ellipsis +5) | Dsus4 (ellipsis +12) | Cmaj7 (ellipsis +5)
+    wrapped: Band x2 | Play view x2 | + variant x2 | Edit x2 | Delete part B x2 | Delete part C x2
+    inputs: Beats per minute 14px bottom 251 | Section name 14px bottom 489 | Cue 14px bottom 535 UNDER-KB | Tab text 16px bottom 840 UNDER-KB (kb top 508)
+    staves: 302/302 302/302 302/302
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 7: 6 unsynced 12px 3.46 | 3 10.4px 3.46 | variant of A 12px 3.46 | A 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 7: 6 unsynced 12px 3.42 | 3 10.4px 3.42 | variant of A 12px 3.42 | A 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+
+## play
+- 375x667: page 375x1422; targets 11, under24 4, 24-44 5, topHalf 7, beyondFold 2
+    under24: Sign in 36.1x16 | Song 44.3x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Capture 76.2x38 | frets 44.4x28 | notes 49.3x28 | intervals 64.1x28
+    clipped: Em7 (ellipsis +4) | Cmaj7 (ellipsis +14) | Am7 (ellipsis +5) | Dsus4 (ellipsis +12) | Cmaj7 (ellipsis +5)
+    wrapped: Song x2
+    staves: 295/295 295/295 295/300 295/295
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 9: 6 unsynced 12px 3.46 | pass 1 of 2 12px 3.46 | main riff 12px 3.46 | 3 10.4px 3.46 | pass 2 of 2 12px 3.46 | the long bridge section 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74
+    lowContrast light 9: 6 unsynced 12px 3.42 | pass 1 of 2 12px 3.42 | main riff 12px 3.42 | 3 10.4px 3.42 | pass 2 of 2 12px 3.42 | the long bridge section 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3
+- 390x844: page 390x1422; targets 11, under24 4, 24-44 5, topHalf 7, beyondFold 2
+    under24: Sign in 36.1x16 | Song 44.3x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Capture 76.2x38 | frets 44.4x28 | notes 49.3x28 | intervals 64.1x28
+    clipped: Em7 (ellipsis +4) | Cmaj7 (ellipsis +14) | Am7 (ellipsis +5) | Dsus4 (ellipsis +12) | Cmaj7 (ellipsis +5)
+    wrapped: Song x2
+    staves: 310/310 310/310 310/310 310/310
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 9: 6 unsynced 12px 3.46 | pass 1 of 2 12px 3.46 | main riff 12px 3.46 | 3 10.4px 3.46 | pass 2 of 2 12px 3.46 | the long bridge section 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74
+    lowContrast light 9: 6 unsynced 12px 3.42 | pass 1 of 2 12px 3.42 | main riff 12px 3.42 | 3 10.4px 3.42 | pass 2 of 2 12px 3.42 | the long bridge section 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3
+
+## privacy
+- 375x667: page 375x2415; targets 5, under24 4, 24-44 1, topHalf 2, beyondFold 3
+    under24: Sign in 36.1x16 | the terms 58.8x19 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24
+    lowContrast dark 4: Last updated 2 November  12px 3.74 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 4: Last updated 2 November  12px 3.3 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+- 390x844: page 390x2392; targets 5, under24 3, 24-44 2, topHalf 2, beyondFold 3
+    under24: Sign in 36.1x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | the terms 345.9x41.8
+    wrapped: the terms x2
+    lowContrast dark 4: Last updated 2 November  12px 3.74 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 4: Last updated 2 November  12px 3.3 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+
+## sign-in
+- 375x667: page 375x667; targets 8, under24 4, 24-44 4, topHalf 4, beyondFold 0
+    under24: Sign in 36.1x16 | Create one 57.7x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | input 309x38 | Sign in 309x36
+    inputs:  14px bottom 252 |  14px bottom 322 (kb top 407)
+    lowContrast dark 3: stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 3: stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+- 390x844: page 390x844; targets 8, under24 4, 24-44 4, topHalf 6, beyondFold 0
+    under24: Sign in 36.1x16 | Create one 57.7x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | input 318x38 | Sign in 318x36
+    inputs:  14px bottom 252 |  14px bottom 322 (kb top 508)
+    lowContrast dark 3: stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 3: stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+
+## sign-up
+- 375x667: page 375x686; targets 11, under24 6, 24-44 5, topHalf 4, beyondFold 0
+    under24: Sign in 36.1x16 | what is stored 73.9x16 | the terms 50.4x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | input 309x38 | Create account 309x36
+    inputs:  14px bottom 252 |  14px bottom 322 |  14px bottom 392 (kb top 407)
+    lowContrast dark 4: Creating an account mean 12px 3.74 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 4: Creating an account mean 12px 3.3 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+- 390x844: page 390x844; targets 11, under24 6, 24-44 5, topHalf 5, beyondFold 0
+    under24: Sign in 36.1x16 | what is stored 73.9x16 | the terms 50.4x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | input 318x38 | Create account 318x36
+    inputs:  14px bottom 252 |  14px bottom 322 |  14px bottom 392 (kb top 508)
+    lowContrast dark 4: Creating an account mean 12px 3.74 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 4: Creating an account mean 12px 3.3 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+
+## song
+- 375x667: page 375x1728; targets 36, under24 7, 24-44 28, topHalf 13, beyondFold 13
+    under24: Sign in 36.1x16 | Band 43.8x16 | main riff 51.4x20 | the long bridge section 143.5x20 | name this part 89.1x20 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Play view 105.9x38 | Capture 74.2x38 | Beats per minute 75x38 | Copy text 108x38 | Download 111.8x38 | expanded 72.2x28 | compact 65.7x28 | frets 44.4x28 | notes 49.3x28 | intervals 64.1x28 | A×2last: C 43.2x48.4 | B 26.4x48.4 | Add part A to the arrangement 50.1x38 | Add part B to the arrangement 50.1x38 | Section name 185x38 | + section 84.9x38 | Cue 185x38 | Paste tab 84.2x38 | + part 65.8x38 | + variant 104.1x38 | Edit 71.4x38 | Delete part A 86x38 | Delete part B 86x38
+    clipped: Em7 (ellipsis +4) | Cmaj7 (ellipsis +14) | Am7 (ellipsis +5) | Dsus4 (ellipsis +12) | Cmaj7 (ellipsis +5)
+    wrapped: Band x2 | Play view x2 | Copy text x2 | Download x2 | + variant x2 | Edit x2 | Delete part A x2
+    inputs: Beats per minute 14px bottom 251 | Section name 14px bottom 539 UNDER-KB | Cue 14px bottom 585 UNDER-KB (kb top 407)
+    staves: 287/292 287/300 287/292
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 7: 6 unsynced 12px 3.46 | 3 10.4px 3.46 | variant of A 12px 3.46 | A 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 7: 6 unsynced 12px 3.42 | 3 10.4px 3.42 | variant of A 12px 3.42 | A 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+- 390x844: page 390x1678; targets 36, under24 7, 24-44 28, topHalf 16, beyondFold 9
+    under24: Sign in 36.1x16 | Band 43.8x16 | main riff 51.4x20 | the long bridge section 143.5x20 | name this part 89.1x20 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Play view 105.9x38 | Capture 74.2x38 | Beats per minute 75x38 | Copy text 108x38 | Download 111.8x38 | expanded 72.2x28 | compact 65.7x28 | frets 44.4x28 | notes 49.3x28 | intervals 64.1x28 | A×2last: C 43.2x48.4 | B 26.4x48.4 | Add part A to the arrangement 50.1x38 | Add part B to the arrangement 50.1x38 | Section name 185x38 | + section 84.9x38 | Cue 185x38 | Paste tab 84.2x38 | + part 65.8x38 | + variant 104.1x38 | Edit 71.4x38 | Delete part A 86x38 | Delete part B 86x38
+    clipped: Em7 (ellipsis +4) | Cmaj7 (ellipsis +14) | Am7 (ellipsis +5) | Dsus4 (ellipsis +12) | Cmaj7 (ellipsis +5)
+    wrapped: Band x2 | Play view x2 | + variant x2 | Edit x2 | Delete part B x2 | Delete part C x2
+    inputs: Beats per minute 14px bottom 251 | Section name 14px bottom 489 | Cue 14px bottom 535 UNDER-KB (kb top 508)
+    staves: 302/302 302/302 302/302
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 7: 6 unsynced 12px 3.46 | 3 10.4px 3.46 | variant of A 12px 3.46 | A 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 7: 6 unsynced 12px 3.42 | 3 10.4px 3.42 | variant of A 12px 3.42 | A 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+
+## tempo-sheet
+- 375x667: page 375x1422; targets 2, under24 0, 24-44 1, topHalf 0, beyondFold 0
+    24-44: close 51.5x32
+    clipped: Em7 (ellipsis +4) | Cmaj7 (ellipsis +14) | Am7 (ellipsis +5) | Dsus4 (ellipsis +12) | Cmaj7 (ellipsis +5)
+    wrapped: Song x2
+    staves: 295/295 295/295 295/300 295/295
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 9: 6 unsynced 12px 3.46 | pass 1 of 2 12px 3.46 | main riff 12px 3.46 | 3 10.4px 3.46 | pass 2 of 2 12px 3.46 | the long bridge section 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74
+    lowContrast light 9: 6 unsynced 12px 3.42 | pass 1 of 2 12px 3.42 | main riff 12px 3.42 | 3 10.4px 3.42 | pass 2 of 2 12px 3.42 | the long bridge section 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3
+- 390x844: page 390x1422; targets 2, under24 0, 24-44 1, topHalf 0, beyondFold 0
+    24-44: close 51.5x32
+    clipped: Em7 (ellipsis +4) | Cmaj7 (ellipsis +14) | Am7 (ellipsis +5) | Dsus4 (ellipsis +12) | Cmaj7 (ellipsis +5)
+    wrapped: Song x2
+    staves: 310/310 310/310 310/310 310/310
+    staffFont: {"family":"-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helv","size":"16px","ligatures":"normal"}
+    lowContrast dark 9: 6 unsynced 12px 3.46 | pass 1 of 2 12px 3.46 | main riff 12px 3.46 | 3 10.4px 3.46 | pass 2 of 2 12px 3.46 | the long bridge section 12px 3.46 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74
+    lowContrast light 9: 6 unsynced 12px 3.42 | pass 1 of 2 12px 3.42 | main riff 12px 3.42 | 3 10.4px 3.42 | pass 2 of 2 12px 3.42 | the long bridge section 12px 3.42 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3
+
+## terms
+- 375x667: page 375x1413; targets 5, under24 4, 24-44 1, topHalf 2, beyondFold 3
+    under24: Sign in 36.1x16 | privacy 43.6x19 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24
+    lowContrast dark 4: Last updated 2 November  12px 3.74 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 4: Last updated 2 November  12px 3.3 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+- 390x844: page 390x1413; targets 5, under24 4, 24-44 1, topHalf 2, beyondFold 3
+    under24: Sign in 36.1x16 | privacy 43.6x19 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24
+    lowContrast dark 4: Last updated 2 November  12px 3.74 | stablature · self-hosted 12px 3.74 | Privacy 12px 3.74 | Terms 12px 3.74
+    lowContrast light 4: Last updated 2 November  12px 3.3 | stablature · self-hosted 12px 3.3 | Privacy 12px 3.3 | Terms 12px 3.3
+
+## tunings
+- 375x667: page 375x960; targets 17, under24 4, 24-44 13, topHalf 9, beyondFold 4
+    under24: Sign in 36.1x16 | Band 43.8x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Delete B Standard (Bass 5) 86x36 | Bass 4 52.9x24 | Bass 5 52.9x24 | Bass 6 52.9x24 | Guitar 6 62x24 | Guitar 7 62x24 | Add B Standard 73.3x38 | Add Drop A 73.3x38 | Add A Standard 73.3x38 | Add Drop G 73.3x38 | Add G Standard 73.3x38 | Add Drop F 73.3x38
+    wrapped: Band x2 | Delete B Standard (Bass 5) x2 | Add B Standard x2 | Add Drop A x2 | Add A Standard x2 | Add Drop G x2 | Add G Standard x2 | Add Drop F x2
+    lowContrast dark 12: 3 unsynced 12px 3.46 | default 10.4px 3.63 | 5-string · G2 D2 A1 E1 B 12px 3.46 | G2 D2 A1 E1 B0 12px 3.46 | G2 D2 A1 E1 A0 12px 3.46 | F2 C2 G1 D1 A0 12px 3.46 | F2 C2 G1 D1 G0 12px 3.46 | Eb2 Bb1 F1 C1 G0 12px 3.46
+    lowContrast light 12: 3 unsynced 12px 3.42 | default 10.4px 4.2 | 5-string · G2 D2 A1 E1 B 12px 3.42 | G2 D2 A1 E1 B0 12px 3.42 | G2 D2 A1 E1 A0 12px 3.42 | F2 C2 G1 D1 A0 12px 3.42 | F2 C2 G1 D1 G0 12px 3.42 | Eb2 Bb1 F1 C1 G0 12px 3.42
+- 390x844: page 390x940; targets 17, under24 4, 24-44 13, topHalf 10, beyondFold 2
+    under24: Sign in 36.1x16 | Band 43.8x16 | Privacy 37x16 | Terms 31x16
+    24-44: stablature, home 104.5x24 | Delete B Standard (Bass 5) 86x36 | Bass 4 52.9x24 | Bass 5 52.9x24 | Bass 6 52.9x24 | Guitar 6 62x24 | Guitar 7 62x24 | Add B Standard 73.3x38 | Add Drop A 73.3x38 | Add A Standard 73.3x38 | Add Drop G 73.3x38 | Add G Standard 73.3x38 | Add Drop F 73.3x38
+    wrapped: Band x2 | Delete B Standard (Bass 5) x2 | Add B Standard x2 | Add Drop A x2 | Add A Standard x2 | Add Drop G x2 | Add G Standard x2 | Add Drop F x2
+    lowContrast dark 12: 3 unsynced 12px 3.46 | default 10.4px 3.63 | 5-string · G2 D2 A1 E1 B 12px 3.46 | G2 D2 A1 E1 B0 12px 3.46 | G2 D2 A1 E1 A0 12px 3.46 | F2 C2 G1 D1 A0 12px 3.46 | F2 C2 G1 D1 G0 12px 3.46 | Eb2 Bb1 F1 C1 G0 12px 3.46
+    lowContrast light 12: 3 unsynced 12px 3.42 | default 10.4px 4.2 | 5-string · G2 D2 A1 E1 B 12px 3.42 | G2 D2 A1 E1 B0 12px 3.42 | G2 D2 A1 E1 A0 12px 3.42 | F2 C2 G1 D1 A0 12px 3.42 | F2 C2 G1 D1 G0 12px 3.42 | Eb2 Bb1 F1 C1 G0 12px 3.42
+
+## budget
+budget-4-chord.json HEADER flex=37; DIV flex=45; DIV flex=202; DIV flex=29.8; toolbar-stable flex=55; toolbar-contextual flex=56; DIALOG m-0=0; DIV border-t=242.2
+   staff 134.4 stableButton 38 latch 38.8 grid 202.4 fret 36
+budget-4.json HEADER flex=37; DIV flex=45; DIV flex=202; DIV flex=29.8; toolbar-stable flex=55; toolbar-contextual flex=56; DIALOG m-0=0; DIV border-t=242.2
+   staff 116.8 stableButton 38 latch 38.8 grid 202.4 fret 36
+budget-5-chord.json HEADER flex=37; DIV flex=45; DIV flex=166; DIV flex=29.8; toolbar-stable flex=55; toolbar-contextual flex=56; DIALOG m-0=0; DIV border-t=278.2
+   staff 159.2 stableButton 38 latch 38.8 grid 238.4 fret 36
+budget-5.json HEADER flex=37; DIV flex=45; DIV flex=166; DIV flex=29.8; toolbar-stable flex=55; toolbar-contextual flex=56; DIALOG m-0=0; DIV border-t=278.2
+   staff 141.6 stableButton 38 latch 38.8 grid 238.4 fret 36
+budget-6-chord.json HEADER flex=37; DIV flex=45; DIV flex=130; DIV flex=29.8; toolbar-stable flex=55; toolbar-contextual flex=56; DIALOG m-0=0; DIV border-t=314.2
+   staff 184 stableButton 38 latch 38.8 grid 274.4 fret 36
+budget-6.json HEADER flex=37; DIV flex=45; DIV flex=130; DIV flex=29.8; toolbar-stable flex=55; toolbar-contextual flex=56; DIALOG m-0=0; DIV border-t=314.2
+   staff 166.4 stableButton 38 latch 38.8 grid 274.4 fret 36
+defects.json {
+ "status": {
+  "h": 29.796875,
+  "scroll": 375,
+  "client": 375,
+  "kids": [
+   {
+    "t": "stacking onto the marked column",
+    "right": 163,
+    "w": 151,
+    "clipped": true
+   },
+   {
+    "t": "F#m7b5 F# A C E",
+    "right": 263,
+    "w": 92,
+    "clipped": true
+   },
+   {
+    "t": "⇤ start",
+    "right": 314,
+    "w": 44,
+    "clipped": false
+   },
+   {
+    "t": "end ⇥",
+    "right": 363,
+    "w": 41,
+    "clipped": false
+   },
+   {
+    "t": "tap a column to insert after it",
+    "right": 0,
+    "w": 0,
+    "clipped": false
+   }
+  ]
+ },
+ "labels": [
+  {
+   "text": "F#m7b5",
+   "client": 18,
+   "scroll": 41
+  }
+ ]
+}
+long-press.json {
+ "onBarline": {
+  "details": 0,
+  "contextual": 0
+ }
+}
+candidate-4-553.json {"before":{"band":88,"staff":134.4,"overflow":0,"spare":-46.4,"neckTop":312},"after":{"band":147.8,"staff":134.4,"overflow":0,"spare":13.4,"neckTop":312},"band":{"pageOver":0,"band":147.8,"strings":4,"clippedPx":0,"scrollable":0,"stringsClipped":0}}
+candidate-4-667.json {"before":{"band":202,"staff":134.4,"overflow":0,"spare":67.6,"neckTop":426},"after":{"band":261.8,"staff":134.4,"overflow":0,"spare":127.4,"neckTop":426},"band":{"pageOver":0,"band":261.8,"strings":4,"clippedPx":0,"scrollable":0,"stringsClipped":0}}
+candidate-5-553.json {"before":{"band":52,"staff":159.2,"overflow":0,"spare":-107.2,"neckTop":276},"after":{"band":111.8,"staff":159.2,"overflow":0,"spare":-47.4,"neckTop":276},"band":{"pageOver":0,"band":111.8,"strings":5,"clippedPx":12.1875,"scrollable":0,"stringsClipped":1}}
+candidate-5-667.json {"before":{"band":166,"staff":159.2,"overflow":0,"spare":6.8,"neckTop":390},"after":{"band":225.8,"staff":159.2,"overflow":0,"spare":66.6,"neckTop":390},"band":{"pageOver":0,"band":225.8,"strings":5,"clippedPx":0,"scrollable":0,"stringsClipped":0}}
+candidate-6-553.json {"before":{"band":16,"staff":184,"overflow":184,"spare":-168,"neckTop":240},"after":{"band":75.8,"staff":184,"overflow":112,"spare":-108.2,"neckTop":240},"band":{"pageOver":0,"band":75.8,"strings":6,"clippedPx":72.984375,"scrollable":112,"stringsClipped":3}}
+candidate-6-667.json {"before":{"band":130,"staff":184,"overflow":70,"spare":-54,"neckTop":354},"after":{"band":189.8,"staff":184,"overflow":0,"spare":5.8,"neckTop":354},"band":{"pageOver":0,"band":189.8,"strings":6,"clippedPx":0,"scrollable":0,"stringsClipped":0}}
+candidate-7-553.json {"before":{"band":16,"staff":208.8,"overflow":209,"spare":-192.8,"neckTop":204},"after":{"band":39.8,"staff":208.8,"overflow":173,"spare":-169,"neckTop":204},"band":{"pageOver":0,"band":39.8,"strings":7,"clippedPx":133.78125,"scrollable":173,"stringsClipped":6}}
+candidate-7-667.json {"before":{"band":94,"staff":208.8,"overflow":131,"spare":-114.8,"neckTop":318},"after":{"band":153.8,"staff":208.8,"overflow":59,"spare":-55,"neckTop":318},"band":{"pageOver":0,"band":153.8,"strings":7,"clippedPx":19.78125,"scrollable":59,"stringsClipped":1}}
+candidate-selecting.json {"fit":{"band":189.8,"staff":184,"overflow":0,"spare":5.8,"neckTop":354},"row":{"client":375,"scroll":375,"kids":[{"n":"copy","w":54.1,"right":62},{"n":"cut","w":45,"right":111},{"n":"delete","w":61.8,"right":177},{"n":"Make a tuplet of 3","w":28,"right":209},{"n":"Group with no number","w":28,"right":241},{"n":"Ungroup","w":57,"right":302},{"n":"cancel","w":42.1,"right":367}]}}
+reading-desktop.json {"play":{"vw":1280,"vh":800,"staffTop":244,"staffHeight":159,"strip":{"client":688,"scroll":2605},"clickBar":81,"columnWidth":18.2,"coarse":false},"capture":{"fine":true,"neck":238,"band":299,"strip":{"client":1234,"scroll":2607}},"narrow":{"fine":true,"client":500,"scroll":969}}
+reading-phone.json {"song":{"vw":375,"vh":667,"staffTop":744,"staffHeight":159,"strip":{"client":287,"scroll":2605},"clickBar":null,"columnWidth":18.2,"coarse":true},"play":{"vw":375,"vh":667,"staffTop":244,"staffHeight":159,"strip":{"client":295,"scroll":2605},"clickBar":81,"columnWidth":18.2,"coarse":true},"jetbrains":{"vw":375,"vh":667,"staffTop":244,"staffHeight":159,"strip":{"client":296,"scroll":2744},"clickBar":81,"columnWidth":19.2,"coarse":true}}
+refusals.json {
+ "Am7-D7 | above": "REFUSED bad-character: This character is not part of the tab notation.",
+ "Am7-D7 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; bad-character: This character is not part of the tab notation.",
+ "Am7-D7 | gap": "REFUSED bad-character: This character is not part of the tab notation.",
+ "Am7-D7-G | above": "REFUSED bad-character: This character is not part of the tab notation.",
+ "Am7-D7-G | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; bad-character: This character is not part of the tab notation.",
+ "Am7-D7-G | gap": "REFUSED bad-character: This character is not part of the tab notation.",
+ "Cmaj7-Fmaj7 | above": "REFUSED bad-character: This character is not part of the tab notation.",
+ "Cmaj7-Fmaj7 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; bad-character: This character is not part of the tab notation.",
+ "Cmaj7-Fmaj7 | gap": "REFUSED bad-character: This character is not part of the tab notation.",
+ "D-7-G-7 | above": "REFUSED bad-character: This character is not part of the tab notation.",
+ "D-7-G-7 | below": "REFUSED bad-character: This character is not part of the tab notation.",
+ "D-7-G-7 | gap": "REFUSED bad-character: This character is not part of the tab notation.",
+ "A7-D7 | above": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "A7-D7 | below": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "A7-D7 | gap": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "E5-A5 | above": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "E5-A5 | below": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "E5-A5 | gap": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "Am-G | above": "read; ignored 1, columns 2",
+ "Am-G | below": "read; ignored 1, columns 2",
+ "Am-G | gap": "read; ignored 1, columns 2",
+ "A-G | above": "read; ignored 1, columns 2",
+ "A-G | below": "read; ignored 1, columns 2",
+ "A-G | gap": "read; ignored 1, columns 2",
+ "G5-7 | above": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "G5-7 | below": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "G5-7 | gap": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "E-5-7 | above": "REFUSED row-length: The strings are not all the same length.",
+ "E-5-7 | below": "REFUSED row-length: The strings are not all the same length.",
+ "E-5-7 | gap": "REFUSED lone-row: A staff needs at least two strings.",
+ "(c) 1999-2004 | above": "REFUSED bad-character: This character is not part of the tab notation.",
+ "(c) 1999-2004 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; bad-character: This character is not part of the tab notation.",
+ "(c) 1999-2004 | gap": "REFUSED bad-character: This character is not part of the tab notation.",
+ "1999-2004 | above": "REFUSED fret-range: Frets go from 0 to 36.",
+ "1999-2004 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; fret-range: Frets go from 0 to 36.",
+ "1999-2004 | gap": "read; ignored 1, columns 2",
+ "1-2-3-4- | above": "REFUSED labels-mixed: Some strings are labelled and some are not.",
+ "1-2-3-4- | below": "REFUSED labels-mixed: Some strings are labelled and some are not.",
+ "1-2-3-4- | gap": "REFUSED lone-row: A staff needs at least two strings.",
+ "1-2-3-4 | above": "REFUSED labels-mixed: Some strings are labelled and some are not.",
+ "1-2-3-4 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; row-length: The strings are not all the same length.",
+ "1-2-3-4 | gap": "read; ignored 1, columns 2",
+ "Intro: Am7-D7 | above": "read; ignored 1, columns 2",
+ "Intro: Am7-D7 | below": "read; ignored 1, columns 2",
+ "Intro: Am7-D7 | gap": "read; ignored 1, columns 2",
+ "x2-x4 | above": "REFUSED run-together: Notes run together here. Put a rail between them.",
+ "x2-x4 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; run-together: Notes run together here. Put a rail between them.",
+ "x2-x4 | gap": "read; ignored 1, columns 2",
+ "Verse 2 | above": "read; ignored 1, columns 2",
+ "Verse 2 | below": "read; ignored 1, columns 2",
+ "Verse 2 | gap": "read; ignored 1, columns 2",
+ "Am7 - D7 | above": "REFUSED bad-character: This character is not part of the tab notation.",
+ "Am7 - D7 | below": "REFUSED labels-mixed: Some strings are labelled and some are not.; bad-character: This character is not part of the tab notation.",
+ "Am7 - D7 | gap": "read; ignored 1, columns 2"
+}

@@ -113,7 +113,7 @@ test.describe("the click: endings, motion and data", () => {
   });
 
   for (const theme of ["light", "dark"] as const) {
-    test(`phone width, ${theme}: controls reachable across a 40-pass song`, async ({ page }) => {
+    test(`phone width, ${theme}: controls reachable across a 40-pass song`, async ({ page, isMobile }) => {
       await page.setViewportSize({ width: 375, height: 667 });
       await page.emulateMedia({ colorScheme: theme });
       await installRecorder(page);
@@ -122,7 +122,8 @@ test.describe("the click: endings, motion and data", () => {
         await page.evaluate((x) => window.scrollTo(0, (document.body.scrollHeight - innerHeight) * x), f);
         for (const id of ["click-start", "tempo-control"]) {
           const box = (await page.getByTestId(id).boundingBox())!;
-          expect(box.height).toBeGreaterThanOrEqual(44);
+          // 44 on touch; a fine pointer reads the density floor of 32 for a toolbar control.
+          expect(box.height).toBeGreaterThanOrEqual(isMobile ? 44 : 32);
           const hit = await page.evaluate(
             ([x, y, t]) => document.elementFromPoint(x as number, y as number)?.closest(`[data-testid=${t}]`) !== null,
             [box.x + box.width / 2, box.y + box.height / 2, id],

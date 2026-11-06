@@ -18,6 +18,8 @@
     "check:untouched-rhythm": "bash scripts/untouched-by-rhythm.sh",
     "check:untouched-reading": "bash scripts/untouched-by-reading.sh",
     "check:untouched-usability": "bash scripts/untouched-by-usability.sh",
+    "check:usability-amendments": "bash scripts/check-usability-amendments.sh",
+    "check:usability-audit": "bash scripts/check-usability-audit.sh",
     "test:e2e": "playwright test",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "node --env-file-if-exists=.env.local scripts/migrate.mjs",

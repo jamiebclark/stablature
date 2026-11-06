@@ -54,6 +54,17 @@ const INLAYS = new Set([3, 5, 7, 9, 12, 15, 17, 19, 21, 24]);
  * same in both themes, needs no colour at all, and keeps the root distinct
  * from the rest of the chord by one more step.
  */
+/** The highest fret the neck draws. */
+export const MAX_FRET = 24;
+
+/*
+ * Contrast figures after the usability pass (tokens in globals.css): fret
+ * numbers are text-dim at 0.6875rem, a lit cell is accent-text on accent, and
+ * a chord tone is still accent on the plain cell (9.47:1 dark) or the inlay
+ * cell (8.66:1 dark); a note outside the chord stays at 3.79:1 / 3.46:1. The
+ * weights below are unchanged, so the separation still rests on weight, not
+ * hue alone.
+ */
 const ROLE_STYLES: Record<ChordRole, string> = {
   root: "font-bold text-accent",
   bass: "font-bold text-accent",
@@ -98,16 +109,19 @@ export interface FretboardProps {
   disabled?: boolean;
   /** Rendered above the fret grid, inside the neck's own surface and its disabled wrapper. */
   latchStrip?: ReactNode;
+  /** The string the keyboard types on, once the keyboard has been used. Never stored. */
+  keyboardString?: number | null;
 }
 
 export function Fretboard({
   tuning,
-  maxFret = 24,
+  maxFret = MAX_FRET,
   onPress,
   highlight,
   chordTones,
   disabled = false,
   latchStrip,
+  keyboardString = null,
 }: FretboardProps) {
   // Bare note names, matching the tab staff. The octave lives in the
   // accessible label, where it disambiguates without adding visual noise.
@@ -124,13 +138,11 @@ export function Fretboard({
       <div data-testid="fret-grid" className="overflow-x-auto">
         <div className="w-max min-w-full px-1 pb-2">
           {/* Fret numbers along the top, so the neck is readable at a glance. */}
-          <div className="flex items-end gap-px pl-9 pt-1">
+          <div className="flex items-end gap-px pl-(--fret) pt-1">
             {frets.map((fret) => (
               <div
                 key={fret}
-                className={`w-9 shrink-0 text-center text-[0.6rem] ${
-                  INLAYS.has(fret) ? "text-text-dim" : "text-text-faint"
-                }`}
+                className={`w-(--fret) shrink-0 text-center text-[0.6875rem] leading-[0.9rem] text-text-dim${INLAYS.has(fret) ? " font-semibold" : ""}`}
               >
                 {fret}
               </div>
@@ -139,7 +151,13 @@ export function Fretboard({
 
           {tuning.strings.map((_, stringIndex) => (
             <div key={stringIndex} className="flex items-center gap-px">
-              <div className="w-9 shrink-0 pr-1 text-right font-mono text-xs text-text-dim">
+              <div
+                className={`w-(--fret) shrink-0 pr-1 text-right font-mono text-xs ${
+                  keyboardString === stringIndex ? "font-semibold text-accent" : "text-text-dim"
+                }`}
+                data-keyboard-string={keyboardString === stringIndex ? "" : undefined}
+              >
+                {keyboardString === stringIndex ? "\u25B8" : ""}
                 {labels[stringIndex]}
               </div>
 
@@ -176,7 +194,9 @@ export function Fretboard({
                   ? "font-semibold text-accent-text"
                   : role
                     ? ROLE_STYLES[role]
-                    : "text-fret-number";
+                    : INLAYS.has(fret)
+                      ? "font-semibold text-fret-number"
+                      : "text-fret-number";
                 return (
                   <button
                     key={fret}
@@ -184,7 +204,7 @@ export function Fretboard({
                     onClick={() => onPress(stringIndex, fret)}
                     // Deliberately generous: 2.25rem is about a thumb pad, and
                     // mis-taps here are the main way bad data gets captured.
-                    className={`relative h-9 w-9 shrink-0 font-mono text-[0.7rem] transition-colors active:bg-accent active:text-accent-text ${tier} ${ink}`}
+                    className={`relative h-(--fret) w-(--fret) shrink-0 font-mono text-[0.7rem] transition-colors active:bg-accent active:text-accent-text ${tier} ${ink}`}
                     aria-label={`${labels[stringIndex]} string, fret ${fret}, ${noteLabel(pitch)}${
                       lit
                         ? ", in this column"
@@ -212,7 +232,7 @@ export function Fretboard({
 
           {/* Dead notes are constant in this music, so they get their own row. */}
           <div className="flex items-center gap-px pt-1">
-            <div className="w-9 shrink-0 pr-1 text-right text-[0.6rem] text-text-faint">
+            <div className="w-(--fret) shrink-0 pr-1 text-right text-[0.6875rem] leading-[0.9rem] text-text-dim">
               mute
             </div>
             {tuning.strings.map((_, stringIndex) => (
@@ -220,7 +240,7 @@ export function Fretboard({
                 key={stringIndex}
                 type="button"
                 onClick={() => onPress(stringIndex, "x")}
-                className="h-7 w-9 shrink-0 rounded bg-fret-cell font-mono text-[0.7rem] text-fret-number active:bg-accent active:text-accent-text"
+                className="h-(--dead-note) w-(--fret) shrink-0 rounded bg-fret-cell font-mono text-[0.7rem] text-fret-number active:bg-accent active:text-accent-text"
                 aria-label={`Dead note on the ${labels[stringIndex]} string`}
               >
                 {labels[stringIndex]}

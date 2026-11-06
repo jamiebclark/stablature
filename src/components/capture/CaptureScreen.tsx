@@ -18,7 +18,7 @@
  *    thing you are editing is never off screen.
  */
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
   ClipboardPaste,
@@ -70,7 +70,7 @@ import {
   useSongTuning,
 } from "@/lib/local/hooks";
 import type { AnnotationRow, EventRow, FretValue, PartRow } from "@/lib/model";
-import { stringCount, type Tuning } from "@/lib/tunings";
+import { type Tuning } from "@/lib/tunings";
 import {
   LATCHES,
   armLatch,
@@ -79,6 +79,7 @@ import {
   nextNote,
   prunedArmed,
   statusFor,
+  statusShortFor,
   type LatchId,
 } from "@/lib/capture/latches";
 import { isPresent, TOOLBAR_CONTROLS } from "@/lib/capture/controls";
@@ -89,7 +90,10 @@ import {
 } from "@/lib/capture/properties";
 import { resolveTarget } from "@/lib/capture/target";
 import { Fretboard } from "./Fretboard";
-import { nextCursorAfterDelete } from "@/lib/capture/cursor";
+import { HelpOpen } from "@/components/keys/HelpOpen";
+import { useScreenKeys } from "@/components/keys/useScreenKeys";
+import { FRET_WAIT_MS, IDLE, stepFretEntry, type FretEntry, type FretInput } from "@/lib/keys/fretEntry";
+import { cursorBar, cursorStep, nextCursorAfterDelete, type Cursor } from "@/lib/capture/cursor";
 import { ColumnInspector } from "./ColumnInspector";
 import { LatchStrip } from "./LatchStrip";
 
@@ -101,12 +105,29 @@ import { LatchStrip } from "./LatchStrip";
  * insert. `null` is the very start, which is otherwise unreachable when the
  * rule is "insert after".
  */
-type Cursor = "end" | null | string;
+
 
 const ignoreLongPress = () => {};
 
 /** One sizing for every control on the selection row, so all of them fit one line. */
-const SELECTION_BUTTON = "h-9! px-1! text-xs! gap-1!";
+const SELECTION_BUTTON = "h-(--control)! px-1! text-xs! gap-1!";
+
+/** A symbol holds its width up to ten characters, and past that gives way down to ten so the jump buttons stay on the row. */
+const WIDE_ROW = "(min-width: 640px)";
+const subscribeWide = (notify: () => void) => {
+  const query = window.matchMedia(WIDE_ROW);
+  query.addEventListener("change", notify);
+  return () => query.removeEventListener("change", notify);
+};
+/** True when the status row has room for the whole words while a digit waits. */
+const useWideRow = () =>
+  useSyncExternalStore(
+    subscribeWide,
+    () => window.matchMedia(WIDE_ROW).matches,
+    () => false,
+  );
+
+const symbolFit = (symbol: string) => (symbol.length <= 10 ? "shrink-0" : "min-w-[10ch] truncate");
 
 export function CaptureScreen({
   songId,
@@ -122,6 +143,9 @@ export function CaptureScreen({
   const pending = usePendingWrites();
 
   const [cursor, setCursor] = useState<Cursor>("end");
+  // Bumped just before a write that makes a group, so the staff scrolls that group into view.
+  const [revealGroups, setRevealGroups] = useState(0);
+  const [keyMoves, setKeyMoves] = useState(0);
   const [armed, setArmed] = useState<ReadonlySet<LatchId>>(() => new Set());
   /** The last cursor column seen in `columns`: tells "not delivered yet" from "really gone". */
   const [deliveredId, setDeliveredId] = useState<string | null>(null);
@@ -169,6 +193,8 @@ export function CaptureScreen({
   /** Repeats and chords are meaningless on a barline. */
   const editable: EventRow | undefined =
     focused?.kind === "barline" ? undefined : focused;
+  /** One answer for the form and for the neck's wrapper, so a short screen always has one of the two. */
+  const chordFormShowing = chordDraft !== null && editable !== undefined;
 
   /** What the cursor resolves to, and the lit (armed ∩ applicable) latches. */
   const target = resolveTarget(part, columns, afterId);
@@ -207,6 +233,7 @@ export function CaptureScreen({
     TOOLBAR_CONTROLS.filter((c) => isPresent(c, target)).map((c) => c.id),
   );
   const status = statusFor(lit);
+  const wideRow = useWideRow();
   /** Derived, so any route that moves the cursor or changes the part clears it. */
   const refused =
     refusedAt?.afterId === afterId && refusedAt?.length === columns.length;
@@ -294,6 +321,194 @@ export function CaptureScreen({
     [part, lit, target, columns, afterId, cursor],
   );
 
+  /* ----- Keyboard (FR-057..061). Every route below is the one a tap uses; `press` is not wrapped. ----- */
+  const pressRef = useRef(press);
+  const renderWaiters = useRef<Array<() => void>>([]);
+  const cursorSeen = useRef(cursor);
+  useEffect(() => {
+    pressRef.current = press;
+    cursorSeen.current = cursor;
+    const waiters = renderWaiters.current;
+    renderWaiters.current = [];
+    for (const resolve of waiters) resolve();
+  });
+  const [kbString, setKbString] = useState<number | null>(null);
+  const [kbUsed, setKbUsed] = useState(false);
+  const [waiting, setWaiting] = useState<1 | 2 | null>(null);
+  const entry = useRef<FretEntry>(IDLE);
+  const waitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const chain = useRef<Promise<unknown>>(Promise.resolve());
+  const deliveries = useRef<Array<() => void>>([]);
+  const stringCount = tuning?.strings.length ?? 0;
+  const keyString = stringCount === 0 ? 0 : Math.min(kbString ?? stringCount - 1, stringCount - 1);
+  const keyStringRef = useRef(keyString);
+  useEffect(() => {
+    keyStringRef.current = keyString;
+  });
+
+  // A write is delivered when the live query next changes `columns`, or after 250ms.
+  useEffect(() => {
+    const waiters = deliveries.current;
+    deliveries.current = [];
+    for (const resolve of waiters) resolve();
+  }, [columns]);
+  const waitForDelivery = () =>
+    new Promise<void>((resolve) => {
+      const timer = setTimeout(resolve, 250);
+      deliveries.current.push(() => {
+        clearTimeout(timer);
+        resolve();
+      });
+    });
+  const enqueue = (stringIndex: number, fret: FretValue) => {
+    chain.current = chain.current
+      .then(() => pressRef.current(stringIndex, fret))
+      .then(waitForDelivery)
+      .catch(() => {});
+  };
+  /**
+   * A navigation key goes through the same queue as a fret press, so it runs after every note before it
+   * has landed and reads the columns and cursor that were delivered, not the render it was typed in.
+   */
+  const navRef = useRef<Record<string, () => Cursor | void>>({});
+  const enqueueNav = (name: string) => {
+    chain.current = chain.current
+      .then(() => {
+        const target = navRef.current[name]?.();
+        setKeyMoves((n) => n + 1);
+        // Wait for the render that carries the move, so the next press reads the new cursor.
+        return new Promise<void>((resolve) => {
+          const timer = setTimeout(resolve, 250);
+          const check = () => {
+            if (target !== undefined && cursorSeen.current !== target) {
+              renderWaiters.current.push(check);
+              return;
+            }
+            clearTimeout(timer);
+            resolve();
+          };
+          if (target === undefined) setTimeout(resolve, 60);
+          else check();
+        });
+      })
+      .catch(() => {});
+  };
+  const feedEntry = (input: FretInput) => {
+    const step = stepFretEntry(entry.current, input);
+    entry.current = step.state;
+    setWaiting(step.state.waiting);
+    for (const fret of step.enters) enqueue(keyStringRef.current, fret);
+    if (waitTimer.current) clearTimeout(waitTimer.current);
+    waitTimer.current = step.state.waiting
+      ? setTimeout(() => feedEntry({ type: "timeout" }), FRET_WAIT_MS)
+      : null;
+  };
+  const feedRef = useRef(feedEntry);
+  useEffect(() => {
+    feedRef.current = feedEntry;
+  });
+  const flushEntry = () => {
+    if (entry.current.waiting) feedEntry({ type: "other" });
+  };
+
+  // Any other key, a sheet opening or a part change enters the waiting digit first.
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (!entry.current.waiting) return;
+      if (/^[0-9]$/.test(event.key) || event.key === "Enter") return;
+      if (["Shift", "Control", "Alt", "Meta", "CapsLock"].includes(event.key)) return;
+      feedRef.current({ type: "other" });
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => {
+      window.removeEventListener("keydown", onKey, true);
+      // Leaving enters nothing: the digit was never confirmed.
+      if (waitTimer.current) clearTimeout(waitTimer.current);
+      entry.current = IDLE;
+    };
+  }, []);
+  useEffect(() => {
+    if (inspecting) feedRef.current({ type: "other" });
+  }, [inspecting]);
+
+  /** The route a tap on a column takes: a selection extends its head, otherwise the cursor moves and latches clear. */
+  const routeCursor = (next: Cursor) => {
+    if (selection) {
+      if (typeof next === "string" && next !== "end") setSelection({ ...selection, headId: next });
+      return;
+    }
+    setCursor(next);
+    setArmed(new Set());
+  };
+  /** The chips' route: reset the cursor and latches. The link (or a key) then replaces the URL. */
+  const openPart = (id: string) => {
+    flushEntry();
+    setCursor("end");
+    setArmed(new Set());
+    return id;
+  };
+  const stepPart = (by: -1 | 1) => {
+    if (!parts || !part) return false;
+    const next = parts[parts.findIndex((p) => p.id === part.id) + by];
+    if (!next) return false;
+    openPart(next.id);
+    router.replace(`/songs/${songId}/capture/${next.id}`);
+  };
+  const onKeys =
+    (fn: (event: KeyboardEvent) => void | boolean) =>
+    (event: KeyboardEvent): void | boolean => {
+      setKbUsed(true);
+      return fn(event);
+    };
+  const selectionHead = selection ? selection.headId : cursor;
+  // The actions only touch refs when a key arrives, never during render.
+  /* eslint-disable react-hooks/refs */
+  /** Each returns the cursor it moves to, when it moves the cursor and not a selection's head. */
+  const moveTo = (next: Cursor) => {
+    routeCursor(next);
+    return selection ? undefined : next;
+  };
+  /** What the jump buttons do: the cursor moves and the latches stay. A selection rests. */
+  const jumpTo = (next: Cursor) => {
+    if (selection) return undefined;
+    setCursor(next);
+    return next;
+  };
+  navRef.current = {
+    "column-back": () => moveTo(cursorStep(columns, selectionHead, -1)),
+    "column-on": () => moveTo(cursorStep(columns, selectionHead, 1)),
+    "bar-back": () => moveTo(cursorBar(columns, selectionHead, -1)),
+    "bar-on": () => moveTo(cursorBar(columns, selectionHead, 1)),
+    start: () => jumpTo(null),
+    end: () => jumpTo("end"),
+  };
+  useScreenKeys("capture", {
+    "column-back": onKeys(() => enqueueNav("column-back")),
+    "column-on": onKeys(() => enqueueNav("column-on")),
+    "bar-back": onKeys(() => enqueueNav("bar-back")),
+    "bar-on": onKeys(() => enqueueNav("bar-on")),
+    start: onKeys(() => enqueueNav("start")),
+    end: onKeys(() => enqueueNav("end")),
+    "part-back": onKeys(() => stepPart(-1)),
+    "part-on": onKeys(() => stepPart(1)),
+    "string-up": onKeys(() => setKbString(Math.max(0, keyString - 1))),
+    "string-down": onKeys(() => setKbString(Math.min(stringCount - 1, keyString + 1))),
+    enter: onKeys((event) => {
+      if (!part || selection) return false;
+      if (event.key === "Enter") {
+        if (!entry.current.waiting) return false;
+        feedEntry({ type: "enter" });
+        return;
+      }
+      feedEntry({ type: "digit", digit: Number(event.key) });
+    }),
+    "dead-note": onKeys(() => {
+      if (!part || selection) return false;
+      enqueue(keyString, "x");
+    }),
+  });
+  /* eslint-enable react-hooks/refs */
+
   if (song === undefined || parts === undefined) return <Loading />;
   if (!song) {
     return (
@@ -319,55 +534,72 @@ export function CaptureScreen({
   const atEnd = cursor === "end";
 
   return (
-    <div className="flex h-dvh flex-col bg-bg">
-      <header className="flex items-center justify-between gap-2 border-b border-border-subtle px-3 py-2">
+    <div
+      className="capture-surface flex h-dvh flex-col bg-bg"
+      style={{
+        paddingTop: "var(--safe-top)",
+        paddingRight: "var(--safe-right)",
+        paddingBottom: "var(--safe-bottom)",
+        paddingLeft: "var(--safe-left)",
+      }}
+    >
+      {/* One row: back, part chips, + part, tempo, sync word. Switching parts mid-capture is
+          normal: the guitarist plays the B section and you need somewhere to put it immediately. */}
+      <header
+        data-testid="capture-title-row"
+        className="flex h-[45px] shrink-0 items-center gap-1.5 border-b border-border-subtle px-3"
+      >
         <button
           type="button"
           onClick={() => router.push(`/songs/${songId}`)}
-          className="truncate text-sm font-medium hover:text-accent"
+          aria-label={`Back to ${song.title}`}
+          className="min-h-(--control) min-w-(--control) max-w-max flex-[1_1_0] truncate text-left text-sm font-medium hover:text-accent"
         >
-          &larr; {song.title}
+          &larr;<span> {song.title}</span>
         </button>
-        <TempoControl song={song} variant="header" />
-        <span className="shrink-0 font-mono text-[0.7rem] text-text-faint">
-          {pending ? `${pending} unsynced` : "all synced"}
-        </span>
-      </header>
-
-      {/* Part chips. Switching parts mid-capture is normal: the guitarist plays
-          the B section and you need somewhere to put it immediately. */}
-      <div className="flex items-center gap-1.5 overflow-x-auto border-b border-border-subtle px-3 py-1">
-        {parts.map((candidate) => (
-          <Link
-            key={candidate.id}
-            href={`/songs/${songId}/capture/${candidate.id}`}
-            replace
-            onClick={() => {
+        <div className="flex min-w-0 flex-[0_1_auto] items-center gap-1.5 overflow-x-auto">
+          {parts.map((candidate) => (
+            <Link
+              key={candidate.id}
+              href={`/songs/${songId}/capture/${candidate.id}`}
+              replace
+              ref={(el) => {
+                if (el && candidate.id === part?.id)
+                  el.scrollIntoView?.({ inline: "nearest", block: "nearest" });
+              }}
+              onClick={() => {
+                openPart(candidate.id);
+              }}
+              className={`inline-flex min-h-(--control) min-w-9 shrink-0 items-center justify-center rounded px-2.5 font-mono text-sm ${
+                candidate.id === part?.id
+                  ? "bg-accent text-accent-text"
+                  : "bg-bg-raised text-text-dim"
+              }`}
+            >
+              {candidate.label}
+            </Link>
+          ))}
+          <Button
+            variant="ghost"
+            className="shrink-0 px-2 py-1"
+            onClick={async () => {
+              const created = await createPart(song);
               setCursor("end");
-              setArmed(new Set());
+              router.push(`/songs/${songId}/capture/${created.id}`);
             }}
-            className={`shrink-0 rounded px-2.5 py-1 font-mono text-sm ${
-              candidate.id === part?.id
-                ? "bg-accent text-accent-text"
-                : "bg-bg-raised text-text-dim"
-            }`}
+            aria-label="Add a part"
           >
-            {candidate.label}
-          </Link>
-        ))}
-        <Button
-          variant="ghost"
-          className="shrink-0 px-2 py-1"
-          onClick={async () => {
-            const created = await createPart(song);
-            setCursor("end");
-            router.push(`/songs/${songId}/capture/${created.id}`);
-          }}
-          aria-label="Add a part"
-        >
-          + part
-        </Button>
-      </div>
+            + part
+          </Button>
+        </div>
+        <TempoControl song={song} variant="header" />
+        <HelpOpen />
+        {pending ? (
+          <span className="shrink-0 font-mono text-[0.7rem] text-text-faint">
+            {pending} unsynced
+          </span>
+        ) : null}
+      </header>
 
       {/* Bottom-aligned: during capture your eyes are on the fretboard, and a
           staff stranded at the top of a tall screen is a lot of travel. Up to five strings
@@ -376,9 +608,8 @@ export function CaptureScreen({
           it (and `mt-auto` stops anchoring once content overflows). A column-reverse scroller
           starts at the bottom and keeps its overflow on the side a swipe can reach. */}
       <div
-        className={`flex min-h-0 flex-1 overflow-y-auto px-3 pt-3 pb-1 ${
-          stringCount(tuning) >= 6 ? "flex-col-reverse" : "flex-col justify-end"
-        }`}
+        data-testid="tab-band"
+        className="flex min-h-0 flex-1 flex-col-reverse overflow-y-auto px-3 pt-1"
       >
         {part ? (
           <div className="shrink-0">
@@ -387,20 +618,15 @@ export function CaptureScreen({
               tuning={tuning}
               annotations={annotations ?? []}
               followTail={atEnd}
+              revealGroups={revealGroups}
+              keepCaretInView={keyMoves}
               activeEventId={focused?.id ?? null}
               insertAfterEventId={selection ? undefined : afterId}
               selectedEventIds={selectedIds}
               // A selection-time hold is swallowed (FR-022): the handler does nothing, but its
               // presence arms the press hook, whose click suppression stops the hold extending.
               onInspectColumn={selection ? ignoreLongPress : setInspecting}
-              onSelectColumn={(eventId) => {
-                if (selection) {
-                  setSelection({ ...selection, headId: eventId });
-                  return;
-                }
-                setCursor(eventId);
-                setArmed(new Set());
-              }}
+              onSelectColumn={routeCursor}
             />
           </div>
         ) : (
@@ -411,50 +637,77 @@ export function CaptureScreen({
       </div>
 
       {part && selection ? (
-        <div className="flex flex-wrap items-center gap-1.5 border-t border-border-subtle px-3 py-1.5">
+        <div
+          data-testid="status-row"
+          className="flex h-(--status-row) shrink-0 items-center gap-1.5 overflow-hidden whitespace-nowrap border-t border-border-subtle px-3"
+        >
           <span className="text-[0.7rem] text-accent">
             {selectedEvents.length} selected &middot; tap another column to
             extend
           </span>
         </div>
       ) : part ? (
-        <div className="flex items-center gap-2 overflow-hidden whitespace-nowrap border-t border-border-subtle px-3 py-1 text-[0.7rem]">
+        <div
+          data-testid="status-row"
+          className="flex h-(--status-row) shrink-0 items-center gap-1 overflow-hidden whitespace-nowrap border-t border-border-subtle px-3 text-[0.7rem]"
+        >
           <span
-            className={`${refused ? "shrink-0" : "min-w-0 truncate"} ${refused || status || !atEnd ? "text-accent" : "text-text-faint"}`}
+            className={`shrink-0 ${refused || status || !atEnd ? "text-accent" : "text-text-faint"}`}
           >
             {refused ? (
               TRIPLET_REFUSAL
             ) : (
               <>
-                {status ||
-                  (atEnd
-                    ? "adding at the end"
-                    : afterId === null
-                      ? "adding at the start"
-                      : "adding after the marked column")}
+                {/* A waiting digit takes the room the long words need, so they go short while it waits. */}
+                {waiting
+                  ? status
+                    ? wideRow
+                      ? status
+                      : statusShortFor(lit)
+                    : atEnd
+                      ? "at the end"
+                      : afterId === null
+                        ? "at the start"
+                        : "after the mark"
+                  : status ||
+                    (atEnd
+                      ? "adding at the end"
+                      : afterId === null
+                        ? "adding at the start"
+                        : "adding after the marked column")}
               </>
             )}
           </span>
           {/* Which notes the lit frets are. The unreadable-symbol case says so
               rather than leaving an unexplained bare neck. */}
           {chord ? (
-            <span className="min-w-0 truncate font-mono text-accent">
-              {chord.symbol}
-              <span className="text-text-dim">
-                {" "}
-                {chordToneNames(chord).join(" ")}
+            <>
+              <span className={`${refused ? "min-w-0 truncate" : symbolFit(chord.symbol)} font-mono text-accent`}>
+                {chord.symbol}
               </span>
-            </span>
+              {refused ? null : (
+                <span className="min-w-0 truncate font-mono text-text-dim">
+                  {chordToneNames(chord).join(" ")}
+                </span>
+              )}
+            </>
           ) : chordSymbol ? (
-            <span
-              className="min-w-0 truncate font-mono text-text-faint"
-              title="Not a chord this app can read"
-            >
-              {chordSymbol} &mdash; not a chord I know
-            </span>
+            <>
+              <span className={`${refused ? "min-w-0 truncate" : symbolFit(chordSymbol)} font-mono text-text-faint`}>{chordSymbol}</span>
+              <span
+                className="min-w-0 truncate font-mono text-text-faint"
+                title="Not a chord this app can read"
+              >
+                &mdash; not a chord I know
+              </span>
+            </>
           ) : null}
-          {!refused && cursorDuration ? (
-            <span data-testid="cursor-duration" className="shrink-0 font-mono text-text-dim">
+          {waiting ? (
+            <span data-testid="digit-waiting" className="shrink-0 font-mono text-accent">
+              fret {waiting}&hellip;
+            </span>
+          ) : !refused && cursorDuration ? (
+            <span data-testid="cursor-duration" className="min-w-0 truncate font-mono text-text-dim">
               {cursorDuration.words}
             </span>
           ) : null}
@@ -463,26 +716,23 @@ export function CaptureScreen({
               <button
                 type="button"
                 onClick={() => setCursor(null)}
-                className="rounded px-1.5 py-0.5 text-text-dim hover:text-accent"
+                className="inline-flex h-6 min-w-[44px] shrink-0 items-center justify-center rounded px-1.5 text-text-dim hover:text-accent"
               >
                 &#8676; start
               </button>
               <button
                 type="button"
                 onClick={() => setCursor("end")}
-                className="rounded px-1.5 py-0.5 text-text-dim hover:text-accent"
+                className="inline-flex h-6 min-w-[44px] shrink-0 items-center justify-center rounded px-1.5 text-text-dim hover:text-accent"
               >
                 end &#8677;
               </button>
-              <span className="ml-auto hidden text-text-faint sm:inline">
-                tap a column to insert after it
-              </span>
             </>
           ) : null}
         </div>
       ) : null}
 
-      {chordDraft !== null && editable ? (
+      {chordFormShowing ? (
         <form
           className="flex gap-2 border-t border-border-subtle p-3"
           onSubmit={async (e) => {
@@ -496,7 +746,7 @@ export function CaptureScreen({
             autoFocus
             value={chordDraft}
             onChange={(e) => setChordDraft(e.target.value)}
-            placeholder="Harmony here, e.g. Am — written above the staff"
+            placeholder="Harmony, e.g. Am"
             aria-label="Chord"
           />
           <Button type="submit" variant="primary">
@@ -514,7 +764,7 @@ export function CaptureScreen({
 
       <div
         data-testid="toolbar-stable"
-        className="flex flex-nowrap items-center gap-1 border-t border-border-subtle px-2.5 py-2"
+        className="flex h-(--toolbar-row) shrink-0 flex-nowrap items-center gap-1 border-t border-border-subtle px-2.5"
       >
         <Button
           disabled={!part}
@@ -581,6 +831,7 @@ export function CaptureScreen({
 
         <Button
           variant="danger"
+          className="ml-1 min-w-(--control)"
           disabled={!focused}
           onClick={async () => {
             if (!focused || !part) return;
@@ -605,7 +856,7 @@ export function CaptureScreen({
       {part && selection ? (
         <div
           data-testid="toolbar-selection"
-          className="flex h-14 flex-nowrap items-center gap-1 border-t border-border-subtle px-2"
+          className="flex h-(--toolbar-row) shrink-0 flex-nowrap items-center gap-1 border-t border-border-subtle px-1"
         >
           <Button
             className={SELECTION_BUTTON}
@@ -636,7 +887,7 @@ export function CaptureScreen({
             from being mistaken for a safe action.
           */}
           <Button
-            className={`${SELECTION_BUTTON} text-danger`}
+            className={`${SELECTION_BUTTON} mx-1 text-danger`}
             onClick={async () => {
               await deleteColumns(selectedEvents);
               endSelection(true);
@@ -647,8 +898,9 @@ export function CaptureScreen({
           </Button>
           {offer.tuplet ? (
             <Button
-              className={SELECTION_BUTTON}
+              className={`${SELECTION_BUTTON} min-w-9!`}
               onClick={async () => {
+                setRevealGroups((n) => n + 1);
                 await groupSelection(
                   part.id,
                   selection.anchorId,
@@ -665,8 +917,9 @@ export function CaptureScreen({
           ) : null}
           {offer.plain.length > 0 ? (
             <Button
-              className={SELECTION_BUTTON}
+              className={`${SELECTION_BUTTON} min-w-9!`}
               onClick={async () => {
+                setRevealGroups((n) => n + 1);
                 await groupSelection(
                   part.id,
                   selection.anchorId,
@@ -683,7 +936,7 @@ export function CaptureScreen({
           ) : null}
           {offer.ungroup ? (
             <Button
-              className={SELECTION_BUTTON}
+              className={`${SELECTION_BUTTON} min-w-9!`}
               onClick={async () => {
                 await ungroupTuplet(selectedEvents);
                 endSelection();
@@ -706,19 +959,25 @@ export function CaptureScreen({
       ) : part && editable && propCtx ? (
         <div
           data-testid="toolbar-contextual"
-          className="flex h-14 flex-nowrap items-center gap-1 border-t border-border-subtle px-2.5 py-2"
+          className="flex h-(--toolbar-row) shrink-0 flex-nowrap items-center gap-1 border-t border-border-subtle px-2.5"
         >
           {presentIds.has("triplet") ? (
             <Button
               onClick={async () => {
                 // The three columns ending at the cursor, so this works mid-part
                 // and not only at the tail.
+                setRevealGroups((n) => n + 1);
                 const made = await groupRunEndingAt(
                   part.id,
                   atEnd ? null : editable.id,
                   3,
                 );
-                if (!made) setRefusedAt({ afterId, length: columns.length });
+                if (!made) {
+                  // Disarm: a refusal makes no group, so the next one to
+                  // arrive (by sync) must not be scrolled to.
+                  setRevealGroups((n) => n - 1);
+                  setRefusedAt({ afterId, length: columns.length });
+                }
               }}
               title="Make this column and the two before it a triplet"
               aria-label="Triplet"
@@ -733,7 +992,7 @@ export function CaptureScreen({
                 type="button"
                 disabled={editable.repeat <= 1}
                 onClick={() => void repeatProp.commit(propCtx, -1)}
-                className="px-2.5 py-1.5 text-sm disabled:opacity-30"
+                className="min-h-(--control) min-w-8 px-2.5 text-sm disabled:opacity-30"
                 aria-label="Repeat one fewer time"
               >
                 &minus;
@@ -750,7 +1009,7 @@ export function CaptureScreen({
               <button
                 type="button"
                 onClick={() => void repeatProp.commit(propCtx, 1)}
-                className="px-2.5 py-1.5 text-sm"
+                className="min-h-(--control) min-w-8 px-2.5 text-sm"
                 aria-label="Repeat one more time"
               >
                 +
@@ -795,7 +1054,11 @@ export function CaptureScreen({
         </div>
       ) : (
         /* Reserves row 2's height so the stable row above never moves (INV-003). */
-        <div aria-hidden className="h-14 border-t border-border-subtle" />
+        <div
+          aria-hidden
+          data-testid="toolbar-reserved"
+          className="h-(--toolbar-row) shrink-0 border-t border-border-subtle"
+        />
       )}
 
       <InspectorSheet
@@ -808,22 +1071,26 @@ export function CaptureScreen({
         onClose={() => setInspecting(null)}
       />
 
-      <Fretboard
-        tuning={tuning}
-        onPress={press}
-        highlight={editable?.frets}
-        chordTones={chordTones}
-        disabled={!part}
-        latchStrip={
-          <LatchStrip
-            latches={LATCHES}
-            lit={lit}
-            target={target}
-            onToggle={toggleLatch}
-            disabled={!part || Boolean(selection)}
-          />
+      {/* A short screen gives the neck's place to the chord form while it is open, so the band keeps room (INV-003). */}
+      <div className={chordFormShowing ? "[@media(max-height:600px)]:hidden" : "contents"}>
+        <Fretboard
+          tuning={tuning}
+          keyboardString={kbUsed ? keyString : null}
+          onPress={press}
+          highlight={editable?.frets}
+          chordTones={chordTones}
+          disabled={!part}
+          latchStrip={
+            <LatchStrip
+              latches={LATCHES}
+              lit={lit}
+              target={target}
+              onToggle={toggleLatch}
+              disabled={!part || Boolean(selection)}
+            />
         }
-      />
+        />
+      </div>
     </div>
   );
 }

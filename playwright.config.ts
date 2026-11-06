@@ -20,6 +20,18 @@ export default defineConfig({
     // Capture is a phone screen first, so that is the primary target.
     { name: "mobile", use: { ...devices["Pixel 7"] } },
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
+    // A screen with no touch and no hover-less pointer ambiguity: the density pass reads sizes as a mouse
+    // user sees them, so Chromium is told the primary pointer is a mouse and hover works.
+    {
+      name: "no-pointer",
+      testMatch: /usability-density\.spec\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        launchOptions: {
+          args: ["--blink-settings=primaryPointerType=1,availablePointerTypes=1,primaryHoverType=1,availableHoverTypes=1"],
+        },
+      },
+    },
   ],
   // Tested against a production build, not `next dev`. Dev compiles routes on
   // demand, so the first parallel test to reach a cold route waits seconds for

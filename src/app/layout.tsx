@@ -3,6 +3,7 @@ import { Geist, JetBrains_Mono } from "next/font/google";
 import { Footer } from "@/components/app/Footer";
 import { ServiceWorker } from "@/components/app/ServiceWorker";
 import { SyncProvider } from "@/components/app/SyncProvider";
+import { KeyboardHelp } from "@/components/keys/KeyboardHelp";
 import { TopBar } from "@/components/app/TopBar";
 import "./globals.css";
 
@@ -38,11 +39,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  // The capture screen is a fixed-height app surface; letting it zoom on a
-  // double-tap makes the fretboard jump under your thumb.
+  // Pinch-zoom is left on: locking it away is an accessibility failure. The capture surface stops
+  // double-tap zoom with `touch-action: manipulation` instead, and `viewportFit: "cover"` lets the
+  // safe-area variables place content clear of a notch and home bar.
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  viewportFit: "cover",
   themeColor: "#0b0b0d",
 };
 
@@ -52,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${sans.variable} ${mono.variable} antialiased`}>
         <ServiceWorker />
         <SyncProvider />
+        <KeyboardHelp />
         <TopBar />
         {children}
         <Footer />

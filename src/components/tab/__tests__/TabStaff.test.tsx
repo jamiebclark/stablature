@@ -40,3 +40,44 @@ describe("TabStaff connectors", () => {
     expect(src).not.toMatch(/lib\/tab\/techniques|\.techniques\b/);
   });
 });
+
+describe("TabStaff reading sizes (007)", () => {
+  const chorded = () => {
+    const chordEvent = ev({ [A]: 3 });
+    const { container } = render(
+      <TabStaff
+        events={[chordEvent, ev({ [A]: 5 })]}
+        tuning={bass5}
+        annotations={[
+          { id: "c1", kind: "chord", anchorEventId: chordEvent.id, value: "F#m7b5" } as never,
+        ]}
+        showRhythm
+        barNumbers={{ offset: 4 }}
+      />,
+    );
+    return container;
+  };
+
+  it("never truncates a chord symbol, and widens its column instead of using a literal", () => {
+    const c = chorded();
+    const chord = [...c.querySelectorAll("div")].find((d) => d.textContent === "F#m7b5" && d.className.includes("text-accent"));
+    expect(chord?.className).not.toMatch(/truncate/);
+    expect(chord?.className).toMatch(/whitespace-nowrap/);
+    const first = c.querySelector<HTMLElement>('[data-testid="tab-column"]')!;
+    expect(first.style.width).toContain("--chord-ch");
+    expect(first.style.width).not.toContain("0.6rem");
+    expect(first.getAttribute("data-column")).toBeTruthy();
+  });
+
+  it("draws a 12px bar number offset by the pass, only on the column that opens a bar", () => {
+    const numbers = chorded().querySelectorAll('[data-testid="tab-bar-number"]');
+    expect(numbers).toHaveLength(1);
+    expect(numbers[0].textContent).toBe("5");
+    expect(numbers[0].className).toMatch(/text-\[12px\]/);
+  });
+
+  it("draws rhythm marks at 12px", () => {
+    const c = render(<TabStaff events={[ev({ [A]: 3 })]} tuning={bass5} showRhythm />).container;
+    expect(c.querySelector('[data-testid="tab-rhythm"]')?.className ?? "text-[12px]").toMatch(/text-\[12px\]/);
+  });
+});

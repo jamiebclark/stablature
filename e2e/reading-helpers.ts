@@ -1,3 +1,4 @@
+import { openCluster, openTools } from "./usability-helpers";
 /** Shared drivers for the reading-view specs. */
 import { expect, type Page } from "@playwright/test";
 import { generateNKeysBetween } from "fractional-indexing";
@@ -12,6 +13,7 @@ export async function seedReadable(page: Page) {
   await fret(page, "A", 5).click();
   await expect(page.getByTestId("tab-column")).toHaveCount(2);
   await page.goto(songUrl);
+  await openTools(page);
   await expect(page.getByTestId("tab-column").first()).toBeVisible();
   // Arranged, so the play view has staves and its control.
   await page.getByRole("button", { name: "Each part once" }).click();
@@ -23,7 +25,13 @@ export const view = (page: Page, v: (typeof VIEWS)[number]) => page.getByTestId(
 
 /** Every column's text, in order, from the first staff. */
 export const columnTexts = (page: Page) =>
-  page.getByTestId("tab-staff").first().getByTestId("tab-column").allInnerTexts();
+  page.getByTestId("tab-staff").first().getByTestId("tab-column").evaluateAll((cols) =>
+    cols.map((c) => {
+      const copy = c.cloneNode(true) as HTMLElement; // the bar number is a label above the column, not its content
+      copy.querySelectorAll('[data-testid="tab-bar-number"]').forEach((n) => n.remove());
+      return (copy.innerText ?? copy.textContent ?? "").replace(/^\s+|\s+$/g, "");
+    }),
+  );
 
 /** Every record of every Dexie table, as one string, so two moments can be compared. */
 export async function dumpDatabase(page: Page): Promise<string> {
@@ -144,6 +152,7 @@ export async function seedSong(page: Page, parts: PartSpec[], entries: EntrySpec
   await fret(page, "E", 7).click();
   await expect(page.getByTestId("tab-column")).toHaveCount(1);
   await page.goto(songUrl);
+  await openTools(page);
   await page.getByRole("button", { name: "Each part once" }).click();
   await expect(page.getByTestId("roadmap-chip")).toHaveCount(1);
   await page.waitForTimeout(150);
@@ -204,11 +213,14 @@ export async function seedSong(page: Page, parts: PartSpec[], entries: EntrySpec
     { parts, entries, partRanks, entryRanks, columnRanks, songId },
   );
   await page.goto(songUrl);
+  await openTools(page);
   await expect(page.getByTestId("tab-staff").first()).toBeVisible();
   return { songUrl, playUrl: `${songUrl}/play`, songId, ...ids };
 }
 
 export const choose = async (page: Page, view: View) => {
+  // The control sits in the tools panel on the song page and the cluster on the play view.
+  if (/\/play$/.test(new URL(page.url()).pathname)) await openCluster(page);
   await page.getByTestId(`staff-view-${view}`).click();
   await expect(page.getByTestId(`staff-view-${view}`)).toHaveAttribute("aria-pressed", "true");
 };

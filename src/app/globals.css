@@ -18,7 +18,7 @@
 
   --text: #ededf0;
   --text-dim: #9a9aa6;
-  --text-faint: #6b6b76;
+  --text-faint: #84848c;
 
   /* Amber rather than a brand colour: it reads instantly against near-black
      and stays legible under stage lighting. */
@@ -55,10 +55,52 @@
    */
   --fret-cell: #131318;
   --fret-cell-inlay: #1c1c23;
-  --fret-number: #70707b;
-  --string-height: 1.55rem;
+  --fret-number: #84848c;
   --cell-pad: 0.18rem;
+
+  /*
+   * Density. Defaults are touch; one block below overrides them for a fine pointer. A size is never set by
+   * a width breakpoint: a 500px window with a mouse is still a mouse, and an 820px tablet is still a thumb.
+   */
+  --control: 2.75rem;
+  --toolbar-row: 46px;
+  --title-row: 45px;
+  --status-row: 26px;
+  --fret: 2.25rem;
+  --dead-note: 1.75rem;
+  --latch: 31px;
+  --field-text: 1rem;
+  --staff-text: 1rem;
+  --col-pad: 0.6rem;
+  --string-height: 1.55rem;
+  --staff-row: 1.1rem;
+  --chord-ch: 0.42rem;
+  --chord-gap: 0.25rem;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
 }
+
+@media (pointer: fine) {
+  :root {
+    --control: 2rem;
+    --toolbar-row: 34px;
+    --title-row: 36px;
+    --fret: 2rem;
+    --dead-note: 1.5rem;
+    --latch: 26px;
+    --field-text: 0.875rem;
+    --staff-text: 0.875rem;
+    --col-pad: 0.5rem;
+    --string-height: 1.3rem;
+    --staff-row: 0.95rem;
+  }
+}
+
+/* For what tokens cannot say: which of two elements shows. */
+@custom-variant fine (@media (pointer: fine));
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
@@ -70,9 +112,9 @@
 
     --text: #16161a;
     --text-dim: #5c5c66;
-    --text-faint: #8a8a94;
+    --text-faint: #686870;
 
-    --accent: #b45309;
+    --accent: #a74d08;
     --accent-dim: #fde8c8;
     --accent-text: #ffffff;
 
@@ -85,7 +127,7 @@
     --diff-ink: #0b4f8a;
     --fret-cell: #ffffff;
     --fret-cell-inlay: #eaeae2;
-    --fret-number: #6b6b74;
+    --fret-number: #686870;
   }
 }
 
@@ -109,8 +151,11 @@
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
 }
 
-* {
-  min-width: 0;
+/* In the base layer so a `min-w-*` utility can win. Unlayered, this rule beat every one of them. */
+@layer base {
+  * {
+    min-width: 0;
+  }
 }
 
 body {
@@ -181,7 +226,9 @@ button,
 /* ---------- tab staff ---------- */
 
 .tab-staff {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono-face), ui-monospace, monospace;
+  font-size: var(--staff-text);
+  font-variant-ligatures: none;
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
@@ -309,19 +356,91 @@ button,
   font-size: 0.75rem;
 }
 
+/* Numerals and marks are text: 4.5:1 on every surface they sit on, so --text-dim, and --text on a selection. */
 .tab-bracket {
-  border-color: var(--text-faint);
-}
-.tab-bracket-label {
-  color: var(--text-faint);
-}
-
-/* --text-faint measures 2.16 and 2.75 on the selection band. */
-.tab-column-selected .tab-bracket {
   border-color: var(--text-dim);
 }
-.tab-column-selected .tab-bracket-label {
+.tab-bracket-label {
   color: var(--text-dim);
+}
+.tab-rhythm {
+  color: var(--text-dim);
+}
+
+.tab-column-selected .tab-bracket {
+  border-color: var(--text);
+}
+.tab-column-selected .tab-bracket-label {
+  color: var(--text);
+}
+
+/* The reading position: a full box in the text colour, set on the DOM by useReadingPosition. */
+.tab-column-reading {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+}
+@media print {
+  .tab-column-reading {
+    outline: none;
+  }
+}
+
+/* The wrapped staff (play view): bars break across lines at barlines; the gutter repeats the string labels per line. */
+.tab-staff-wrapped {
+  --gutter: 1.75rem;
+  --line-gap: 0.75rem;
+}
+/* Positioned here, not on the staff, so the caption anchors to the card as it does unwrapped. */
+.tab-wrapped-body {
+  position: relative;
+  padding-left: var(--gutter);
+}
+.tab-gutter {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: var(--gutter);
+  overflow: hidden;
+}
+.tab-gutter-block {
+  margin-bottom: var(--line-gap);
+}
+.tab-lines {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: var(--line-gap);
+}
+.tab-bar-run {
+  display: flex;
+  align-items: stretch;
+  flex: 1 0 auto;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tab-bar-run::-webkit-scrollbar {
+  display: none;
+}
+.tab-lines-end {
+  flex: 9999 0 0;
+}
+
+/* Paste box and the code of refused and ignored lines: columns must stay columns. */
+.tab-text {
+  font-variant-ligatures: none;
+}
+
+@layer base {
+  input,
+  select,
+  textarea {
+    font-size: var(--field-text);
+  }
+
+  /* A utility such as the tap pad's touch-none still wins over this. */
+  :where(.capture-surface, .capture-surface *) {
+    touch-action: manipulation;
+  }
 }
 
 /* A barline is one vertical rule spanning every string. */
@@ -371,6 +490,24 @@ button,
 
   .no-print {
     display: none !important;
+  }
+
+  /* Paper does not scroll: a bar wider than the page wraps its columns so every one prints. */
+  .tab-bar-run {
+    overflow: visible;
+    flex-wrap: wrap;
+    row-gap: var(--line-gap);
+  }
+  /* A chord symbol longer than the line breaks inside it rather than running off the page. */
+  .tab-bar-run [data-testid="tab-column"] {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .tab-bar-run [data-testid="tab-column"] > div.text-accent {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    max-width: calc(100vw - 8rem);
+    line-height: 1;
   }
 
   /* Never split a part across a page -- the whole point is reading it whole. */

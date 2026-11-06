@@ -19,7 +19,8 @@ import { ViewControl } from "@/components/reading/ViewControl";
 import { useStaffView } from "@/components/reading/useStaffView";
 import { VariantLine } from "@/components/reading/VariantLine";
 import { TabStaff } from "@/components/tab/TabStaff";
-import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader } from "@/components/ui";
+import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader, Panel } from "@/components/ui";
+import { partHeading } from "@/lib/reading/bars";
 import { createPart, createVariant } from "@/lib/local/editing";
 import {
   useArrangement,
@@ -77,35 +78,40 @@ export function SongView({ songId }: { songId: string }) {
     );
   }
 
+  const actions = (
+    <>
+      <ButtonLink href={`/songs/${songId}/play`}>
+        <Play size={15} aria-hidden />
+        Play view
+      </ButtonLink>
+      <ButtonLink href={`/songs/${songId}/capture`} variant="primary">
+        Capture
+      </ButtonLink>
+    </>
+  );
+
   return (
-    <main className="mx-auto max-w-3xl px-4 py-6">
+    <main className="mx-auto max-w-3xl px-4 pb-6 pt-3">
       <PageHeader
         title={song.title}
         subtitle={
           tuning ? `${stringLabels(tuning).join(" ")} — ${tuning.name}` : "No tuning available"
         }
         back={{ href: `/bands/${song.bandId}`, label: "Band" }}
-        actions={
-          <>
-            <ButtonLink href={`/songs/${songId}/play`}>
-              <Play size={15} aria-hidden />
-              Play view
-            </ButtonLink>
-            <ButtonLink href={`/songs/${songId}/capture`} variant="primary">
-              Capture
-            </ButtonLink>
-          </>
-        }
+        touchBar
+        actions={actions}
       />
 
-      <div className="mb-6 flex flex-wrap items-center gap-3 no-print">
+      <div className="mb-2 no-print">
+      <Panel id="song-tools" label="Song tools">
+      <div className="flex flex-wrap items-center gap-3">
         {tunings && tunings.length > 1 ? (
           <label className="flex items-center gap-1.5 text-xs text-text-dim">
             Tuning
             <select
               value={song.tuningId ?? ""}
               onChange={(e) => patchRow("songs", song.id, { tuningId: e.target.value || null })}
-              className="rounded border border-border-subtle bg-bg-raised px-2 py-1.5 text-sm text-text"
+              className="min-h-(--control) rounded border border-border-subtle bg-bg-raised px-2 text-text"
             >
               {/* Null means "whatever the band plays in", so retuning the band
                   does not require touching every song. */}
@@ -161,7 +167,7 @@ export function SongView({ songId }: { songId: string }) {
               key={option}
               type="button"
               onClick={() => setDensity(option)}
-              className={`px-2.5 py-1.5 text-xs ${
+              className={`min-h-(--control) px-3 text-xs ${
                 density === option ? "bg-accent text-accent-text" : "text-text-dim"
               }`}
               title={
@@ -177,9 +183,11 @@ export function SongView({ songId }: { songId: string }) {
 
         {tuning ? <ViewControl /> : null}
       </div>
+      </Panel>
+      </div>
 
-      <section className="mb-8">
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-text-dim">
+      <section className="mb-4">
+        <h2 className="mb-1 text-sm font-semibold uppercase tracking-wide text-text-dim">
           Arrangement
         </h2>
         {entries === undefined || parts === undefined || barCounts === undefined ? (
@@ -254,12 +262,20 @@ export function SongView({ songId }: { songId: string }) {
                   view={view}
                   comparison={comparisons?.get(part.id)}
                   songId={songId}
+                  bpm={song.bpm}
                 />
               </li>
             ))}
           </ul>
         )}
       </section>
+
+      <div
+        data-testid="song-actions"
+        className="no-print sticky bottom-0 z-10 -mx-4 mt-4 flex gap-2 border-t border-border-subtle bg-bg px-4 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] fine:hidden"
+      >
+        {actions}
+      </div>
     </main>
   );
 }
@@ -274,6 +290,7 @@ function PartCard({
   view,
   comparison,
   songId,
+  bpm,
 }: {
   part: PartRow;
   parts: readonly PartRow[];
@@ -284,6 +301,7 @@ function PartCard({
   view: StaffView;
   comparison: VariantComparison | undefined;
   songId: string;
+  bpm: number | null;
 }) {
   const [renaming, setRenaming] = useState(false);
   const [name, setName] = useState(part.name ?? "");
@@ -291,6 +309,8 @@ function PartCard({
   const base = part.variantOfPartId
     ? parts.find((candidate) => candidate.id === part.variantOfPartId)
     : undefined;
+
+  const heading = useMemo(() => partHeading(events, bpm), [events, bpm]);
 
   const marks = useMemo(
     () =>
@@ -331,11 +351,17 @@ function PartCard({
           <button
             type="button"
             onClick={() => setRenaming(true)}
-            className="text-sm text-text-dim hover:text-accent"
+            className="inline-flex min-h-(--control) items-center text-sm text-text-dim hover:text-accent"
           >
             {part.name ?? "name this part"}
           </button>
         )}
+
+        {heading.text ? (
+          <span data-testid="part-heading" className="text-xs text-text-faint">
+            {heading.text}
+          </span>
+        ) : null}
 
         {base ? (
           <span className="text-xs text-text-faint">
@@ -356,6 +382,7 @@ function PartCard({
           </ButtonLink>
           <Button
             variant="danger"
+            className="ml-2"
             onClick={() => deleteRow("parts", part.id)}
             aria-label={`Delete part ${part.label}`}
           >
@@ -373,6 +400,7 @@ function PartCard({
           density={density}
           surface="raised"
           showRhythm
+          barNumbers={{ offset: 0 }}
           reading={{ view, partEvents: events, marks }}
         />
       ) : (

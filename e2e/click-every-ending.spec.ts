@@ -5,6 +5,7 @@
  * "Queue ran dry" cannot be made through the screen (the stream is endless): it is the engine probe.
  */
 import { expect, test, type Page } from "@playwright/test";
+import { openCluster } from "./usability-helpers";
 import { cols, deviceSets, idb, rec, recorder, resolveWake, seed, type Col } from "./rhythm-probe-helpers";
 
 /** Timed for one bar at 240 bpm, then a gap: count-in, following, plain after a gap. */
@@ -103,7 +104,7 @@ for (const stage of STAGES) {
 
 const AWAY: { x: string; end: (page: Page, urls: { songUrl: string }) => Promise<void> }[] = [
   { x: "back link", end: (page) => page.getByRole("link", { name: "Song" }).click() },
-  { x: "the Capture link", end: (page) => page.getByRole("link", { name: "Capture" }).click() },
+  { x: "the Capture link", end: async (page) => { await openCluster(page); await page.getByRole("link", { name: "Capture" }).click(); } },
   { x: "browser back", end: (page) => page.goBack().then(() => {}) },
 ];
 

@@ -49,7 +49,7 @@ export function TuningsView({ bandId }: { bandId: string }) {
                   <p className="truncate text-sm font-medium">
                     {tuning.name}
                     {tuning.isDefault ? (
-                      <span className="ml-2 rounded bg-accent-dim px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-accent">
+                      <span className="ml-2 rounded bg-accent-dim px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-text">
                         default
                       </span>
                     ) : null}
@@ -66,6 +66,7 @@ export function TuningsView({ bandId }: { bandId: string }) {
                   )}
                   <Button
                     variant="danger"
+                    className="ml-2"
                     onClick={() => deleteRow("tunings", tuning.id)}
                     aria-label={`Delete ${tuning.name}`}
                   >
@@ -86,7 +87,7 @@ export function TuningsView({ bandId }: { bandId: string }) {
             key={candidate}
             type="button"
             onClick={() => setFamily(candidate)}
-            className={`rounded px-2.5 py-1 text-xs ${
+            className={`min-h-(--control) rounded px-3 text-xs ${
               candidate === family ? "bg-accent text-accent-text" : "bg-bg-raised text-text-dim"
             }`}
           >

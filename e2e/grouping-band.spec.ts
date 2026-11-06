@@ -75,7 +75,8 @@ for (const theme of THEMES) {
           expect(fits.row).toBe(true);
           expect(fits.kids).toBe(true);
           expect(fits.lines).toBe(1);
-          expect(fits.tallest).toBeLessThanOrEqual(36.5);
+          // Usability pass (FR-065): selection controls are --control (44px) tall, all one height.
+          expect(fits.tallest).toBeLessThanOrEqual(44.5);
           expect(fits.right).toBeLessThanOrEqual(fits.edge);
           expect((await stable(page).boundingBox())!.y).toBe(stableTop);
           expect(selecting.band).toBeGreaterThanOrEqual(rest.band);
@@ -218,6 +219,8 @@ for (const tuning of TUNINGS) {
 test("the band stays where a capturer put it across a barline tap", async ({ page }, info) => {
   test.skip(info.project.name !== "mobile", "touch gestures need the touch project");
   await startWith(page, TUNINGS[2]);
+  // Rows are tighter now, so six strings fit at 667; a shorter screen makes the band overflow.
+  await page.setViewportSize({ width: 375, height: 553 });
   await addRests(page, 3);
   await selectColumns(page, 0, 2);
   await groupControl(page).click();

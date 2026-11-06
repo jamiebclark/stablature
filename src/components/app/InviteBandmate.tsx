@@ -64,7 +64,7 @@ export function InviteBandmate({ bandId }: { bandId: string }) {
           value={link}
           aria-label="Invite link"
           onFocus={(e) => e.currentTarget.select()}
-          className="w-full rounded-md border border-border-subtle bg-bg px-2 py-1.5 font-mono text-xs"
+          className="w-full min-h-(--control) rounded-md border border-border-subtle bg-bg px-2 font-mono"
         />
         <Button
           onClick={async () => {

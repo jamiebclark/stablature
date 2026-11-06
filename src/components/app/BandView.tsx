@@ -80,8 +80,8 @@ export function BandView({ bandId }: { bandId: string }) {
           {songs.map((song) => (
             <li key={song.id}>
               <Card className="flex items-center justify-between gap-3 transition hover:border-border-strong">
-                <Link href={`/songs/${song.id}`} className="min-w-0 flex-1">
-                  <p className="truncate font-medium">{song.title}</p>
+                <Link href={`/songs/${song.id}`} className="block min-h-(--control) min-w-0 flex-1">
+                  <p className="line-clamp-2 break-words font-medium">{song.title}</p>
                   {song.bpm ? (
                     <p className="mt-0.5 font-mono text-xs text-text-faint">{song.bpm} bpm</p>
                   ) : null}

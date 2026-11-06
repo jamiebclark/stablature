@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { installRecorder, seedPlayable } from "./click-helpers";
 
-test("the bar is reachable at the start and the end of a long song, with 44px targets", async ({ page }) => {
+test("the bar is reachable at the start and the end of a long song, with 44px targets", async ({ page, isMobile }) => {
   await installRecorder(page);
   await seedPlayable(page, { passes: 12 });
   const bar = page.getByTestId("click-bar");
@@ -9,7 +9,7 @@ test("the bar is reachable at the start and the end of a long song, with 44px ta
     await page.evaluate((f) => window.scrollTo(0, (document.body.scrollHeight - innerHeight) * f), where);
     for (const id of ["click-start", "tempo-control"]) {
       const box = (await page.getByTestId(id).boundingBox())!;
-      expect(box.height).toBeGreaterThanOrEqual(44);
+      expect(box.height).toBeGreaterThanOrEqual(isMobile ? 44 : 32);
       const hit = await page.evaluate(
         ([x, y, testid]) =>
           document.elementFromPoint(x as number, y as number)?.closest(`[data-testid=${testid}]`) !== null,

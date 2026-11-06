@@ -10,7 +10,7 @@
  */
 
 import { useState } from "react";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, Panel } from "@/components/ui";
 import { parseArrangement } from "@/lib/arrangement/expand";
 import {
   appendPartEntry,
@@ -51,116 +51,8 @@ export function ArrangementEditor({ song, parts, entries, barCounts }: Arrangeme
 
   const playable = parts.filter((part) => part.variantOfPartId === null);
 
-  return (
-    <section>
-      <div className="mb-3">
-        <Roadmap
-          nodes={nodes}
-          parts={parts}
-          activeEntryId={selectedId}
-          onSelectEntry={(id) => setSelectedId((current) => (current === id ? null : id))}
-        />
-      </div>
-
-      {selected ? (
-        <div className="mb-3 rounded-lg border border-accent/40 bg-bg-raised p-3 no-print">
-          <div className="mb-2 flex items-center justify-between gap-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-text-dim">
-              {selected.kind === "part"
-                ? parts.find((p) => p.id === selected.partId)?.label ?? "Entry"
-                : selected.kind === "section_start"
-                  ? `Section: ${selected.label ?? "unnamed"}`
-                  : "Entry"}
-            </p>
-            <Button variant="ghost" onClick={() => setSelectedId(null)}>
-              Done
-            </Button>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            {selected.kind === "part" || selected.kind === "section_start" ? (
-              <div className="flex items-center overflow-hidden rounded-md border border-border-subtle">
-                <button
-                  type="button"
-                  className="px-2.5 py-1.5 text-sm disabled:opacity-30"
-                  disabled={selected.repeat <= 1}
-                  onClick={() => bumpEntryRepeat(selected, -1)}
-                  aria-label="One fewer repeat"
-                >
-                  &minus;
-                </button>
-                <span className="min-w-12 px-1 text-center font-mono text-sm">
-                  &times;{selected.repeat}
-                </span>
-                <button
-                  type="button"
-                  className="px-2.5 py-1.5 text-sm"
-                  onClick={() => bumpEntryRepeat(selected, 1)}
-                  aria-label="One more repeat"
-                >
-                  +
-                </button>
-              </div>
-            ) : null}
-
-            {selected.kind === "part" && variantsFor(selected.partId).length > 0 ? (
-              <label className="flex items-center gap-1.5 text-xs text-text-dim">
-                Last pass
-                <select
-                  value={selected.lastRepeatPartId ?? ""}
-                  onChange={(e) => setEntryVariant(selected.id, e.target.value || null)}
-                  className="rounded border border-border-subtle bg-bg px-2 py-1.5 text-sm text-text"
-                >
-                  <option value="">same</option>
-                  {variantsFor(selected.partId).map((variant) => (
-                    <option key={variant.id} value={variant.id}>
-                      {variant.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            ) : null}
-
-            {selected.kind === "part" && (barCounts[selected.partId ?? ""] ?? 0) > 1 ? (
-              <BarRange
-                entry={selected}
-                barCount={barCounts[selected.partId ?? ""] ?? 1}
-              />
-            ) : null}
-
-            <div className="ml-auto flex gap-1">
-              <Button
-                disabled={selectedIndex <= 0}
-                onClick={() => moveEntry(entries, selected.id, selectedIndex - 1)}
-                aria-label="Move earlier"
-              >
-                &larr;
-              </Button>
-              <Button
-                disabled={selectedIndex >= entries.length - 1}
-                onClick={() => moveEntry(entries, selected.id, selectedIndex + 2)}
-                aria-label="Move later"
-              >
-                &rarr;
-              </Button>
-              <Button
-                variant="danger"
-                onClick={async () => {
-                  if (selected.kind === "section_start") {
-                    await deleteSection(entries, selected.id);
-                  } else {
-                    await deleteEntry(selected.id);
-                  }
-                  setSelectedId(null);
-                }}
-              >
-                Remove
-              </Button>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
+  const adding = (
+    <>
       <div className="flex flex-wrap items-center gap-1.5 no-print">
         {playable.map((part) => (
           <Button
@@ -218,6 +110,127 @@ export function ArrangementEditor({ song, parts, entries, barCounts }: Arrangeme
           </Button>
         </form>
       </div>
+    </>
+  );
+
+  return (
+    <section>
+      <div className="mb-3">
+        <Roadmap
+          nodes={nodes}
+          parts={parts}
+          activeEntryId={selectedId}
+          onSelectEntry={(id) => setSelectedId((current) => (current === id ? null : id))}
+        />
+      </div>
+
+      {selected ? (
+        <div className="mb-3 rounded-lg border border-accent/40 bg-bg-raised p-3 no-print">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <p className="text-xs font-semibold uppercase tracking-wide text-text-dim">
+              {selected.kind === "part"
+                ? parts.find((p) => p.id === selected.partId)?.label ?? "Entry"
+                : selected.kind === "section_start"
+                  ? `Section: ${selected.label ?? "unnamed"}`
+                  : "Entry"}
+            </p>
+            <Button variant="ghost" onClick={() => setSelectedId(null)}>
+              Done
+            </Button>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {selected.kind === "part" || selected.kind === "section_start" ? (
+              <div className="flex items-center overflow-hidden rounded-md border border-border-subtle">
+                <button
+                  type="button"
+                  className="min-h-(--control) min-w-10 px-3 text-sm disabled:opacity-30"
+                  disabled={selected.repeat <= 1}
+                  onClick={() => bumpEntryRepeat(selected, -1)}
+                  aria-label="One fewer repeat"
+                >
+                  &minus;
+                </button>
+                <span className="min-w-12 px-1 text-center font-mono text-sm">
+                  &times;{selected.repeat}
+                </span>
+                <button
+                  type="button"
+                  className="min-h-(--control) min-w-10 px-3 text-sm"
+                  onClick={() => bumpEntryRepeat(selected, 1)}
+                  aria-label="One more repeat"
+                >
+                  +
+                </button>
+              </div>
+            ) : null}
+
+            {selected.kind === "part" && variantsFor(selected.partId).length > 0 ? (
+              <label className="flex items-center gap-1.5 text-xs text-text-dim">
+                Last pass
+                <select
+                  value={selected.lastRepeatPartId ?? ""}
+                  onChange={(e) => setEntryVariant(selected.id, e.target.value || null)}
+                  className="min-h-(--control) rounded border border-border-subtle bg-bg px-2 text-text"
+                >
+                  <option value="">same</option>
+                  {variantsFor(selected.partId).map((variant) => (
+                    <option key={variant.id} value={variant.id}>
+                      {variant.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+
+            {selected.kind === "part" && (barCounts[selected.partId ?? ""] ?? 0) > 1 ? (
+              <BarRange
+                entry={selected}
+                barCount={barCounts[selected.partId ?? ""] ?? 1}
+              />
+            ) : null}
+
+            <div className="ml-auto flex gap-2">
+              <Button
+                disabled={selectedIndex <= 0}
+                onClick={() => moveEntry(entries, selected.id, selectedIndex - 1)}
+                aria-label="Move earlier"
+              >
+                &larr;
+              </Button>
+              <Button
+                disabled={selectedIndex >= entries.length - 1}
+                onClick={() => moveEntry(entries, selected.id, selectedIndex + 2)}
+                aria-label="Move later"
+              >
+                &rarr;
+              </Button>
+              <Button
+                variant="danger"
+                className="ml-2"
+                onClick={async () => {
+                  if (selected.kind === "section_start") {
+                    await deleteSection(entries, selected.id);
+                  } else {
+                    await deleteEntry(selected.id);
+                  }
+                  setSelectedId(null);
+                }}
+              >
+                Remove
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {entries.length > 0 ? (
+        <Panel id="song-arrange" label="Add to the arrangement">
+          {adding}
+        </Panel>
+      ) : (
+        adding
+      )}
     </section>
   );
 }
@@ -247,7 +260,7 @@ function BarRange({ entry, barCount }: { entry: ArrangementEntryRow; barCount: n
             value={entry.fromBar ?? 1}
             onChange={(e) => setEntryBars(entry.id, Number(e.target.value), entry.toBar)}
             aria-label="First bar"
-            className="w-14 rounded border border-border-subtle bg-bg px-1.5 py-1 text-sm text-text"
+            className="min-h-(--control) w-14 rounded border border-border-subtle bg-bg px-1.5 text-text"
           />
           &ndash;
           <input
@@ -257,7 +270,7 @@ function BarRange({ entry, barCount }: { entry: ArrangementEntryRow; barCount: n
             value={entry.toBar ?? barCount}
             onChange={(e) => setEntryBars(entry.id, entry.fromBar, Number(e.target.value))}
             aria-label="Last bar"
-            className="w-14 rounded border border-border-subtle bg-bg px-1.5 py-1 text-sm text-text"
+            className="min-h-(--control) w-14 rounded border border-border-subtle bg-bg px-1.5 text-text"
           />
           <Button variant="ghost" onClick={() => setEntryBars(entry.id, null, null)}>
             whole part

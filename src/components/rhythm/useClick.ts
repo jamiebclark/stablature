@@ -1,20 +1,26 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { ClickPhase, Score } from "@/lib/rhythm/notation";
+import { columnAt } from "@/lib/reading/position";
+import type { ClickPhase, ColumnTick, Score } from "@/lib/rhythm/notation";
 import {
   createEngine,
   PULSE_MS,
   type ClickEngine,
   type EngineState,
 } from "@/lib/rhythm/scheduler";
-import { clickStream } from "@/lib/rhythm/stream";
+import { clickStream, COUNT_IN_CLICKS } from "@/lib/rhythm/stream";
+import { TICKS_PER_BEAT } from "@/lib/rhythm/durations";
 import { usableTempo } from "@/lib/rhythm/tempo";
 
 export interface UseClickOptions {
   bpm: unknown;
   score: Score;
   follow: boolean;
+  /** `notationColumns(passes)`, from the same passes as `score`. */
+  columns?: readonly ColumnTick[];
+  /** Called when the column under the click changes. Never with a column while `follow` is false. */
+  onColumn?: (column: ColumnTick | null) => void;
 }
 
 /** The reasons that leave a line on screen until the next start. */
@@ -52,7 +58,23 @@ function setWakeLock(held: WakeHeld, on: boolean) {
   }
 }
 
-export function useClick({ bpm, score, follow }: UseClickOptions) {
+const NO_COLUMNS: readonly ColumnTick[] = [];
+
+interface Run {
+  readonly columns: readonly ColumnTick[];
+  readonly lengthTicks: number;
+  readonly follow: boolean;
+}
+
+const sameColumn = (a: ColumnTick | null, b: ColumnTick | null) =>
+  a === b || (!!a && !!b && a.pass === b.pass && a.eventId === b.eventId && a.repetition === b.repetition);
+
+export function useClick({ bpm, score, follow, columns = NO_COLUMNS, onColumn }: UseClickOptions) {
+  const onColumnRef = useRef(onColumn);
+  useEffect(() => {
+    onColumnRef.current = onColumn;
+  });
+  const runRef = useRef<Run | null>(null);
   const [state, setState] = useState<EngineState>("idle");
   const [phase, setPhase] = useState<ClickPhase | null>(null);
   const [soundless, setSoundless] = useState(false);
@@ -85,10 +107,18 @@ export function useClick({ bpm, score, follow }: UseClickOptions) {
     if (usable === null) return;
     setStopped(null);
     setSoundless(false);
+    // The score, its columns and the choice are held together, so the highlight reads what is sounding.
+    runRef.current = { columns, lengthTicks: score.lengthTicks, follow };
     engine.start({ bpm: usable, stream: clickStream(score, follow) });
-  }, [engine, usable, score, follow]);
+  }, [engine, usable, score, follow, columns]);
 
   const stop = useCallback(() => engine.stop("tap"), [engine]);
+
+  // Stop and start in the same event, so the audio still has its gesture.
+  const restart = useCallback(() => {
+    engine.stop("tap");
+    start();
+  }, [engine, start]);
 
   useEffect(() => {
     if (usable !== null && engine.state === "running") engine.setTempo(usable);
@@ -113,6 +143,12 @@ export function useClick({ bpm, score, follow }: UseClickOptions) {
     let frame = 0;
     let pulse: ReturnType<typeof setTimeout> | null = null;
     let shownPhase: ClickPhase | null = null;
+    let shownColumn: ColumnTick | null = null;
+    const place = (column: ColumnTick | null) => {
+      if (sameColumn(column, shownColumn)) return;
+      shownColumn = column;
+      onColumnRef.current?.(column);
+    };
     const clear = () => {
       const el = beatRef.current;
       if (!el) return;
@@ -135,15 +171,20 @@ export function useClick({ bpm, score, follow }: UseClickOptions) {
         shownPhase = latest.phase;
         setPhase(latest.phase);
       }
+      const run = runRef.current;
+      const head = engine.playhead();
+      if (!run || !run.follow || head === null) place(null);
+      else place(columnAt(run.columns, head - COUNT_IN_CLICKS * TICKS_PER_BEAT, run.lengthTicks));
       frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
     return () => {
+      place(null);
       cancelAnimationFrame(frame);
       if (pulse !== null) clearTimeout(pulse);
       clear();
     };
   }, [engine, state]);
 
-  return { state, phase, soundless, stopped, usable, start, stop, beatRef };
+  return { state, phase, soundless, stopped, usable, start, stop, restart, beatRef };
 }

@@ -1,3 +1,4 @@
+import { openArrange, openTools } from "./usability-helpers";
 import { expect, test, type Page } from "@playwright/test";
 
 /**
@@ -540,6 +541,7 @@ test("builds the brief's arrangement and reads it back in order", async ({ page 
 
   // A x4, then B.
   await page.getByRole("button", { name: "Add part A to the arrangement" }).click();
+  await openArrange(page);
   await page.getByRole("button", { name: "Add part B to the arrangement" }).click();
   await expect(page.getByTestId("roadmap-chip")).toHaveCount(2);
 
@@ -569,6 +571,7 @@ test("plays a variant on the final pass only", async ({ page }) => {
   await page.getByRole("button", { name: "+ variant" }).click();
   await expect(page.getByText("variant of")).toBeVisible();
 
+  await openArrange(page);
   await page.getByRole("button", { name: "Add part A to the arrangement" }).click();
   await page.getByTestId("roadmap-chip").first().click();
   await page.getByRole("button", { name: "One more repeat" }).click();
@@ -596,6 +599,7 @@ test("collapses repeats in compact density", async ({ page }) => {
   // Expanded: four columns for the one stored row.
   await expect(columns(page)).toHaveCount(4);
 
+  await openTools(page);
   await page.getByRole("button", { name: "compact" }).click();
   // Compact: one column, labelled.
   await expect(columns(page)).toHaveCount(1);

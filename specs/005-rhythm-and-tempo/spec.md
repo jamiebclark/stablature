@@ -225,9 +225,9 @@ The bassist has notated a riff in an odd bar: five eighths, then three quarters,
 
 **Showing durations**
 
-- **FR-013**: The song page and the play view MUST draw a rhythm row under any staff whose columns include a duration, and no row under one that does not. Each drawn column with a duration MUST have its mark beneath it, so an expanded repeat shows a mark under each hit and a compact one shows one mark.
-- **FR-014**: A mark MUST fit under the narrowest column without widening it. The form of the mark is a planning decision, within FR-015.
-- **FR-015**: All six marks MUST be told apart at actual size in both themes, without relying on colour, at no less than 4.5:1 contrast. A column's screen reader description MUST name its duration in words when it has one and be unchanged when it does not.
+- **FR-013**: The song page and the play view MUST draw a rhythm row under any staff whose columns include a duration, and no row under one that does not. Each drawn column with a duration MUST have its mark beneath it, so an expanded repeat shows a mark under each hit and a compact one shows one mark. *(Amended by spec 007: marks are 12px and sit under their note, not left of it (5 to 10px off before).)*
+- **FR-014**: A mark MUST fit under the narrowest column without widening it. The form of the mark is a planning decision, within FR-015. *(Amended by spec 007: a column widens for a chord symbol or a mark rather than the symbol being cut; marks are 12px.)*
+- **FR-015**: All six marks MUST be told apart at actual size in both themes, without relying on colour, at no less than 4.5:1 contrast. A column's screen reader description MUST name its duration in words when it has one and be unchanged when it does not. *(Amended by spec 007: contrast is held at 4.5:1 on the new greys (`--text-faint` was 2.83 to 3.82; fret and numeral text 3.46).)*
 - **FR-016**: The capture staff MUST NOT draw the rhythm row. It has no height to give (specs/003 FR-020), and FR-012 covers what the capturer needs.
 - **FR-017**: The text export MUST NOT write durations, for any part. Pasted text MUST keep importing with no durations. This keeps specs/004's account of the export and its two round-trip properties true. **Reading durations from text, which specs/004 deferred to this entry, is therefore not built**, because the app writes no such text and hand-typed tab has no common form for it.
 
@@ -244,7 +244,7 @@ The bassist has notated a riff in an odd bar: five eighths, then three quarters,
 
 **The click**
 
-- **FR-026**: The play view MUST offer the click whenever the song exists, with or without an arrangement. Its controls MUST stay in reach at any scroll position, MUST NOT permanently cover the last staff, MUST be at least 44px high, and MUST NOT print.
+- **FR-026**: The play view MUST offer the click whenever the song exists, with or without an arrangement. Its controls MUST stay in reach at any scroll position, MUST NOT permanently cover the last staff, MUST be at least 44px high, and MUST NOT print. *(Amended by spec 007: the click bar is now a cluster behind one button (collapsed 44px high, still in reach at any scroll position, still not printed); its controls open on one tap.)*
 - **FR-027**: With no usable tempo, start MUST be unavailable, the screen MUST say why, and the tempo control MUST be beside it. The click MUST NOT assume a default tempo.
 - **FR-028**: The audio MUST be started inside the tap on start, before anything asynchronous, so that the tap counts as the user gesture a device requires. Nothing MUST try to start audio before that tap.
 - **FR-029**: Every start MUST begin with a count-in of exactly four clicks, one beat apart at the tempo, numbered on screen. It is four clicks, not a bar. The click MUST continue one beat after the fourth.

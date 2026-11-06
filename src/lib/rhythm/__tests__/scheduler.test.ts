@@ -231,3 +231,32 @@ describe("click engine", () => {
     void TICKS_PER_BEAT;
   });
 });
+
+describe("playhead (INV-036, INV-035)", () => {
+  it("is null before a click is shown, interpolates between clicks, and reads only", async () => {
+    const r = rig();
+    await go(r, 120);
+    expect(r.engine.playhead()).toBeNull();
+    r.run(0.3);
+    expect(r.engine.playhead()).toBeNull();
+    r.run(0.4);
+    const shown = r.engine.due();
+    expect(shown.length).toBeGreaterThan(0);
+    const last = shown[shown.length - 1];
+    expect(r.engine.playhead()).toBeCloseTo(last.tick + ((r.now - last.time) / 0.5) * TICKS_PER_BEAT, 3);
+    const before = r.scheduled.length;
+    for (let i = 0; i < 5; i++) r.engine.playhead();
+    expect(r.scheduled.length).toBe(before);
+  });
+
+  it("never leaves the two ticks it sits between, and stop clears it", async () => {
+    const r = rig();
+    await go(r, 60);
+    r.run(1.2);
+    r.engine.due();
+    const p = r.engine.playhead()!;
+    expect(p % TICKS_PER_BEAT).toBeGreaterThanOrEqual(0);
+    r.engine.stop("tap");
+    expect(r.engine.playhead()).toBeNull();
+  });
+});
