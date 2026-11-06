@@ -74,7 +74,8 @@
   --col-pad: 0.6rem;
   --string-height: 1.55rem;
   --staff-row: 1.1rem;
-  --chord-ch: 0.42rem;
+  /* 7px, not 0.6em (6.72px): Linux Chrome rounds glyph advances to whole pixels */
+  --chord-ch: 0.4375rem;
   --chord-gap: 0.25rem;
 
   --safe-top: env(safe-area-inset-top, 0px);

@@ -21,7 +21,7 @@ Defaults in `:root` are touch. One `@media (pointer: fine)` block overrides them
 | `--col-pad` | 0.6rem | 0.5rem | A staff column's padding |
 | `--string-height` | 1.55rem | 1.3rem | Already exists |
 | `--staff-row` | 1.1rem | 0.95rem | Bar, chord, bracket and rhythm rows |
-| `--chord-ch` | 0.42rem | 0.42rem | One chord character: 0.7rem × 0.6 |
+| `--chord-ch` | 0.4375rem | 0.4375rem | One chord character: 7px, since Linux Chrome rounds 0.7rem × 0.6 (6.72px) up to whole pixels |
 | `--chord-gap` | 0.25rem | 0.25rem | Clear space after a chord |
 
 A Tailwind variant, `@custom-variant fine (@media (pointer: fine))`, is for what tokens cannot say: which of two

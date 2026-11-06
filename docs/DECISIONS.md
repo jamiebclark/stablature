@@ -359,3 +359,7 @@ Audit, before and after (375×667, production build): targets under 24px went fr
 ## 007 T121 — a double tap on Set no longer reaches the screen behind the sheet
 
 The second tap of a double tap on Set, 40 to 160ms after the first, landed after the sheet had closed and added a column. Fixed in `TempoControl.tsx`: when Set closes the sheet, presses are eaten at the window for 300ms (`shieldPresses`), except on the tempo control and inside a sheet, so reopening the sheet is never refused. The test is unchanged. The sheet component itself is untouched, so no other sheet gains the delay.
+
+## 007 T183 — `--chord-ch` is 7px, not 0.6em
+
+CI failed 14 e2e tests (chords touching, gap under 2px) on both projects. Before: `--chord-ch: 0.42rem` (6.72px). Linux Chrome at device scale 1 rounds glyph advances to whole pixels, so each of 32 characters was 7px: 224 against 32 × 6.72 + 4 = 219.04, a shortfall of 4.96px. Windows positions glyphs at subpixel precision, so it passed locally. After: `--chord-ch: 0.4375rem` (7px) in `src/app/globals.css`. The tests are unchanged.

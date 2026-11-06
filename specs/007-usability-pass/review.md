@@ -1,103 +1,95 @@
 # Review: Usability pass
 
-Reviewed 135 file(s): 80 tracked files changed against `main` and 55 untracked outside `specs/`, across 2 commit(s), against main...HEAD plus the uncommitted working tree (base `46760fd`). Only the two reader commits are on the branch, so this reviews the present working tree against `main`, not `main...HEAD` alone.
-Round 4. Read in full: `plan.md`; `tasks.md` Phases 12 to 14; the previous `review.md`; `KeyboardHelp.tsx`; `useScreenKeys.ts`; `PlayView.tsx`'s diff against `main`; `parse.ts`'s diff against `main`; `spec004-holds.test.ts`. Sampled: `CaptureScreen.tsx` (lines 100 to 130 and the status row, 636 to 735); `Sheet` in `ui/index.tsx`; `shortcuts.ts` (`acceptsShortcut`); `e2e/usability-keys.spec.ts` lines 15 to 100; `e2e/variant-marks.spec.ts` (its helper, and the tests at lines 212 and 255); `spec.md` FR-026; `contracts/surfaces.md` on the status row; `research.md` R19; the audit's config and `summarise.mjs`. Not reviewed again by reading: everything else. Phase 14 changed one source file, `CaptureScreen.tsx`, and nothing under `src/` is newer than that edit, so the rest of the code is what round 3 read. It was still exercised, through every probe and the whole suite on a fresh build.
+Reviewed 208 file(s) changed across 3 commit(s), against main...HEAD plus the uncommitted working tree (base `46760fd`). T183, Phase 15's CI fix, is in the working tree only, not in a commit.
+Round 5. Read in full: `tasks.md` Phases 14 and 15; the previous `review.md`; the whole uncommitted diff (`globals.css`, `DECISIONS.md`, `contracts/surfaces.md`); CI's failure log for PR #7; `Panel` in `ui/index.tsx`; `useClick.ts` and `scheduler.ts`'s diffs against `main`; `applyPush` in `src/lib/server/sync.ts`. Sampled: `panels.ts`; `SongView.tsx` (the panel and the loading branch); `e2e/reading-sync.spec.ts` (lines 1 to 66 and 120 to 146); `e2e/click-running.spec.ts` lines 1 to 80; `e2e/usability-staff.spec.ts:110`; `e2e/usability-staves.spec.ts:150`, `:295`; `e2e/usability-bars-sections.spec.ts:135`; `.github/workflows/ci.yml`; `playwright.config.ts`. Not reviewed again by reading: everything else. Round 4's tree is commit `46a6757`, and only `src/app/globals.css` under `src/` or `e2e/` is newer than round 4's `review.md`, so the rest of the code is what round 4 read. It was still exercised, through every probe and the suite on a fresh build.
 
 ## Verdict
 
-Ready to merge, subject to the person-level and real-phone checks already owed after merge (T108 to T114). There is no BLOCKER and no MAJOR. F39 is closed, and a refusal now keeps both jump buttons beside every symbol. Every probe in `review-probes/` was re-run and none regressed: the five failures are the five named exceptions. The whole e2e suite ran on all three projects with 2 failures in 2,654, and both are explained below. T181's open question is ruled: `variant-marks.spec.ts` has a test race, not a lost caption, because the caption arrived 400 times of 400 while 12 early reads saw nothing. That file and that render path are unchanged from `main`, so it is out of scope. I also crossed a refusal with a waiting digit, which no round had done. It looked like a repeat of F39 until I measured the row's real clip edge: `end ⇥` runs 3.9px into the row's padding and loses nothing, 128 of 128 states. That and three other small defects are MINORs in § Follow-ups, so `tasks.md` is unchanged.
+Ready to merge once T183 is pushed and CI goes green, subject to the person-level and real-phone checks already owed after merge (T108 to T114). There is no BLOCKER and no MAJOR, so `tasks.md` is unchanged. T183 fixes CI's 14 failures, and this is measured on Linux, not inferred. No local run could see the defect, so I built a replica of CI in Docker (Linux Chrome, a throwaway Postgres set up as `ci.yml` sets it up). With the old `--chord-ch` the replica fails the same 14 tests CI failed. With T183 all of them pass. The whole suite then ran there for the first time: 2,653 passed and 2 failed, and neither failure comes from T183. Every saved probe also ran on Linux for the first time, and none showed a failure Windows does not, so the rounded glyphs hide no other defect in the sets they cover. CI's two flaky tests were flaky in `main`'s last CI run too, the same two tests on the same projects, so they are out of scope. One of them explained a real gap, which is F50: `reading-sync.spec.ts:35` cannot pass on this branch even if its old race is fixed. That is a MINOR, because the same assertion runs and passes elsewhere. The same trail led to something Jamie should see, out of scope here: two accounts on one server cannot both have a band of the same name (FU31).
 
 ## Invariants
 
-Every probe in `review-probes/` was re-run first, on a fresh build at 6 workers: 516 passed, 5 failed, 367 skipped by project. All five failures are named exceptions: `INV-003 Guitar 7` height sweep (FU13), INV-038's 1400 columns at 600 and 794 (FU15), and the two `staff.md 6` caret probes (FU12). `INV-039 Space declined on load` (FU20) passed this time. No probe that held in round 3 fails now, and round 3's four F39 failures now pass.
+Every probe in `review-probes/` was re-run first, on a fresh build at 6 workers: 531 passed, 5 failed, 382 skipped by project. All five failures are named exceptions: `INV-003 Guitar 7` height sweep (FU13), INV-038's 1400 columns at 600 and 794 (FU15), and the two `staff.md 6` caret probes (FU12). No probe that held in round 4 fails now. The same set then ran on Linux Chrome at 8 workers: 532 passed, 4 failed, 382 skipped, the same exceptions less one, because 1400 columns at 794 passes there.
+
+"Both platforms" below means the row's probes passed on Windows and on Linux, apart from those exceptions.
 
 | ID | Result | Enumerated over | Probe / reason |
 |---|---|---|---|
-| INV-001 | held | 3 tunings × 2 themes × 5 cursor states, 30 of 30 | review-probes/INV-001-002-003-004-031-capture-matrix.spec.ts |
-| INV-002 | held | {Bass 4, Bass 5, Guitar 6} × 2 themes × 5 states, 30 of 30 | same file |
-| INV-003 | held | 4 tunings × 2 heights × 3 states, 24 of 24, and 3 of 3 routes that take the column away with the form open. The band between 601 and 624px high stays MINOR F36 | review-probes/INV-003-chord-form-and-the-neck.spec.ts |
-| INV-004 | held | 4 tunings × 2 heights, and the cursor over a note, rest, barline and the start | review-probes/INV-001-002-003-004-031-capture-matrix.spec.ts |
-| INV-005 | held | 3 controls × 2 ends × 2 shapes, 12 of 12; sync arrival; sync arrival after a refused triplet; part change | review-probes/INV-005-new-group-in-view.spec.ts |
-| INV-006 | held | 24 states of **Scr** × 2 sizes × 2 themes on touch, and 1280×800 × 2 themes on a mouse, plus capture at 4, 5, 6 strings and bands empty | review-probes/INV-006-010-018-every-screen.spec.ts, review-probes/INV-031-title-row-fully-loaded.spec.ts |
-| INV-007 | held | stable; contextual with every member; selection with seven at numerals 2 and 16, at 375 | review-probes/INV-007-008-toolbars.spec.ts |
-| INV-008 | held | 6 controls × 2 widths, 12 of 12 | same file |
-| INV-009 | held | a cue on the song page and in a section, by Tab and Enter, × coarse, fine | review-probes/INV-009-012-021-023-025-surfaces.spec.ts |
-| INV-010 | held | every visible field over **Scr** × 2 sizes × 2 themes on touch; viewport `meta`; `touch-action` on the three named controls | review-probes/INV-006-010-018-every-screen.spec.ts, e2e/usability-floors.spec.ts:14 |
-| INV-011 | held | **Sz** × {paste with a refusal, paste ready, inspector chord}, stubbed keyboard. Owed to a phone as well | e2e/usability-reach.spec.ts |
-| INV-012 | held | note, rest, repeat by the details button; a barline's one action on the stable row | review-probes/INV-009-012-021-023-025-surfaces.spec.ts |
-| INV-013 | held | 6 screens × portrait and landscape insets | review-probes/INV-013-insets.spec.ts |
-| INV-014 | held | **Ptr** × **W**, with `matchMedia` asserted first | e2e/usability-density.spec.ts on all three projects |
+| INV-001 | held | 3 tunings × 2 themes × 5 cursor states, 30 of 30, both platforms | review-probes/INV-001-002-003-004-031-capture-matrix.spec.ts |
+| INV-002 | held | {Bass 4, Bass 5, Guitar 6} × 2 themes × 5 states, 30 of 30, both platforms | same file |
+| INV-003 | held | 4 tunings × 2 heights × 3 states, 24 of 24, and 3 of 3 routes that take the column away with the form open, both platforms. The band between 601 and 624px high stays MINOR F36 | review-probes/INV-003-chord-form-and-the-neck.spec.ts |
+| INV-004 | held | 4 tunings × 2 heights, and the cursor over a note, rest, barline and the start, both platforms | review-probes/INV-001-002-003-004-031-capture-matrix.spec.ts |
+| INV-005 | held | 3 controls × 2 ends × 2 shapes, 12 of 12; sync arrival; sync arrival after a refused triplet; part change; both platforms | review-probes/INV-005-new-group-in-view.spec.ts |
+| INV-006 | held | 24 states of **Scr** × 2 sizes × 2 themes on touch, and 1280×800 × 2 themes on a mouse, plus capture at 4, 5, 6 strings and bands empty, both platforms | review-probes/INV-006-010-018-every-screen.spec.ts, review-probes/INV-031-title-row-fully-loaded.spec.ts |
+| INV-007 | held | stable; contextual with every member; selection with seven at numerals 2 and 16, at 375, both platforms | review-probes/INV-007-008-toolbars.spec.ts |
+| INV-008 | held | 6 controls × 2 widths, 12 of 12, both platforms | same file |
+| INV-009 | held | a cue on the song page and in a section, by Tab and Enter, × coarse, fine, both platforms | review-probes/INV-009-012-021-023-025-surfaces.spec.ts |
+| INV-010 | held | every visible field over **Scr** × 2 sizes × 2 themes on touch; viewport `meta`; `touch-action` on the three named controls; both platforms | review-probes/INV-006-010-018-every-screen.spec.ts, e2e/usability-floors.spec.ts:14 |
+| INV-011 | held | **Sz** × {paste with a refusal, paste ready, inspector chord}, stubbed keyboard, both platforms. Owed to a phone as well | e2e/usability-reach.spec.ts |
+| INV-012 | held | note, rest, repeat by the details button; a barline's one action on the stable row; both platforms | review-probes/INV-009-012-021-023-025-surfaces.spec.ts |
+| INV-013 | held | 6 screens × portrait and landscape insets, both platforms | review-probes/INV-013-insets.spec.ts |
+| INV-014 | held | **Ptr** × **W**, with `matchMedia` asserted first, on all three projects, both platforms | e2e/usability-density.spec.ts |
 | INV-015 | held | `frets-unchanged.test.ts` passes; Copy text over every view and density; the guard's paths show zero diff | `npm test`, e2e/usability-staff.spec.ts:16, `npm run check:untouched-usability` |
-| INV-016 | held | 5 symbols × 2 sizes × 2 **Ptr** on every surface, and the paste preview | review-probes/INV-016-017-038-staves.spec.ts, review-probes/INV-016-017-remaining-surfaces.spec.ts |
-| INV-017 | held | **Rows** on every line, same matrix, and song page compact in notes and intervals × 2 sizes | those files, and review-probes/INV-017-compact-in-every-view.spec.ts |
-| INV-018 | held | as INV-006, both themes | review-probes/INV-006-010-018-every-screen.spec.ts |
-| INV-019 | held | Neck 4 of 4; numerals 2, 3, 16; bar numbers 1, 17, 128; all six marks; × 2 **Ptr** × 2 themes. Marks `1` and dotted do not exist, see FU14 | review-probes/INV-019-neck.spec.ts, review-probes/INV-019-numerals-marks-and-bars.spec.ts |
-| INV-020 | held | {500×800, 1280×800} × {chord row, bar row, plain}, 6 of 6 | review-probes/INV-020-two-pointers.spec.ts |
-| INV-021 | held | staff cell, chord row, numeral, mark, paste box, refused line, ignored line | review-probes/INV-009-012-021-023-025-surfaces.spec.ts |
-| INV-022 | held | 6 symbols × 7 armed states × 3 positions × waiting or not, 30 reachable per symbol, 180 of 180. With a refusal, 6 of 6, so F39 is closed. Newly run, the cross no round had made: a refusal with a digit waiting, 8 symbols × 4 armed states × 2 positions × 2 digits, 128 of 128: words whole, both buttons seen at 44px or more and taking a tap at both edges. Unknown symbols run 3.9px into the padding, see F46 | review-probes/INV-022-every-long-symbol-state.spec.ts, review-probes/INV-022-refusal-with-a-waiting-digit.spec.ts |
-| INV-023 | held | 120 characters on bands, band's songs, song page, play view and capture × **Sz**, and the form's hint | review-probes/INV-009-012-021-023-025-surfaces.spec.ts, review-probes/INV-031-title-row-fully-loaded.spec.ts |
+| INV-016 | held | 5 symbols × 7 shapes × 2 **Ptr** on every surface, and the paste preview, both platforms. This is the invariant T183 repairs: on Linux, `.42rem` fails 14 tests with gaps of 0.9px and -5px, and `.4375rem` passes all 116 tests of that slice | review-probes/INV-016-017-038-staves.spec.ts, review-probes/INV-016-017-remaining-surfaces.spec.ts, review-probes/INV-016-linux-chrome.sh |
+| INV-017 | held | **Rows** on every line, same matrix, and song page compact in notes and intervals × 2 sizes, both platforms | those files, and review-probes/INV-017-compact-in-every-view.spec.ts |
+| INV-018 | held | as INV-006, both themes, both platforms | review-probes/INV-006-010-018-every-screen.spec.ts |
+| INV-019 | held | Neck 4 of 4; numerals 2, 3, 16; bar numbers 1, 17, 128; all six marks; × 2 **Ptr** × 2 themes; both platforms. Marks `1` and dotted do not exist, see FU14 | review-probes/INV-019-neck.spec.ts, review-probes/INV-019-numerals-marks-and-bars.spec.ts |
+| INV-020 | held | {500×800, 1280×800} × {chord row, bar row, plain}, 6 of 6, both platforms | review-probes/INV-020-two-pointers.spec.ts |
+| INV-021 | held | staff cell, chord row, numeral, mark, paste box, refused line, ignored line, both platforms | review-probes/INV-009-012-021-023-025-surfaces.spec.ts |
+| INV-022 | held | 6 symbols × 7 armed states × 3 positions × waiting or not, 30 reachable per symbol, 180 of 180; with a refusal, 6 of 6; a refusal with a digit waiting, 128 of 128; both platforms. Whole-pixel glyphs move none of these past a limit | review-probes/INV-022-every-long-symbol-state.spec.ts, review-probes/INV-022-refusal-with-a-waiting-digit.spec.ts, review-probes/INV-022-status-every-combination.spec.ts, review-probes/INV-022-long-symbols-and-waiting-words.spec.ts |
+| INV-023 | held | 120 characters on bands, band's songs, song page, play view and capture × **Sz**, and the form's hint, both platforms | review-probes/INV-009-012-021-023-025-surfaces.spec.ts, review-probes/INV-031-title-row-fully-loaded.spec.ts |
 | INV-024 | held | **St** × 3 panels; 50 toggles, reload, second tab | src/lib/reading/__tests__/panels.test.ts, e2e/usability-reach.spec.ts |
-| INV-025 | held | top, middle, end × **Sz** × touch, mouse; one part, many parts; print; an empty song | review-probes/INV-009-012-021-023-025-surfaces.spec.ts |
-| INV-026 | held | 7 states × {collapsed, open} × **Sz**, 14 of 14, idle ≤60, and `fell behind` by a real stall × 2 sizes × {collapsed, open} | review-probes/INV-026-cluster-states.spec.ts, review-probes/INV-026-fell-behind-by-a-real-stall.spec.ts |
+| INV-025 | held | top, middle, end × **Sz** × touch, mouse; one part, many parts; print; an empty song; both platforms | review-probes/INV-009-012-021-023-025-surfaces.spec.ts |
+| INV-026 | held | 7 states × {collapsed, open} × **Sz**, 14 of 14, idle ≤60, and `fell behind` by a real stall × 2 sizes × {collapsed, open}, both platforms | review-probes/INV-026-cluster-states.spec.ts, review-probes/INV-026-fell-behind-by-a-real-stall.spec.ts |
 | INV-027 | held | 108 of 108 joined, 8 offset, against an extraction of `main` in this session | review-probes/reader/compare.mjs, src/lib/reading/__tests__/reader-vs-main.test.ts |
 | INV-028 | held | 204 of 204, same run | same files |
 | INV-029 | held | 72 advice cases and 12 kept codes, same run | same files |
-| INV-030 | held | every `src/lib/tab/__tests__/` file passes. Spec 004's probes: 2,561 passed and exactly the 19 listed failures, in the 5 listed files. F75's measure is 39 of 202. `npm run test:spec004` was green 4 runs of 5, see F49 | `npm test`, `npm run test:spec004`, specs/004-ascii-import/review-probes/vitest.probes.config.mts |
-| INV-031 | held | **Cap** with a short title, and 3 titles × 2 tempos × {1, 12} parts × {6, 136} unsynced × {375, 390}, 48 of 48, and a 120-character title with twelve parts on a mouse at 500, 820 and 1280 | review-probes/INV-031-title-row-fully-loaded.spec.ts. The mouse half has no copy in the suite, see F48 |
-| INV-032 | held | 11 **Arr** and 5 **Bars** shapes, hand lists | review-probes/INV-032-033-034-bars-sections.spec.ts |
-| INV-033 | held | 11 **Arr**, hand lists of section words | same file |
-| INV-034 | held | 13 shapes × play view and song page | same file |
-| INV-035 | held | count-in, two passes, barline, repeat, tuplet, timed-to-plain, follow off, tempo mid-run, 6 endings, untimed part; 13 of 13, within 50ms | review-probes/INV-035-highlight-timing.spec.ts |
-| INV-036 | held | baseline deep-equal, `playhead()` read-only, `engine-seams`, `tables`, `click-timing`, `click-running` | `npm test`, e2e click specs |
-| INV-037 | held | 6 size × pointer runs; {wheel, touch swipe, scroll key} × {page, a wide bar's own scroller}; a column removed mid-run; reduced motion; resuming | review-probes/INV-037-highlight-stays-on-screen.spec.ts, e2e/usability-highlight.spec.ts |
-| INV-038 | held | 9 **Bars** × 3 **V** × {375, 820, 1280} × 2 **Ptr** on screen; print emulation at 600 and 794 over 6 shapes up to 900 columns. Newly run: a variant's caption on the play view arrives however early it is read, 400 of 400. Past the plan's set, FU15 and FU16 stand | review-probes/INV-016-017-038-staves.spec.ts, review-probes/INV-038-print-lines.spec.ts, review-probes/INV-038-print-every-row-and-long-bars.spec.ts, review-probes/INV-038-page-break-in-a-long-staff.spec.ts, review-probes/INV-038-variant-line-arrives.spec.ts |
-| INV-039 | held | 15 keys × 10 fields, 2 selects, the inspector's chord and a `contenteditable`; 15 keys × 5 modifier forms × 3 screens; a sheet open; keys on a focused control; keys off their screens | review-probes/INV-039-every-input.spec.ts |
-| INV-040 | held | Digits 21 of 21; jump keys 18 of 18; Left, Right, `,`, `.` and `x` against their taps × 7 armed states, 35 of 35; every help row run on each screen, 21 of 21. Newly measured, past the set the plan names: a `?` less than about 20ms after the help closed can be lost, see F47 | review-probes/INV-040-capture-keys.spec.ts, review-probes/INV-040-jump-keys-against-buttons.spec.ts, review-probes/INV-040-041-every-key-against-its-tap.spec.ts, review-probes/INV-040-every-help-row-runs.spec.ts, review-probes/INV-040-help-closes-then-opens.spec.ts |
-| INV-041 | held | The listed set, F1's sequences, part changes with 3 to 24 queued, and the jump keys in the queue at 0, 10 and 150ms | review-probes/INV-041-typing-keeps-order.spec.ts, review-probes/INV-041-part-change-with-a-long-queue.spec.ts, review-probes/INV-040-041-every-key-against-its-tap.spec.ts |
+| INV-030 | held | every `src/lib/tab/__tests__/` file passes; `npm run test:spec004` 1 of 1. Spec 004's probes, second run: 2,561 passed and exactly the 19 listed failures, compared by name. The first run added a 20th, a timing ratio by 1.4ms, which passed 2 of 2 alone, see FU26 | `npm test`, `npm run test:spec004`, specs/004-ascii-import/review-probes/vitest.probes.config.mts |
+| INV-031 | held | **Cap** with a short title, and 3 titles × 2 tempos × {1, 12} parts × {6, 136} unsynced × {375, 390}, 48 of 48, and a 120-character title with twelve parts on a mouse at 500, 820 and 1280, both platforms | review-probes/INV-031-title-row-fully-loaded.spec.ts, review-probes/INV-031-title-beside-chips.spec.ts. The mouse half has no copy in the suite, FU25 |
+| INV-032 | held | 11 **Arr** and 5 **Bars** shapes, hand lists, both platforms | review-probes/INV-032-033-034-bars-sections.spec.ts |
+| INV-033 | held | 11 **Arr**, hand lists of section words, both platforms | same file |
+| INV-034 | held | 13 shapes × play view and song page, both platforms. The e2e copy of this reads too early, see FU22. The product holds, because the probe waits and passes | same file |
+| INV-035 | held | count-in, two passes, barline, repeat, tuplet, timed-to-plain, follow off, tempo mid-run, 6 endings, untimed part; 13 of 13, within 50ms; both platforms | review-probes/INV-035-highlight-timing.spec.ts |
+| INV-036 | held | baseline deep-equal, `playhead()` read-only, `engine-seams`, `tables`, `click-timing`, `click-running`. `click-running.spec.ts:62`, flaky in CI, passed 40 of 40 on Linux, see FU32 | `npm test`, e2e click specs |
+| INV-037 | held | 6 size × pointer runs; {wheel, touch swipe, scroll key} × {page, a wide bar's own scroller}; a column removed mid-run; reduced motion; resuming; both platforms | review-probes/INV-037-highlight-stays-on-screen.spec.ts, e2e/usability-highlight.spec.ts |
+| INV-038 | held | 9 **Bars** × 3 **V** × {375, 820, 1280} × 2 **Ptr** on screen; print emulation at 600 and 794 over 6 shapes up to 900 columns; both platforms. Past the plan's set, FU15 and FU16 stand | review-probes/INV-016-017-038-staves.spec.ts, review-probes/INV-038-print-lines.spec.ts, review-probes/INV-038-print-every-row-and-long-bars.spec.ts, review-probes/INV-038-page-break-in-a-long-staff.spec.ts, review-probes/INV-038-variant-line-arrives.spec.ts |
+| INV-039 | held | 15 keys × 10 fields, 2 selects, the inspector's chord and a `contenteditable`; 15 keys × 5 modifier forms × 3 screens; a sheet open; keys on a focused control; keys off their screens; both platforms | review-probes/INV-039-every-input.spec.ts |
+| INV-040 | held | Digits 21 of 21; jump keys 18 of 18; Left, Right, `,`, `.` and `x` against their taps × 7 armed states, 35 of 35; every help row run on each screen, 21 of 21; both platforms. FU24 stands | review-probes/INV-040-capture-keys.spec.ts, review-probes/INV-040-jump-keys-against-buttons.spec.ts, review-probes/INV-040-041-every-key-against-its-tap.spec.ts, review-probes/INV-040-every-help-row-runs.spec.ts, review-probes/INV-040-help-closes-then-opens.spec.ts |
+| INV-041 | held | The listed set, F1's sequences, part changes with 3 to 24 queued, and the jump keys in the queue at 0, 10 and 150ms, both platforms | review-probes/INV-041-typing-keeps-order.spec.ts, review-probes/INV-041-part-change-with-a-long-queue.spec.ts, review-probes/INV-040-041-every-key-against-its-tap.spec.ts |
 | INV-042 | not checked | a person at actual size, owed after merge (T114) | a person-level pass |
-| INV-043 | held | T108 to T114 present, open and marked `🛑 BLOCKED` | specs/007-usability-pass/tasks.md:311 |
+| INV-043 | held | T108 to T114 present, open and marked `🛑 BLOCKED`, 7 of 7 | specs/007-usability-pass/tasks.md:311 |
 | INV-044 | held | `src/` and `e2e/` fixtures | src/lib/reading/__tests__/no-other-product.test.ts |
-| INV-045 | held | `npm run check:usability-amendments` passes | scripts/check-usability-amendments.sh |
-| INV-046 | held | `npm run check:usability-audit` passes, A1 to A33. The walk was re-run on this build, 28 of 28, and `summarise.mjs` gives all 420 lines of `after.txt` unchanged, so FU17 is closed | scripts/check-usability-audit.sh, specs/007-usability-pass/audit/walk.audit.ts |
+| INV-045 | held | `npm run check:usability-amendments` passes. T183's `--chord-ch` row is amended in `contracts/surfaces.md:24`, recorded at `docs/DECISIONS.md:363`, and no other document gives the old value as current | scripts/check-usability-amendments.sh |
+| INV-046 | held | `npm run check:usability-audit` passes, A1 to A33. The walk was re-run on this build, 28 of 28: 414 of `after.txt`'s 420 lines unchanged, 6 staff widths 1 to 2px wider, see F51 | scripts/check-usability-audit.sh, specs/007-usability-pass/audit/walk.audit.ts |
 
 ## Findings
 
-- [ ] MINOR F46 — During a refusal with a digit waiting, an unknown symbol pushes `end ⇥` 3.9px into the row's padding
-      where:  src/components/capture/CaptureScreen.tsx:688, src/components/capture/CaptureScreen.tsx:696, src/components/capture/CaptureScreen.tsx:115
-      why:    T175 gave both branches the same fit for the symbol, but the span beside it still differs. The known branch drops its tones during a refusal, and the unknown branch keeps `not a chord I know`, so it has one more flex item. 3.9px matches one flex gap, though I did not try removing it. It needs an unknown symbol of any length, a refusal, a digit waiting for up to 600ms, and a window near 375. Nothing is lost, because `overflow: hidden` clips at the padding box: over 128 states the button is seen whole and takes a tap at both edges. So INV-022 holds. The two rules are also two inline ternaries, not the one rule T175 named, and `symbolFit`'s comment sits above `WIDE_ROW`.
-      owed:   Drop the second span during a refusal, as the known branch does, with the choice made in one place. Not tried.
-      traces: FR-026, INV-022, Deviation 3
+- [ ] MINOR F50 — `reading-sync.spec.ts:35` cannot pass on this branch, and two older defects hide that
+      where:  e2e/reading-sync.spec.ts:64, e2e/reading-sync.spec.ts:62, e2e/reading-sync.spec.ts:51, src/components/app/SongView.tsx:184, src/components/app/SongView.tsx:106
+      why:    This branch moved `ViewControl` into the Song tools panel, which is closed on a new device. Line 64 waits for `staff-view` to be visible on a new device and never opens the panel, unlike the rest of the file, which gained `openTools`. Nobody saw this, for two reasons, neither of them this branch's. Line 62 clicks Sign in and line 63 navigates at once, which cancels the sign-in, so the page stays on `Sign in` and `Loading…`: read at 1, 5 and 15s, and it fails at line 64 with `element(s) not found`, 2 of 2 on an empty database. And on a database that already holds a band called Hollow Crown, the outbox cannot drain (FU31), so the test skips at line 51: 20 of 20. That fits CI calling it flaky: the first attempt fails, and the retry finds the band already there and skips. CI's log does not show the retry, so that part is inferred. Fix only the race and the test fails every time, on `staff-view` being hidden. The behaviour itself holds: a device signed in properly gets the song, and with the panel open `frets` is pressed. `reading-sync.spec.ts:127` asserts the same thing through `twoDevices`, which signs in properly and uses a band name of its own, so that is why this is not a MAJOR.
+      owed:   Wait for the sign-in to leave the page, then `await openTools(second)` before line 64. Tried in review-probes/F50-second-device-opens-a-song.spec.ts, which passes.
+      traces: spec 006 INV-003, FR-064
 
-- [ ] MINOR F47 — A `?` pressed less than about 20ms after the help closed can leave it closed
-      where:  src/components/ui/index.tsx:194, src/components/ui/index.tsx:187, e2e/usability-keys.spec.ts:67
-      why:    `Sheet` drops its children on commit, closes the dialog in an effect, and the `close` event comes later still. A `?` landing before that event reopens the dialog, and then the old event's `onClose` sets `open` to false. The page's log shows the order: key at 32.2ms, close event at 35.4ms. Lost under 16 workers: 48 of 180 at 0ms, 1 of 180 at 5ms, and 0 of 180 at each of 20, 50, 100 and 200ms. No person presses twice that fast, so this is not a product defect in use. It is what failed `usability-keys.spec.ts:47` this round, and what T172 called a load flake on both projects. Its set in the plan names no timing, so I read INV-040 as held. That is the call to overturn if you read it more strictly.
-      owed:   Ignore a `close` event while the dialog is open again, for example `if (!e.currentTarget.open) onClose()`. Not tried.
-      traces: INV-040
+- [ ] MINOR F51 — T183 left `audit/after.txt` 1 to 2px behind on six staff widths
+      where:  specs/007-usability-pass/audit/after.txt:6, specs/007-usability-pass/audit/after.txt:14, specs/007-usability-pass/audit/after.txt:175
+      why:    Chord columns grew with `--chord-ch`, so `summarise.mjs` now prints `288/327` where the file says `288/325`, on 6 of 420 lines. Those are the only differences. No document quotes those figures, no A-number depends on them, and `check:usability-audit` passes.
+      owed:   Regenerate the file as quickstart.md §8 says.
+      traces: INV-046
 
-- [ ] MINOR F48 — T176 is ticked, but the mouse half of its probe never reached the suite
-      where:  specs/007-usability-pass/tasks.md:441, e2e/capture-matrix.spec.ts:12, specs/007-usability-pass/review-probes/INV-031-title-row-fully-loaded.spec.ts:92
-      why:    `FR-001 on a mouse at ${width}`, three tests, is not in `e2e/`. `capture-matrix.spec.ts` skips every non-mobile test at file level, so those tests could not run there. The probe still passes, so the behaviour holds, but a later change to the title row on a mouse has no test in the suite. The other five probes of Phase 14 are adopted, by title.
-      owed:   Add the three tests to a spec that runs on `desktop`.
-      traces: INV-031, FR-001
-
-- [ ] MINOR F49 — `npm run test:spec004` can go red on a timing shape the quickstart says may fail
-      where:  src/lib/reading/__tests__/spec004-holds.test.ts:44, specs/007-usability-pass/quickstart.md:70
-      why:    The quickstart allows the whole timing probe to fail under load, and the test exempts one of its five shapes. `many wrapped runs on one line` failed 1 run of 5, the first, straight after an e2e slice. The other four were green, and the probe file alone passed 6 of 6. It compares about 3ms with about 11ms, so one pause trips the ratio. Its timings show no slowdown, 11 to 22ms for 5,000 runs. T172 recorded a `spec004-holds` failure too, without naming the shape.
-      owed:   Exempt every shape of `INV-030 a line of many runs stays linear`, not one.
-      traces: INV-030
+Round 4's F46 to F49 are open and unchanged, in § Follow-ups as FU23 to FU26.
 
 ### Earlier findings, rechecked
 
 | Finding | Now |
 |---|---|
-| F39 MAJOR | Closed. A refusal beside each of 6 symbols keeps both buttons. Its neighbour, which cuts nothing, is F46 |
-| T181's open question | Ruled: a test race, out of scope, FU27. `variant-marks.spec.ts:255` reads the caption once, straight after `tab-staff` is visible, and a staff is drawn before the song's content arrives. Same early read, then a wait: 12 of 400 read nothing, and 400 of 400 got the right text. The real test failed 4 of 150 at 16 workers, each with T181's exact message. `variant-marks.spec.ts:212` failed once in this round's suite in the same way: one early null, then later lines present |
-| FU17 | Closed, see INV-046 |
-| F12, F13, F15 to F19, F24 to F27, F35, F36, F38, F40 to F45 | Still open, not gating, see § Follow-ups |
+| T183's cause | Confirmed, with a control. Old value on Linux: 14 failed, the same 14 names as CI, compared by name, with CI's shortfall of 4.96px, and 102 passed. New value: 116 passed. 32 × 7 + 4 = 228 reserves more than the 224 drawn |
+| F45 (FU22) | Still open, and it did fail on Linux: once in the suite, then 4 of 260 at `usability-bars-sections.spec.ts:141`, each `Received: null`. It did not fail in PR #7's CI run, and CI's one retry should absorb it, so it does not gate |
+| T181's reading of sync failures as FU19 | Not for `reading-sync.spec.ts:35`. That one is F50's sign-in race, not a lost row |
+| F12, F13, F15 to F19, F24 to F27, F35, F36, F38, F40 to F49 | Still open, not gating, see § Follow-ups. T183 changed no code they cite |
 
 ## Follow-ups
 
-Not this spec's work, and not gating. Unboxed on purpose. Numbers carry over from round 3, because `tasks.md` cites them.
+Not this spec's work, and not gating. Unboxed on purpose. Numbers carry over from round 4, because `tasks.md` cites them.
 
 - FU1 — MINOR F12, `looksJoined` tests for the letter `s`, src/lib/tab/parse.ts:586
 - FU2 — MINOR F13, a ruling on FR-014's axis, e2e/usability-floors.spec.ts:189
@@ -119,13 +111,19 @@ Not this spec's work, and not gating. Unboxed on purpose. Numbers carry over fro
 - FU19 — MINOR F42, while a digit waits, words go short by window width, not by what the row needs, src/components/capture/CaptureScreen.tsx:116
 - FU20 — MINOR F43, for a few milliseconds after the click becomes ready, Space does nothing, src/components/keys/useScreenKeys.ts:24. review-probes/INV-039-space-declined-on-load.spec.ts fails under load by design until then, so it is not adopted
 - FU21 — NOTE F44, a pass that does not fit page 1 moves whole to page 2, src/app/globals.css:514
-- FU22 — MINOR F45, `usability-bars-sections.spec.ts` reads the beats figure before the events arrive, e2e/usability-bars-sections.spec.ts:145. The repaired probe is the fix to copy
+- FU22 — MINOR F45, `usability-bars-sections.spec.ts` reads the beats figure before the events arrive, e2e/usability-bars-sections.spec.ts:145. The repaired probe is the fix to copy. On Linux at 8 workers it fails 4 of 260
 - FU23 — MINOR F46, src/components/capture/CaptureScreen.tsx:688. Adopt review-probes/INV-022-refusal-with-a-waiting-digit.spec.ts into e2e/usability-status-row.spec.ts
 - FU24 — MINOR F47, src/components/ui/index.tsx:194. review-probes/INV-040-help-closes-then-opens.spec.ts prints the losses at 0 and 5ms and asserts only from 50ms up. Adopt it with the fix, asserting every delay
 - FU25 — MINOR F48, adopt the three mouse tests of review-probes/INV-031-title-row-fully-loaded.spec.ts:92
-- FU26 — MINOR F49, src/lib/reading/__tests__/spec004-holds.test.ts:44
-- FU27 — out of scope: `variant-marks.spec.ts` reads the caption once, before the song's content has arrived, e2e/variant-marks.spec.ts:232, e2e/variant-marks.spec.ts:277. The file has no diff against `main`, and `{marks ? <VariantLine ... /> : null}` and `comparisons` are unchanged in src/components/app/PlayView.tsx. Wait for `variant-line` before the read. review-probes/INV-038-variant-line-arrives.spec.ts is a measure for this ruling, and has nothing to adopt
+- FU26 — MINOR F49, src/lib/reading/__tests__/spec004-holds.test.ts:44. This round the same ratio tripped on a shape in specs/004-ascii-import/review-probes/INV-014-030-wrapped-cells-only-s6-claims.test.ts:74, `many runs only the notation test asks about`, at 101.77 against 100.41, then passed 2 of 2 alone. It is not one of the 19, and `spec004-holds` itself passed
+- FU27 — out of scope: `variant-marks.spec.ts` reads the caption once, before the song's content has arrived, e2e/variant-marks.spec.ts:232, e2e/variant-marks.spec.ts:277. Wait for `variant-line` before the read. review-probes/INV-038-variant-line-arrives.spec.ts is a measure for this ruling, and has nothing to adopt
 - FU28 — out of scope: `test.setTimeout(120_000)` sits inside a comment on `main` too, so these two files run at the default timeout, e2e/variant-marks.spec.ts:4, e2e/reading-layout.spec.ts:10
+- FU29 — MINOR F50, e2e/reading-sync.spec.ts:64. Adopt the wait and `openTools(second)` from review-probes/F50-second-device-opens-a-song.spec.ts, and give the test a band name of its own, or FU31 keeps skipping it
+- FU30 — MINOR F51, specs/007-usability-pass/audit/after.txt:6
+- FU31 — out of scope, and worth raising first: two accounts on one server cannot both have a band of the same name. `slugify` adds nothing to make a slug unique, src/lib/local/editing.ts:90; the index is unique across the whole server, drizzle/0000_modern_elektra.sql:183; and `applyPush` runs a device's whole batch in one transaction, src/lib/server/sync.ts:84. So the duplicate fails that batch: 301 `bands_slug_idx` errors in a run of 20 tests, and the outbox did not drain within 15s in any of the 20. No file under `src/lib/server`, `src/lib/sync` or `drizzle` differs from `main`. e2e/reading-sync.spec.ts:51 reports this as `sync is not reaching a database`, which it is not
+- FU32 — out of scope: `click-running.spec.ts:62` flaked in PR #7's CI on a set of 3 gap sizes against 2. It flaked in `main`'s last CI run too, run 42077179082, as line 61, e2e/click-running.spec.ts:75. It passed 40 of 40 on Linux at 8 workers, so I have no cause for it
+- FU33 — out of scope: a device with no such song shows `Loading…` for good, because `getSong` returns `undefined` for a row it lacks and `undefined` is what the page reads as loading, so `That song is not on this device.` is never reached that way, src/components/app/SongView.tsx:72, src/lib/local/queries.ts:66. F50's probe read this at 1, 5 and 15s. Neither line is in this branch's diff
+- FU34 — keep review-probes/INV-016-linux-chrome.sh as a tool, with nothing to adopt, since CI is the run it copies. Run it before a push: every check in this pipeline ran on Windows, which is how T183's defect reached CI
 
 ## Coverage
 
@@ -135,21 +133,21 @@ Not this spec's work, and not gating. Unboxed on purpose. Numbers carry over fro
 | Success criteria | 17 | 17 | 0 | 0 | 0 |
 | Constitution principles | 14 | 13 | 1 | 0 | 0 |
 
-`.specify/memory/constitution.md` is still the unfilled template, so the third row counts the 14 gates of plan.md § Constitution Check. The partial gate is browser testing, owed by T114.
+`.specify/memory/constitution.md` is still the unfilled template, so the third row counts the 14 gates of plan.md § Constitution Check. The partial gate is browser testing, owed by T114. The first two rows carry over from round 4. This round re-ran their tests, and T183 changes no requirement.
 
-Run on this working tree, on a fresh build: typecheck clean, with this round's probes; lint 0 errors, 9 warnings; `npm test` 146 files, 6,139 tests passed; `check:untouched-usability`, `check:usability-amendments` and `check:usability-audit` pass. Line endings match `main`: `git diff main --stat` and the same with `--ignore-space-at-eol` agree, at 80 files. No scratch files at the repo root.
+Run on this working tree, on a fresh build: typecheck clean, with this round's probes; lint 0 errors, 9 warnings; `npm test` 146 files, 6,139 tests passed; `test:budget` 8 of 8; `test:spec004` 1 of 1; `check:untouched-usability`, `check:usability-amendments` and `check:usability-audit` pass. Line endings match `main`: `git diff main --shortstat` and the same with `--ignore-space-at-eol` agree, at 208 files. No scratch files at the repo root.
 
-The whole e2e suite, all 98 specs, in four slices through `review-probes/playwright.suite.config.ts` on all three projects at 6 workers: 2,652 passed, 2 failed, 724 skipped by project. The failures are `variant-marks.spec.ts:212` on mobile (FU27) and `usability-keys.spec.ts:47` on desktop (F47). Spec 006's sync flake, `durations.spec.ts` and `usability-bars-sections.spec.ts:145` did not fail this run.
-
-T174 and T177 said to keep each probe's timeout, and the adopted files run lower: 240s against 280s, and 150s against 200s. The longest of those sweeps took 10.6s, so this costs nothing.
+The whole e2e suite on Linux Chrome, all three projects, in four slices at 8 workers with no retries: 2,653 passed, 2 failed, 723 skipped, the same skipped count as CI. The failures are `reading-sync.spec.ts:35` on mobile (F50) and `usability-bars-sections.spec.ts:141` on desktop (FU22). On Windows, `usability-*`, `reading-*` and `tab*`, the specs that read column widths: 662 passed, 261 skipped, none failed.
 
 ## What I could not check
 
-- **Anything on a real phone.** T108 to T113 stay open and marked. The on-screen keyboard is stubbed and insets are emulated, so INV-011 and INV-013 are held in emulation only.
+- **GitHub's own CI on T183.** Pushing is not part of this phase, so PR #7 still shows the red run for `46a6757`. The replica is close but not the same: Node 26 against 24, 8 workers, no retries, `next start` over one build, and slices. Its control reproducing CI's 14 failures by name is why I trust it. It is not a green check.
+- **Anything on a real phone.** T108 to T113 stay open and marked. The on-screen keyboard is stubbed and insets are emulated, so INV-011 and INV-013 are held in emulation only. Whether a real Android phone rounds glyphs as Linux Chrome does is unmeasured. 7px is safe either way, because it only reserves more room.
 - **INV-042, legibility at actual size.** Needs a person, T114. No screenshot was reviewed this round.
-- **Printed pages by eye.** No PDF renderer is installed here. FU16's figures come from text positions in Chromium's PDFs. A5, Letter, landscape and a real printer were not tried.
-- **Other browsers.** Everything ran in Chromium. F47 depends on when the `close` event fires, and F46 on where `overflow: hidden` clips, so their timing and figures are Chromium's. Safari's handling of `max-width: max-content` on the back button, and of the print rules, is unread.
-- **`variant-marks`' rate on `main`.** I did not build `main`, so "out of scope" rests on the file having no diff and the render path being unchanged, not on a measured rate. This branch's extra work per render could have made the race a little more likely. That would not change the ruling, because the caption always arrives.
-- **The fixes for F46, F47 and F49 were not tried.** The cause given for F46's 3.9px is arithmetic.
-- **Timing depends on load.** The e2e suite ran once, at 6 workers. F47's rates are from 16 workers, and F45 showed that a test race can stay hidden at lower load, so a clean slice does not prove there are no others like it.
-- **Corrections to earlier work, so they are not read as app results.** My first refusal-and-digit probe reported `end ⇥ clipped by 3.9px`, which would have reopened INV-022. It read the row's content edge, as round 3's probe does, and the row clips at its padding box, 12px further out. By the same arithmetic, which I did not measure, round 3's F39 figures overstated what was cut by 12px, so 6.6px cut nothing and 20px cut 8px. F39 was still a real cut from 9 characters, and the fix stands. The adopted test keeps the stricter edge, which does no harm. The audit re-run wrote into `audit/results/`, so I backed that folder up and restored it, and checked the audit folder byte for byte against a hash taken first. The first comparison showed no change in `after.txt`, so I re-ran to confirm the walk really writes: 92 of 112 files were rewritten and 32 differ in bytes, in fields `summarise.mjs` does not print.
+- **Printed pages by eye.** No PDF renderer is installed here. A5, Letter, landscape and a real printer were not tried.
+- **Other browsers.** Everything ran in Chromium, now on two platforms. Safari and Firefox are unread.
+- **The whole suite on Windows.** This round only the width-reading slice ran there. Every probe did.
+- **`main`, built.** I did not build it. "Out of scope" for F50's race and FU32 rests on `main`'s CI flagging the same tests and on their lines having no diff, not on a measured rate. I have no cause for FU32's third gap size.
+- **How far FU31 goes.** I measured a failed push and an outbox that does not drain in 15s. I did not check what the person sees, whether anything else on that device stops syncing for good, or what happens if the band is renamed.
+- **The fixes for F46, F47 and F49 are still untried.** F50's is tried only in its probe, not in `e2e/`.
+- **Timing depends on load.** Other projects were loading this machine throughout. FU22's rate is from 8 workers in Docker, and a quieter or busier machine will differ.
