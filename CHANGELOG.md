@@ -1,3 +1,10 @@
+## [1.11.2](https://github.com/jamiebclark/stablature/compare/v1.11.1...v1.11.2) (2026-11-08)
+
+
+### Bug Fixes
+
+* **usability-pass:** follow-ups from the browser check and main's CI ([#11](https://github.com/jamiebclark/stablature/issues/11)) ([7258960](https://github.com/jamiebclark/stablature/commit/72589609c160da8a1cc35c359b0060bb45b8feef))
+
 ## [1.11.1](https://github.com/jamiebclark/stablature/compare/v1.11.0...v1.11.1) (2026-11-08)
 
 
