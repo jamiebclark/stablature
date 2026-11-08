@@ -33,7 +33,7 @@ for (const u of U) {
     await expect(page.getByTestId("tab-column").first()).toBeVisible();
     await expect(page.getByTestId("tab-rhythm")).toHaveCount(0);
     await expect(page.getByTestId("click-follow")).toHaveCount(0);
-    await expect(page.getByTestId("click-state")).toHaveText("Click is a plain beat.");
+    await expect(page.getByTestId("click-state")).toHaveText("Click is a plain beat. Nothing at the start has a note length to follow.");
 
     await page.goto(songUrl);
     await expect(page.getByTestId("tab-column").first()).toBeVisible();

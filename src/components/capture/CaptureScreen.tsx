@@ -553,7 +553,7 @@ export function CaptureScreen({
           type="button"
           onClick={() => router.push(`/songs/${songId}`)}
           aria-label={`Back to ${song.title}`}
-          className="min-h-(--control) min-w-(--control) max-w-max flex-[1_1_0] truncate text-left text-sm font-medium hover:text-accent"
+          className="min-h-(--control) min-w-[8ch] max-w-max flex-[1_1_0] truncate text-left text-sm font-medium hover:text-accent"
         >
           &larr;<span> {song.title}</span>
         </button>

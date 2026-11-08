@@ -176,6 +176,10 @@ export function Sheet({
   // began elsewhere (a long press on the staff, released over a control the
   // sheet opened under the finger) is not a tap on that control.
   const pressBeganInside = useRef(false);
+  // Whether the dialog's next `close` event is one this component caused by
+  // following `open`. That event arrives a task later, so if `open` went true
+  // again in between, passing it on would close the sheet just reopened.
+  const closedByProp = useRef(false);
 
   useEffect(() => {
     const dialog = ref.current;
@@ -184,14 +188,23 @@ export function Sheet({
       // A press record from an earlier opening must not license this one's release.
       pressBeganInside.current = false;
       dialog.showModal();
-    } else if (!open && dialog.open) dialog.close();
+    } else if (!open && dialog.open) {
+      closedByProp.current = true;
+      dialog.close();
+    }
   }, [open]);
 
   return (
     <dialog
       ref={ref}
       aria-label={label}
-      onClose={onClose}
+      onClose={() => {
+        if (closedByProp.current) {
+          closedByProp.current = false;
+          return;
+        }
+        onClose();
+      }}
       onPointerCancel={() => {
         pressBeganInside.current = false;
       }}

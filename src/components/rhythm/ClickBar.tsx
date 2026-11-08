@@ -87,7 +87,9 @@ export function ClickBar({ song, passes, notationReady, cluster, onColumn, onSta
       ? STOPPED_WORDS[stopped]
       : follow
         ? "Click follows the notation."
-        : "Click is a plain beat.";
+        : wantFollow
+          ? "Click is a plain beat. Nothing at the start has a note length to follow."
+          : "Click is a plain beat.";
   } else if (phase === "following") words = "Following the notation.";
   else if (phase === "plain") words = "Plain beat.";
   else words = "Counting in.";

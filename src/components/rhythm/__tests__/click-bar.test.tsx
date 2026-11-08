@@ -46,7 +46,7 @@ describe("ClickBar", () => {
   it("hides follow when the notation is not timed from the start", () => {
     const v = bar(120);
     expect(v.queryByTestId("click-follow")).toBeNull();
-    expect(text(v, "click-state")).toBe("Click is a plain beat.");
+    expect(text(v, "click-state")).toBe("Click is a plain beat. Nothing at the start has a note length to follow.");
   });
 
   it("offers follow when timed, and says what it will do", () => {
@@ -69,7 +69,7 @@ describe("ClickBar", () => {
     expect(document.activeElement).toBe(v.getByTestId("click-stop"));
     act(() => void fireEvent.click(v.getByTestId("click-stop")));
     expect(v.getByTestId("click-start")).toBeTruthy();
-    expect(text(v, "click-state")).toBe("Click is a plain beat.");
+    expect(text(v, "click-state")).toBe("Click is a plain beat. Nothing at the start has a note length to follow.");
     expect(v.queryByTestId("click-help")).toBeNull();
   });
 

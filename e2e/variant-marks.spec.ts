@@ -114,6 +114,9 @@ const staffReport = (page: Page, index: number) =>
     const line = staff.parentElement!.querySelector('[data-testid="variant-line"]')?.textContent ?? null;
     return { counts, bars: [...new Set(bars)], line };
   }, index);
+/** staffReport reads once, so wait for the song's content first: the staves can draw before the line does. */
+const lineShown = (page: Page, index: number) =>
+  expect(page.getByTestId("tab-staff").nth(index).locator("..").getByTestId("variant-line")).toBeVisible();
 
 /** The line's numbers, read as a person would. */
 const says = (line: string | null) => ({
@@ -228,6 +231,7 @@ test.describe("INV-026 only a live parent in this song", () => {
     );
     await page.goto(playUrl);
     await expect(page.getByTestId("tab-staff").nth(6)).toBeVisible();
+    await expect(page.getByTestId("variant-line")).toHaveCount(3);
     const lines = [];
     for (let i = 0; i < 7; i += 1) lines.push((await staffReport(page, i)).line);
     expect(lines).toEqual([
@@ -267,13 +271,16 @@ test.describe("INV-027 the marks and the line count the same things", () => {
         expect(seen.counts, `${where}: ${seen.line}`).toEqual(says(seen.line));
         expect(seen.bars.sort((x, y) => x - y), `${where}: ${seen.line}`).toEqual(barsSaid(seen.line));
       };
+      await lineShown(page, 1);
       await check("expanded", 1);
       const expanded = await staffReport(page, 1);
       await page.getByRole("button", { name: "compact", exact: true }).click();
+      await lineShown(page, 1);
       await check("compact", 1);
       expect((await staffReport(page, 1)).line).toBe(expanded.line);
       await page.goto(playUrl);
       await expect(page.getByTestId("tab-staff").nth(2)).toBeVisible();
+      await lineShown(page, 0);
       expect((await staffReport(page, 0)).line).toBe(expanded.line);
       await check("play whole", 0);
       // A slice keeps the part's own bar numbers in its words, so only the counts compare.
