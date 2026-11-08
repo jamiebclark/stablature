@@ -168,7 +168,7 @@ test.describe("the click", () => {
       await installRecorder(page);
       await seedPlayable(page);
       await expect(page.getByTestId("click-follow")).toHaveCount(0);
-      await expect(page.getByTestId("click-state")).toHaveText("Click is a plain beat.");
+      await expect(page.getByTestId("click-state")).toHaveText("Click is a plain beat. Nothing at the start has a note length to follow.");
     });
 
     test("a real leading empty bar is offered the choice (INV-038)", async ({ page }) => {

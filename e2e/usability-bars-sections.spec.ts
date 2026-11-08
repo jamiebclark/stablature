@@ -142,7 +142,8 @@ for (const shape of BEATS) {
     const { playUrl, songUrl } = await seedSong(page, [{ key: "a", label: "A", columns: shape.columns }], [{ part: "a" }]);
     for (const url of [playUrl, songUrl]) {
       await page.goto(url);
-      await expect(page.getByTestId("tab-staff").first()).toBeVisible();
+      // A staff draws empty until the song's events arrive, so wait for a column, which comes with the heading.
+      await expect(page.getByTestId("tab-column").first()).toBeVisible();
       const body = await page.locator("main").innerText();
       expect(/\d+ beats? a bar/.exec(body)?.[0] ?? null, url).toBe(shape.text);
       expect(body).not.toMatch(/\b\d\s*\/\s*\d\b/);

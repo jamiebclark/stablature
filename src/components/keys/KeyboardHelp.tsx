@@ -52,7 +52,7 @@ export function KeyboardHelp() {
 
   return (
     <Sheet open={open} onClose={() => setOpen(false)} label="Keyboard shortcuts">
-      <div data-testid="help-overlay" className="flex flex-col gap-3">
+      <div data-testid="help-overlay" className="flex flex-col gap-3 p-4">
         <h2 className="text-base font-semibold">Keyboard shortcuts</h2>
         <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
           {rows.map((row) => (

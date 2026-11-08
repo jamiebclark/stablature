@@ -202,6 +202,8 @@ test("INV-036 fall to plain, by ear and on screen: no break in time, never back"
 const WORDS = {
   follows: "Click follows the notation.",
   plain: "Click is a plain beat.",
+  // No follow switch to explain it, so the words say why.
+  untimed: "Click is a plain beat. Nothing at the start has a note length to follow.",
 };
 
 for (const c of [
@@ -218,7 +220,7 @@ for (const c of [
     await expect(page.getByTestId("click-start")).toBeEnabled();
     await openCluster(page);
     await expect(page.getByTestId("click-follow")).toHaveCount(c.offered ? 1 : 0);
-    await expect(page.getByTestId(STATE)).toHaveText(c.offered ? WORDS.follows : WORDS.plain);
+    await expect(page.getByTestId(STATE)).toHaveText(c.offered ? WORDS.follows : WORDS.untimed);
     if (c.offered) {
       await expect(page.getByTestId("click-follow")).toHaveAttribute("aria-pressed", "true");
       await page.getByTestId("click-follow").click();
