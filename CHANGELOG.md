@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/jamiebclark/stablature/compare/v1.10.0...v1.11.0) (2026-11-08)
+
+
+### Features
+
+* **usability-pass:** usability pass across every screen, phone first ([#7](https://github.com/jamiebclark/stablature/issues/7)) ([8de435d](https://github.com/jamiebclark/stablature/commit/8de435d44335a3480e055780df419e8008196c41))
+
 # [1.10.0](https://github.com/jamiebclark/stablature/compare/v1.9.0...v1.10.0) (2026-11-05)
 
 
