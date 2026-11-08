@@ -60,8 +60,13 @@ test("choosing notes on one device leaves another signed-in device on frets and 
   await second.getByLabel("Email").fill(`tester-${id}@example.test`);
   await second.getByLabel("Password").fill("practice-space-5");
   await second.getByRole("button", { name: "Sign in" }).click();
+  // Navigating before the sign-in leaves the page drops the session, and the song never arrives.
+  await expect(second).not.toHaveURL(/sign-in/, { timeout: 15_000 });
   await second.goto(songUrl);
-  await expect(second.getByTestId("staff-view")).toBeVisible({ timeout: 30_000 });
+  await expect(second.getByTestId("tab-column").first()).toBeVisible({ timeout: 30_000 });
+  // The view control sits in the song's tools panel.
+  await openTools(second);
+  await expect(second.getByTestId("staff-view")).toBeVisible();
   await expect(view(second, "frets")).toHaveAttribute("aria-pressed", "true");
 });
 

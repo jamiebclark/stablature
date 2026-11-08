@@ -1,5 +1,4 @@
 import { applyPush, notifyChanged } from "@/lib/server/sync";
-import { rolesForUser } from "@/lib/server/membership";
 import { currentUser, unauthorized } from "@/lib/server/session";
 import { pushRequestSchema } from "@/lib/sync/protocol";
 
@@ -15,8 +14,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const roles = await rolesForUser(user.userId);
-  const result = await applyPush(user.userId, parsed.data.mutations, roles);
+  const result = await applyPush(user.userId, parsed.data.mutations);
 
   // Wake other devices only if something actually landed.
   if (result.cursor > 0) await notifyChanged(result.cursor);
