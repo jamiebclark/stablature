@@ -94,7 +94,7 @@ export const bands = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     ...sync,
   },
-  (t) => [uniqueIndex("bands_slug_idx").on(t.slug), index("bands_seq_idx").on(t.serverSeq)],
+  (t) => [index("bands_slug_idx").on(t.slug), index("bands_seq_idx").on(t.serverSeq)],
 );
 
 /**

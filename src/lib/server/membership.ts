@@ -21,8 +21,11 @@ export function canEdit(role: BandRole | undefined): boolean {
 }
 
 /** Every band this user belongs to, with their role in it. */
-export async function rolesForUser(userId: string): Promise<Map<string, BandRole>> {
-  const rows = await db
+export async function rolesForUser(
+  userId: string,
+  reader: Pick<typeof db, "select"> = db,
+): Promise<Map<string, BandRole>> {
+  const rows = await reader
     .select({ bandId: bandMembers.bandId, role: bandMembers.role })
     .from(bandMembers)
     .where(eq(bandMembers.userId, userId));

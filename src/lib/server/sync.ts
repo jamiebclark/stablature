@@ -27,7 +27,7 @@ import type {
   PushResponse,
   PulledRows,
 } from "@/lib/sync/protocol";
-import { canEdit } from "./membership";
+import { canEdit, rolesForUser } from "./membership";
 
 const TABLES = {
   bands: schema.bands,
@@ -54,6 +54,12 @@ function bandScope(name: SyncedTable): SQL.Aliased | never {
   return (name === "bands" ? table.id : table.bandId) as never;
 }
 
+/**
+ * Key for the advisory lock that serialises pushes. Any constant works; it only
+ * has to be the same for every push.
+ */
+const PUSH_LOCK = 0x5ab1a7;
+
 /** Channel used to wake connected clients after a write. */
 export const SYNC_CHANNEL = "stablature_sync";
 
@@ -66,12 +72,20 @@ export const SYNC_CHANNEL = "stablature_sync";
  * id within a table. UUIDv7 sorts by creation time, so that ordering is also
  * creation order -- which is what lets foreign keys stay enforced even though
  * a client may have queued a part before the song that contains it.
+ *
+ * Pushes also run one at a time. `serverSeq` is drawn when a row is written,
+ * not when its batch commits, so two pushes in flight at once could commit out
+ * of order: a pull between the two commits would see seq 11 without seq 10 and
+ * hand out a cursor of 11, and seq 10 would then never be sent. Holding a lock
+ * from before the first `nextval` until commit makes commit order seq order.
+ *
+ * Roles are read after the lock, not before. A device's second push can start
+ * while its first, which creates a band, is still running. Read before the
+ * lock, that second push would find the band already committed but not yet in
+ * the user's roles, reject it as someone else's, and the device would drop the
+ * band's new rows for good.
  */
-export async function applyPush(
-  userId: string,
-  mutations: readonly Mutation[],
-  roles: Map<string, BandRole>,
-): Promise<PushResponse> {
+export async function applyPush(userId: string, mutations: readonly Mutation[]): Promise<PushResponse> {
   const ordered = [...mutations].sort((a, b) => {
     const byTable = SYNCED_TABLES.indexOf(a.table) - SYNCED_TABLES.indexOf(b.table);
     return byTable !== 0 ? byTable : a.row.id.localeCompare(b.row.id);
@@ -82,9 +96,11 @@ export async function applyPush(
   let cursor = 0;
 
   await db.transaction(async (tx) => {
+    await tx.execute(sql`select pg_advisory_xact_lock(${PUSH_LOCK})`);
+
     // Bands created during this batch become writable within it, so a band and
     // its first song can arrive together.
-    const effective = new Map(roles);
+    const effective = await rolesForUser(userId, tx);
 
     for (const mutation of ordered) {
       const bandId = mutation.table === "bands" ? mutation.row.id : mutation.row.bandId;
@@ -222,6 +238,11 @@ export async function notifyChanged(cursor: number): Promise<void> {
  * So rows from every table are merged into one list ordered by serverSeq and
  * truncated as a single global prefix -- the cursor is then the last row
  * actually returned, and nothing below it can have been skipped.
+ *
+ * That only holds if every table is read from the same moment, so the reads
+ * share one repeatable-read snapshot. Read one by one, a push committing
+ * between the `parts` read and the `events` read would give a page holding a
+ * new part's events without the part, and a cursor above the part.
  */
 export async function readPull(
   roles: Map<string, BandRole>,
@@ -235,21 +256,26 @@ export async function readPull(
 
   const candidates: { table: SyncedTable; seq: number; row: unknown }[] = [];
 
-  for (const name of SYNCED_TABLES) {
-    const table = TABLES[name] as unknown as AnyTable;
-    const page = await db
-      .select()
+  await db.transaction(
+    async (tx) => {
+      for (const name of SYNCED_TABLES) {
+        const table = TABLES[name] as unknown as AnyTable;
+        const page = await tx
+          .select()
       .from(table)
-      .where(and(inArray(bandScope(name), bandIds), gt(columns(name).serverSeq, since)))
-      .orderBy(asc(columns(name).serverSeq))
-      // One past the limit, so a single table can never starve the others out
-      // of the global ordering below.
-      .limit(limit + 1);
+          .where(and(inArray(bandScope(name), bandIds), gt(columns(name).serverSeq, since)))
+          .orderBy(asc(columns(name).serverSeq))
+          // One past the limit, so a single table can never starve the others
+          // out of the global ordering below.
+          .limit(limit + 1);
 
-    for (const row of page as unknown as { serverSeq: number | string }[]) {
-      candidates.push({ table: name, seq: Number(row.serverSeq), row });
-    }
-  }
+        for (const row of page as unknown as { serverSeq: number | string }[]) {
+          candidates.push({ table: name, seq: Number(row.serverSeq), row });
+        }
+      }
+    },
+    { isolationLevel: "repeatable read", accessMode: "read only" },
+  );
 
   candidates.sort((a, b) => a.seq - b.seq);
   const included = candidates.slice(0, limit);

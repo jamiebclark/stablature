@@ -36,6 +36,13 @@
       "when": 1793771986975,
       "tag": "0004_striped_mesmero",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794142819923,
+      "tag": "0005_bands_slug_not_unique",
+      "breakpoints": true
     }
   ]
 }
