@@ -1,3 +1,10 @@
+## [1.11.1](https://github.com/jamiebclark/stablature/compare/v1.11.0...v1.11.1) (2026-11-08)
+
+
+### Bug Fixes
+
+* **sync:** stop a pull skipping rows, and let two bands share a name ([#10](https://github.com/jamiebclark/stablature/issues/10)) ([f7cc816](https://github.com/jamiebclark/stablature/commit/f7cc816463fd3d6c9a9df1fa8f29490d8e5b55dc))
+
 # [1.11.0](https://github.com/jamiebclark/stablature/compare/v1.10.0...v1.11.0) (2026-11-08)
 
 
