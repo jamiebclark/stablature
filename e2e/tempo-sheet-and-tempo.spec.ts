@@ -1,13 +1,12 @@
 import { openTools } from "./usability-helpers";
 /**
- * INV-016: the sheet disturbs nothing, on capture x {cursor mid-part, latch armed, selection open,
- * chord draft open} x {closed with no set, set}.
+ * INV-016: the sheet disturbs nothing, on capture: set over {latch armed, selection open, chord
+ * draft open}, each with the cursor mid-part, and closed with no set over the chord draft.
  * INV-017: a tapped tempo against a typed one, on every surface, in the stored row and the outbox.
  * INV-018: T through the real screen, and typing 120.5 on the song page.
  */
 import { expect, test, type Page } from "@playwright/test";
 import {
-  caret,
   columns,
   stackLatch,
 } from "./capture-surface-helpers";
@@ -30,11 +29,9 @@ const held = (page: Page) =>
     };
   });
 
+// "cursor mid-part" is not its own setup: each of these places the cursor mid-part first, and
+// `held` reads the caret in every case.
 const SETUPS: Record<string, (page: Page) => Promise<void>> = {
-  "cursor mid-part": async (page) => {
-    await columns(page).nth(1).click();
-    await expect(caret(page)).toBeVisible();
-  },
   "latch armed": async (page) => {
     await columns(page).nth(1).click();
     await stackLatch(page).click();
@@ -53,25 +50,33 @@ const SETUPS: Record<string, (page: Page) => Promise<void>> = {
   },
 };
 
-for (const [name, setup] of Object.entries(SETUPS)) {
-  for (const ending of ["closed with no set", "set"] as const) {
-    test(`INV-016 capture, ${name}, ${ending}`, async ({ page }) => {
-      const { partUrl } = await seed(page, cols(null, null, null, null), { arrange: false, bpm: 96 });
-      await page.goto(partUrl);
-      await expect(columns(page)).toHaveCount(4);
-      await setup(page);
-      const before = await held(page);
+const CASES: [keyof typeof SETUPS, "closed with no set" | "set"][] = [
+  // A set re-renders the screen with the new tempo: every setup.
+  ["latch armed", "set"],
+  ["selection open", "set"],
+  ["chord draft open", "set"],
+  // Closing with no set: once, on the most fragile state, an unsaved text draft.
+  ["chord draft open", "closed with no set"],
+];
 
-      await page.getByTestId("tempo-control").click();
-      await tapAt(page, tapsFor(120));
-      await expect(page.getByTestId("tempo-reading")).toHaveText("120");
-      if (ending === "set") await page.getByTestId("tempo-set").click();
-      else await page.keyboard.press("Escape");
-      await expect(page.locator("dialog[open]")).toHaveCount(0);
-      await expect(page.getByTestId("tempo-control")).toHaveText(ending === "set" ? "120 bpm" : "96 bpm");
-      expect(await held(page)).toEqual(before);
-    });
-  }
+for (const [name, ending] of CASES) {
+  const setup = SETUPS[name];
+  test(`INV-016 capture, ${name}, ${ending}`, async ({ page }) => {
+    const { partUrl } = await seed(page, cols(null, null, null, null), { arrange: false, bpm: 96 });
+    await page.goto(partUrl);
+    await expect(columns(page)).toHaveCount(4);
+    await setup(page);
+    const before = await held(page);
+
+    await page.getByTestId("tempo-control").click();
+    await tapAt(page, tapsFor(120));
+    await expect(page.getByTestId("tempo-reading")).toHaveText("120");
+    if (ending === "set") await page.getByTestId("tempo-set").click();
+    else await page.keyboard.press("Escape");
+    await expect(page.locator("dialog[open]")).toHaveCount(0);
+    await expect(page.getByTestId("tempo-control")).toHaveText(ending === "set" ? "120 bpm" : "96 bpm");
+    expect(await held(page)).toEqual(before);
+  });
 }
 
 test("INV-017 a tapped tempo behaves as a typed one on every surface and in every record", async ({ page }) => {

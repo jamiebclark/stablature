@@ -146,8 +146,11 @@ test("INV-019 row 2 fits at 375 with every repeat width", async ({ page }, info)
   }
 });
 
-const SYMBOLS = ["Am", "Am7", "Cmaj7", "F#m7b5", "Xyz"];
-const SHAPES = ["chords", "chords and tuplet"] as const;
+const STATUS_CASES: [shape: "chords" | "chords and tuplet", symbol: string][] = [
+  ["chords", "Am"], // the typical case
+  ["chords", "Xyz"], // free text that is not a real chord
+  ["chords and tuplet", "F#m7b5"], // the worst case: the longest symbol over a tuplet bracket
+];
 const TEXTS = [
   ...CHIPS.map((c) => ({ text: `next note: ${c.name}`, arm: [c.name] })),
   ...CHIPS.map((c) => ({ text: `stack + ${c.name}`, arm: [STACK, c.name] })),
@@ -182,40 +185,38 @@ async function statusBox(page: Page, symbol: string) {
   }, symbol);
 }
 
-for (const shape of SHAPES) {
-  for (const symbol of SYMBOLS) {
-    test(`INV-019 status row, 8 texts, ${shape}, ${symbol}`, async ({ page }, info) => {
-      test.skip(info.project.name !== "mobile", "one project is enough for a measurement");
-      await page.setViewportSize(PHONE);
-      await startCapturing(page);
-      await fret(page, "A", 5).click();
-      await fret(page, "A", 7).click();
-      await fret(page, "A", 9).click();
-      await expect(columns(page)).toHaveCount(3);
-      if (shape === "chords and tuplet") await page.getByTitle(/triplet/).click();
-      await page.getByRole("button", { name: "chord symbol" }).click();
-      await page.getByRole("textbox", { name: "Chord" }).fill(symbol);
-      await page.getByRole("button", { name: "Set" }).click();
-      await expect(page.getByTestId("tab-staff").getByText(symbol, { exact: true })).toBeVisible();
+for (const [shape, symbol] of STATUS_CASES) {
+  test(`INV-019 status row, 8 texts, ${shape}, ${symbol}`, async ({ page }, info) => {
+    test.skip(info.project.name !== "mobile", "one project is enough for a measurement");
+    await page.setViewportSize(PHONE);
+    await startCapturing(page);
+    await fret(page, "A", 5).click();
+    await fret(page, "A", 7).click();
+    await fret(page, "A", 9).click();
+    await expect(columns(page)).toHaveCount(3);
+    if (shape === "chords and tuplet") await page.getByTitle(/triplet/).click();
+    await page.getByRole("button", { name: "chord symbol" }).click();
+    await page.getByRole("textbox", { name: "Chord" }).fill(symbol);
+    await page.getByRole("button", { name: "Set" }).click();
+    await expect(page.getByTestId("tab-staff").getByText(symbol, { exact: true })).toBeVisible();
 
-      await stackLatch(page).click();
-      await expectLit(page, [STACK]);
-      const bound = await statusBox(page, symbol);
-      expect(bound.text).toBe("stacking onto the marked column");
-      await stackLatch(page).click();
+    await stackLatch(page).click();
+    await expectLit(page, [STACK]);
+    const bound = await statusBox(page, symbol);
+    expect(bound.text).toBe("stacking onto the marked column");
+    await stackLatch(page).click();
 
-      for (const { text, arm } of TEXTS) {
-        for (const name of arm) await latch(page, name).click();
-        await expectLit(page, arm);
-        const m = await statusBox(page, symbol);
-        expect(m.text).toBe(text);
-        expect(m.rowHeight, `${text} row`).toBeLessThanOrEqual(bound.rowHeight);
-        expect(m.chordClippedPx ?? 0, `${text} chord`).toBeLessThanOrEqual(bound.chordClippedPx ?? 0);
-        expect(m.pageOver, `${text} page`).toBeLessThanOrEqual(0);
-        for (const name of arm) await latch(page, name).click();
-      }
-    });
-  }
+    for (const { text, arm } of TEXTS) {
+      for (const name of arm) await latch(page, name).click();
+      await expectLit(page, arm);
+      const m = await statusBox(page, symbol);
+      expect(m.text).toBe(text);
+      expect(m.rowHeight, `${text} row`).toBeLessThanOrEqual(bound.rowHeight);
+      expect(m.chordClippedPx ?? 0, `${text} chord`).toBeLessThanOrEqual(bound.chordClippedPx ?? 0);
+      expect(m.pageOver, `${text} page`).toBeLessThanOrEqual(0);
+      for (const name of arm) await latch(page, name).click();
+    }
+  });
 }
 
 test("INV-020 the overflow check can fail: a long label is caught", async ({ page }, info) => {

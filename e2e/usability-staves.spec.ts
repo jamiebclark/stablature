@@ -17,16 +17,14 @@ const bars = (count: number, shape: (i: number) => Col[] = () => four()): Col[] 
 
 const LONG = "Cmaj7".repeat(16);
 
+// Barline edge cases are numbered in usability-bars-sections.spec.ts; these are the shapes that stress the layout.
 const BARS: { name: string; columns: Col[]; wide?: boolean }[] = [
-  { name: "no barlines", columns: [...four(), ...four()] },
-  { name: "a trailing barline", columns: [...four(), bar()] },
-  { name: "a leading barline", columns: [bar(), ...four()] },
-  { name: "an empty bar in the middle", columns: [...four(), bar(), bar(), ...four()] },
-  { name: "16 bars", columns: bars(16, (i) => four(i % 2 ? 10 : 3)) },
-  { name: "one bar wider than a line", columns: Array.from({ length: 160 }, (_, i) => q(i % 2 ? 12 : 3)), wide: true },
-  { name: "a chord longer than a line", columns: [q(3, { chord: LONG }), q(5), q(3), q(5), bar(), ...four()], wide: true },
+  // Typical: many bars wrapping onto several lines, with brackets crossing a line.
   { name: "a repeat crossing a line", columns: bars(12, (i) => (i === 5 ? [q(3, { repeat: 8 }), q(5), q(3), q(5)] : four())) },
-  { name: "a pass with no notes", columns: [{ kind: "rest", d: "q" }, { kind: "rest", d: "q" }] },
+  // A bar too wide for any line: the scrolling run.
+  { name: "one bar wider than a line", columns: Array.from({ length: 160 }, (_, i) => q(i % 2 ? 12 : 3)), wide: true },
+  // The longest content: a chord wider than a line.
+  { name: "a chord longer than a line", columns: [q(3, { chord: LONG }), q(5), q(3), q(5), bar(), ...four()], wide: true },
 ];
 
 /** Reads every staff on the page: the rect of each row's item against its column, on every line. */
@@ -162,7 +160,8 @@ for (const shape of BARS) {
   });
 }
 
-const SYMBOLS = ["Em7", "Cmaj7", "F#m7b5", "Cm7b5add11"];
+// A typical short symbol and the longest real one.
+const SYMBOLS = ["Em7", "Cm7b5add11"];
 
 for (const symbol of SYMBOLS) {
   test(`INV-016 ${symbol}: one digit, two digits, adjacent, last, before a barline, on a repeat`, async ({ page }) => {
@@ -230,27 +229,42 @@ const printedLines = (page: Page) =>
     return out;
   });
 
-for (const shape of PRINT_SHAPES) {
-  for (const width of [600, 794]) {
-    test(`INV-038 print at ${width}: ${shape.name}: every line has its labels`, async ({ page, isMobile }) => {
-      test.skip(isMobile, "paper has no pointer");
-      const { playUrl } = await seedSong(page, [{ key: "a", label: "A", columns: shape.columns }], [{ part: "a" }]);
-      await page.setViewportSize({ width, height: 1100 });
-      await page.goto(playUrl);
-      await expect(page.getByTestId("tab-staff").first()).toBeVisible();
-      await page.emulateMedia({ media: "print" });
-      await page.waitForTimeout(150);
-      const seen = await printedLines(page);
-      console.log(`${shape.name} @${width}: ${JSON.stringify(seen)}`);
-      for (const staff of seen) {
-        expect(staff.shown, "every column inside the page").toBe(staff.columns);
-        expect(staff.labelled, `${staff.lines} printed lines, ${staff.labelled} with their labels`).toBe(staff.lines);
-      }
-    });
-  }
+const PRINTS = [
+  // A4 width, the typical paper.
+  { shape: PRINT_SHAPES[0], width: 794 },
+  // The narrowest page, with the wide bar between short ones: the worst case.
+  { shape: PRINT_SHAPES[1], width: 600 },
+];
+
+for (const { shape, width } of PRINTS) {
+  test(`INV-038 print at ${width}: ${shape.name}: every line has its labels`, async ({ page, isMobile }) => {
+    test.skip(isMobile, "paper has no pointer");
+    const { playUrl } = await seedSong(page, [{ key: "a", label: "A", columns: shape.columns }], [{ part: "a" }]);
+    await page.setViewportSize({ width, height: 1100 });
+    await page.goto(playUrl);
+    await expect(page.getByTestId("tab-staff").first()).toBeVisible();
+    await page.emulateMedia({ media: "print" });
+    await page.waitForTimeout(150);
+    const seen = await printedLines(page);
+    console.log(`${shape.name} @${width}: ${JSON.stringify(seen)}`);
+    for (const staff of seen) {
+      expect(staff.shown, "every column inside the page").toBe(staff.columns);
+      expect(staff.labelled, `${staff.lines} printed lines, ${staff.labelled} with their labels`).toBe(staff.lines);
+    }
+  });
 }
 
-const SURFACE_SYMBOLS = ["Em7", "Cmaj7", "F#m7b5", "Cm7b5add11", "Cmaj7".repeat(16)];
+const PHONE = { width: 375, height: 667 };
+const DESKTOP = { width: 1280, height: 800 };
+
+const SURFACES = [
+  // Typical: a short symbol on a wide screen.
+  { symbol: "Em7", size: DESKTOP },
+  // The longest real symbol on the narrowest screen.
+  { symbol: "Cm7b5add11", size: PHONE },
+  // The worst case: a symbol longer than a line, on the narrowest screen.
+  { symbol: "Cmaj7".repeat(16), size: PHONE },
+];
 
 const surfaceStaff = (symbol: string): Col[] => [
   q(3, { chord: symbol }),
@@ -301,31 +315,29 @@ const measureSurface = (page: Page) =>
     return { bad: [...new Set(bad)], labels: seenLabels };
   });
 
-for (const symbol of SURFACE_SYMBOLS) {
+for (const { symbol, size } of SURFACES) {
   const name = symbol.length > 12 ? "a symbol longer than a line" : symbol;
-  for (const size of [{ width: 375, height: 667 }, { width: 1280, height: 800 }]) {
-    test(`INV-016 INV-017 ${name} at ${size.width}: song page compact, capture selecting`, async ({ page }) => {
-      const { songUrl, parts } = await seedSong(page, [{ key: "a", label: "A", columns: surfaceStaff(symbol) }], [{ part: "a" }]);
-      await page.setViewportSize(size);
+  test(`INV-016 INV-017 ${name} at ${size.width}: song page compact, capture selecting`, async ({ page }) => {
+    const { songUrl, parts } = await seedSong(page, [{ key: "a", label: "A", columns: surfaceStaff(symbol) }], [{ part: "a" }]);
+    await page.setViewportSize(size);
 
-      await page.goto(songUrl);
-      await openTools(page);
-      await page.getByRole("button", { name: /compact/i }).first().click();
-      await page.waitForTimeout(200);
-      const compact = await measureSurface(page);
-      expect(compact.labels, "compact draws the chords").toBeGreaterThan(0);
+    await page.goto(songUrl);
+    await openTools(page);
+    await page.getByRole("button", { name: /compact/i }).first().click();
+    await page.waitForTimeout(200);
+    const compact = await measureSurface(page);
+    expect(compact.labels, "compact draws the chords").toBeGreaterThan(0);
 
-      await page.goto(`${songUrl}/capture/${parts.a}`);
-      await expect(cols(page).first()).toBeAttached();
-      await cols(page).first().click();
-      await page.getByRole("button", { name: /^select$/ }).click();
-      await cols(page).nth(3).click();
-      await expect(page.getByTestId("toolbar-selection")).toBeVisible();
-      await page.waitForTimeout(150);
-      const selecting = await measureSurface(page);
-      expect([...compact.bad.map((b) => `compact: ${b}`), ...selecting.bad.map((b) => `selecting: ${b}`)]).toEqual([]);
-    });
-  }
+    await page.goto(`${songUrl}/capture/${parts.a}`);
+    await expect(cols(page).first()).toBeAttached();
+    await cols(page).first().click();
+    await page.getByRole("button", { name: /^select$/ }).click();
+    await cols(page).nth(3).click();
+    await expect(page.getByTestId("toolbar-selection")).toBeVisible();
+    await page.waitForTimeout(150);
+    const selecting = await measureSurface(page);
+    expect([...compact.bad.map((b) => `compact: ${b}`), ...selecting.bad.map((b) => `selecting: ${b}`)]).toEqual([]);
+  });
 }
 
 // The seeded tuning is B Standard, five strings, so the system has five rows.
@@ -338,7 +350,8 @@ const PASTE_PREVIEW = [
   "B|----------------------------------|",
 ].join("\n");
 
-for (const size of [{ width: 375, height: 667 }, { width: 1280, height: 800 }]) {
+// The narrowest screen, where four chords over one system crowd most.
+for (const size of [PHONE]) {
   test(`INV-016 INV-017 the paste preview at ${size.width}`, async ({ page }) => {
     const { songUrl } = await seedSong(page, [{ key: "a", label: "A", columns: [q(3)] }], [{ part: "a" }]);
     await page.setViewportSize(size);
@@ -378,20 +391,25 @@ const measureCompact = (page: Page) =>
     return { rows, bad: [...new Set(bad)] };
   });
 
-for (const view of ["notes", "intervals"] as const) {
-  for (const size of [{ width: 375, height: 667 }, { width: 1280, height: 800 }]) {
-    test(`INV-017 song page compact in ${view} at ${size.width}`, async ({ page }) => {
-      const { songUrl } = await seedSong(page, [{ key: "a", label: "A", columns: COMPACT_STAFF }], [{ part: "a" }]);
-      await page.setViewportSize(size);
-      await page.goto(songUrl);
-      await openTools(page);
-      await page.getByRole("button", { name: /compact/i }).first().click();
-      await page.getByTestId(`staff-view-${view}`).first().click();
-      await page.waitForTimeout(250);
-      const seen = await measureCompact(page);
-      console.log(`compact ${view} @${size.width}: ${seen.rows} rows, ${JSON.stringify(seen.bad)}`);
-      expect(seen.rows, "the staff is drawn").toBeGreaterThan(10);
-      expect(seen.bad).toEqual([]);
-    });
-  }
+const COMPACT_VIEWS = [
+  // Intervals, the wider labels, on the narrowest screen: the worst case.
+  { view: "intervals", size: PHONE },
+  // Notes on a wide screen: the other view, typical size.
+  { view: "notes", size: DESKTOP },
+] as const;
+
+for (const { view, size } of COMPACT_VIEWS) {
+  test(`INV-017 song page compact in ${view} at ${size.width}`, async ({ page }) => {
+    const { songUrl } = await seedSong(page, [{ key: "a", label: "A", columns: COMPACT_STAFF }], [{ part: "a" }]);
+    await page.setViewportSize(size);
+    await page.goto(songUrl);
+    await openTools(page);
+    await page.getByRole("button", { name: /compact/i }).first().click();
+    await page.getByTestId(`staff-view-${view}`).first().click();
+    await page.waitForTimeout(250);
+    const seen = await measureCompact(page);
+    console.log(`compact ${view} @${size.width}: ${seen.rows} rows, ${JSON.stringify(seen.bad)}`);
+    expect(seen.rows, "the staff is drawn").toBeGreaterThan(10);
+    expect(seen.bad).toEqual([]);
+  });
 }

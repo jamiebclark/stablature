@@ -22,58 +22,54 @@ import {
 test.describe("selection row layout (US1)", () => {
   test.use({ viewport: PHONE });
 
-  for (const theme of THEMES) {
-    test(`one line, inside the band, nothing over-scrolls (${theme})`, async ({
-      page,
-    }) => {
-      await page.emulateMedia({ colorScheme: theme });
-      await startCapturing(page);
-      await addNotes(page, 16);
-      const stableTop = (await stable(page).boundingBox())!.y;
-      await selectColumns(page, 0, 15);
+  // Layout does not change with the theme; contrast, which does, is tested per theme below.
+  test("one line, inside the band, nothing over-scrolls", async ({ page }) => {
+    await startCapturing(page);
+    await addNotes(page, 16);
+    const stableTop = (await stable(page).boundingBox())!.y;
+    await selectColumns(page, 0, 15);
 
-      const bar = selectionBar(page);
-      const fits = await bar.evaluate((el) => ({
-        row: el.scrollWidth <= el.clientWidth,
-        kids: [...el.children].every((c) => c.scrollWidth <= c.clientWidth),
-        height: el.getBoundingClientRect().height,
-        within: [...el.children].every((c) => {
-          const r = c.getBoundingClientRect();
-          const b = el.getBoundingClientRect();
-          return r.top >= b.top - 0.5 && r.bottom <= b.bottom + 0.5;
-        }),
-      }));
-      expect(fits.row).toBe(true);
-      expect(fits.kids).toBe(true);
-      expect(fits.within).toBe(true);
-      expect(fits.height).toBeGreaterThan(0);
-      expect((await stable(page).boundingBox())!.y).toBe(stableTop);
-      const overscroll = await page.evaluate(
-        () =>
-          document.documentElement.scrollWidth -
-          document.documentElement.clientWidth,
+    const bar = selectionBar(page);
+    const fits = await bar.evaluate((el) => ({
+      row: el.scrollWidth <= el.clientWidth,
+      kids: [...el.children].every((c) => c.scrollWidth <= c.clientWidth),
+      height: el.getBoundingClientRect().height,
+      within: [...el.children].every((c) => {
+        const r = c.getBoundingClientRect();
+        const b = el.getBoundingClientRect();
+        return r.top >= b.top - 0.5 && r.bottom <= b.bottom + 0.5;
+      }),
+    }));
+    expect(fits.row).toBe(true);
+    expect(fits.kids).toBe(true);
+    expect(fits.within).toBe(true);
+    expect(fits.height).toBeGreaterThan(0);
+    expect((await stable(page).boundingBox())!.y).toBe(stableTop);
+    const overscroll = await page.evaluate(
+      () =>
+        document.documentElement.scrollWidth -
+        document.documentElement.clientWidth,
+    );
+    expect(overscroll).toBeLessThanOrEqual(0);
+
+    const names = await bar
+      .getByRole("button")
+      .evaluateAll((els) =>
+        els.map(
+          (e) => e.getAttribute("aria-label") ?? e.textContent?.trim() ?? "",
+        ),
       );
-      expect(overscroll).toBeLessThanOrEqual(0);
-
-      const names = await bar
-        .getByRole("button")
-        .evaluateAll((els) =>
-          els.map(
-            (e) => e.getAttribute("aria-label") ?? e.textContent?.trim() ?? "",
-          ),
-        );
-      expect(names).toEqual([
-        "copy",
-        "cut",
-        "delete",
-        "Make a tuplet of 16",
-        "Group with no number",
-        "cancel",
-      ]);
-      for (const name of names)
-        expect(name.toLowerCase()).not.toContain("triplet");
-    });
-  }
+    expect(names).toEqual([
+      "copy",
+      "cut",
+      "delete",
+      "Make a tuplet of 16",
+      "Group with no number",
+      "cancel",
+    ]);
+    for (const name of names)
+      expect(name.toLowerCase()).not.toContain("triplet");
+  });
 
   test("every numeral 2 to 16 clears both rails", async ({ page }) => {
     await startCapturing(page);
@@ -226,48 +222,41 @@ test.describe("bracket legibility and alignment (US1)", () => {
 test.describe("selection row across string counts and chord rows (US1 remainder)", () => {
   test.use({ viewport: PHONE });
 
-  for (const theme of THEMES) {
-    for (const chord of [false, true]) {
-      for (const n of [3, 16]) {
-        test(`seven controls fit, stable row and band hold (${theme}, ${chord ? "chord row" : "no chord row"}, numeral ${n})`, async ({
-          page,
-        }) => {
-          await page.emulateMedia({ colorScheme: theme });
-          await startCapturing(page);
-          await addNotes(page, n);
-          if (chord) {
-            await mouseHold(page, columns(page).first());
-            await inspector(page).getByLabel("chord symbol").fill("Am");
-            await inspector(page).getByRole("button", { name: "set" }).click();
-            await page.keyboard.press("Escape");
-            await expect(openDialog(page)).toHaveCount(0);
-          }
-          const stableTop = (await stable(page).boundingBox())!.y;
-          const rest = (await page.getByTestId("tab-staff").boundingBox())!
-            .height;
-          await selectColumns(page, 0, n - 1);
-          const bar = selectionBar(page);
-          const fits = await bar.evaluate((el) => ({
-            row: el.scrollWidth <= el.clientWidth,
-            kids: [...el.children].every((c) => c.scrollWidth <= c.clientWidth),
-            tops: new Set(
-              [...el.children].map((c) =>
-                Math.round(c.getBoundingClientRect().top),
-              ),
-            ).size,
-          }));
-          expect(fits.row).toBe(true);
-          expect(fits.kids).toBe(true);
-          expect(fits.tops).toBe(1);
-          expect((await stable(page).boundingBox())!.y).toBe(stableTop);
-          expect(
-            (await page.getByTestId("tab-staff").boundingBox())!.height,
-          ).toBeGreaterThanOrEqual(rest - 0.5);
-        });
-      }
-    }
-  }
-
+  // The worst case only, on both projects: the theme does not move layout, and e2e/grouping-band
+  // measures the other corners on the touch project.
+  test("seven controls fit, stable row and band hold (chord row, numeral 16)", async ({
+    page,
+  }) => {
+    const n = 16;
+    await startCapturing(page);
+    await addNotes(page, n);
+    await mouseHold(page, columns(page).first());
+    await inspector(page).getByLabel("chord symbol").fill("Am");
+    await inspector(page).getByRole("button", { name: "set" }).click();
+    await page.keyboard.press("Escape");
+    await expect(openDialog(page)).toHaveCount(0);
+    const stableTop = (await stable(page).boundingBox())!.y;
+    const rest = (await page.getByTestId("tab-staff").boundingBox())!
+      .height;
+    await selectColumns(page, 0, n - 1);
+    const bar = selectionBar(page);
+    const fits = await bar.evaluate((el) => ({
+      row: el.scrollWidth <= el.clientWidth,
+      kids: [...el.children].every((c) => c.scrollWidth <= c.clientWidth),
+      tops: new Set(
+        [...el.children].map((c) =>
+          Math.round(c.getBoundingClientRect().top),
+        ),
+      ).size,
+    }));
+    expect(fits.row).toBe(true);
+    expect(fits.kids).toBe(true);
+    expect(fits.tops).toBe(1);
+    expect((await stable(page).boundingBox())!.y).toBe(stableTop);
+    expect(
+      (await page.getByTestId("tab-staff").boundingBox())!.height,
+    ).toBeGreaterThanOrEqual(rest - 0.5);
+  });
 });
 
 test.describe("raised surfaces: contrast and label alignment (US1 remainder)", () => {
@@ -366,28 +355,37 @@ test.describe("raised surfaces: contrast and label alignment (US1 remainder)", (
     });
   }
 
-  for (const kind of ["plain", "tuplet", "both"] as const) {
-    for (const chord of [false, true]) {
-      for (const density of ["expanded", "compact"] as const) {
-        test(`labels line up on the song page (${kind}, ${density}${chord ? ", chord row" : ""})`, async ({
-          page,
-        }) => {
-          const songUrl = await captured(page, kind, chord);
-          await page.goto(songUrl);
-          await openTools(page);
-          await page.getByRole("button", { name: density, exact: true }).click();
-          await expect(brackets(page).first()).toBeVisible({ timeout: 15000 });
-          if (kind === "plain")
-            await expect(page.locator(".tab-bracket-label")).toHaveCount(0);
-          const offsets = await alignment(page);
-          expect(offsets.length).toBeGreaterThan(0);
-          for (const d of offsets) expect(Math.abs(d)).toBeLessThan(0.5);
-        });
-      }
-    }
+  const SONG_PAGE: {
+    kind: "plain" | "tuplet" | "both";
+    chord: boolean;
+    density: "expanded" | "compact";
+  }[] = [
+    // Typical: a plain bracket, no label, the default density.
+    { kind: "plain", chord: false, density: "expanded" },
+    // A numeral label in the compact layout.
+    { kind: "tuplet", chord: false, density: "compact" },
+    // Worst case: both kinds of bracket under a chord row, compact.
+    { kind: "both", chord: true, density: "compact" },
+  ];
+  for (const { kind, chord, density } of SONG_PAGE) {
+    test(`labels line up on the song page (${kind}, ${density}${chord ? ", chord row" : ""})`, async ({
+      page,
+    }) => {
+      const songUrl = await captured(page, kind, chord);
+      await page.goto(songUrl);
+      await openTools(page);
+      await page.getByRole("button", { name: density, exact: true }).click();
+      await expect(brackets(page).first()).toBeVisible({ timeout: 15000 });
+      if (kind === "plain")
+        await expect(page.locator(".tab-bracket-label")).toHaveCount(0);
+      const offsets = await alignment(page);
+      expect(offsets.length).toBeGreaterThan(0);
+      for (const d of offsets) expect(Math.abs(d)).toBeLessThan(0.5);
+    });
   }
 
-  for (const kind of ["plain", "both"] as const) {
+  // "both" holds a plain bracket and a tuplet, so it covers "plain" too.
+  for (const kind of ["both"] as const) {
     test(`labels line up on the play view (${kind})`, async ({ page }) => {
       const songUrl = await captured(page, kind, true);
       await page.goto(songUrl);

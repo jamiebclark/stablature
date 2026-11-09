@@ -7,6 +7,58 @@ loadEnv({ path: ".env.local", override: true, quiet: true });
 const PORT = Number(process.env.E2E_PORT ?? 3100);
 const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`;
 
+/**
+ * Specs whose outcome does not depend on screen size or pointer type, so the desktop project skips them.
+ * A new spec runs on both until it is added here.
+ */
+const PHONE_ONLY = [
+  "capture.spec.ts",
+  "click-offline.spec.ts",
+  "click-offline-arrivals.spec.ts",
+  "durations-layout.spec.ts",
+  "grouping-band.spec.ts",
+  "grouping-connector.spec.ts",
+  "grouping-controls.spec.ts",
+  "grouping-cursor-names.spec.ts",
+  "grouping-glyph.spec.ts",
+  "grouping-paint.spec.ts",
+  "grouping-queued-row.spec.ts",
+  "grouping-refusal.spec.ts",
+  "grouping-surfaces.spec.ts",
+  "grouping-sync.spec.ts",
+  "import-edge-damage-review.spec.ts",
+  "import-every-cell-review.spec.ts",
+  "import-every-label-review.spec.ts",
+  "import-every-system-review.spec.ts",
+  "import-label-fret-review.spec.ts",
+  "import-layout.spec.ts",
+  "import-layout-review.spec.ts",
+  "import-silent-shift-review.spec.ts",
+  "import-sync.spec.ts",
+  "import-sync-review.spec.ts",
+  "import-touching-a-staff-review.spec.ts",
+  "import-wrapped-row-review.spec.ts",
+  "import-zeros-review.spec.ts",
+  "offline.spec.ts",
+  "reading-view.spec.ts",
+  "rhythm-lit-and-nowhere-else.spec.ts",
+  "rhythm-marks.spec.ts",
+  "rhythm-unknown-values.spec.ts",
+  "sync.spec.ts",
+  "sync-no-lost-rows.spec.ts",
+  "techniques.spec.ts",
+  "techniques-layout.spec.ts",
+  "techniques-one-shot-pairs.spec.ts",
+  "techniques-positions.spec.ts",
+  "techniques-surfaces.spec.ts",
+  "techniques-targets-routes.spec.ts",
+  "usability-bars-sections.spec.ts",
+  "usability-contrast.spec.ts",
+  "usability-neck.spec.ts",
+  "variant-marks.spec.ts",
+  "variant-marks-paint.spec.ts",
+];
+
 export default defineConfig({
   testDir: "./e2e",
   // Each test gets its own browser context, so IndexedDB is already isolated
@@ -19,7 +71,9 @@ export default defineConfig({
   projects: [
     // Capture is a phone screen first, so that is the primary target.
     { name: "mobile", use: { ...devices["Pixel 7"] } },
-    { name: "desktop", use: { ...devices["Desktop Chrome"] } },
+    // Only what a desktop can do differently: keys, a mouse, hover, a fine pointer's density, a wide layout.
+    // Specs of sync, import, data and touch-only flows run once, on the phone.
+    { name: "desktop", use: { ...devices["Desktop Chrome"] }, testIgnore: PHONE_ONLY.map((name) => `**/${name}`) },
     // A screen with no touch and no hover-less pointer ambiguity: the density pass reads sizes as a mouse
     // user sees them, so Chromium is told the primary pointer is a mouse and hover works.
     {
