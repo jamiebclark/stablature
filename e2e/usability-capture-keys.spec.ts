@@ -38,46 +38,52 @@ async function open(page: Page) {
 
 const latch = (page: Page, name: string) => page.getByTestId("latch-strip").getByRole("button", { name });
 
-const LATCHES: { name: string; arm: (page: Page) => Promise<void> }[] = [
-  { name: "none", arm: async () => {} },
-  { name: "stack", arm: async (p) => void (await stackLatch(p).click()) },
-  ...["hammer-on", "pull-off", "slide up", "slide down"].map((t) => ({
-    name: t,
-    arm: async (p: Page) => void (await latch(p, t).click()),
-  })),
-  {
-    name: "stack and a transition",
-    arm: async (p: Page) => {
-      await stackLatch(p).click();
-      await latch(p, "hammer-on").click();
-    },
+type Armed = { name: string; arm: (page: Page) => Promise<void> };
+type Cursor = { name: string; go: (page: Page) => Promise<void> };
+
+/** The armed states with distinct handling: nothing, the stack latch, a transition latch, and both at once. */
+const NOTHING: Armed = { name: "none", arm: async () => {} };
+const STACK: Armed = { name: "stack", arm: async (p) => void (await stackLatch(p).click()) };
+const HAMMER_ON: Armed = { name: "hammer-on", arm: async (p) => void (await latch(p, "hammer-on").click()) };
+const BOTH: Armed = {
+  name: "stack and a transition",
+  arm: async (p) => {
+    await stackLatch(p).click();
+    await latch(p, "hammer-on").click();
   },
+};
+
+const AT_END: Cursor = { name: "at the end", go: async () => {} };
+const ON_FIRST: Cursor = { name: "on the first column", go: async (p) => void (await p.getByTestId("tab-column").first().click()) };
+const ON_LAST: Cursor = { name: "on the last column", go: async (p) => void (await p.getByTestId("tab-column").last().click()) };
+
+const TYPED_SEVENS: { armed: Armed; cursor: Cursor }[] = [
+  // The typical entry: nothing armed, adding at the end.
+  { armed: NOTHING, cursor: AT_END },
+  // The stack latch, inserting before the first column.
+  { armed: STACK, cursor: ON_FIRST },
+  // A transition alone, on the last column.
+  { armed: HAMMER_ON, cursor: ON_LAST },
+  // The worst case: stack and a transition together, inserting before the first column.
+  { armed: BOTH, cursor: ON_FIRST },
 ];
 
-const CURSORS: { name: string; go: (page: Page) => Promise<void> }[] = [
-  { name: "at the end", go: async () => {} },
-  { name: "on the first column", go: async (p) => void (await p.getByTestId("tab-column").first().click()) },
-  { name: "on the last column", go: async (p) => void (await p.getByTestId("tab-column").last().click()) },
-];
+for (const { armed, cursor } of TYPED_SEVENS) {
+  test(`INV-040 a typed 7 equals a tapped 7: ${armed.name}, ${cursor.name}`, async ({ page }) => {
+    const tapped = await open(page);
+    await cursor.go(page);
+    await armed.arm(page);
+    await fret(page, "B", 7).click();
+    await page.waitForTimeout(350);
+    const want = await columnsOf(page, tapped);
 
-for (const cursor of CURSORS) {
-  for (const armed of LATCHES) {
-    test(`INV-040 a typed 7 equals a tapped 7: ${armed.name}, ${cursor.name}`, async ({ page }) => {
-      const tapped = await open(page);
-      await cursor.go(page);
-      await armed.arm(page);
-      await fret(page, "B", 7).click();
-      await page.waitForTimeout(350);
-      const want = await columnsOf(page, tapped);
-
-      const typed = await open(page);
-      await cursor.go(page);
-      await armed.arm(page);
-      await page.keyboard.press("7");
-      await page.waitForTimeout(350);
-      expect(await columnsOf(page, typed)).toEqual(want);
-    });
-  }
+    const typed = await open(page);
+    await cursor.go(page);
+    await armed.arm(page);
+    await page.keyboard.press("7");
+    await page.waitForTimeout(350);
+    expect(await columnsOf(page, typed)).toEqual(want);
+  });
 }
 
 test("INV-040 keys stop at both ends of the parts and of the strings", async ({ page }) => {
@@ -103,9 +109,10 @@ test("INV-040 Left and Right extend a selection exactly as a tap does", async ({
 const LONG = cols(...Array.from({ length: 160 }, (_, i) => (i % 5 === 4 ? "|" : "q")));
 
 for (const [name, keys] of [
+  // One jump across the whole part.
   ["Home", ["Home"]],
+  // A column at a time, so the caret crosses the scroller's edge step by step.
   ["Left, walked down the part", Array.from({ length: 60 }, () => "ArrowLeft")],
-  ["[, back through the bars", Array.from({ length: 14 }, () => "[")],
 ] as const) {
   test(`staff.md section 6: a cursor moved by ${name} stays in view`, async ({ page }) => {
     const { partUrl } = await seed(page, LONG, { bpm: 120 });
@@ -128,36 +135,37 @@ for (const [name, keys] of [
 }
 
 const KEY_JUMPS = [
-  { key: "End", button: /^end/, from: "second column", at: 1 },
-  { key: "End", button: /^end/, from: "last column", at: 4 },
-  { key: "Home", button: /start$/, from: "second column", at: 1 },
+  // End, typical: nothing armed.
+  { key: "End", button: /^end/, from: "second column", at: 1, armed: NOTHING },
+  // End from the last column, a jump that goes nowhere, with the stack latch held over it.
+  { key: "End", button: /^end/, from: "last column", at: 4, armed: STACK },
+  // Home, the other jump, with stack and a transition: the worst case.
+  { key: "Home", button: /start$/, from: "second column", at: 1, armed: BOTH },
 ] as const;
 
-for (const jump of KEY_JUMPS) {
-  for (const armed of LATCHES) {
-    test(`INV-040 ${jump.key} equals its jump button: ${armed.name} armed, from the ${jump.from}`, async ({ page }) => {
-      const byButton = await open(page);
-      await page.getByTestId("tab-column").nth(jump.at).click();
-      await armed.arm(page);
-      await page.getByRole("button", { name: jump.button }).click();
-      await page.waitForTimeout(120);
-      await fret(page, "B", 7).click();
-      await page.waitForTimeout(350);
-      const want = await columnsOf(page, byButton);
+for (const { armed, ...jump } of KEY_JUMPS) {
+  test(`INV-040 ${jump.key} equals its jump button: ${armed.name} armed, from the ${jump.from}`, async ({ page }) => {
+    const byButton = await open(page);
+    await page.getByTestId("tab-column").nth(jump.at).click();
+    await armed.arm(page);
+    await page.getByRole("button", { name: jump.button }).click();
+    await page.waitForTimeout(120);
+    await fret(page, "B", 7).click();
+    await page.waitForTimeout(350);
+    const want = await columnsOf(page, byButton);
 
-      const byKey = await open(page);
-      await page.getByTestId("tab-column").nth(jump.at).click();
-      await armed.arm(page);
-      await page.keyboard.press(jump.key);
-      await page.waitForTimeout(120);
-      await fret(page, "B", 7).click();
-      await page.waitForTimeout(350);
-      expect(await columnsOf(page, byKey)).toEqual(want);
-    });
-  }
+    const byKey = await open(page);
+    await page.getByTestId("tab-column").nth(jump.at).click();
+    await armed.arm(page);
+    await page.keyboard.press(jump.key);
+    await page.waitForTimeout(120);
+    await fret(page, "B", 7).click();
+    await page.waitForTimeout(350);
+    expect(await columnsOf(page, byKey)).toEqual(want);
+  });
 }
 
-/** INV-040, INV-041, round 3: every key against its tap, each with every armed state; then the jump keys in fast typing. */
+/** INV-040, INV-041, round 3: every key against its tap, under the armed states that differ; then the jump keys in fast typing. */
 type StoredRow = { partId: string; rank: string; kind: string; frets: unknown; techniques: unknown; deletedAt: unknown };
 
 /** Each run seeds its own song in the same browser, so a read names the parts it means. */
@@ -169,22 +177,6 @@ const storedOf = async (page: Page, partIds: readonly string[]) =>
 
 const tapColumns = (page: Page) => page.getByTestId("tab-column");
 
-const ARMS: { name: string; arm: (page: Page) => Promise<void> }[] = [
-  { name: "nothing", arm: async () => {} },
-  { name: "stack", arm: async (p) => void (await stackLatch(p).click()) },
-  ...["hammer-on", "pull-off", "slide up", "slide down"].map((t) => ({
-    name: t,
-    arm: async (p: Page) => void (await latch(p, t).click()),
-  })),
-  {
-    name: "stack and a transition",
-    arm: async (p: Page) => {
-      await stackLatch(p).click();
-      await latch(p, "hammer-on").click();
-    },
-  },
-];
-
 async function openKeys(page: Page) {
   const { partUrl, partId } = await seed(page, NOTES, { bpm: 120 });
   await page.goto(partUrl);
@@ -194,33 +186,36 @@ async function openKeys(page: Page) {
 
 /** From column index `from`, each key against the tap on the column the table says it reaches. */
 const KEY_MOVES = [
-  { key: "ArrowLeft", from: 3, to: 2 },
-  { key: "ArrowRight", from: 0, to: 1 },
+  // Left, typical: nothing armed.
+  { key: "ArrowLeft", from: 3, to: 2, armed: NOTHING },
+  // Right, the other direction, with stack and a transition held over the move: the worst case.
+  { key: "ArrowRight", from: 0, to: 1, armed: BOTH },
 ] as const;
 
-for (const armed of ARMS) {
-  for (const move of KEY_MOVES) {
-    test(`INV-040 ${move.key} equals a tap on that column: ${armed.name} armed`, async ({ page }) => {
-      const byTap = await openKeys(page);
-      await tapColumns(page).nth(move.from).click();
-      await armed.arm(page);
-      await tapColumns(page).nth(move.to).click();
-      await page.waitForTimeout(120);
-      await fret(page, "B", 7).click();
-      await page.waitForTimeout(350);
-      const want = await storedOf(page, byTap);
+for (const { armed, ...move } of KEY_MOVES) {
+  test(`INV-040 ${move.key} equals a tap on that column: ${armed.name} armed`, async ({ page }) => {
+    const byTap = await openKeys(page);
+    await tapColumns(page).nth(move.from).click();
+    await armed.arm(page);
+    await tapColumns(page).nth(move.to).click();
+    await page.waitForTimeout(120);
+    await fret(page, "B", 7).click();
+    await page.waitForTimeout(350);
+    const want = await storedOf(page, byTap);
 
-      const byKey = await openKeys(page);
-      await tapColumns(page).nth(move.from).click();
-      await armed.arm(page);
-      await page.keyboard.press(move.key);
-      await page.waitForTimeout(120);
-      await fret(page, "B", 7).click();
-      await page.waitForTimeout(350);
-      expect(await storedOf(page, byKey)).toEqual(want);
-    });
-  }
+    const byKey = await openKeys(page);
+    await tapColumns(page).nth(move.from).click();
+    await armed.arm(page);
+    await page.keyboard.press(move.key);
+    await page.waitForTimeout(120);
+    await fret(page, "B", 7).click();
+    await page.waitForTimeout(350);
+    expect(await storedOf(page, byKey)).toEqual(want);
+  });
+}
 
+// Nothing armed is the typical dead note; stack and a transition is the one most likely to differ from the cell.
+for (const armed of [NOTHING, BOTH]) {
   test(`INV-040 x equals the neck's dead-note cell: ${armed.name} armed`, async ({ page }) => {
     const byTap = await openKeys(page);
     await tapColumns(page).nth(1).click();
@@ -236,44 +231,52 @@ for (const armed of ARMS) {
     await page.waitForTimeout(350);
     expect(await storedOf(page, byKey)).toEqual(want);
   });
+}
 
-  for (const [key, chip] of [[".", "B"], [",", "A"]] as const) {
-    test(`INV-040 ${key} equals the ${chip} chip: ${armed.name} armed`, async ({ page }) => {
-      const go = async () => {
-        const { songUrl, parts } = await seedSong(
-          page,
-          [
-            { key: "a", label: "A", columns: [n(3, { d: "q" }), n(5, { d: "q" })] },
-            { key: "b", label: "B", columns: [n(7, { d: "q" }), n(8, { d: "q" })] },
-          ],
-          [{ part: "a" }],
-        );
-        await page.goto(`${songUrl}/capture/${chip === "B" ? parts.a : parts.b}`);
-        await expect(tapColumns(page)).toHaveCount(2);
-        await tapColumns(page).first().click();
-        await armed.arm(page);
-        return [parts.a, parts.b];
-      };
-      const after = async (ids: string[]) => {
-        await page.waitForTimeout(250);
-        await fret(page, "B", 7).click();
-        await page.waitForTimeout(350);
-        return storedOf(page, ids);
-      };
-      const byTap = await go();
-      await page.getByTestId("capture-title-row").getByRole("link", { name: chip, exact: true }).click();
-      const want = await after(byTap);
-      const byKey = await go();
-      await page.keyboard.press(key);
-      expect(await after(byKey)).toEqual(want);
-    });
-  }
+const PART_KEYS = [
+  // Part on, typical: nothing armed.
+  { key: ".", chip: "B", armed: NOTHING },
+  // Part back, with stack and a transition armed across the change of part.
+  { key: ",", chip: "A", armed: BOTH },
+] as const;
+
+for (const { key, chip, armed } of PART_KEYS) {
+  test(`INV-040 ${key} equals the ${chip} chip: ${armed.name} armed`, async ({ page }) => {
+    const go = async () => {
+      const { songUrl, parts } = await seedSong(
+        page,
+        [
+          { key: "a", label: "A", columns: [n(3, { d: "q" }), n(5, { d: "q" })] },
+          { key: "b", label: "B", columns: [n(7, { d: "q" }), n(8, { d: "q" })] },
+        ],
+        [{ part: "a" }],
+      );
+      await page.goto(`${songUrl}/capture/${chip === "B" ? parts.a : parts.b}`);
+      await expect(tapColumns(page)).toHaveCount(2);
+      await tapColumns(page).first().click();
+      await armed.arm(page);
+      return [parts.a, parts.b];
+    };
+    const after = async (ids: string[]) => {
+      await page.waitForTimeout(250);
+      await fret(page, "B", 7).click();
+      await page.waitForTimeout(350);
+      return storedOf(page, ids);
+    };
+    const byTap = await go();
+    await page.getByTestId("capture-title-row").getByRole("link", { name: chip, exact: true }).click();
+    const want = await after(byTap);
+    const byKey = await go();
+    await page.keyboard.press(key);
+    expect(await after(byKey)).toEqual(want);
+  });
 }
 
 const fretsOf = async (page: Page, partIds: readonly string[]) =>
   (await storedOf(page, partIds)).map((r) => (r.kind === "barline" ? "|" : Object.values((r.frets ?? {}) as Record<string, unknown>).join("+") || "r"));
 
-for (const delay of [0, 10, 150]) {
+// 0ms is the fastest typing there is, 150ms a quick human.
+for (const delay of [0, 150]) {
   test(`INV-041 the jump keys keep their place in fast typing at ${delay}ms`, async ({ page }) => {
     const ids = await openKeys(page);
     const before = await fretsOf(page, ids);

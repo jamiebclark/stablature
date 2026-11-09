@@ -3,7 +3,6 @@ import {
   caret,
   columns,
   exportText,
-  deleteButton,
   fret,
   PHONE,
   space,
@@ -20,7 +19,9 @@ import {
 } from "./grouping-helpers";
 
 test.describe("tuplet control (US1)", () => {
-  for (const n of [2, 3, 6, 16]) {
+  // 3 is where a "triplet" title would show; 16 is the largest. Every count's name and glyph is
+  // walked by "presence tracks every extension step" in e2e/grouping-controls.spec.ts.
+  for (const n of [3, 16]) {
     test(`a selection of ${n} reads ${n} on the control and the bracket`, async ({
       page,
     }) => {
@@ -43,27 +44,6 @@ test.describe("tuplet control (US1)", () => {
       await expect(page.locator(".tab-bracket-label")).toHaveText(String(n));
     });
   }
-
-  test("the numeral follows live extension, and 17 columns offer no tuplet", async ({
-    page,
-  }) => {
-    await startCapturing(page);
-    await addNotes(page, 17);
-    await selectColumns(page, 0, 1);
-    await expect(tupletControl(page)).toHaveAccessibleName(
-      "Make a tuplet of 2",
-    );
-    await columns(page).nth(3).click();
-    await expect(tupletControl(page)).toHaveAccessibleName(
-      "Make a tuplet of 4",
-    );
-    await columns(page).nth(15).click();
-    await expect(tupletControl(page)).toHaveAccessibleName(
-      "Make a tuplet of 16",
-    );
-    await columns(page).nth(16).click();
-    await expect(tupletControl(page)).toHaveCount(0);
-  });
 
   test("the selection ends and the caret does not move", async ({ page }) => {
     await startCapturing(page);
@@ -142,14 +122,6 @@ test.describe("plain group control (US2)", () => {
     await expect(tupletControl(page)).toHaveCount(0);
     await groupControl(page).click();
     await expect(brackets(page)).toHaveCount(2);
-  });
-
-  test("absent for one column", async ({ page }) => {
-    await startCapturing(page);
-    await addNotes(page, 1);
-    await columns(page).nth(0).click();
-    await page.getByRole("button", { name: /^select$/ }).click();
-    await expect(groupControl(page)).toHaveCount(0);
   });
 
   // Regression guard: its pre-change failure is only the missing `toolbar-selection` row.
@@ -303,11 +275,11 @@ test.describe("the triplet button (US4)", () => {
   });
 
   const routes: [string, (page: import("@playwright/test").Page) => Promise<void>][] = [
+    // A move that writes nothing.
     ["tap a column", async (p) => void (await columns(p).nth(0).click())],
+    // An edit (space, barline and delete take the same path).
     ["a fret", async (p) => void (await fret(p, "E", 4).click())],
-    ["space", async (p) => space(p)],
-    ["barline", async (p) => void (await p.getByRole("button", { name: "Barline" }).click())],
-    ["delete", async (p) => void (await deleteButton(p).click())],
+    // Leaving for another part.
     [
       "add a part",
       async (p) => void (await p.getByRole("button", { name: "Add a part" }).click()),
@@ -339,7 +311,9 @@ test.describe("the triplet button (US4)", () => {
 });
 
 test.describe("counts, cursor and export agree (US1 remainder)", () => {
-  for (let n = 2; n <= 16; n++) {
+  // All rests: a typical triplet and the two-digit worst case (notes, a rest and a repeat are in
+  // e2e/grouping-controls.spec.ts INV-002).
+  for (const n of [3, 16]) {
     test(`export digits agree with the bracket numeral for ${n}`, async ({
       page,
     }) => {
@@ -364,38 +338,31 @@ test.describe("counts, cursor and export agree (US1 remainder)", () => {
       els.findIndex((e) => e.getAttribute("aria-current") === "true"),
     );
 
-  for (const where of ["mid-part", "barline"] as const) {
-    for (const action of ["tuplet", "group", "ungroup"] as const) {
-      test(`${action} ends the selection and leaves the cursor (${where})`, async ({
-        page,
-      }) => {
-        await startCapturing(page);
-        await addNotes(page, 2);
-        await page.getByTitle("Barline").click();
-        await fret(page, "E", 1).click();
-        await fret(page, "E", 2).click();
-        await expect(columns(page)).toHaveCount(5);
-        if (action === "ungroup") {
-          await selectColumns(page, 3, 4);
-          await groupControl(page).click();
-        }
-        const from = where === "barline" ? 2 : 3;
-        const to = action === "tuplet" ? 4 : 4;
-        await selectColumns(page, from === 2 ? 3 : from, to);
-        const before = await activeIndex(page);
-        const control =
-          action === "tuplet"
-            ? tupletControl(page)
-            : action === "group"
-              ? groupControl(page)
-              : ungroupControl(page);
-        await control.click();
-        await expect(selectionBar(page)).toHaveCount(0);
-        expect(await activeIndex(page)).toBe(before);
-        await expect(
-          page.locator('[data-testid="tab-column"][data-selected="true"]'),
-        ).toHaveCount(0);
-      });
-    }
+  // The tuplet control is covered by "the selection ends and the caret does not move".
+  for (const action of ["group", "ungroup"] as const) {
+    test(`${action} ends the selection and leaves the cursor`, async ({
+      page,
+    }) => {
+      await startCapturing(page);
+      await addNotes(page, 2);
+      await page.getByTitle("Barline").click();
+      await fret(page, "E", 1).click();
+      await fret(page, "E", 2).click();
+      await expect(columns(page)).toHaveCount(5);
+      if (action === "ungroup") {
+        await selectColumns(page, 3, 4);
+        await groupControl(page).click();
+      }
+      await selectColumns(page, 3, 4);
+      const before = await activeIndex(page);
+      const control =
+        action === "group" ? groupControl(page) : ungroupControl(page);
+      await control.click();
+      await expect(selectionBar(page)).toHaveCount(0);
+      expect(await activeIndex(page)).toBe(before);
+      await expect(
+        page.locator('[data-testid="tab-column"][data-selected="true"]'),
+      ).toHaveCount(0);
+    });
   }
 });

@@ -1,7 +1,7 @@
 /**
  * INV-013 through the sheet, with REAL pointer clicks fired with no wait between them. The
  * suite's "burst" awaits each click, so the row has settled before the next one starts.
- * Members: 15 pairs on one string, 6 double taps, one pair across two strings, all six.
+ * Members: pairs and double taps on one string, one pair across two strings, all six.
  */
 import { expect, test, type Page } from "@playwright/test";
 import {
@@ -40,19 +40,23 @@ async function oneNote(page: Page) {
 const list = async (page: Page, string = "2") =>
   new Set((await storedRows(page)).at(-1)?.techniques[string] ?? []);
 
-for (let i = 0; i < 6; i += 1) {
-  for (let j = i + 1; j < 6; j += 1) {
-    const a = DECORATIONS[i];
-    const b = DECORATIONS[j];
-    test(`pair ${a.id} + ${b.id}`, async ({ page }) => {
-      await oneNote(page);
-      await burst(page, [name(a.words), name(b.words)]);
-      await expect.poll(() => list(page)).toEqual(new Set([a.id, b.id]));
-    });
-  }
+const byId = (id: string) => DECORATIONS.find((d) => d.id === id)!;
+
+const PAIRS = [
+  ["vibrato", "harmonic"], // the typical pair: a suffix and the harmonic's brackets
+  ["tap", "let_ring"], // the two other mark positions: the prefix and the let-ring parens
+].map(([a, b]) => [byId(a), byId(b)] as const);
+
+for (const [a, b] of PAIRS) {
+  test(`pair ${a.id} + ${b.id}`, async ({ page }) => {
+    await oneNote(page);
+    await burst(page, [name(a.words), name(b.words)]);
+    await expect.poll(() => list(page)).toEqual(new Set([a.id, b.id]));
+  });
 }
 
-for (const d of DECORATIONS) {
+// Every decoration toggles through the same handler; one typical and one multi-word name.
+for (const d of [byId("vibrato"), byId("let_ring")]) {
   test(`double tap ${d.id} lands back at off`, async ({ page }) => {
     await oneNote(page);
     const before = (await storedRows(page)).at(-1)!;

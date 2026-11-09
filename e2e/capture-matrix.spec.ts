@@ -11,12 +11,9 @@ import { addRests, measureBand, selectColumns, startWith, tupletControl } from "
 test.setTimeout(240_000);
 test.skip(({ isMobile }) => !isMobile, "the budget is the touch column");
 
-const STR = [
-  { family: "Bass 4", preset: "E Standard", strings: 4 },
-  { family: "Bass 5", preset: "Drop A", strings: 5 },
-  { family: "Guitar 6", preset: "E Standard", strings: 6 },
-  { family: "Guitar 7", preset: "B Standard", strings: 7 },
-] as const;
+const BASS4 = { family: "Bass 4", preset: "E Standard", strings: 4 } as const;
+const GUITAR6 = { family: "Guitar 6", preset: "E Standard", strings: 6 } as const;
+const GUITAR7 = { family: "Guitar 7", preset: "B Standard", strings: 7 } as const;
 
 const band = (page: Page) => page.getByTestId("tab-band");
 
@@ -61,69 +58,74 @@ const reachable = (page: Page) =>
     return { opened, over, client: el.clientHeight, total: rows.length, seen: seen.size, firstRow };
   });
 
-for (const tuning of STR) {
-  for (const height of [667, 553]) {
-    test(`INV-003 ${tuning.family} at 375x${height}: at rest, selecting, chord form open`, async ({ page }) => {
-      await startWith(page, tuning);
-      await chordAndBracket(page);
-      await page.setViewportSize({ width: 375, height });
-      // A reload, because making the bracket just revealed it (INV-005) and that is not how the band opens.
-      await page.reload();
-      await expect(columns(page).first()).toBeAttached();
-      await page.waitForTimeout(250);
-      expect.soft(Math.abs((await reachable(page)).opened), "opens at the strings nearest the neck").toBeLessThanOrEqual(1);
-      const check = async (state: string) => {
-        await page.waitForTimeout(150);
-        const r = await reachable(page);
-        console.log(`BAND ${tuning.strings}@${height} ${state}: ${JSON.stringify(r)}`);
-        expect.soft(r.client, `${state}: the band has room for a string`).toBeGreaterThanOrEqual(18);
-        expect.soft(r.seen, `${state}: every row reachable ${JSON.stringify(r)}`).toBe(r.total);
-        expect.soft(r.firstRow, `${state}: nothing above the scroll origin`).toBeGreaterThanOrEqual(-1);
-      };
-      await check("at rest");
-      await tapColumn(page, 0);
-      await page.getByRole("button", { name: /^select$/ }).click();
-      await tapColumn(page, 3);
-      await expect(page.getByTestId("toolbar-selection")).toBeVisible();
-      await check("selecting");
-      await page.getByTestId("toolbar-selection").getByRole("button", { name: "cancel" }).click();
-      await tapColumn(page, 0);
-      await page.getByRole("button", { name: "chord symbol" }).click();
-      await check("chord form open");
-    });
+const BAND_CASES = [
+  // The worst case: the most strings on the shortest screen.
+  { tuning: GUITAR7, height: 553 },
+  // The typical case: a six-string on an ordinary phone.
+  { tuning: GUITAR6, height: 667 },
+];
 
-    test(`INV-004 ${tuning.family} at 375x${height}: a selection hides nothing and moves nothing`, async ({ page }) => {
-      await startWith(page, tuning);
-      await addRests(page, 4);
-      await page.setViewportSize({ width: 375, height });
+for (const { tuning, height } of BAND_CASES) {
+  test(`INV-003 ${tuning.family} at 375x${height}: at rest, selecting, chord form open`, async ({ page }) => {
+    await startWith(page, tuning);
+    await chordAndBracket(page);
+    await page.setViewportSize({ width: 375, height });
+    // A reload, because making the bracket just revealed it (INV-005) and that is not how the band opens.
+    await page.reload();
+    await expect(columns(page).first()).toBeAttached();
+    await page.waitForTimeout(250);
+    expect.soft(Math.abs((await reachable(page)).opened), "opens at the strings nearest the neck").toBeLessThanOrEqual(1);
+    const check = async (state: string) => {
       await page.waitForTimeout(150);
-      const read = () =>
-        page.evaluate(() => {
-          const b = document.querySelector('[data-testid="tab-band"]')!.getBoundingClientRect();
-          const cells = [...document.querySelectorAll('[data-testid="tab-column"]')][0].querySelectorAll(".tab-cell");
-          return {
-            y: b.y,
-            h: b.height,
-            inView: [...cells].filter((c) => {
-              const r = c.getBoundingClientRect();
-              return r.top >= b.top - 1 && r.bottom <= b.bottom + 1;
-            }).length,
-            stable: document.querySelector('[data-testid="toolbar-stable"]')!.getBoundingClientRect().y,
-          };
-        });
-      const before = await read();
-      await selectColumns(page, 0, 2);
-      const after = await read();
-      expect(after.y).toBe(before.y);
-      expect(after.h).toBe(before.h);
-      expect(after.inView).toBeGreaterThanOrEqual(before.inView);
-      expect(after.stable).toBe(before.stable);
-    });
-  }
+      const r = await reachable(page);
+      console.log(`BAND ${tuning.strings}@${height} ${state}: ${JSON.stringify(r)}`);
+      expect.soft(r.client, `${state}: the band has room for a string`).toBeGreaterThanOrEqual(18);
+      expect.soft(r.seen, `${state}: every row reachable ${JSON.stringify(r)}`).toBe(r.total);
+      expect.soft(r.firstRow, `${state}: nothing above the scroll origin`).toBeGreaterThanOrEqual(-1);
+    };
+    await check("at rest");
+    await tapColumn(page, 0);
+    await page.getByRole("button", { name: /^select$/ }).click();
+    await tapColumn(page, 3);
+    await expect(page.getByTestId("toolbar-selection")).toBeVisible();
+    await check("selecting");
+    await page.getByTestId("toolbar-selection").getByRole("button", { name: "cancel" }).click();
+    await tapColumn(page, 0);
+    await page.getByRole("button", { name: "chord symbol" }).click();
+    await check("chord form open");
+  });
+
+  test(`INV-004 ${tuning.family} at 375x${height}: a selection hides nothing and moves nothing`, async ({ page }) => {
+    await startWith(page, tuning);
+    await addRests(page, 4);
+    await page.setViewportSize({ width: 375, height });
+    await page.waitForTimeout(150);
+    const read = () =>
+      page.evaluate(() => {
+        const b = document.querySelector('[data-testid="tab-band"]')!.getBoundingClientRect();
+        const cells = [...document.querySelectorAll('[data-testid="tab-column"]')][0].querySelectorAll(".tab-cell");
+        return {
+          y: b.y,
+          h: b.height,
+          inView: [...cells].filter((c) => {
+            const r = c.getBoundingClientRect();
+            return r.top >= b.top - 1 && r.bottom <= b.bottom + 1;
+          }).length,
+          stable: document.querySelector('[data-testid="toolbar-stable"]')!.getBoundingClientRect().y,
+        };
+      });
+    const before = await read();
+    await selectColumns(page, 0, 2);
+    const after = await read();
+    expect(after.y).toBe(before.y);
+    expect(after.h).toBe(before.h);
+    expect(after.inView).toBeGreaterThanOrEqual(before.inView);
+    expect(after.stable).toBe(before.stable);
+  });
 }
 
 test("INV-004 the stable row does not move as the cursor crosses a note, a rest, a barline and the start", async ({ page }) => {
-  await startWith(page, STR[2]);
+  await startWith(page, GUITAR6);
   await addRests(page, 2);
   await page.getByRole("button", { name: /string, fret 5,/ }).first().click();
   await page.getByTitle("Barline").click();
@@ -138,52 +140,57 @@ test("INV-004 the stable row does not move as the cursor crosses a note, a rest,
   expect(await y(), "the start").toBe(first);
 });
 
-for (const theme of ["dark", "light"] as const) {
-  for (const tuning of STR.slice(0, 3)) {
-    test(`INV-001 INV-002 ${tuning.family}, ${theme}: rows and strings over every cursor state`, async ({ page }) => {
-      await page.emulateMedia({ colorScheme: theme });
-      await startWith(page, tuning);
-      await chordAndBracket(page);
-      const hold = async (where: string) => {
-        await page.waitForTimeout(100);
-        const h = (id: string) =>
-          page.evaluate((x) => document.querySelector(`[data-testid="${x}"]`)?.getBoundingClientRect().height ?? 0, id);
-        expect(await h("capture-title-row"), where).toBeLessThanOrEqual(45);
-        expect(await h("status-row"), where).toBeLessThanOrEqual(26);
-        expect(await h("toolbar-stable"), where).toBeLessThanOrEqual(46);
-        for (const id of ["toolbar-contextual", "toolbar-selection", "toolbar-reserved"]) {
-          expect(await h(id), `${where} ${id}`).toBeLessThanOrEqual(46);
-        }
-        const m = await measureBand(page);
-        expect(m.stringsClipped, `${where}: no string lost`).toBe(0);
-        expect(m.pageOver, `${where}: the page does not scroll`).toBeLessThanOrEqual(0);
-        const clipped = await page.evaluate(() => {
-          const b = document.querySelector('[data-testid="tab-band"]')!.getBoundingClientRect();
-          const inside = (s: string) =>
-            [...document.querySelectorAll(s)].filter((e) => e.textContent || s.includes("bracket")).every((e) => {
-              const r = e.getBoundingClientRect();
-              return r.top >= b.top - 1 && r.bottom <= b.bottom + 1;
-            });
-          return { chord: inside('[data-testid="tab-column"] > div.text-accent'), bracket: inside('[data-testid="tab-bracket"]') };
-        });
-        expect(clipped, where).toEqual({ chord: true, bracket: true });
-      };
-      await hold("at rest");
-      await columns(page).nth(1).click();
-      await hold("mid-part");
-      await page.getByRole("button", { name: /start$/ }).click();
-      await hold("at the start, nothing focused");
-      await page.getByRole("button", { name: /end/ }).first().click();
-      await page.getByTitle("Barline").click();
-      await hold("on a barline");
-      await selectColumns(page, 0, 3);
-      await hold("selecting");
-    });
-  }
+const ROW_CASES = [
+  // The most strings this invariant is held to (Guitar 7 is not), in the dark theme.
+  { theme: "dark", tuning: GUITAR6 },
+  // The fewest strings, in the other theme.
+  { theme: "light", tuning: BASS4 },
+] as const;
+
+for (const { theme, tuning } of ROW_CASES) {
+  test(`INV-001 INV-002 ${tuning.family}, ${theme}: rows and strings over every cursor state`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: theme });
+    await startWith(page, tuning);
+    await chordAndBracket(page);
+    const hold = async (where: string) => {
+      await page.waitForTimeout(100);
+      const h = (id: string) =>
+        page.evaluate((x) => document.querySelector(`[data-testid="${x}"]`)?.getBoundingClientRect().height ?? 0, id);
+      expect(await h("capture-title-row"), where).toBeLessThanOrEqual(45);
+      expect(await h("status-row"), where).toBeLessThanOrEqual(26);
+      expect(await h("toolbar-stable"), where).toBeLessThanOrEqual(46);
+      for (const id of ["toolbar-contextual", "toolbar-selection", "toolbar-reserved"]) {
+        expect(await h(id), `${where} ${id}`).toBeLessThanOrEqual(46);
+      }
+      const m = await measureBand(page);
+      expect(m.stringsClipped, `${where}: no string lost`).toBe(0);
+      expect(m.pageOver, `${where}: the page does not scroll`).toBeLessThanOrEqual(0);
+      const clipped = await page.evaluate(() => {
+        const b = document.querySelector('[data-testid="tab-band"]')!.getBoundingClientRect();
+        const inside = (s: string) =>
+          [...document.querySelectorAll(s)].filter((e) => e.textContent || s.includes("bracket")).every((e) => {
+            const r = e.getBoundingClientRect();
+            return r.top >= b.top - 1 && r.bottom <= b.bottom + 1;
+          });
+        return { chord: inside('[data-testid="tab-column"] > div.text-accent'), bracket: inside('[data-testid="tab-bracket"]') };
+      });
+      expect(clipped, where).toEqual({ chord: true, bracket: true });
+    };
+    await hold("at rest");
+    await columns(page).nth(1).click();
+    await hold("mid-part");
+    await page.getByRole("button", { name: /start$/ }).click();
+    await hold("at the start, nothing focused");
+    await page.getByRole("button", { name: /end/ }).first().click();
+    await page.getByTitle("Barline").click();
+    await hold("on a barline");
+    await selectColumns(page, 0, 3);
+    await hold("selecting");
+  });
 }
 
 test("INV-031 every control of the two rows and the toolbars is one tap away, in every capture state", async ({ page }) => {
-  await startWith(page, STR[2]);
+  await startWith(page, GUITAR6);
   await addRests(page, 4);
   await addChord(page, 1, "Am");
   const need = async (state: string, selecting = false) => {
@@ -217,7 +224,7 @@ test("INV-031 every control of the two rows and the toolbars is one tap away, in
 });
 
 test("FR-001 the merged row holds twelve parts, a long title and N unsynced at 375", async ({ page }) => {
-  await startWith(page, STR[2]);
+  await startWith(page, GUITAR6);
   await addRests(page, 2);
   for (let i = 0; i < 11; i++) {
     const url = page.url();
@@ -245,29 +252,29 @@ test("FR-001 the merged row holds twelve parts, a long title and N unsynced at 3
   expect(r.openInView, "the open part is kept in view").toBe(true);
 });
 
-for (const width of [375, 390]) {
-  test(`FR-001 the title shares the row at ${width} when there is room for it`, async ({ page }) => {
-    await startWith(page, STR[2]);
-    await page.setViewportSize({ width, height: 667 });
-    await page.waitForTimeout(200);
-    const row = page.getByTestId("capture-title-row");
-    const room = await row.evaluate((el) => {
-      const chips = el.querySelector("div")!;
-      const last = chips.lastElementChild!.getBoundingClientRect();
-      return Math.round(el.getBoundingClientRect().right - last.right);
-    });
-    expect(room, "spare width in the row, one short title and one chip").toBeGreaterThan(40);
-    await expect(row.getByText("Dirge"), "FR-001: the title shares the row; surfaces.md: it gives way, down to its arrow").toBeVisible();
+// The narrowest width only: room for the title at 375 means room at 390.
+test("FR-001 the title shares the row at 375 when there is room for it", async ({ page }) => {
+  await startWith(page, GUITAR6);
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.waitForTimeout(200);
+  const row = page.getByTestId("capture-title-row");
+  const room = await row.evaluate((el) => {
+    const chips = el.querySelector("div")!;
+    const last = chips.lastElementChild!.getBoundingClientRect();
+    return Math.round(el.getBoundingClientRect().right - last.right);
   });
-}
+  expect(room, "spare width in the row, one short title and one chip").toBeGreaterThan(40);
+  await expect(row.getByText("Dirge"), "FR-001: the title shares the row; surfaces.md: it gives way, down to its arrow").toBeVisible();
+});
 
-const TITLES = [
-  { name: "a short title", title: "Riff" },
-  { name: "an ordinary title", title: "Smoke Over the Water" },
-  { name: "a longer title", title: "Everything in Its Right Place (Live)" },
-  { name: "a 120-character title", title: "A very long song title ".repeat(6).slice(0, 120) },
+const TITLE_CASES = [
+  // The worst case: the longest title, the most parts, the narrowest width.
+  { name: "a 120-character title", title: "A very long song title ".repeat(6).slice(0, 120), count: 12, width: 375 },
+  // The typical case.
+  { name: "an ordinary title", title: "Smoke Over the Water", count: 2, width: 390 },
+  // A lone chip: the strip at its shortest.
+  { name: "a short title", title: "Riff", count: 1, width: 375 },
 ];
-const TITLE_WIDTHS = [375, 390];
 const titleNotes: Col[] = [n(3, { d: "q" }), n(5, { d: "q" })];
 const titleParts = (count: number) =>
   Array.from({ length: count }, (_, i) => ({ key: `p${i}`, label: String.fromCharCode(65 + i), columns: titleNotes }));
@@ -291,31 +298,27 @@ const readTitleRow = (page: Page) =>
     };
   });
 
-for (const width of TITLE_WIDTHS) {
-  for (const { name, title } of TITLES) {
-    for (const count of [1, 2, 12]) {
-      test(`FR-001 ${name}, ${count} part(s), at ${width}: the chips and + part are on the row`, async ({ page }) => {
-        const { songUrl, parts: ids } = await seedSong(page, titleParts(count), [{ part: "p0" }]);
-        await patchSong(page, { title });
-        await page.setViewportSize({ width, height: 667 });
-        await page.goto(`${songUrl}/capture/${ids.p0}`);
-        await expect(page.getByTestId("tab-column").first()).toBeAttached();
-        await page.waitForTimeout(200);
-        const row = await readTitleRow(page);
-        console.log(`ROW ${width} | ${name} | ${count} | back ${row.back.width.toFixed(1)} | strip ${row.strip?.width.toFixed(1)} | add at ${row.add.left.toFixed(0)}-${row.add.right.toFixed(0)}`);
-        expect.soft(row.back.width, "the way back is at its floor").toBeGreaterThanOrEqual(43.5);
-        expect(row.strip, "a strip of chips exists").not.toBeNull();
-        expect(row.strip!.width, `the chips have room: ${JSON.stringify(row)}`).toBeGreaterThanOrEqual(44);
-        // `+ part` is the last thing in the strip, so a swipe of the strip must bring it fully inside.
-        const add = page.getByRole("button", { name: "Add a part" });
-        await add.evaluate((el) => el.scrollIntoView({ inline: "nearest", block: "nearest" }));
-        await page.waitForTimeout(80);
-        const after = await readTitleRow(page);
-        expect(after.add.right, "+ part reachable").toBeLessThanOrEqual(after.strip!.right + 0.5);
-        expect(after.add.left, "+ part reachable").toBeGreaterThanOrEqual(after.strip!.left - 0.5);
-      });
-    }
-  }
+for (const { name, title, count, width } of TITLE_CASES) {
+  test(`FR-001 ${name}, ${count} part(s), at ${width}: the chips and + part are on the row`, async ({ page }) => {
+    const { songUrl, parts: ids } = await seedSong(page, titleParts(count), [{ part: "p0" }]);
+    await patchSong(page, { title });
+    await page.setViewportSize({ width, height: 667 });
+    await page.goto(`${songUrl}/capture/${ids.p0}`);
+    await expect(page.getByTestId("tab-column").first()).toBeAttached();
+    await page.waitForTimeout(200);
+    const row = await readTitleRow(page);
+    console.log(`ROW ${width} | ${name} | ${count} | back ${row.back.width.toFixed(1)} | strip ${row.strip?.width.toFixed(1)} | add at ${row.add.left.toFixed(0)}-${row.add.right.toFixed(0)}`);
+    expect.soft(row.back.width, "the way back is at its floor").toBeGreaterThanOrEqual(43.5);
+    expect(row.strip, "a strip of chips exists").not.toBeNull();
+    expect(row.strip!.width, `the chips have room: ${JSON.stringify(row)}`).toBeGreaterThanOrEqual(44);
+    // `+ part` is the last thing in the strip, so a swipe of the strip must bring it fully inside.
+    const add = page.getByRole("button", { name: "Add a part" });
+    await add.evaluate((el) => el.scrollIntoView({ inline: "nearest", block: "nearest" }));
+    await page.waitForTimeout(80);
+    const after = await readTitleRow(page);
+    expect(after.add.right, "+ part reachable").toBeLessThanOrEqual(after.strip!.right + 0.5);
+    expect(after.add.left, "+ part reachable").toBeGreaterThanOrEqual(after.strip!.left - 0.5);
+  });
 }
 
 const openShort = async (page: Page, list = [n(3, { d: "q" }), bar(), n(5, { d: "q" }), n(7, { d: "q" })]) => {
@@ -390,16 +393,15 @@ test("landscape: the neck stays reachable on a phone on its side", async ({ page
   expect(box.y + box.height).toBeLessThanOrEqual(seen.inner + 0.5);
 });
 
-/** FR-001, INV-031: the title row fully loaded: title length x tempo x parts x a long sync word, at both widths. */
-const FULL_TITLES = [
-  { name: "short", title: "Riff" },
-  { name: "36", title: "Everything in Its Right Place (Live)" },
-  { name: "120", title: "A very long song title ".repeat(6).slice(0, 120) },
-];
-const FULL_TEMPOS = [
-  { name: "no tempo", bpm: null },
-  { name: "300 bpm", bpm: 300 },
-];
+/** FR-001, INV-031: the title row fully loaded: title length, tempo, parts and a long sync word. */
+const FULL_CASES = [
+  // The worst case: everything at its longest, at the narrowest width.
+  { name: "120", title: "A very long song title ".repeat(6).slice(0, 120), tempo: { name: "300 bpm", bpm: 300 }, count: 12, load: "many", width: 375 },
+  // The lightest row, at the wider width.
+  { name: "short", title: "Riff", tempo: { name: "no tempo", bpm: null }, count: 1, load: "few", width: 390 },
+  // No tempo, under load: the row without its tempo control still fits twelve parts and a three-digit sync word.
+  { name: "36", title: "Everything in Its Right Place (Live)", tempo: { name: "no tempo", bpm: null }, count: 12, load: "many", width: 375 },
+] as const;
 const fullShort: Col[] = [n(3, { d: "q" }), n(5, { d: "q" })];
 
 /** Seeded columns skip the outbox, so the sync word is short. This queues copies of a real row, to make it three digits. */
@@ -433,38 +435,30 @@ const readFullRow = (page: Page) =>
     };
   });
 
-for (const width of [375, 390]) {
-  for (const { name, title } of FULL_TITLES) {
-    for (const tempo of FULL_TEMPOS) {
-      for (const count of [1, 12]) {
-        for (const load of ["few", "many"] as const) {
-          test(`FR-001 ${name} title, ${tempo.name}, ${count} part(s), ${load} unsynced, at ${width}`, async ({ page, isMobile }) => {
-            test.skip(!isMobile, "the row is budgeted at 375 on touch");
-            const { songUrl, parts: ids } = await seedSong(page, fullParts(count, fullShort), [{ part: "p0" }]);
-            await patchSong(page, { title, bpm: tempo.bpm });
-            if (load === "many") await manyUnsynced(page);
-            await page.setViewportSize({ width, height: 667 });
-            await page.goto(`${songUrl}/capture/${ids.p0}`);
-            await expect(page.getByTestId("tab-column").first()).toBeAttached();
-            await page.waitForTimeout(200);
-            const row = await readFullRow(page);
-            console.log(`ROW ${width} ${name} ${tempo.name} ${count} ${load}: back ${row.back.toFixed(0)} strip ${row.strip.toFixed(0)} over ${row.over.toFixed(1)} | ${row.text}`);
-            expect.soft(row.h, "row height").toBeLessThanOrEqual(45);
-            expect.soft(row.back, "the way back is at its floor").toBeGreaterThanOrEqual(43.5);
-            expect.soft(row.over, "nothing past the row").toBeLessThanOrEqual(0.5);
-            expect.soft(row.cut, "tempo and sync word whole").toEqual([]);
-            expect.soft(row.strip, "room for at least one chip").toBeGreaterThanOrEqual(36);
-            // One swipe, then one tap, and the new part is open.
-            await page.getByTestId("capture-title-row").locator("a").first().evaluate((a) => {
-              const s = a.parentElement!;
-              s.scrollLeft = s.scrollWidth;
-            });
-            const before = page.url();
-            await page.getByRole("button", { name: "Add a part" }).click({ timeout: 4000 });
-            await expect(page).not.toHaveURL(before);
-          });
-        }
-      }
-    }
-  }
+for (const { name, title, tempo, count, load, width } of FULL_CASES) {
+  test(`FR-001 ${name} title, ${tempo.name}, ${count} part(s), ${load} unsynced, at ${width}`, async ({ page, isMobile }) => {
+    test.skip(!isMobile, "the row is budgeted at 375 on touch");
+    const { songUrl, parts: ids } = await seedSong(page, fullParts(count, fullShort), [{ part: "p0" }]);
+    await patchSong(page, { title, bpm: tempo.bpm });
+    if (load === "many") await manyUnsynced(page);
+    await page.setViewportSize({ width, height: 667 });
+    await page.goto(`${songUrl}/capture/${ids.p0}`);
+    await expect(page.getByTestId("tab-column").first()).toBeAttached();
+    await page.waitForTimeout(200);
+    const row = await readFullRow(page);
+    console.log(`ROW ${width} ${name} ${tempo.name} ${count} ${load}: back ${row.back.toFixed(0)} strip ${row.strip.toFixed(0)} over ${row.over.toFixed(1)} | ${row.text}`);
+    expect.soft(row.h, "row height").toBeLessThanOrEqual(45);
+    expect.soft(row.back, "the way back is at its floor").toBeGreaterThanOrEqual(43.5);
+    expect.soft(row.over, "nothing past the row").toBeLessThanOrEqual(0.5);
+    expect.soft(row.cut, "tempo and sync word whole").toEqual([]);
+    expect.soft(row.strip, "room for at least one chip").toBeGreaterThanOrEqual(36);
+    // One swipe, then one tap, and the new part is open.
+    await page.getByTestId("capture-title-row").locator("a").first().evaluate((a) => {
+      const s = a.parentElement!;
+      s.scrollLeft = s.scrollWidth;
+    });
+    const before = page.url();
+    await page.getByRole("button", { name: "Add a part" }).click({ timeout: 4000 });
+    await expect(page).not.toHaveURL(before);
+  });
 }

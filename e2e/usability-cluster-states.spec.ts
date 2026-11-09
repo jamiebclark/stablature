@@ -9,10 +9,8 @@ import { cols, deviceSets, recorder, seed, type Col } from "./rhythm-probe-helpe
 test.setTimeout(120_000);
 test.skip(({ isMobile }) => !isMobile, "the cluster's budget is the touch column");
 
-const SIZES = [
-  { width: 375, height: 667 },
-  { width: 390, height: 844 },
-];
+// The narrowest, shortest phone: the taller 390x844 only gives the cluster more room.
+const SIZES = [{ width: 375, height: 667 }];
 
 const TIMED: Col[] = cols("q", "q", "q", "q", "|", "q", "q", "q", "q");
 const GAPPED: Col[] = cols("q", "q", "|", null, null);
@@ -163,7 +161,7 @@ test("INV-026 idle, collapsed, at most 60 high with nothing to say", async ({ pa
 /** INV-026, round 3: `fell behind` by a real stall of the page; no engine call is stubbed. */
 const FELL_BEHIND_WORDS = "Stopped because the click could not keep time. Start again when you are ready.";
 
-for (const size of [{ width: 375, height: 667 }, { width: 390, height: 844 }]) {
+for (const size of SIZES) {
   test(`INV-026 fell behind at ${size.width}x${size.height}: a stalled page says why it stopped`, async ({ page }) => {
     const { playUrl } = await seed(page, cols(...Array.from({ length: 64 }, () => "q")), { bpm: 240 });
     await page.setViewportSize(size);

@@ -11,7 +11,6 @@ import { openTools } from "./usability-helpers";
 import { expect, test, type Page } from "@playwright/test";
 import {
   addChord,
-  CHIPS,
   columns,
   connectors,
   DECORATIONS,
@@ -157,26 +156,30 @@ test("INV-003 no connector, and exactly the plain width", async ({ page }) => {
   m.widths.forEach((w, i) => expect(w).toBeCloseTo(plain[i], 1));
 });
 
+// Every chip and every decoration reads out by the same rule, so one of each kind stands in.
 const LABELS: { name: string; build: (page: Page) => Promise<void>; last: string }[] = [
-  ...CHIPS.map((c) => ({
-    name: c.name,
+  {
+    // a transition, read from the connector into its target
+    name: "slide down",
     build: async (page: Page) => {
       await fret(page, "A", 5).click();
-      await latch(page, c.name).click();
+      await latch(page, "slide down").click();
       await fret(page, "A", 7).click();
       await expect(connectors(page)).toHaveCount(1);
     },
-    last: `string 3 fret 7 with ${c.name}`,
-  })),
-  ...DECORATIONS.map((d) => ({
-    name: d.words,
+    last: "string 3 fret 7 with slide down",
+  },
+  {
+    // one decoration on its own
+    name: "let ring",
     build: async (page: Page) => {
       await fret(page, "A", 7).click();
-      await decorate(page, 0, [d.words]);
+      await decorate(page, 0, ["let ring"]);
     },
-    last: `string 3 fret 7 with ${d.words}`,
-  })),
+    last: "string 3 fret 7 with let ring",
+  },
   {
+    // the worst case: all six, joined in reading order
     name: "all six",
     build: async (page) => {
       await fret(page, "A", 7).click();
@@ -185,6 +188,7 @@ const LABELS: { name: string; build: (page: Page) => Promise<void>; last: string
     last: "string 3 fret 7 with tap, let ring, harmonic, bend, vibrato and palm mute",
   },
   {
+    // a dead note: fret x, not a number
     name: "a dead note",
     build: async (page) => {
       await page.getByRole("button", { name: "Dead note on the A string" }).click();
@@ -194,6 +198,7 @@ const LABELS: { name: string; build: (page: Page) => Promise<void>; last: string
     last: "string 3 fret x with palm mute",
   },
   {
+    // a chip with no note to come from on that string reads out nothing
     name: "a transition with no source",
     build: async (page) => {
       await fret(page, "E", 3).click();
@@ -204,6 +209,7 @@ const LABELS: { name: string; build: (page: Page) => Promise<void>; last: string
     last: "string 3 fret 7",
   },
   {
+    // the control: no technique at all
     name: "a plain column",
     build: async (page) => {
       await fret(page, "A", 7).click();

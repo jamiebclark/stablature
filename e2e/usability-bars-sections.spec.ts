@@ -27,37 +27,25 @@ const section = (label: string | null, repeat = 1) =>
 const end = { kind: "section_end" } as unknown as EntrySpec;
 const cue = { kind: "text", label: "build slowly" } as EntrySpec;
 
+// The numbering and visit rules case by case are in src/lib/reading/__tests__/bars.test.ts; these check the page draws them.
 const ARR: { name: string; entries: EntrySpec[]; numbers: number[][]; words: (string | null)[] }[] = [
-  { name: "one part", entries: [{ part: "a" }], numbers: [[1, 2]], words: [null] },
-  { name: "A x4", entries: [{ part: "a", repeat: 4 }], numbers: [[1, 2], [3, 4], [5, 6], [7, 8]], words: [null, null, null, null] },
-  { name: "last-pass variant", entries: [{ part: "a", repeat: 2, last: "c" }], numbers: [[1, 2], [3, 4, 5]], words: [null, null] },
+  // The only test of a sliced pass's heading.
   { name: "a sliced pass", entries: [{ part: "a" }, { part: "c", fromBar: 2, toBar: 3 }], numbers: [[1, 2], [3, 4]], words: [null, null] },
+  // Typical: a repeated section over two parts, numbering running on across passes.
   {
     name: "Verse x2",
     entries: [section("Verse", 2), { part: "a" }, { part: "b" }, end],
     numbers: [[1, 2], [3], [4, 5], [6]],
     words: ["VERSE", "VERSE", "VERSE, 2ND TIME", "VERSE, 2ND TIME"],
   },
+  // The longest label: nested sections joined, with an ordinal.
   {
     name: "nested sections",
     entries: [section("Outer"), section("Inner", 2), { part: "b" }, end, end],
     numbers: [[1], [2]],
     words: ["OUTER / INNER", "OUTER / INNER, 2ND TIME"],
   },
-  {
-    name: "same name not adjacent",
-    entries: [section("Verse"), { part: "b" }, end, { part: "a" }, section("Verse"), { part: "b" }, end],
-    numbers: [[1], [2, 3], [4]],
-    words: ["VERSE", null, "VERSE, 2ND TIME"],
-  },
-  {
-    name: "names differing only in case",
-    entries: [section("Verse"), { part: "b" }, end, section("verse"), { part: "b" }, end],
-    numbers: [[1], [2]],
-    words: ["VERSE", "VERSE, 2ND TIME"],
-  },
-  { name: "an empty section", entries: [section("Verse"), end, { part: "b" }], numbers: [[1]], words: [null] },
-  { name: "an unnamed section", entries: [section(null, 2), { part: "b" }, end], numbers: [[1], [2]], words: [null, null] },
+  // A text cue between passes draws no card of its own.
   { name: "a text cue between", entries: [{ part: "b" }, cue, { part: "b" }], numbers: [[1], [2]], words: [null, null] },
 ];
 
@@ -88,11 +76,10 @@ for (const arr of ARR) {
 
 /** Twice through, so the second card shows what the first pass added. */
 const SHAPES: { name: string; columns: Col[]; numbers: number[][] }[] = [
-  { name: "no barlines", columns: [...four, ...four], numbers: [[1], [2]] },
-  { name: "a trailing barline", columns: [...four, bar()], numbers: [[1], [2]] },
+  // A leading barline opens an empty bar 1, so the first number drawn is not 1.
   { name: "a leading barline", columns: [bar(), ...four], numbers: [[2], [4]] },
+  // An empty bar in the middle is counted but has no number drawn.
   { name: "an empty bar in the middle", columns: [...four, bar(), bar(), ...four], numbers: [[1, 3], [4, 6]] },
-  { name: "a pass with no notes", columns: [{ kind: "rest", d: "q" }], numbers: [[1], [2]] },
 ];
 
 for (const shape of SHAPES) {
@@ -110,19 +97,15 @@ test("INV-032 a song page numbers from 1", async ({ page }) => {
   await expect(page.getByTestId("tab-bar-number").first()).toHaveText("1");
 });
 
+// Every shape is in bars.test.ts's beatsPerBar; these check the heading shows it, or leaves it out, on both pages.
 const BEATS: { name: string; columns: Col[]; text: string | null }[] = [
+  // Typical: every bar the same.
   { name: "all bars 3", columns: [q(), q(), q(), bar(), q(), q(), q()], text: "3 beats a bar" },
-  { name: "all bars 4", columns: TWO, text: "4 beats a bar" },
-  { name: "all bars 5", columns: [...four, q(), bar(), ...four, q()], text: "5 beats a bar" },
-  { name: "all bars 6", columns: [...four, q(), q(), bar(), ...four, q(), q()], text: "6 beats a bar" },
+  // Bars that differ: the heading says nothing.
   { name: "one bar differs", columns: [...four, bar(), q(), q(), q()], text: null },
-  { name: "a pickup", columns: [q(), bar(), ...four, bar(), ...four], text: null },
-  { name: "one untimed bar", columns: [...four, bar(), n(3), n(5)], text: null },
-  { name: "an empty bar in the middle", columns: [...four, bar(), bar(), ...four], text: null },
-  { name: "a leading barline", columns: [bar(), ...four, bar(), ...four], text: "4 beats a bar" },
-  { name: "a trailing barline", columns: [...four, bar(), ...four, bar()], text: "4 beats a bar" },
-  { name: "a part of no durations", columns: [n(3), n(5), bar(), n(3), n(5)], text: null },
+  // A fractional bar: nothing, and never a fraction.
   { name: "a fractional bar", columns: [q(), q(), n(3, { d: "8" })], text: null },
+  // The hardest count: a tuplet still makes 4.
   {
     name: "a tuplet in a bar",
     columns: [

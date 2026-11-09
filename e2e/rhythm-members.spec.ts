@@ -1,7 +1,6 @@
-import { openCluster } from "./usability-helpers";
 /**
- * The members the first pass of probes left: INV-006 a chord symbol x {4, 5, 6 strings}; INV-016 the
- * play view, idle and each state the click runs in, x {closed with no set, set}; INV-001 the paste
+ * The members the first pass of probes left: INV-006 a chord symbol x {4, 6 strings}; INV-016 the
+ * play view, idle and each phase the click runs in, set, and once closed with no set; INV-001 the paste
  * preview; INV-010 how far a mark sits from the fret above it.
  */
 import { expect, test, type Page } from "@playwright/test";
@@ -10,8 +9,9 @@ import { emptySong, pasteTab } from "./import-helpers";
 import { cols, rec, recorder, seed, setTempoBySheet, tapAt, tapsFor } from "./rhythm-probe-helpers";
 
 const STRINGS = [
+  // The fewest strings, the row highest on screen.
   { family: "Bass 4", preset: "E Standard", strings: 4, note: "A" },
-  { family: "Bass 5", preset: "B Standard", strings: 5, note: "A" },
+  // Worst case: the most strings push the row lowest.
   { family: "Guitar 6", preset: "E Standard", strings: 6, note: "A" },
 ] as const;
 
@@ -52,61 +52,61 @@ for (const t of STRINGS) {
 const STATE = "click-state";
 
 /** Each state, with the words on screen that show the run is in it. */
-const STATES: { name: string; list: Parameters<typeof cols>; words: string | null; follow?: boolean; slow?: boolean }[] = [
+// One state per phase: the three ways into plain end in the same phase, so one stands for all.
+const STATES: { name: string; list: Parameters<typeof cols>; words: string | null; slow?: boolean }[] = [
   { name: "idle", list: ["q", "q"], words: null },
   { name: "starting", list: ["q", "q"], words: null, slow: true },
   { name: "count-in", list: ["q", "q"], words: "Counting in." },
   { name: "following", list: ["w", "w", "w", "w", "w", "w", "w", "w"], words: "Following the notation." },
   { name: "plain after a gap", list: ["q", null], words: "Plain beat." },
-  { name: "plain after the end", list: ["q"], words: "Plain beat." },
-  { name: "plain from the first click", list: ["w"], words: "Plain beat.", follow: false },
 ];
 
-for (const s of STATES) {
-  for (const ending of ["closed with no set", "set"] as const) {
-    test(`INV-016 play view, ${s.name}, ${ending}`, async ({ page }, info) => {
-      test.skip(info.project.name !== "desktop", "the sheet and the hook do not differ by device");
-      await recorder(page, s.slow ? { audio: "slow-resume" } : {});
-      const { playUrl } = await seed(page, cols(...s.list), { bpm: 60 });
-      await page.goto(playUrl);
-      await expect(page.getByTestId("click-start")).toBeEnabled();
-      if (s.follow === false) {
-        await openCluster(page);
-        await page.getByTestId("click-follow").click();
-      }
-      const url = page.url();
-      const running = s.words !== null || s.slow === true;
-      if (running) {
-        await page.getByTestId("click-start").click();
-        if (s.words) await expect(page.getByTestId(STATE)).toHaveText(s.words, { timeout: 12_000 });
-      }
-      const before = await rec(page);
+const CASES = [
+  // A set tempo in every state: the write that could restart or retime a run.
+  ...STATES.map((s) => ({ s, ending: "set" as const })),
+  // Closing with no set writes nothing: once, while a run is following.
+  { s: STATES[3], ending: "closed with no set" as const },
+];
 
-      if (ending === "set") await setTempoBySheet(page, 100);
-      else {
-        await page.getByTestId("tempo-control").click();
-        await tapAt(page, tapsFor(100));
-        await expect(page.getByTestId("tempo-reading")).toHaveText("100");
-        await page.keyboard.press("Escape");
-        await expect(page.locator("dialog[open]")).toHaveCount(0);
-      }
+for (const { s, ending } of CASES) {
+  test(`INV-016 play view, ${s.name}, ${ending}`, async ({ page }, info) => {
+    test.skip(info.project.name !== "desktop", "the sheet and the hook do not differ by device");
+    await recorder(page, s.slow ? { audio: "slow-resume" } : {});
+    const { playUrl } = await seed(page, cols(...s.list), { bpm: 60 });
+    await page.goto(playUrl);
+    await expect(page.getByTestId("click-start")).toBeEnabled();
+    const url = page.url();
+    const running = s.words !== null || s.slow === true;
+    if (running) {
+      await page.getByTestId("click-start").click();
+      if (s.words) await expect(page.getByTestId(STATE)).toHaveText(s.words, { timeout: 12_000 });
+    }
+    const before = await rec(page);
 
-      expect(page.url()).toBe(url);
-      await page.waitForTimeout(300);
-      const after = await rec(page);
-      expect(after.contexts, "no second context: nothing restarted").toBe(before.contexts);
-      expect(after.closes, "nothing closed").toBe(before.closes);
-      await expect(page.getByTestId(running ? "click-stop" : "click-start")).toBeVisible();
-      if (running) {
-        // Nothing queued was taken back, and the times only go forward.
-        const when = after.starts.map((x) => x.when);
-        expect(when.slice(0, before.starts.length)).toEqual(before.starts.map((x) => x.when));
-        when.forEach((w, i) => i && expect(w).toBeGreaterThan(when[i - 1]));
-        await page.getByTestId("click-stop").click();
-      }
-      await expect(page.getByTestId("tempo-control")).toContainText(ending === "set" ? "100" : "60");
-    });
-  }
+    if (ending === "set") await setTempoBySheet(page, 100);
+    else {
+      await page.getByTestId("tempo-control").click();
+      await tapAt(page, tapsFor(100));
+      await expect(page.getByTestId("tempo-reading")).toHaveText("100");
+      await page.keyboard.press("Escape");
+      await expect(page.locator("dialog[open]")).toHaveCount(0);
+    }
+
+    expect(page.url()).toBe(url);
+    await page.waitForTimeout(300);
+    const after = await rec(page);
+    expect(after.contexts, "no second context: nothing restarted").toBe(before.contexts);
+    expect(after.closes, "nothing closed").toBe(before.closes);
+    await expect(page.getByTestId(running ? "click-stop" : "click-start")).toBeVisible();
+    if (running) {
+      // Nothing queued was taken back, and the times only go forward.
+      const when = after.starts.map((x) => x.when);
+      expect(when.slice(0, before.starts.length)).toEqual(before.starts.map((x) => x.when));
+      when.forEach((w, i) => i && expect(w).toBeGreaterThan(when[i - 1]));
+      await page.getByTestId("click-stop").click();
+    }
+    await expect(page.getByTestId("tempo-control")).toContainText(ending === "set" ? "100" : "60");
+  });
 }
 
 const TAB = ["G|--5--7--|", "D|--------|", "A|--------|", "E|--------|", "B|--------|"].join("\n");

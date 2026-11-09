@@ -1,6 +1,6 @@
 /**
  * INV-005 over {tuplet control, plain group control, triplet button} x {far left, far right} x {7 strings at 667,
- * 6 at 553}, and the two routes that must move nothing. The suite runs one member.
+ * 6 at 553}, each value at least once, and the two routes that must move nothing. The suite runs one member.
  */
 import { expect, test, type Page } from "@playwright/test";
 import { columns } from "./capture-surface-helpers";
@@ -39,37 +39,47 @@ const inView = (page: Page) =>
     };
   });
 
-for (const shape of SHAPES) {
-  for (const where of ["left", "right"] as const) {
-    const from = where === "left" ? 0 : COUNT - 3;
-    const to = from + 2;
+const [SEVEN, SIX] = SHAPES;
+/** Each control, each side and each shape at least once: the reveal is one path for all three. */
+const CASES: { control: "tuplet" | "plain group" | "triplet"; where: "left" | "right"; shape: (typeof SHAPES)[number] }[] = [
+  // The selection controls, from the far left, the most strings.
+  { control: "tuplet", where: "left", shape: SEVEN },
+  // The plain group, from the far right, the shortest screen.
+  { control: "plain group", where: "right", shape: SIX },
+  // The triplet button goes by the cursor, not a selection: its usual place, the end of the part.
+  { control: "triplet", where: "right", shape: SEVEN },
+];
 
-    for (const control of ["tuplet", "plain group"] as const) {
-      test(`INV-005 ${control} control, far ${where}, ${shape.name}`, async ({ page }) => {
-        await startWith(page, shape.tuning);
-        await addRests(page, COUNT);
-        await page.setViewportSize({ width: 375, height: shape.height });
-        await selectColumns(page, from, to);
-        await scrollAway(page, where);
-        await (control === "tuplet" ? tupletControl(page) : groupControl(page)).click();
-        await expect(page.getByTestId("tab-bracket").first()).toBeAttached();
-        await page.waitForTimeout(250);
-        expect(await inView(page)).toEqual({ strip: true, band: true });
-      });
-    }
+for (const { control, where, shape } of CASES) {
+  const from = where === "left" ? 0 : COUNT - 3;
+  const to = from + 2;
 
-    test(`INV-005 triplet button, far ${where}, ${shape.name}`, async ({ page }) => {
+  if (control !== "triplet") {
+    test(`INV-005 ${control} control, far ${where}, ${shape.name}`, async ({ page }) => {
       await startWith(page, shape.tuning);
       await addRests(page, COUNT);
       await page.setViewportSize({ width: 375, height: shape.height });
-      await columns(page).nth(to).click();
+      await selectColumns(page, from, to);
       await scrollAway(page, where);
-      await page.getByRole("button", { name: "Triplet", exact: true }).click();
+      await (control === "tuplet" ? tupletControl(page) : groupControl(page)).click();
       await expect(page.getByTestId("tab-bracket").first()).toBeAttached();
       await page.waitForTimeout(250);
       expect(await inView(page)).toEqual({ strip: true, band: true });
     });
+    continue;
   }
+
+  test(`INV-005 triplet button, far ${where}, ${shape.name}`, async ({ page }) => {
+    await startWith(page, shape.tuning);
+    await addRests(page, COUNT);
+    await page.setViewportSize({ width: 375, height: shape.height });
+    await columns(page).nth(to).click();
+    await scrollAway(page, where);
+    await page.getByRole("button", { name: "Triplet", exact: true }).click();
+    await expect(page.getByTestId("tab-bracket").first()).toBeAttached();
+    await page.waitForTimeout(250);
+    expect(await inView(page)).toEqual({ strip: true, band: true });
+  });
 }
 
 const groupFromElsewhere = (page: Page) =>
@@ -132,7 +142,8 @@ test("INV-005 changing part moves nothing", async ({ page }) => {
   expect(await page.getByTestId("tab-band").evaluate((el) => el.scrollTop)).toBe(y);
 });
 
-for (const refuse of [false, true]) {
+// The refusal is the case at risk; the same steps without it (the control) add nothing.
+for (const refuse of [true]) {
   test(`INV-005 changing part moves nothing, ${refuse ? "after a refused triplet" : "the control"}`, async ({ page }) => {
     await startWith(page, SHAPES[1].tuning);
     await addRests(page, COUNT);

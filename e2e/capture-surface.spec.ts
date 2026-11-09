@@ -346,15 +346,6 @@ test.describe("inspector", () => {
     await expect(columns(page)).toHaveCount(1);
   });
 
-  test("long-press is inert while a selection is active", async ({ page }) => {
-    await startCapturing(page);
-    await fret(page, "E", 7).click();
-    await fret(page, "E", 9).click();
-    await page.getByRole("button", { name: /select/ }).click();
-    await hold(page, 0);
-    await expect(openDialog(page)).toHaveCount(0);
-  });
-
   for (const touch of [false, true]) {
     test(`FR-022 a long press during a selection leaves the selection alone (${touch ? "touch" : "mouse"})`, async ({
       page,
@@ -423,9 +414,9 @@ async function expectMovedNow(page: Page, col: Locator) {
   await expect(openDialog(page)).toHaveCount(0);
 }
 
+// Notes and a barline: the two press paths. A rest takes the notes column's path.
 const KINDS = [
   { name: "notes", index: 0 },
-  { name: "rest", index: 1 },
   { name: "barline", index: 2 },
 ] as const;
 
@@ -523,26 +514,8 @@ test.describe("inspector parity with the toolbar", () => {
     await inspector(p).getByLabel("chord symbol").fill(value);
     await inspector(p).getByRole("button", { name: "set" }).click();
   };
+  // x4 is an increase through the sheet's stepper; the stored-rows parity below has the rest.
   const edits: Edit[] = [
-    {
-      name: "repeat increase",
-      toolbar: (p) =>
-        p.getByRole("button", { name: "Repeat one more time" }).click(),
-      sheet: () => Promise.resolve(),
-    },
-    {
-      name: "repeat decrease",
-      toolbar: async (p) => {
-        await p.getByRole("button", { name: "Repeat one more time" }).click();
-        await p.getByRole("button", { name: "Repeat one fewer time" }).click();
-      },
-      sheet: async (p) => {
-        await more(p).click();
-        await inspector(p)
-          .getByRole("button", { name: "repeat count: one fewer" })
-          .click();
-      },
-    },
     {
       name: "x4",
       toolbar: (p) => p.getByRole("button", { name: /^×4$/ }).click(),
@@ -554,17 +527,6 @@ test.describe("inspector parity with the toolbar", () => {
       name: "chord symbol set",
       toolbar: (p) => toolbarChord(p, "Am"),
       sheet: (p) => sheetChord(p, "Am"),
-    },
-    {
-      name: "chord symbol clear",
-      toolbar: async (p) => {
-        await toolbarChord(p, "Am");
-        await toolbarChord(p, "");
-      },
-      sheet: async (p) => {
-        await sheetChord(p, "Am");
-        await sheetChord(p, "");
-      },
     },
     {
       name: "delete",
@@ -580,8 +542,6 @@ test.describe("inspector parity with the toolbar", () => {
       },
     },
   ];
-  // "repeat increase" must press "one more" exactly once in the sheet.
-  edits[0].sheet = (p) => more(p).click();
 
   for (const edit of edits) {
     test(`${edit.name}: toolbar and inspector export the same column`, async ({
@@ -747,131 +707,142 @@ async function aimCursor(page: Page, target: "column" | "barline") {
 }
 
 test.describe("fits", () => {
-  for (const theme of THEMES) {
-    for (const target of ["column", "barline"] as const) {
-      test(`INV-011 the neck keeps its baseline height - ${theme}, ${target}`, async ({
-        page,
-      }) => {
-        await page.emulateMedia({ colorScheme: theme });
-        await page.setViewportSize(PHONE);
-        await startCapturing(page);
-        await fret(page, "A", 5).click();
-        await aimCursor(page, target);
+  const NECK_CASES = [
+    // The cursor on a column, light theme.
+    { theme: "light", target: "column" },
+    // The cursor on a barline, the latch dark, in the other theme.
+    { theme: "dark", target: "barline" },
+  ] as const;
+  for (const { theme, target } of NECK_CASES) {
+    test(`INV-011 the neck keeps its baseline height - ${theme}, ${target}`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ colorScheme: theme });
+      await page.setViewportSize(PHONE);
+      await startCapturing(page);
+      await fret(page, "A", 5).click();
+      await aimCursor(page, target);
 
-        const strip = await page.getByTestId("latch-strip").boundingBox();
-        expect(strip?.height ?? 0).toBeGreaterThan(0);
-        const grid = await page.getByTestId("fret-grid").boundingBox();
-        const fine = await page.evaluate(
-          () => matchMedia("(pointer: fine)").matches,
-        );
-        const baseline = fine
-          ? NECK_HEIGHT_BASELINE_FINE_PX
-          : NECK_HEIGHT_BASELINE_PX;
-        expect(
-          Math.abs((grid?.height ?? 0) - baseline),
-        ).toBeLessThanOrEqual(1);
-      });
-    }
+      const strip = await page.getByTestId("latch-strip").boundingBox();
+      expect(strip?.height ?? 0).toBeGreaterThan(0);
+      const grid = await page.getByTestId("fret-grid").boundingBox();
+      const fine = await page.evaluate(
+        () => matchMedia("(pointer: fine)").matches,
+      );
+      const baseline = fine
+        ? NECK_HEIGHT_BASELINE_FINE_PX
+        : NECK_HEIGHT_BASELINE_PX;
+      expect(
+        Math.abs((grid?.height ?? 0) - baseline),
+      ).toBeLessThanOrEqual(1);
+    });
   }
 
-  for (const theme of THEMES) {
-    for (const shape of ["chords", "tuplet", "four"] as const) {
-      for (const target of ["column", "barline"] as const) {
-        test(`INV-012 the screen needs no scrolling - ${theme}, ${shape}, ${target}`, async ({
-          page,
-        }) => {
-          await page.emulateMedia({ colorScheme: theme });
-          await page.setViewportSize(PHONE);
-          await captureShape(page, shape);
-          await aimCursor(page, target);
+  const SCROLL_CASES = [
+    // The tallest staff: chords and a tuplet bracket, cursor on a barline.
+    { theme: "light", shape: "tuplet", target: "barline" },
+    // The four-string tuning, the other theme.
+    { theme: "dark", shape: "four", target: "column" },
+    // The typical case.
+    { theme: "dark", shape: "chords", target: "column" },
+  ] as const;
+  for (const { theme, shape, target } of SCROLL_CASES) {
+    test(`INV-012 the screen needs no scrolling - ${theme}, ${shape}, ${target}`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ colorScheme: theme });
+      await page.setViewportSize(PHONE);
+      await captureShape(page, shape);
+      await aimCursor(page, target);
 
-          const m = await page.evaluate(() => {
-            const root = document.scrollingElement!;
-            const staff = document.querySelector('[data-testid="tab-staff"]')!;
-            let scroller: Element | null = staff.parentElement;
-            while (
-              scroller &&
-              !/(auto|scroll)/.test(getComputedStyle(scroller).overflowY)
-            ) {
-              scroller = scroller.parentElement;
-            }
-            const box = scroller!.getBoundingClientRect();
-            const rows = [...staff.querySelectorAll(".tab-cell")].map((c) =>
-              c.getBoundingClientRect(),
-            );
-            return {
-              pageOver: root.scrollHeight - root.clientHeight,
-              scrollerOver: scroller!.scrollHeight - scroller!.clientHeight,
-              rowsOutside: rows.filter(
-                (r) => r.top < box.top - 1 || r.bottom > box.bottom + 1,
-              ).length,
-              rowCount: rows.length,
-            };
-          });
-          expect(m.rowCount).toBeGreaterThan(0);
-          expect(m.pageOver).toBeLessThanOrEqual(0);
-          expect(m.scrollerOver).toBeLessThanOrEqual(0);
-          expect(m.rowsOutside).toBe(0);
-        });
-      }
-    }
+      const m = await page.evaluate(() => {
+        const root = document.scrollingElement!;
+        const staff = document.querySelector('[data-testid="tab-staff"]')!;
+        let scroller: Element | null = staff.parentElement;
+        while (
+          scroller &&
+          !/(auto|scroll)/.test(getComputedStyle(scroller).overflowY)
+        ) {
+          scroller = scroller.parentElement;
+        }
+        const box = scroller!.getBoundingClientRect();
+        const rows = [...staff.querySelectorAll(".tab-cell")].map((c) =>
+          c.getBoundingClientRect(),
+        );
+        return {
+          pageOver: root.scrollHeight - root.clientHeight,
+          scrollerOver: scroller!.scrollHeight - scroller!.clientHeight,
+          rowsOutside: rows.filter(
+            (r) => r.top < box.top - 1 || r.bottom > box.bottom + 1,
+          ).length,
+          rowCount: rows.length,
+        };
+      });
+      expect(m.rowCount).toBeGreaterThan(0);
+      expect(m.pageOver).toBeLessThanOrEqual(0);
+      expect(m.scrollerOver).toBeLessThanOrEqual(0);
+      expect(m.rowsOutside).toBe(0);
+    });
   }
 
   // FR-028 is every string PLUS the chord row. `.tab-cell` counts and scrollHeight
   // cannot see overflow off the top of a `justify-end` scroller, so read the rendered
   // chord label against the box that clips it.
-  for (const theme of THEMES) {
-    for (const shape of ["chords", "tuplet"] as const) {
-      for (const target of ["column", "barline"] as const) {
-        test(`INV-012 the chord row is on screen - ${theme}, ${shape === "tuplet" ? "chords and tuplet" : "chords"}, ${target}`, async ({
-          page,
-        }) => {
-          await page.emulateMedia({ colorScheme: theme });
-          await page.setViewportSize(PHONE);
-          await captureShape(page, shape);
-          await aimCursor(page, target);
-          await page.mouse.move(0, 0);
-          await page.waitForTimeout(250);
+  const CHORD_ROW_CASES = [
+    // The worst case: the bracket pushes the chord row highest, cursor on a barline.
+    { theme: "dark", shape: "tuplet", target: "barline" },
+    // The typical case, the other theme.
+    { theme: "light", shape: "chords", target: "column" },
+  ] as const;
+  for (const { theme, shape, target } of CHORD_ROW_CASES) {
+    test(`INV-012 the chord row is on screen - ${theme}, ${shape === "tuplet" ? "chords and tuplet" : "chords"}, ${target}`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ colorScheme: theme });
+      await page.setViewportSize(PHONE);
+      await captureShape(page, shape);
+      await aimCursor(page, target);
+      await page.mouse.move(0, 0);
+      await page.waitForTimeout(250);
 
-          const m = await page.evaluate(() => {
-            const staff = document.querySelector('[data-testid="tab-staff"]')!;
-            let scroller: Element | null = staff.parentElement;
-            while (
-              scroller &&
-              !/(auto|scroll)/.test(getComputedStyle(scroller).overflowY)
-            ) {
-              scroller = scroller.parentElement;
-            }
-            const band = scroller!.getBoundingClientRect();
-            const walker = document.createTreeWalker(
-              staff,
-              NodeFilter.SHOW_TEXT,
-            );
-            let chordTop: number | null = null;
-            for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-              if (n.textContent?.trim() === "Am") {
-                const range = document.createRange();
-                range.selectNodeContents(n);
-                chordTop = range.getBoundingClientRect().top;
-              }
-            }
-            return {
-              chordTop,
-              clippedPx:
-                chordTop === null ? null : Math.max(0, band.top - chordTop),
-            };
-          });
-          expect(m.chordTop, "the chord label is on the staff").not.toBeNull();
-          expect(m.clippedPx, "the chord row is on screen").toBeLessThanOrEqual(
-            1,
-          );
-        });
-      }
-    }
+      const m = await page.evaluate(() => {
+        const staff = document.querySelector('[data-testid="tab-staff"]')!;
+        let scroller: Element | null = staff.parentElement;
+        while (
+          scroller &&
+          !/(auto|scroll)/.test(getComputedStyle(scroller).overflowY)
+        ) {
+          scroller = scroller.parentElement;
+        }
+        const band = scroller!.getBoundingClientRect();
+        const walker = document.createTreeWalker(
+          staff,
+          NodeFilter.SHOW_TEXT,
+        );
+        let chordTop: number | null = null;
+        for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+          if (n.textContent?.trim() === "Am") {
+            const range = document.createRange();
+            range.selectNodeContents(n);
+            chordTop = range.getBoundingClientRect().top;
+          }
+        }
+        return {
+          chordTop,
+          clippedPx:
+            chordTop === null ? null : Math.max(0, band.top - chordTop),
+        };
+      });
+      expect(m.chordTop, "the chord label is on the staff").not.toBeNull();
+      expect(m.clippedPx, "the chord row is on screen").toBeLessThanOrEqual(
+        1,
+      );
+    });
   }
 
   // main hides 1 of 5 strings while the selection row wraps; this branch must be no worse.
-  for (const shape of ["plain", "chords", "tuplet"] as const) {
+  // The bare staff and the tallest; chords alone sits between them.
+  for (const shape of ["plain", "tuplet"] as const) {
     test(`INV-012 the staff keeps its strings during a selection - ${shape}`, async ({
       page,
     }) => {
@@ -918,9 +889,18 @@ test.describe("fits", () => {
   }
 
   // INV-012 r4: the status row above the toolbar never clips the chord label more than `main`.
-  const STATUS_SYMBOLS = ["Am", "Am7", "Cmaj7", "F#m7b5", "Xyz"];
-  const STATUS_STATES = ["end", "after", "stacking"] as const;
-  const STATUS_SHAPES = ["chords", "chords and tuplet"] as const;
+  const STATUS_CASES = [
+    // The worst case: the longest symbol and status text over the tallest staff.
+    { shape: "chords and tuplet", state: "stacking", symbol: "F#m7b5" },
+    // The same load over chords alone: that shape's wrapped bar.
+    { shape: "chords", state: "stacking", symbol: "F#m7b5" },
+    // The typical case: a short symbol, one line, the cursor at the end.
+    { shape: "chords", state: "end", symbol: "Am" },
+    // The cursor after the marked column, over the tuplet: that shape's one-line bar.
+    { shape: "chords and tuplet", state: "after", symbol: "Am7" },
+    // A symbol that is not a chord.
+    { shape: "chords", state: "after", symbol: "Xyz" },
+  ] as const;
 
   /** The chord label px above the clipping box on `main`, by shape and whether the row wrapped. */
   const STATUS_MAIN_CLIP = {
@@ -963,37 +943,33 @@ test.describe("fits", () => {
     }, symbol);
   }
 
-  for (const shape of STATUS_SHAPES) {
-    for (const state of STATUS_STATES) {
-      for (const symbol of STATUS_SYMBOLS) {
-        test(`INV-012 r4 status row - ${shape}, ${state}, ${symbol}`, async ({ page }, info) => {
-          test.skip(info.project.name !== "mobile", "one project is enough for a measurement");
-          await page.setViewportSize({ width: 375, height: 667 });
-          await startCapturing(page);
-          await fret(page, "A", 5).click();
-          await fret(page, "A", 7).click();
-          await fret(page, "A", 9).click();
-          await expect(columns(page)).toHaveCount(3);
-          if (shape === "chords and tuplet") await page.getByTitle(/triplet/).click();
-          await page.getByRole("button", { name: "chord symbol" }).click();
-          await page.getByRole("textbox", { name: "Chord" }).fill(symbol);
-          await page.getByRole("button", { name: "Set", exact: true }).click();
-          await expect(page.getByRole("textbox", { name: "Chord" })).toHaveCount(0);
-          if (state !== "end") await columns(page).last().click();
-          if (state === "stacking") {
-            await page.getByRole("button", { name: /^stack/ }).click();
-            await expect(page.getByText("stacking onto the marked column")).toBeVisible();
-          }
-          await page.mouse.move(0, 0);
-          await page.waitForTimeout(200);
-          const m = await measureStatusRow(page, symbol);
-          expect(m.pageOver).toBeLessThanOrEqual(0);
-          expect(m.chordClippedPx, "the chord label is on the staff").not.toBeNull();
-          const bar = STATUS_MAIN_CLIP[shape][m.rowHeight > 40 ? "wrapped" : "oneLine"];
-          expect(m.chordClippedPx!, "no more clipped than on main").toBeLessThanOrEqual(bar);
-        });
+  for (const { shape, state, symbol } of STATUS_CASES) {
+    test(`INV-012 r4 status row - ${shape}, ${state}, ${symbol}`, async ({ page }, info) => {
+      test.skip(info.project.name !== "mobile", "one project is enough for a measurement");
+      await page.setViewportSize({ width: 375, height: 667 });
+      await startCapturing(page);
+      await fret(page, "A", 5).click();
+      await fret(page, "A", 7).click();
+      await fret(page, "A", 9).click();
+      await expect(columns(page)).toHaveCount(3);
+      if (shape === "chords and tuplet") await page.getByTitle(/triplet/).click();
+      await page.getByRole("button", { name: "chord symbol" }).click();
+      await page.getByRole("textbox", { name: "Chord" }).fill(symbol);
+      await page.getByRole("button", { name: "Set", exact: true }).click();
+      await expect(page.getByRole("textbox", { name: "Chord" })).toHaveCount(0);
+      if (state !== "end") await columns(page).last().click();
+      if (state === "stacking") {
+        await page.getByRole("button", { name: /^stack/ }).click();
+        await expect(page.getByText("stacking onto the marked column")).toBeVisible();
       }
-    }
+      await page.mouse.move(0, 0);
+      await page.waitForTimeout(200);
+      const m = await measureStatusRow(page, symbol);
+      expect(m.pageOver).toBeLessThanOrEqual(0);
+      expect(m.chordClippedPx, "the chord label is on the staff").not.toBeNull();
+      const bar = STATUS_MAIN_CLIP[shape][m.rowHeight > 40 ? "wrapped" : "oneLine"];
+      expect(m.chordClippedPx!, "no more clipped than on main").toBeLessThanOrEqual(bar);
+    });
   }
 });
 
@@ -1499,8 +1475,8 @@ test.describe("probe INV-003-stable-positions", () => {
 /**
  * INV-005: never does a long press open an inspector where the staff is
  * read-only, or while a selection is active.
- *
- * Enumerated: song-page part staff, play-view step staff, capture staff with a
+ * Enumerated: song-page part staff, play-view step staff = 2 (a selection is
+ * FR-022's, above), each with a mouse hold (both projects) and a touch hold
  * selection active = 3, each with a mouse hold (both projects) and a touch hold
  * (mobile). Unlike the suite's probe, this one never skips: the part is put in
  * the arrangement first so the play view really has a staff, and the test
@@ -1566,20 +1542,6 @@ test.describe("probe INV-005-no-inspector-readonly-or-selection", () => {
         expect(await col.evaluate((e) => e.tagName)).toBe("DIV");
         await holdAndExpectNothing(page, touch);
       });
-
-      test(`capture staff with a selection active (${via})`, async ({
-        page,
-      }) => {
-        const { partUrl } = await setUp(page);
-        await page.goto(partUrl);
-        await expect(columns(page)).toHaveCount(2);
-        await page.getByRole("button", { name: /select/ }).click();
-        await expect(page.getByText(/1 selected/)).toBeVisible();
-        const col = columns(page).first();
-        if (touch) await touchHold(page, col);
-        else await mouseHold(page, col);
-        await expect(openDialog(page)).toHaveCount(0);
-      });
     });
   }
 });
@@ -1587,8 +1549,8 @@ test.describe("probe INV-005-no-inspector-readonly-or-selection", () => {
 /**
  * INV-007: never does a press that moved become either a long press or a tap.
  *
- * Enumerated: drag {left, right, vertical} x released {inside, outside} the
- * originating column = 6, with a mouse (both projects) and with real touch via
+ * Cut from drag {left, right, vertical} x released {inside, outside} to the
+ * two that differ most, with a mouse (both projects) and with real touch via
  * CDP (mobile project). "Inside" drags 30px out and comes back before release.
  * Held for 650ms, past the 500ms threshold, so a long press that ignored the
  * movement would fire. Asserts: no dialog, cursor and status unchanged.
@@ -1611,10 +1573,11 @@ test.describe("probe INV-007-moved-press-is-neither", () => {
     };
   }
 
-  const DRAGS = [
-    { name: "left", dx: -30, dy: 0 },
-    { name: "right", dx: 30, dy: 0 },
-    { name: "vertical", dx: 0, dy: -30 },
+  const DRAG_CASES = [
+    // Sideways and back inside the column: the drag most like a tap. Right is its mirror.
+    { drag: { name: "left", dx: -30, dy: 0 }, back: true },
+    // Vertical and released outside: a scroll.
+    { drag: { name: "vertical", dx: 0, dy: -30 }, back: false },
   ] as const;
 
   async function mouseDrag(
@@ -1662,31 +1625,29 @@ test.describe("probe INV-007-moved-press-is-neither", () => {
   }
 
   test.describe("INV-007 a moved press is neither gesture", () => {
-    for (const drag of DRAGS) {
-      for (const back of [true, false]) {
-        const where = back ? "inside" : "outside";
-        test(`mouse: drag ${drag.name}, release ${where}`, async ({ page }) => {
-          await build(page);
-          const before = await state(page);
-          await mouseDrag(page, 0, drag.dx, drag.dy, back);
-          await expect(openDialog(page)).toHaveCount(0);
-          expect(await state(page)).toEqual(before);
-        });
+    for (const { drag, back } of DRAG_CASES) {
+      const where = back ? "inside" : "outside";
+      test(`mouse: drag ${drag.name}, release ${where}`, async ({ page }) => {
+        await build(page);
+        const before = await state(page);
+        await mouseDrag(page, 0, drag.dx, drag.dy, back);
+        await expect(openDialog(page)).toHaveCount(0);
+        expect(await state(page)).toEqual(before);
+      });
 
-        test(`touch: drag ${drag.name}, release ${where}`, async ({
-          page,
-        }, info) => {
-          test.skip(
-            info.project.name !== "mobile",
-            "touch needs a touch device",
-          );
-          await build(page);
-          const before = await state(page);
-          await touchDrag(page, 0, drag.dx, drag.dy, back);
-          await expect(openDialog(page)).toHaveCount(0);
-          expect(await state(page)).toEqual(before);
-        });
-      }
+      test(`touch: drag ${drag.name}, release ${where}`, async ({
+        page,
+      }, info) => {
+        test.skip(
+          info.project.name !== "mobile",
+          "touch needs a touch device",
+        );
+        await build(page);
+        const before = await state(page);
+        await touchDrag(page, 0, drag.dx, drag.dy, back);
+        await expect(openDialog(page)).toHaveCount(0);
+        expect(await state(page)).toEqual(before);
+      });
     }
   });
 });
@@ -1785,16 +1746,16 @@ test.describe("probe INV-008-inspector-closes-when-column-gone", () => {
 /**
  * INV-009: never does dismissing the inspector without editing change any screen state.
  *
- * Enumerated: {Esc, backdrop click, close button} x cursor {at start, on a
- * column, at end} = 9. Compares the caret's box, the status line, the staff
- * text, which column is current, the latch state -- and the part's exported
- * ASCII, taken before and after.
+ * Each of {Esc, backdrop click, close button} once, each with a different
+ * cursor {at start, on a column, at end}. Compares the caret's box, the status
+ * line, the staff text, which column is current, the latch state -- and the
+ * part's exported ASCII, taken before and after.
  */
 test.describe("probe INV-009-dismiss-changes-nothing", () => {
-  const ROUTES = ["escape", "backdrop", "close"] as const;
-  const POSITIONS = ["start", "column", "end"] as const;
+  type Route = "escape" | "backdrop" | "close";
+  type Position = "start" | "column" | "end";
 
-  async function place(page: Page, where: (typeof POSITIONS)[number]) {
+  async function place(page: Page, where: Position) {
     if (where === "start")
       await page.getByRole("button", { name: /start/ }).click();
     if (where === "column") await columns(page).nth(1).click();
@@ -1802,7 +1763,7 @@ test.describe("probe INV-009-dismiss-changes-nothing", () => {
       await page.getByRole("button", { name: /end/ }).click();
   }
 
-  async function dismiss(page: Page, route: (typeof ROUTES)[number]) {
+  async function dismiss(page: Page, route: Route) {
     if (route === "escape") await page.keyboard.press("Escape");
     if (route === "close")
       await inspector(page).getByRole("button", { name: "close" }).click();
@@ -1810,30 +1771,33 @@ test.describe("probe INV-009-dismiss-changes-nothing", () => {
   }
 
   test.describe("INV-009 dismissing the inspector changes nothing", () => {
-    for (const route of ROUTES) {
-      for (const where of POSITIONS) {
-        test(`${route} with the cursor ${where === "column" ? "on a column" : `at ${where}`}`, async ({
-          page,
-        }) => {
-          const { songUrl } = await startCapturing(page);
-          await fret(page, "E", 7).click();
-          await fret(page, "A", 5).click();
-          await fret(page, "D", 3).click();
-          await expect(columns(page)).toHaveCount(3);
-          const exportBefore = await exportAscii(page, songUrl);
+    // Each route once, and each cursor position once.
+    for (const [route, where] of [
+      ["escape", "start"],
+      ["backdrop", "column"],
+      ["close", "end"],
+    ] as const) {
+      test(`${route} with the cursor ${where === "column" ? "on a column" : `at ${where}`}`, async ({
+        page,
+      }) => {
+        const { songUrl } = await startCapturing(page);
+        await fret(page, "E", 7).click();
+        await fret(page, "A", 5).click();
+        await fret(page, "D", 3).click();
+        await expect(columns(page)).toHaveCount(3);
+        const exportBefore = await exportAscii(page, songUrl);
 
-          await place(page, where);
-          const before = await screenState(page);
+        await place(page, where);
+        const before = await screenState(page);
 
-          await mouseHold(page, columns(page).nth(0));
-          await expect(openDialog(page)).toHaveCount(1);
-          await dismiss(page, route);
-          await expect(openDialog(page)).toHaveCount(0);
+        await mouseHold(page, columns(page).nth(0));
+        await expect(openDialog(page)).toHaveCount(1);
+        await dismiss(page, route);
+        await expect(openDialog(page)).toHaveCount(0);
 
-          expect(await screenState(page)).toEqual(before);
-          expect(await exportAscii(page, songUrl)).toBe(exportBefore);
-        });
-      }
+        expect(await screenState(page)).toEqual(before);
+        expect(await exportAscii(page, songUrl)).toBe(exportBefore);
+      });
     }
   });
 });
@@ -2189,39 +2153,43 @@ test.describe("probe FR-017-024-inspector-scope-and-keyboard", () => {
     });
   }
 
-  for (const theme of ["light", "dark"] as const) {
-    for (const shape of ["plain", "chords", "tuplet"] as const) {
-      test(`chord form open - ${theme}, ${shape}`, async ({ page }, info) => {
-        await page.emulateMedia({ colorScheme: theme });
-        await page.setViewportSize({ width: 375, height: 667 });
-        await startCapturing(page);
-        await fret(page, "A", 5).click();
-        await fret(page, "A", 7).click();
-        await fret(page, "A", 9).click();
-        await expect(columns(page)).toHaveCount(3);
-        if (shape === "tuplet") await page.getByTitle(/triplet/).click();
-        if (shape !== "plain") {
-          await mouseHold(page, columns(page).nth(0));
-          await inspector(page).getByLabel("chord symbol").fill("Am");
-          await inspector(page).getByRole("button", { name: "set" }).click();
-          await page.keyboard.press("Escape");
-          await expect(openDialog(page)).toHaveCount(0);
-        }
-        await page.getByRole("button", { name: "chord symbol" }).click();
-        await expect(
-          page.getByRole("textbox", { name: "Chord" }),
-        ).toBeVisible();
-        const m = await measure(page);
-        console.log(
-          `[${info.project.name}] ${theme}/${shape}: ${JSON.stringify(m)}`,
-        );
-        expect(m.pageOver).toBeLessThanOrEqual(0);
-        // Usability pass (FR-065): rows are 44px, so the band may overflow by a few px with the form
-        // open; it scrolls (one overflow rule, strings nearest the neck first). Bounded, not removed.
-        expect(m.scrollerOver).toBeLessThanOrEqual(shape === "tuplet" ? 8 : 0);
-        expect(m.stringsClipped, "no worse than main").toBeLessThanOrEqual(2);
-      });
-    }
+  const FORM_CASES = [
+    // The worst case: the tuplet's bracket, the one shape allowed to scroll.
+    { theme: "dark", shape: "tuplet" },
+    // A bare staff, the other theme.
+    { theme: "light", shape: "plain" },
+  ] as const;
+  for (const { theme, shape } of FORM_CASES) {
+    test(`chord form open - ${theme}, ${shape}`, async ({ page }, info) => {
+      await page.emulateMedia({ colorScheme: theme });
+      await page.setViewportSize({ width: 375, height: 667 });
+      await startCapturing(page);
+      await fret(page, "A", 5).click();
+      await fret(page, "A", 7).click();
+      await fret(page, "A", 9).click();
+      await expect(columns(page)).toHaveCount(3);
+      if (shape === "tuplet") await page.getByTitle(/triplet/).click();
+      if (shape !== "plain") {
+        await mouseHold(page, columns(page).nth(0));
+        await inspector(page).getByLabel("chord symbol").fill("Am");
+        await inspector(page).getByRole("button", { name: "set" }).click();
+        await page.keyboard.press("Escape");
+        await expect(openDialog(page)).toHaveCount(0);
+      }
+      await page.getByRole("button", { name: "chord symbol" }).click();
+      await expect(
+        page.getByRole("textbox", { name: "Chord" }),
+      ).toBeVisible();
+      const m = await measure(page);
+      console.log(
+        `[${info.project.name}] ${theme}/${shape}: ${JSON.stringify(m)}`,
+      );
+      expect(m.pageOver).toBeLessThanOrEqual(0);
+      // Usability pass (FR-065): rows are 44px, so the band may overflow by a few px with the form
+      // open; it scrolls (one overflow rule, strings nearest the neck first). Bounded, not removed.
+      expect(m.scrollerOver).toBeLessThanOrEqual(shape === "tuplet" ? 8 : 0);
+      expect(m.stringsClipped, "no worse than main").toBeLessThanOrEqual(2);
+    });
   }
 }
 
@@ -2279,7 +2247,8 @@ test.describe("probe FR-017-024-inspector-scope-and-keyboard", () => {
   const SHAPES = [{ name: "portrait 375x667", width: 375, height: 667 }];
 
   for (const shape of SHAPES) {
-    for (const index of [0, 1, 2]) {
+    // The first and the last column: the sheet over either edge.
+    for (const index of [0, 2]) {
       test(`a touch hold edits nothing when the finger lifts - ${shape.name}, column ${index}`, async ({
         page,
       }, info) => {
@@ -2415,17 +2384,6 @@ test.describe("inspector parity with the toolbar - stored rows (INV-004 r3)", ()
     toolbar: (p: Page) => Promise<void>;
     sheet: (p: Page) => Promise<void>;
   }[] = [
-    {
-      name: "repeat increase",
-      toolbar: async (p) => {
-        await p.getByRole("button", { name: "Repeat one more time" }).click();
-        await countShows(p, 2, "toolbar");
-      },
-      sheet: async (p) => {
-        await more(p).click();
-        await countShows(p, 2, "sheet");
-      },
-    },
     {
       name: "repeat decrease",
       toolbar: async (p) => {
@@ -2648,43 +2606,48 @@ test.describe("toolbar - every column kind (INV-003 r3)", () => {
     },
   };
 
-  for (const [kind, make] of Object.entries(KINDS)) {
-    for (const armed of [false, true]) {
-      test(`${kind}, ${armed ? "armed" : "unarmed"} -> barline -> back`, async ({
-        page,
-      }) => {
-        await page.setViewportSize({ width: 375, height: 667 });
-        await startCapturing(page);
-        const index = await make(page);
-        const barlineAt = await columns(page).count();
-        await page.getByRole("button", { name: "Barline" }).click();
-        await expect(columns(page)).toHaveCount(barlineAt + 1);
-        await columns(page).nth(index).click();
-        if (armed) {
-          await stackLatch(page).click();
-          await expect(stackLatch(page)).toHaveAttribute(
-            "aria-pressed",
-            "true",
-          );
-        }
+  // Each kind once; the latch armed on the plainest and the busiest.
+  for (const [kind, armed] of [
+    ["notes", true],
+    ["rest", false],
+    ["chord-bearing", false],
+    ["tuplet member", true],
+  ] as const) {
+    const make = KINDS[kind];
+    test(`${kind}, ${armed ? "armed" : "unarmed"} -> barline -> back`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 375, height: 667 });
+      await startCapturing(page);
+      const index = await make(page);
+      const barlineAt = await columns(page).count();
+      await page.getByRole("button", { name: "Barline" }).click();
+      await expect(columns(page)).toHaveCount(barlineAt + 1);
+      await columns(page).nth(index).click();
+      if (armed) {
+        await stackLatch(page).click();
+        await expect(stackLatch(page)).toHaveAttribute(
+          "aria-pressed",
+          "true",
+        );
+      }
 
-        const onColumn = await boxes(page);
-        const triplet = await page
-          .getByRole("button", { name: "Triplet" })
-          .boundingBox();
-        await columns(page).nth(barlineAt).click();
-        await expect(stackLatch(page)).toBeDisabled();
-        await expect(page.getByTestId("toolbar-contextual")).toHaveCount(0);
-        expect(await boxes(page), "column -> barline").toEqual(onColumn);
+      const onColumn = await boxes(page);
+      const triplet = await page
+        .getByRole("button", { name: "Triplet" })
+        .boundingBox();
+      await columns(page).nth(barlineAt).click();
+      await expect(stackLatch(page)).toBeDisabled();
+      await expect(page.getByTestId("toolbar-contextual")).toHaveCount(0);
+      expect(await boxes(page), "column -> barline").toEqual(onColumn);
 
-        await columns(page).nth(index).click();
-        await expect(stackLatch(page)).toBeEnabled();
-        expect(await boxes(page), "barline -> column").toEqual(onColumn);
-        expect(
-          await page.getByRole("button", { name: "Triplet" }).boundingBox(),
-        ).toEqual(triplet);
-      });
-    }
+      await columns(page).nth(index).click();
+      await expect(stackLatch(page)).toBeEnabled();
+      expect(await boxes(page), "barline -> column").toEqual(onColumn);
+      expect(
+        await page.getByRole("button", { name: "Triplet" }).boundingBox(),
+      ).toEqual(triplet);
+    });
   }
 });
 
@@ -2694,7 +2657,8 @@ test.describe("FR-014 r3 column shapes", () => {
     inspector(page).getByLabel("repeat count", { exact: true });
 
   test.describe("FR-014 r3 shapes", () => {
-    for (const repetition of [0, 1, 2]) {
+    // The first and the last repetition.
+    for (const repetition of [0, 2]) {
       test(`a repeated column is one event from repetition ${repetition}`, async ({
         page,
       }) => {

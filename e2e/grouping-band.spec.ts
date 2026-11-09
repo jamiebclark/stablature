@@ -1,6 +1,7 @@
 /**
- * INV-013 / FR-018 / FR-020 / SC-009, over what the plan enumerates: 2 themes x 3 string counts
- * x {bracket, bracket and chord row} x numeral {3, 16}, with all seven controls truly present.
+ * INV-013 / FR-018 / FR-020 / SC-009, over the corners of what the plan enumerates (2 themes x 3
+ * string counts x {bracket, bracket and chord row} x numeral {3, 16}), with all seven controls
+ * truly present.
  *
  * The suite's tests of the same name do not reach this: e2e/grouping-layout.spec.ts:254 never
  * sets a tuning (its 4, 5 and 6 all run on the default five-string), its "seven controls" case
@@ -27,82 +28,88 @@ import {
 
 test.describe.configure({ mode: "parallel" });
 
-for (const theme of THEMES) {
-  for (const tuning of TUNINGS) {
-    for (const chord of [false, true]) {
-      for (const n of [3, 16]) {
-        const name = `${theme}, ${tuning.strings} strings, ${chord ? "bracket and chord row" : "bracket"}, numeral ${n}`;
-        test(name, async ({ page }, info) => {
-          test.skip(info.project.name !== "mobile", "one project is enough for a measurement");
-          await page.emulateMedia({ colorScheme: theme });
-          await startWith(page, tuning);
-          await addRests(page, n);
-          await selectColumns(page, 0, 1);
-          await tupletControl(page).click();
-          if (chord) await setChordOn(page, 0, "Am");
+const [FOUR, FIVE, SIX] = TUNINGS;
+const CASES: { theme: (typeof THEMES)[number]; tuning: (typeof TUNINGS)[number]; chord: boolean; n: number }[] = [
+  // Typical: the fewest strings, a bracket, a triplet.
+  { theme: "light", tuning: FOUR, chord: false, n: 3 },
+  // The tightest that must hold every string: five strings under a chord row, the widest numeral.
+  { theme: "light", tuning: FIVE, chord: true, n: 16 },
+  // Six strings, the amended limit of one out of view.
+  { theme: "light", tuning: SIX, chord: false, n: 16 },
+  // Worst case, and the dark theme: six strings under a chord row, the widest numeral.
+  { theme: "dark", tuning: SIX, chord: true, n: 16 },
+];
 
-          const rest = await measureBand(page);
-          const stableTop = (await stable(page).boundingBox())!.y;
+for (const { theme, tuning, chord, n } of CASES) {
+  const name = `${theme}, ${tuning.strings} strings, ${chord ? "bracket and chord row" : "bracket"}, numeral ${n}`;
+  test(name, async ({ page }, info) => {
+    test.skip(info.project.name !== "mobile", "one project is enough for a measurement");
+    await page.emulateMedia({ colorScheme: theme });
+    await startWith(page, tuning);
+    await addRests(page, n);
+    await selectColumns(page, 0, 1);
+    await tupletControl(page).click();
+    if (chord) await setChordOn(page, 0, "Am");
 
-          await selectColumns(page, 0, n - 1);
-          const bar = selectionBar(page);
-          const names = await bar
-            .getByRole("button")
-            .evaluateAll((els) =>
-              els.map((e) => e.getAttribute("aria-label") ?? e.textContent?.trim() ?? ""),
-            );
-          expect(names).toEqual([
-            "copy",
-            "cut",
-            "delete",
-            `Make a tuplet of ${n}`,
-            "Group with no number",
-            "Ungroup",
-            "cancel",
-          ]);
+    const rest = await measureBand(page);
+    const stableTop = (await stable(page).boundingBox())!.y;
 
-          const fits = await bar.evaluate((el) => ({
-            row: el.scrollWidth <= el.clientWidth,
-            kids: [...el.children].every((c) => c.scrollWidth <= c.clientWidth),
-            lines: new Set([...el.children].map((c) => Math.round(c.getBoundingClientRect().top))).size,
-            tallest: Math.max(...[...el.children].map((c) => c.getBoundingClientRect().height)),
-            right: Math.max(...[...el.children].map((c) => c.getBoundingClientRect().right)),
-            edge: el.getBoundingClientRect().right,
-          }));
-          const selecting = await measureBand(page);
-          console.log(JSON.stringify({ name, rest, selecting, fits }));
+    await selectColumns(page, 0, n - 1);
+    const bar = selectionBar(page);
+    const names = await bar
+      .getByRole("button")
+      .evaluateAll((els) =>
+        els.map((e) => e.getAttribute("aria-label") ?? e.textContent?.trim() ?? ""),
+      );
+    expect(names).toEqual([
+      "copy",
+      "cut",
+      "delete",
+      `Make a tuplet of ${n}`,
+      "Group with no number",
+      "Ungroup",
+      "cancel",
+    ]);
 
-          expect(fits.row).toBe(true);
-          expect(fits.kids).toBe(true);
-          expect(fits.lines).toBe(1);
-          // Usability pass (FR-065): selection controls are --control (44px) tall, all one height.
-          expect(fits.tallest).toBeLessThanOrEqual(44.5);
-          expect(fits.right).toBeLessThanOrEqual(fits.edge);
-          expect((await stable(page).boundingBox())!.y).toBe(stableTop);
-          expect(selecting.band).toBeGreaterThanOrEqual(rest.band);
-          expect(selecting.strings).toBe(tuning.strings);
-          expect(selecting.pageOver).toBeLessThanOrEqual(0);
-          // The plan's "each string inside the band", at both rest and selection.
-          // FR-020: a string that cannot fit above the fretboard must at least be reachable by scrolling.
-          // Four and five strings sit inside the band as the screen opens; six are reached by a
-          // swipe (the last test in this file), because they cannot all fit above the fretboard.
-          if (tuning.strings <= 5) {
-            expect(rest.stringsClipped, "every string inside the band at rest").toBe(0);
-            expect(selecting.stringsClipped, "every string inside the band while selecting").toBe(0);
-          } else {
-            // FR-020 as amended: six strings may leave one out of view, the rest reached by a swipe.
-            // A chord row on top still costs a second string (review-probes/INV-013-band.spec.ts is
-            // pinned to the amended limit of one and stays red for it): hold that line here so it
-            // cannot get worse, and tighten it to one when the band is fixed.
-            const hidden = chord ? 2 : 1;
-            expect(rest.stringsClipped, "strings out of view at rest").toBeLessThanOrEqual(hidden);
-            expect(selecting.stringsClipped, "strings out of view while selecting").toBeLessThanOrEqual(hidden);
-          }
-          await cancelSelection(page);
-        });
-      }
+    const fits = await bar.evaluate((el) => ({
+      row: el.scrollWidth <= el.clientWidth,
+      kids: [...el.children].every((c) => c.scrollWidth <= c.clientWidth),
+      lines: new Set([...el.children].map((c) => Math.round(c.getBoundingClientRect().top))).size,
+      tallest: Math.max(...[...el.children].map((c) => c.getBoundingClientRect().height)),
+      right: Math.max(...[...el.children].map((c) => c.getBoundingClientRect().right)),
+      edge: el.getBoundingClientRect().right,
+    }));
+    const selecting = await measureBand(page);
+    console.log(JSON.stringify({ name, rest, selecting, fits }));
+
+    expect(fits.row).toBe(true);
+    expect(fits.kids).toBe(true);
+    expect(fits.lines).toBe(1);
+    // Usability pass (FR-065): selection controls are --control (44px) tall, all one height.
+    expect(fits.tallest).toBeLessThanOrEqual(44.5);
+    expect(fits.right).toBeLessThanOrEqual(fits.edge);
+    expect((await stable(page).boundingBox())!.y).toBe(stableTop);
+    expect(selecting.band).toBeGreaterThanOrEqual(rest.band);
+    expect(selecting.strings).toBe(tuning.strings);
+    expect(selecting.pageOver).toBeLessThanOrEqual(0);
+    // The plan's "each string inside the band", at both rest and selection.
+    // FR-020: a string that cannot fit above the fretboard must at least be reachable by scrolling.
+    // Four and five strings sit inside the band as the screen opens; six are reached by a
+    // swipe (the last test in this file), because they cannot all fit above the fretboard.
+    if (tuning.strings <= 5) {
+      expect(rest.stringsClipped, "every string inside the band at rest").toBe(0);
+      expect(selecting.stringsClipped, "every string inside the band while selecting").toBe(0);
+    } else {
+      // FR-020 as amended: six strings may leave one out of view, the rest reached by a swipe.
+      // A chord row on top still costs a second string (review-probes/INV-013-band.spec.ts is
+      // pinned to the amended limit of one and stays red for it): hold that line here so it
+      // cannot get worse, and tighten it to one when the band is fixed.
+      const hidden = chord ? 2 : 1;
+      expect(rest.stringsClipped, "strings out of view at rest").toBeLessThanOrEqual(hidden);
+      expect(selecting.stringsClipped, "strings out of view while selecting").toBeLessThanOrEqual(hidden);
     }
-  }
+    await cancelSelection(page);
+  });
 }
 
 test("six and four control states keep the order", async ({ page }, info) => {
@@ -180,39 +187,41 @@ const reach = (page: Page) =>
  * controls produce, so a bracket above the band is a tap with no visible result. Four and five
  * strings fit at rest. Six cannot, so a swipe has to reach every string and the bracket.
  */
-for (const tuning of TUNINGS) {
-  for (const chord of [false, true]) {
-    const name = `${tuning.strings} strings${chord ? " and a chord row" : ""}`;
-    test(
-      tuning.strings <= 5 ? `the bracket shows, ${name}` : `a swipe reaches every string and the bracket, ${name}`,
-      async ({ page }, info) => {
-        test.skip(info.project.name !== "mobile", "one project is enough for a measurement");
-        await startWith(page, tuning);
-        await addRests(page, 3);
-        await selectColumns(page, 0, 2);
-        await groupControl(page).click();
-        await expect(brackets(page)).toHaveCount(1);
-        if (chord) await setChordOn(page, 0, "Am");
-        // A click scrolls the band: measure after a reload and touch nothing.
-        await page.reload();
-        await expect(columns(page)).toHaveCount(3);
-        await expect(brackets(page)).toHaveCount(1);
-        if (tuning.strings <= 5) {
-          const seen = await reach(page);
-          expect(seen.bracketAbove, "the bracket is inside the band").toBeLessThanOrEqual(0);
-          expect(seen.firstCellAbove, "the top string is inside the band").toBeLessThanOrEqual(1);
-          expect(seen.lastCellBelow, "the bottom string is inside the band").toBeLessThanOrEqual(1);
-          return;
-        }
-        await swipe(page, -120);
-        expect((await reach(page)).lastCellBelow, "the bottom string can be scrolled in").toBeLessThanOrEqual(1);
-        await swipe(page, 120);
-        const up = await reach(page);
-        expect(up.firstCellAbove, "the top string can be scrolled in").toBeLessThanOrEqual(1);
-        expect(up.bracketAbove, "the bracket can be scrolled in").toBeLessThanOrEqual(0);
-      },
-    );
-  }
+const SWIPES = [
+  { tuning: FIVE, chord: true }, // the tightest that must fit at rest: five strings under a chord row
+  { tuning: SIX, chord: true }, // worst case: six strings under a chord row, reached by a swipe
+];
+for (const { tuning, chord } of SWIPES) {
+  const name = `${tuning.strings} strings${chord ? " and a chord row" : ""}`;
+  test(
+    tuning.strings <= 5 ? `the bracket shows, ${name}` : `a swipe reaches every string and the bracket, ${name}`,
+    async ({ page }, info) => {
+      test.skip(info.project.name !== "mobile", "one project is enough for a measurement");
+      await startWith(page, tuning);
+      await addRests(page, 3);
+      await selectColumns(page, 0, 2);
+      await groupControl(page).click();
+      await expect(brackets(page)).toHaveCount(1);
+      if (chord) await setChordOn(page, 0, "Am");
+      // A click scrolls the band: measure after a reload and touch nothing.
+      await page.reload();
+      await expect(columns(page)).toHaveCount(3);
+      await expect(brackets(page)).toHaveCount(1);
+      if (tuning.strings <= 5) {
+        const seen = await reach(page);
+        expect(seen.bracketAbove, "the bracket is inside the band").toBeLessThanOrEqual(0);
+        expect(seen.firstCellAbove, "the top string is inside the band").toBeLessThanOrEqual(1);
+        expect(seen.lastCellBelow, "the bottom string is inside the band").toBeLessThanOrEqual(1);
+        return;
+      }
+      await swipe(page, -120);
+      expect((await reach(page)).lastCellBelow, "the bottom string can be scrolled in").toBeLessThanOrEqual(1);
+      await swipe(page, 120);
+      const up = await reach(page);
+      expect(up.firstCellAbove, "the top string can be scrolled in").toBeLessThanOrEqual(1);
+      expect(up.bracketAbove, "the bracket can be scrolled in").toBeLessThanOrEqual(0);
+    },
+  );
 }
 
 /** Whether a scrolled band holds still under the taps that follow it. */

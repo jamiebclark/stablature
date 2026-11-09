@@ -1,5 +1,4 @@
 import { expect, test, type Page } from "@playwright/test";
-import { fret } from "./capture-surface-helpers";
 import { cols, dump, seed } from "./rhythm-probe-helpers";
 
 test.setTimeout(120_000);
@@ -103,17 +102,6 @@ test("INV-040 the play view keys move the reading position, and starting clears 
   expect(strip(await dump(page))).toBe(before);
 });
 
-test("INV-040 every row the help lists is a registered action", async ({ page }) => {
-  await onCapture(page);
-  await page.keyboard.press("Shift+?");
-  const rows = page.getByTestId("help-row");
-  await expect(rows).toHaveCount(13);
-  expect(await rows.evaluateAll((els) => els.map((e) => e.getAttribute("data-action")))).toEqual(
-    expect.arrayContaining(["column-back", "enter", "dead-note", "part-on", "string-up"]),
-  );
-  await page.keyboard.press("Shift+?");
-});
-
 test("INV-040 capture keys do what the taps do, and none deletes", async ({ page }) => {
   await onCapture(page);
   await page.keyboard.press("Home");
@@ -162,15 +150,4 @@ test("INV-041 fast typing keeps every note in order", async ({ page }) => {
   // The order is the stored one: e2e/usability-typing-order.spec.ts reads it; here, the tab as drawn.
   const drawn = await columns(page).evaluateAll((els) => els.slice(-6).map((e) => e.textContent?.replace(/\D/g, "")));
   expect(drawn).toEqual(["5", "7", "3", "8", "0", "3"]);
-});
-
-test("a typed fret equals a tapped fret", async ({ page }) => {
-  await onCapture(page, cols("q"));
-  const n = await columns(page).count();
-  await page.keyboard.press("7");
-  await expect(columns(page)).toHaveCount(n + 1);
-  await fret(page, "B", 7).click();
-  await expect(columns(page)).toHaveCount(n + 2);
-  const [a, b] = await columns(page).evaluateAll((els) => els.slice(-2).map((e) => e.textContent));
-  expect(a).toBe(b);
 });

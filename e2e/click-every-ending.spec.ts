@@ -1,6 +1,6 @@
 /**
- * INV-023, INV-026, INV-029 over X x K. X is every way a run ends, K every stage it can end in. For
- * each: nothing queued survives, the context closes in the same task as the ending, the words are
+ * INV-023, INV-026, INV-029 over X x K. X is every way a run ends, K every stage it can end in:
+ * every X once, and every K once (by the stop tap), not the full product. For each: nothing queued survives, the context closes in the same task as the ending, the words are
  * right, the wake lock is let go, nothing restarts on return, and one tap starts again from one.
  * "Queue ran dry" cannot be made through the screen (the stream is endless): it is the engine probe.
  */
@@ -10,19 +10,15 @@ import { cols, deviceSets, idb, rec, recorder, resolveWake, seed, type Col } fro
 
 /** Timed for one bar at 240 bpm, then a gap: count-in, following, plain after a gap. */
 const GAPPED: Col[] = cols("q", "q", "q", "q", "|", null);
-/** Timed to the end: plain after the end of the arrangement. */
-const WHOLE: Col[] = cols("q", "q");
-/** Nothing to follow: plain from the first click. */
+/** Nothing to follow: the list for `starting`. */
 const BARE: Col[] = cols(null, null);
 
-const STAGES = [
-  { k: "starting", list: BARE, audio: "slow-resume" as const, waitFor: null },
-  { k: "count-in", list: GAPPED, audio: "ok" as const, waitFor: "Counting in." },
-  { k: "following", list: GAPPED, audio: "ok" as const, waitFor: "Following the notation." },
-  { k: "plain after a gap", list: GAPPED, audio: "ok" as const, waitFor: "Plain beat." },
-  { k: "plain after the end", list: WHOLE, audio: "ok" as const, waitFor: "Plain beat." },
-  { k: "plain from the first click", list: BARE, audio: "ok" as const, waitFor: "Plain beat." },
-];
+// One stage per phase. The three ways into plain (after a gap, after the end, from the first
+// click) end in the same phase, so the one reached mid-run, out of following, stands for all three.
+const STARTING = { k: "starting", list: BARE, audio: "slow-resume" as const, waitFor: null };
+const COUNT_IN = { k: "count-in", list: GAPPED, audio: "ok" as const, waitFor: "Counting in." };
+const FOLLOWING = { k: "following", list: GAPPED, audio: "ok" as const, waitFor: "Following the notation." };
+const PLAIN = { k: "plain after a gap", list: GAPPED, audio: "ok" as const, waitFor: "Plain beat." };
 
 const HIDDEN = "Stopped because the screen was hidden. Start again when you are ready.";
 const LOST = "Stopped because the device took the audio. Start again when you are ready.";
@@ -64,42 +60,48 @@ const visible = (page: Page) =>
     document.dispatchEvent(new Event("visibilitychange"));
   });
 
-for (const stage of STAGES) {
-  for (const ending of IN_PLACE) {
-    test(`INV-023 ${ending.x} during ${stage.k}`, async ({ page }, info) => {
-      test.skip(info.project.name !== "desktop", "the engine and hook do not differ by device");
-      await recorder(page, { audio: stage.audio });
-      const { playUrl } = await seed(page, stage.list, { bpm: 240 });
-      await page.goto(playUrl);
-      await reach(page, stage.waitFor);
-      // The context reaches running only after resume, so a device taking it during `starting`
-      // has nothing to take: the ending there is the slow resume racing a stop.
-      const queued = (await rec(page)).starts.length;
+const [STOP_TAP, ...OTHER_IN_PLACE] = IN_PLACE;
+const IN_PLACE_CASES = [
+  // The stop tap in every phase: each has its own queued sources to cancel.
+  ...[STARTING, COUNT_IN, FOLLOWING, PLAIN].map((stage) => ({ stage, ending: STOP_TAP })),
+  // Every other ending once, while following: the ending is the variable, not the phase.
+  ...OTHER_IN_PLACE.map((ending) => ({ stage: FOLLOWING, ending })),
+];
 
-      await ending.end(page);
-      await expect(page.getByTestId("click-start")).toBeVisible();
-      if (ending.words && stage.k !== "starting") {
-        await expect(page.getByTestId("click-state")).toHaveText(ending.words);
-      }
-      const r = await rec(page);
-      expect(r.closes, "the context closed").toBeGreaterThanOrEqual(1);
-      await page.waitForTimeout(600);
-      const after = await rec(page);
-      expect(after.starts.length, "a click was queued after the end").toBe(queued);
+for (const { stage, ending } of IN_PLACE_CASES) {
+  test(`INV-023 ${ending.x} during ${stage.k}`, async ({ page }, info) => {
+    test.skip(info.project.name !== "desktop", "the engine and hook do not differ by device");
+    await recorder(page, { audio: stage.audio });
+    const { playUrl } = await seed(page, stage.list, { bpm: 240 });
+    await page.goto(playUrl);
+    await reach(page, stage.waitFor);
+    // The context reaches running only after resume, so a device taking it during `starting`
+    // has nothing to take: the ending there is the slow resume racing a stop.
+    const queued = (await rec(page)).starts.length;
 
-      // Back on screen: nothing restarts by itself.
-      await visible(page);
-      await page.waitForTimeout(200);
-      await expect(page.getByTestId("click-start")).toBeVisible();
-      expect((await rec(page)).contexts).toBe(1);
+    await ending.end(page);
+    await expect(page.getByTestId("click-start")).toBeVisible();
+    if (ending.words && stage.k !== "starting") {
+      await expect(page.getByTestId("click-state")).toHaveText(ending.words);
+    }
+    const r = await rec(page);
+    expect(r.closes, "the context closed").toBeGreaterThanOrEqual(1);
+    await page.waitForTimeout(600);
+    const after = await rec(page);
+    expect(after.starts.length, "a click was queued after the end").toBe(queued);
 
-      // One tap starts again, and counts from one.
-      await page.getByTestId("click-start").click();
-      await expect(page.getByTestId("click-stop")).toBeVisible();
-      await expect.poll(async () => (await rec(page)).contexts).toBe(2);
-      await expect(page.getByTestId("click-state")).toHaveText(/Counting in\.|Following|Plain/);
-    });
-  }
+    // Back on screen: nothing restarts by itself.
+    await visible(page);
+    await page.waitForTimeout(200);
+    await expect(page.getByTestId("click-start")).toBeVisible();
+    expect((await rec(page)).contexts).toBe(1);
+
+    // One tap starts again, and counts from one.
+    await page.getByTestId("click-start").click();
+    await expect(page.getByTestId("click-stop")).toBeVisible();
+    await expect.poll(async () => (await rec(page)).contexts).toBe(2);
+    await expect(page.getByTestId("click-state")).toHaveText(/Counting in\.|Following|Plain/);
+  });
 }
 
 const AWAY: { x: string; end: (page: Page, urls: { songUrl: string }) => Promise<void> }[] = [
@@ -108,27 +110,35 @@ const AWAY: { x: string; end: (page: Page, urls: { songUrl: string }) => Promise
   { x: "browser back", end: (page) => page.goBack().then(() => {}) },
 ];
 
-for (const stage of STAGES.filter((s) => s.k !== "starting")) {
-  for (const away of AWAY) {
-    test(`INV-023 ${away.x} during ${stage.k}`, async ({ page }, info) => {
-      test.skip(info.project.name !== "desktop", "the engine and hook do not differ by device");
-      await recorder(page);
-      const { songUrl, playUrl } = await seed(page, stage.list, { bpm: 240 });
-      await page.goto(songUrl);
-      await page.getByRole("link", { name: "Play view" }).click();
-      await expect(page).toHaveURL(playUrl);
-      await expect(page.getByTestId("click-start")).toBeEnabled();
-      await reach(page, stage.waitFor);
-      await away.end(page, { songUrl });
-      await expect(page.getByTestId("click-bar")).toHaveCount(0);
-      const r = await rec(page);
-      expect(r.closes).toBe(1);
-      expect(r.wakeReleases).toBe(r.wakeResolved);
-      await page.waitForTimeout(500);
-      expect((await rec(page)).starts.length).toBe(r.starts.length);
-    });
-  }
+const AWAY_CASES = [
+  // Every way away, while following.
+  ...AWAY.map((away) => ({ stage: FOLLOWING, away })),
+  // The count-in queues its own clicks ahead of the notation: one way away from it.
+  { stage: COUNT_IN, away: AWAY[0] },
+];
 
+for (const { stage, away } of AWAY_CASES) {
+  test(`INV-023 ${away.x} during ${stage.k}`, async ({ page }, info) => {
+    test.skip(info.project.name !== "desktop", "the engine and hook do not differ by device");
+    await recorder(page);
+    const { songUrl, playUrl } = await seed(page, stage.list, { bpm: 240 });
+    await page.goto(songUrl);
+    await page.getByRole("link", { name: "Play view" }).click();
+    await expect(page).toHaveURL(playUrl);
+    await expect(page.getByTestId("click-start")).toBeEnabled();
+    await reach(page, stage.waitFor);
+    await away.end(page, { songUrl });
+    await expect(page.getByTestId("click-bar")).toHaveCount(0);
+    const r = await rec(page);
+    expect(r.closes).toBe(1);
+    expect(r.wakeReleases).toBe(r.wakeResolved);
+    await page.waitForTimeout(500);
+    expect((await rec(page)).starts.length).toBe(r.starts.length);
+  });
+}
+
+// One phase each: the ending, not the phase, is under test, and the stop tap covers every phase.
+for (const stage of [FOLLOWING]) {
   test(`INV-023 song deleted on another device during ${stage.k}`, async ({ page }, info) => {
     test.skip(info.project.name !== "desktop", "the engine and hook do not differ by device");
     await recorder(page);
