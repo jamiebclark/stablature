@@ -103,6 +103,28 @@ jobs:
 
       - run: npm ci
 
+      # @semantic-release/npm writes the new version into package.json, so a
+      # changed version here means a release was cut.
+      - id: before
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
       - run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: after
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+    outputs:
+      released: ${{ steps.after.outputs.version != steps.before.outputs.version }}
+      version: ${{ steps.after.outputs.version }}
+
+  image:
+    needs: release
+    if: needs.release.outputs.released == 'true'
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/docker.yml
+    with:
+      version: ${{ needs.release.outputs.version }}

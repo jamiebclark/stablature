@@ -20,9 +20,11 @@ services:
       retries: 10
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # Published by .github/workflows/docker.yml on every release. Pin a version
+    # with STABLATURE_VERSION in .env (e.g. 1.11.2), or leave it on latest and
+    # update with `docker compose pull && docker compose up -d`.
+    # To build from this checkout instead, add docker-compose.build.yml.
+    image: ghcr.io/jamiebclark/stablature:${STABLATURE_VERSION:-latest}
     restart: unless-stopped
     depends_on:
       db:
