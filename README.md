@@ -20,11 +20,19 @@ npm run db:migrate
 npm run dev
 ```
 
-Self-hosting:
+Self-hosting needs only `docker-compose.yml` and a `.env`, not the source. Each
+release publishes an image to `ghcr.io/jamiebclark/stablature`:
 
 ```sh
+curl -O https://raw.githubusercontent.com/jamiebclark/stablature/main/docker-compose.yml
+curl -o .env https://raw.githubusercontent.com/jamiebclark/stablature/main/.env.docker.example
+# fill in .env, then:
 docker compose up -d              # migrations run on container boot
 ```
+
+Update with `docker compose pull && docker compose up -d`. To pin a version, set
+`STABLATURE_VERSION` in `.env`. To build from a checkout instead:
+`docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build`.
 
 Set `APP_URL` in `.env` to the address the **phone** will use, not
 `localhost` — the session cookie will not stick otherwise.
