@@ -14,8 +14,65 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Whether this change can affect the app. Pushes to main always run
+  # everything; a pull request touching only docs, specs, CI or packaging skips
+  # the browser tests, which are most of CI's time.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      e2e: ${{ steps.decide.outputs.e2e }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: decide
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "e2e=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          app=$(git diff --name-only "$BASE...$HEAD" | grep -vE '(\.md$|^docs/|^specs/|^\.specify/|^\.github/|^docker-compose[^/]*\.yml$|^Dockerfile$|^\.dockerignore$|^\.env[^/]*\.example$|^LICENSE)' || true)
+          echo "files that can affect the app:"
+          echo "${app:-(none)}"
+          if [ -n "$app" ]; then echo "e2e=true" >> "$GITHUB_OUTPUT"; else echo "e2e=false" >> "$GITHUB_OUTPUT"; fi
+
   verify:
     runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        # Also fails if the SQL schema drifts from the row types.
+        run: npm run typecheck
+
+      - run: npm run lint
+
+      - run: npm test
+
+      # Wall-clock budgets (20 ms, 50 ms) cannot share a machine with the parallel run, so they run alone.
+      - run: npm run test:budget
+
+  e2e:
+    needs: changes
+    if: needs.changes.outputs.e2e == 'true'
+    runs-on: ubuntu-latest
+
+    # Four runners, each a quarter of the suite. One runner took about an hour.
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
 
     services:
       postgres:
@@ -50,17 +107,6 @@ jobs:
 
       - run: npm ci
 
-      - name: Typecheck
-        # Also fails if the SQL schema drifts from the row types.
-        run: npm run typecheck
-
-      - run: npm run lint
-
-      - run: npm test
-
-      # Wall-clock budgets (20 ms, 50 ms) cannot share a machine with the parallel run, so they run alone.
-      - run: npm run test:budget
-
       - name: Apply migrations
         # The script uses --env-file-if-exists, so it works here without a
         # .env.local and locally with one.
@@ -70,17 +116,17 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: End-to-end tests
-        run: npx playwright test
+        run: npx playwright test --shard=${{ matrix.shard }}/4
 
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.shard }}
           path: playwright-report/
           retention-days: 7
 
   release:
-    needs: verify
+    needs: [verify, e2e]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
 
