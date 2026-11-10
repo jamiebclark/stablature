@@ -33,7 +33,7 @@ import { BarlineGlyph, SpaceGlyph, BracketGlyph } from "@/components/icons";
 import { useRouter } from "next/navigation";
 import { groupOffer, TRIPLET_REFUSAL } from "@/lib/capture/grouping";
 import { TabStaff } from "@/components/tab/TabStaff";
-import { Button, Input, Loading, Sheet } from "@/components/ui";
+import { Button, Input, Loading, Sheet, TouchLabel } from "@/components/ui";
 import { TempoControl } from "@/components/rhythm/TempoControl";
 import { readDuration } from "@/lib/rhythm/durations";
 import {
@@ -111,6 +111,8 @@ const ignoreLongPress = () => {};
 
 /** One sizing for every control on the selection row, so all of them fit one line. */
 const SELECTION_BUTTON = "h-(--control)! px-1! text-xs! gap-1!";
+/** Copy, cut and delete: icon alone on touch, so square like the bracket buttons beside them. */
+const SELECTION_ACTION = `${SELECTION_BUTTON} min-w-9!`;
 
 /** A symbol holds its width up to ten characters, and past that gives way down to ten so the jump buttons stay on the row. */
 const WIDE_ROW = "(min-width: 640px)";
@@ -859,7 +861,8 @@ export function CaptureScreen({
           className="flex h-(--toolbar-row) shrink-0 flex-nowrap items-center gap-1 border-t border-border-subtle px-1"
         >
           <Button
-            className={SELECTION_BUTTON}
+            className={SELECTION_ACTION}
+            title="Copy"
             onClick={async () => {
               await writeClipboard(
                 copyColumns(selectedEvents, annotations ?? []),
@@ -868,17 +871,18 @@ export function CaptureScreen({
             }}
           >
             <Copy size={14} aria-hidden />
-            copy
+            <TouchLabel>copy</TouchLabel>
           </Button>
           <Button
-            className={SELECTION_BUTTON}
+            className={SELECTION_ACTION}
+            title="Cut"
             onClick={async () => {
               await cutColumns(selectedEvents, annotations ?? []);
               endSelection(true);
             }}
           >
             <Scissors size={14} aria-hidden />
-            cut
+            <TouchLabel>cut</TouchLabel>
           </Button>
           {/*
             Bordered like copy and cut rather than bare red text: these three
@@ -887,14 +891,15 @@ export function CaptureScreen({
             from being mistaken for a safe action.
           */}
           <Button
-            className={`${SELECTION_BUTTON} mx-1 text-danger`}
+            className={`${SELECTION_ACTION} mx-1 text-danger`}
+            title="Delete"
             onClick={async () => {
               await deleteColumns(selectedEvents);
               endSelection(true);
             }}
           >
             <Trash2 size={14} aria-hidden />
-            delete
+            <TouchLabel>delete</TouchLabel>
           </Button>
           {offer.tuplet ? (
             <Button
