@@ -499,9 +499,10 @@ button,
     flex-wrap: wrap;
     row-gap: var(--line-gap);
   }
-  /* A chord symbol longer than the line breaks inside it rather than running off the page. */
+  /* A chord symbol longer than the line breaks inside it rather than running off the page. Important over
+     the column's inline min-width, which is there for Firefox's sizing of the line on screen. */
   .tab-bar-run [data-testid="tab-column"] {
-    min-width: 0;
+    min-width: 0 !important;
     max-width: 100%;
   }
   .tab-bar-run [data-testid="tab-column"] > div.text-accent {

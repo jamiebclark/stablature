@@ -536,7 +536,9 @@ function Column({
   const diffStatus = mark?.status;
   // Sized in `ch` so a two-digit fret gets twice the room and the staff stays
   // aligned, exactly as in the ASCII output.
-  const style: CSSProperties = wrap ? { flex: `1 0 ${width}` } : { width };
+  // Wrapped, the min-width repeats the basis: Firefox sizes the bar's line from its columns' content, not their
+  // basis, and the line came out too narrow and scrolled its last note out of sight.
+  const style: CSSProperties = wrap ? { flex: `1 0 ${width}`, minWidth: width } : { width };
 
   const body = (
     <>

@@ -74,6 +74,13 @@ export default defineConfig({
     // Only what a desktop can do differently: keys, a mouse, hover, a fine pointer's density, a wide layout.
     // Specs of sync, import, data and touch-only flows run once, on the phone.
     { name: "desktop", use: { ...devices["Desktop Chrome"] }, testIgnore: PHONE_ONLY.map((name) => `**/${name}`) },
+    // Firefox sizes a flex line from its items' content, not their flex-basis, so a bar in the play view
+    // came out narrower than its columns and hid its last note. The staff layout runs there too.
+    {
+      name: "firefox",
+      testMatch: /usability-staves\.spec\.ts/,
+      use: { ...devices["Desktop Firefox"], viewport: { width: 412, height: 915 } },
+    },
     // A screen with no touch and no hover-less pointer ambiguity: the density pass reads sizes as a mouse
     // user sees them, so Chromium is told the primary pointer is a mouse and hover works.
     {
