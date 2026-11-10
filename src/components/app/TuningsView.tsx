@@ -11,7 +11,7 @@
 
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
-import { Button, Card, EmptyState, Loading, PageHeader } from "@/components/ui";
+import { Button, Card, EmptyState, Loading, PageHeader, TouchLabel } from "@/components/ui";
 import { createTuningFromPreset, setDefaultTuning } from "@/lib/local/editing";
 import { deleteRow } from "@/lib/local/mutate";
 import { useTunings } from "@/lib/local/hooks";
@@ -66,12 +66,13 @@ export function TuningsView({ bandId }: { bandId: string }) {
                   )}
                   <Button
                     variant="danger"
-                    className="ml-2"
+                    className="ml-2 min-w-(--control)"
                     onClick={() => deleteRow("tunings", tuning.id)}
                     aria-label={`Delete ${tuning.name}`}
+                    title="Delete"
                   >
                     <Trash2 size={15} aria-hidden />
-                    Delete
+                    <TouchLabel>Delete</TouchLabel>
                   </Button>
                 </div>
               </Card>

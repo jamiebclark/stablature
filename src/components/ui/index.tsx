@@ -45,6 +45,15 @@ export function ButtonLink({
   return <Link className={`${BASE} ${VARIANTS[variant]} ${className}`} {...props} />;
 }
 
+/**
+ * A button's words, shown beside its icon for a mouse and kept for screen readers only on touch, where a
+ * row of labelled buttons wraps and the icon says enough. The button wants `min-w-(--control)` so that,
+ * icon alone, it is still a square target.
+ */
+export function TouchLabel({ children }: { children: ReactNode }) {
+  return <span className="sr-only fine:not-sr-only">{children}</span>;
+}
+
 export function Input({ className = "", ...props }: ComponentProps<"input">) {
   return (
     <input

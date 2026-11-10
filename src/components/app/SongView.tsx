@@ -19,7 +19,7 @@ import { ViewControl } from "@/components/reading/ViewControl";
 import { useStaffView } from "@/components/reading/useStaffView";
 import { VariantLine } from "@/components/reading/VariantLine";
 import { TabStaff } from "@/components/tab/TabStaff";
-import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader, Panel } from "@/components/ui";
+import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader, Panel, TouchLabel } from "@/components/ui";
 import { partHeading } from "@/lib/reading/bars";
 import { createPart, createVariant } from "@/lib/local/editing";
 import {
@@ -376,18 +376,23 @@ function PartCard({
               + variant
             </Button>
           )}
-          <ButtonLink href={`/songs/${songId}/capture/${part.id}`}>
+          <ButtonLink
+            href={`/songs/${songId}/capture/${part.id}`}
+            className="min-w-(--control)"
+            title="Edit"
+          >
             <Pencil size={15} aria-hidden />
-            Edit
+            <TouchLabel>Edit</TouchLabel>
           </ButtonLink>
           <Button
             variant="danger"
-            className="ml-2"
+            className="ml-2 min-w-(--control)"
             onClick={() => deleteRow("parts", part.id)}
             aria-label={`Delete part ${part.label}`}
+            title="Delete"
           >
             <Trash2 size={15} aria-hidden />
-            Delete
+            <TouchLabel>Delete</TouchLabel>
           </Button>
         </div>
       </div>
