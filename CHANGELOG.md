@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/jamiebclark/stablature/compare/v1.11.3...v1.12.0) (2026-11-10)
+
+
+### Features
+
+* **ui:** icon-only edit and delete buttons on touch ([#16](https://github.com/jamiebclark/stablature/issues/16)) ([02f9b82](https://github.com/jamiebclark/stablature/commit/02f9b827df610617682e5ff04d81cf87bc0d0b4a))
+
 ## [1.11.3](https://github.com/jamiebclark/stablature/compare/v1.11.2...v1.11.3) (2026-11-10)
 
 
