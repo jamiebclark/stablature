@@ -1,3 +1,10 @@
+## [1.11.3](https://github.com/jamiebclark/stablature/compare/v1.11.2...v1.11.3) (2026-11-10)
+
+
+### Bug Fixes
+
+* **play-view:** firefox no longer hides the last note of a bar ([#15](https://github.com/jamiebclark/stablature/issues/15)) ([35d0059](https://github.com/jamiebclark/stablature/commit/35d00596e9ea948a5205c8ecb4b5da399e3db5ae))
+
 ## [1.11.2](https://github.com/jamiebclark/stablature/compare/v1.11.1...v1.11.2) (2026-11-08)
 
 
