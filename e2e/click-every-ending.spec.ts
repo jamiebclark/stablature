@@ -77,8 +77,6 @@ for (const { stage, ending } of IN_PLACE_CASES) {
     await reach(page, stage.waitFor);
     // The context reaches running only after resume, so a device taking it during `starting`
     // has nothing to take: the ending there is the slow resume racing a stop.
-    const queued = (await rec(page)).starts.length;
-
     await ending.end(page);
     await expect(page.getByTestId("click-start")).toBeVisible();
     if (ending.words && stage.k !== "starting") {
@@ -88,7 +86,9 @@ for (const { stage, ending } of IN_PLACE_CASES) {
     expect(r.closes, "the context closed").toBeGreaterThanOrEqual(1);
     await page.waitForTimeout(600);
     const after = await rec(page);
-    expect(after.starts.length, "a click was queued after the end").toBe(queued);
+    // Counted after the end, as the endings below do: the scheduler keeps queueing ahead until the stop, so a
+    // count taken before it raced a busy machine's next tick.
+    expect(after.starts.length, "a click was queued after the end").toBe(r.starts.length);
 
     // Back on screen: nothing restarts by itself.
     await visible(page);
