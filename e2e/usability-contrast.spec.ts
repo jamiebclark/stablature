@@ -129,13 +129,13 @@ test("INV-019 numerals, marks and bar numbers are 12px or more and inside their 
     const line = column.querySelector(".tab-bracket")!;
     return {
       numerals: pick(".tab-bracket-label"),
-      marks: pick('[data-testid="tab-rhythm"]'),
+      marks: [...document.querySelectorAll('[data-testid="tab-rhythm"][data-duration]')].length,
       bars: pick('[data-testid="tab-bar-number"]'),
-      numeralBottomAboveLine: label.getBoundingClientRect().bottom <= line.getBoundingClientRect().top + 0.5,
+      numeralBottomAboveLine: label.getBoundingClientRect().top >= line.getBoundingClientRect().bottom - 0.5, // spec 009: numeral under the line
     };
   });
   expect(sizes.numerals.length).toBeGreaterThan(0);
-  expect(sizes.marks.length).toBeGreaterThan(0);
-  for (const size of [...sizes.numerals, ...sizes.marks, ...sizes.bars]) expect(size).toBeGreaterThanOrEqual(12);
+  expect(sizes.marks).toBeGreaterThan(0); // drawn marks have no font size; their own sizes are in notation-alignment
+  for (const size of [...sizes.numerals, ...sizes.bars]) expect(size).toBeGreaterThanOrEqual(12);
   expect(sizes.numeralBottomAboveLine).toBe(true);
 });

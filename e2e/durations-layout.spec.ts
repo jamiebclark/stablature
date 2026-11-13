@@ -16,10 +16,11 @@ test.describe("duration row layout", () => {
       const boxes = await buttons.evaluateAll((els) =>
         els.map((el) => {
           const r = el.getBoundingClientRect();
-          return { x: r.x, y: r.y, w: r.width, h: r.height, t: el.textContent };
+          return { x: r.x, y: r.y, w: r.width, h: r.height, t: el.getAttribute("data-duration"), text: el.textContent };
         }),
       );
       expect(boxes.map((b) => b.t)).toEqual(["w", "h", "q", "8", "16", "32"]);
+      expect(boxes.map((b) => b.text)).toEqual(["", "", "", "", "", ""]);
       for (const b of boxes) {
         expect(b.y).toBeCloseTo(boxes[0].y, 0);
         expect(b.h).toBeGreaterThanOrEqual(44);

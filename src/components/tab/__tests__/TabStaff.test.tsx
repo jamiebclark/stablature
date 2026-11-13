@@ -76,8 +76,16 @@ describe("TabStaff reading sizes (007)", () => {
     expect(numbers[0].className).toMatch(/text-\[12px\]/);
   });
 
-  it("draws rhythm marks at 12px", () => {
-    const c = render(<TabStaff events={[ev({ [A]: 3 })]} tuning={bass5} showRhythm />).container;
-    expect(c.querySelector('[data-testid="tab-rhythm"]')?.className ?? "text-[12px]").toMatch(/text-\[12px\]/);
+  it("draws a stem 1px wide, beams 2px and flags 2px, with the numeral still 12px", () => {
+    const css = readFileSync(path.join(process.cwd(), "src/app/globals.css"), "utf8");
+    expect(css).toMatch(/\[data-part="stem"\][^}]*width: 1px/);
+    expect(css).toMatch(/--rhythm-beam: 2px/);
+    expect(css).toMatch(/\[data-part="flag"\][^}]*stroke-width: 2px/);
+    const c = render(<TabStaff events={[ev({ [A]: 3 }, {}, { durationHint: "8" })]} tuning={bass5} showRhythm />).container;
+    const cell = c.querySelector('[data-testid="tab-rhythm"]');
+    expect(cell?.getAttribute("data-duration")).toBe("8");
+    expect(cell?.querySelector('[data-part="stem"]')).not.toBeNull();
+    expect(cell?.querySelector('[data-part="flag"]')).not.toBeNull();
+    expect(c.querySelector(".tab-cell span")?.className ?? "").not.toMatch(/text-\[(?!12px)/);
   });
 });

@@ -70,28 +70,30 @@ const readSizes = (page: Page) =>
     const px = (el: Element) => parseFloat(getComputedStyle(el).fontSize);
     const texts = (sel: string) => [...document.querySelectorAll(sel)].filter((e) => e.textContent);
     const labels = texts(".tab-bracket-label");
-    const marks = texts('[data-testid="tab-rhythm"]');
+    // Marks are drawn, not typed: they have a duration, a stem and beams, never a font size.
+    const marks = [...document.querySelectorAll('[data-testid="tab-rhythm"][data-duration]')];
     const bars = texts('[data-testid="tab-bar-number"]');
     const crossed = labels.filter((label) => {
       const row = label.parentElement!;
       const line = row.querySelector(".tab-bracket");
       // The numeral is centred on one column, and only a bracket on that column could cross it.
-      return !!line && label.getBoundingClientRect().bottom > line.getBoundingClientRect().top + 0.5;
+      // Spec 009: the numeral sits under the bracket line; only a numeral that rises into the line is crossed.
+      return !!line && label.getBoundingClientRect().top < line.getBoundingClientRect().bottom - 0.5;
     });
     const overflowing = marks.filter((m) => {
-      const r = document.createRange();
-      r.selectNodeContents(m);
-      const text = r.getBoundingClientRect();
       const column = m.closest('[data-testid="tab-column"]')!.getBoundingClientRect();
-      return text.left < column.left - 0.5 || text.right > column.right + 0.5;
+      return [...m.querySelectorAll("[data-part]")].some((part) => {
+        const q = part.getBoundingClientRect();
+        return q.left < column.left - 0.5 || q.right > column.right + 0.5;
+      });
     });
     return {
       numerals: labels.map((e) => e.textContent),
-      marks: [...new Set(marks.map((e) => e.textContent))],
+      marks: [...new Set(marks.map((e) => e.getAttribute("data-duration")))],
       barNumbers: bars.map((e) => e.textContent),
-      under12: [...labels, ...marks, ...bars].filter((e) => px(e) < 12).map((e) => `${e.textContent} ${px(e)}`),
+      under12: [...labels, ...bars].filter((e) => px(e) < 12).map((e) => `${e.textContent} ${px(e)}`),
       crossed: crossed.map((e) => e.textContent),
-      overflowing: overflowing.map((e) => e.textContent),
+      overflowing: overflowing.map((e) => e.getAttribute("data-duration")),
     };
   });
 

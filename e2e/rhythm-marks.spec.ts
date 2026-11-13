@@ -46,17 +46,22 @@ const measure = (page: Page) =>
       const col = el.getBoundingClientRect();
       const span = el.querySelector(".tab-cell > span");
       let offset: number | null = null;
-      if (mark && mark.textContent && span) {
-        const range = document.createRange();
-        range.selectNodeContents(mark);
-        const m = range.getBoundingClientRect();
+      // The stem, rest or oval, whichever the column drew, against the middle of its fret.
+      const body = mark?.querySelector('[data-part="stem"], [data-part="rest"], [data-part="oval"]');
+      if (body && span) {
+        const m = body.getBoundingClientRect();
         const s = span.getBoundingClientRect();
         offset = Math.abs(m.x + m.width / 2 - (s.x + s.width / 2));
       }
       return {
         width: col.width,
-        text: mark?.textContent ?? null,
-        fits: mark ? mark.scrollWidth <= mark.clientWidth : null,
+        text: mark ? (mark.getAttribute("data-duration") ?? "") : null,
+        fits: mark
+          ? [...mark.querySelectorAll("[data-part]")].every((p) => {
+              const q = p.getBoundingClientRect();
+              return q.left >= col.left - 0.5 && q.right <= col.right + 0.5;
+            })
+          : null,
         label: el.getAttribute("aria-label") ?? "",
         offset,
       };
@@ -122,7 +127,7 @@ for (const theme of ["light", "dark"] as const) {
       await expect(page.getByTestId("tab-rhythm").first()).toBeVisible();
       const marks = await page.getByTestId("tab-rhythm").evaluateAll((els) =>
         els
-          .filter((el) => el.textContent)
+          .filter((el) => el.getAttribute("data-duration"))
           .map((el) => {
             let opacity = 1;
             let bg = "";
@@ -131,7 +136,7 @@ for (const theme of ["light", "dark"] as const) {
               opacity = Math.min(opacity, Number(s.opacity));
               if (!bg && s.backgroundColor !== "rgba(0, 0, 0, 0)") bg = s.backgroundColor;
             }
-            return { text: el.textContent, color: getComputedStyle(el).color, bg, opacity };
+            return { text: el.getAttribute("data-duration"), color: getComputedStyle(el).color, bg, opacity };
           }),
       );
       expect(new Set(marks.map((m) => m.text)).size).toBe(6);

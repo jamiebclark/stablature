@@ -21,7 +21,7 @@ const rowAt = async (page: Page) => {
   return buttons.evaluateAll((els) =>
     els.map((el) => {
       const r = el.getBoundingClientRect();
-      return { y: Math.round(r.y), h: r.height, right: r.x + r.width, text: el.textContent };
+      return { y: Math.round(r.y), h: r.height, right: r.x + r.width, text: el.getAttribute("data-duration") };
     }),
   );
 };
@@ -130,10 +130,9 @@ for (const surface of ["song", "play"] as const) {
       for (const el of els) {
         const mark = el.querySelector("[data-testid=tab-rhythm]");
         const span = el.querySelector(".tab-cell > span");
-        if (!mark?.textContent || !span) continue;
-        const range = document.createRange();
-        range.selectNodeContents(mark);
-        const m = range.getBoundingClientRect();
+        const body = mark?.querySelector("[data-part=stem], [data-part=rest], [data-part=oval]");
+        if (!body || !span) continue;
+        const m = body.getBoundingClientRect();
         const s = span.getBoundingClientRect();
         max = Math.max(max, Math.abs(m.x + m.width / 2 - (s.x + s.width / 2)));
       }

@@ -86,7 +86,7 @@ test.describe("the click: endings, motion and data", () => {
     // A duration and a barline, written where a live query sees them: the page draws both, the click ignores both.
     await patchEvent(page, 0, { durationHint: "h" });
     await patchEvent(page, 1, { kind: "barline", frets: {} });
-    await expect(page.getByTestId("tab-rhythm").first()).toHaveText(/\S/);
+    await expect(page.getByTestId("tab-rhythm").first()).toHaveAttribute("data-duration", /\S/);
     await page.waitForTimeout(1500);
     const starts = (await recorded(page)).starts;
     for (let i = 1; i < starts.length; i++) {

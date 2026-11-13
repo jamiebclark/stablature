@@ -109,7 +109,21 @@ for (const theme of ["light", "dark"] as const) {
         expect(await boxes(page), `at the end ${id}`).toEqual(await withoutThisEntry(page));
         expect((await boxes(page)).staff?.[3], `at the end ${id}`).toBe(staffHeight);
       }
-      await expect(page.getByTestId("tab-rhythm")).toHaveCount(0);
+      // 009: capture draws the rhythm row (research R1: the band drops pt-1 while data-rhythm is set, so
+      // the staff box above is unchanged) and every string stays in the band.
+      await expect(page.getByTestId("tab-rhythm")).toHaveCount(8);
+      await expect(page.getByTestId("tab-band")).toHaveAttribute("data-rhythm", "");
+      expect(
+        await page.evaluate(() => {
+          const band = document.querySelector("[data-testid=tab-band]")!.getBoundingClientRect();
+          // A wrapped (four-string) staff scrolls its lines; only the one-line staves must fit whole.
+          if (document.querySelector(".tab-staff-wrapped")) return true;
+          return Array.from(document.querySelectorAll(".tab-cell")).every((c) => {
+            const b = c.getBoundingClientRect();
+            return b.top >= band.top - 0.5 && b.bottom <= band.bottom + 0.5;
+          });
+        }),
+      ).toBe(true);
     });
   }
 }

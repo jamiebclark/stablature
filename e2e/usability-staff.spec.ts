@@ -167,6 +167,12 @@ test("INV-017 rows and marks sit on their column's centre", async ({ page }) => 
         const el = column.querySelector(sel);
         if (el?.textContent && Math.abs(centre(el) - mid) > 1) out.push(`${sel} off by ${centre(el) - mid}`);
       }
+      // The mark is drawn, not typed: its stem, rest or oval is the thing that sits on the column's middle.
+      const body = column.querySelector('[data-testid="tab-rhythm"] [data-part="stem"], [data-testid="tab-rhythm"] [data-part="rest"], [data-testid="tab-rhythm"] [data-part="oval"]');
+      if (body) {
+        const q = body.getBoundingClientRect();
+        if (Math.abs((q.left + q.right) / 2 - mid) > 1) out.push(`${body.getAttribute("data-part")} off by ${(q.left + q.right) / 2 - mid}`);
+      }
     }
     return out;
   });

@@ -1,0 +1,76 @@
+{
+  "375x667-touch": {
+    "band": {
+      "outer": 189.59,
+      "content": 185.59,
+      "paddingTop": "4px",
+      "paddingBottom": "0px"
+    },
+    "staff": {
+      "height": 183.98
+    },
+    "staffRow": 17.6,
+    "oneLine": 17.6,
+    "stringHeight": 24.8,
+    "lowestString": {
+      "cellHeight": 24.8,
+      "maskTop": 4.39,
+      "maskBottom": 20.39,
+      "maskHeight": 16,
+      "freeBelowMask": 4.41,
+      "digit": {
+        "top": 1.39,
+        "bottom": 22.39,
+        "height": 21
+      },
+      "spanText": "x"
+    },
+    "numeral": {
+      "height": 9,
+      "width": 7.2,
+      "fontFamily": "\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, monospace"
+    },
+    "rowsPresent": [
+      "tab-bar-number",
+      "tab-bracket"
+    ],
+    "chordRow": true
+  },
+  "1280x800-fine": {
+    "band": {
+      "outer": 379.59,
+      "content": 375.59,
+      "paddingTop": "4px",
+      "paddingBottom": "0px"
+    },
+    "staff": {
+      "height": 155.16
+    },
+    "staffRow": 15.2,
+    "oneLine": 15.2,
+    "stringHeight": 20.8,
+    "lowestString": {
+      "cellHeight": 20.8,
+      "maskTop": 3.39,
+      "maskBottom": 17.39,
+      "maskHeight": 14,
+      "freeBelowMask": 3.41,
+      "digit": {
+        "top": 1.39,
+        "bottom": 19.39,
+        "height": 18
+      },
+      "spanText": "x"
+    },
+    "numeral": {
+      "height": 9,
+      "width": 7.2,
+      "fontFamily": "\"JetBrains Mono\", \"JetBrains Mono Fallback\", ui-monospace, monospace"
+    },
+    "rowsPresent": [
+      "tab-bar-number",
+      "tab-bracket"
+    ],
+    "chordRow": true
+  }
+}

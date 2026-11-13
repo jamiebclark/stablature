@@ -364,6 +364,13 @@ test("INV-004 stills the implementation's spec does not cover", async ({ page },
   test.skip(info.project.name !== "mobile", "touch");
   // A bracket already in the part, so grouping or ungrouping a run adds or removes no row (that would reflow every line).
   await longPart(page, { chord: true, bracket: true, bars: 16, size: LONG });
+  // The part's first duration adds the capture rhythm row (every run grows), so make it here and settle; the measured write is then an ordinary one.
+  await columns(page).nth(1).click();
+  await page.waitForTimeout(800);
+  await touchHold(page, columns(page).nth(1));
+  await page.getByTestId("column-inspector").getByRole("button", { name: "quarter note", exact: true }).click();
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(800);
   const moved: string[] = [];
   const state = () =>
     page.evaluate(() => {
@@ -372,10 +379,13 @@ test("INV-004 stills the implementation's spec does not cover", async ({ page },
     });
   const same = (a: { scroll: number; tops: number[] }, b: { scroll: number; tops: number[] }) =>
     Math.abs(a.scroll - b.scroll) <= 1 && a.tops.length === b.tops.length && a.tops.every((t, i) => Math.abs(t - b.tops[i]) <= 1);
+  // `ungroup` must select what `group from a selection` grouped on the same line; with a duration in the part pickColumn lands elsewhere.
+  const grouped: Record<string, number> = {};
+  const ungrouped = new Set<number>();
   const STILLS: [string, (p: Page, i: number) => Promise<void>][] = [
-    ["copy", async (p, i) => { await columns(p).nth(i).click(); await p.getByRole("button", { name: /^select$/ }).click(); await columns(p).nth(i + 1).click(); await p.getByTestId("toolbar-selection").getByTitle("Copy").click(); }],
-    ["group from a selection", async (p, i) => { await columns(p).nth(i).click(); await p.getByRole("button", { name: /^select$/ }).click(); await columns(p).nth(i + 1).click(); await p.getByTestId("toolbar-selection").getByRole("button", { name: "Group with no number", exact: true }).click(); }],
-    ["ungroup", async (p, i) => { await columns(p).nth(i).click(); await p.getByRole("button", { name: /^select$/ }).click(); await columns(p).nth(i + 1).click(); await p.getByTestId("toolbar-selection").getByRole("button", { name: "Ungroup", exact: true }).click(); }],
+    ["copy", async (p, i) => { await columns(p).nth(i).click(); await p.getByRole("button", { name: /^select$/ }).click(); await columns(p).nth(i + 1).click(); await p.getByTestId("toolbar-selection").getByTitle("Copy").click({ timeout: 5000 }); }],
+    ["group from a selection", async (p, i) => { await columns(p).nth(i).click(); await p.getByRole("button", { name: /^select$/ }).click(); await columns(p).nth(i + 1).click(); await p.getByTestId("toolbar-selection").getByRole("button", { name: "Group with no number", exact: true }).click({ timeout: 5000 }); }],
+    ["ungroup", async (p, i) => { await columns(p).nth(i).click(); await p.getByRole("button", { name: /^select$/ }).click(); await columns(p).nth(i + 1).click(); await p.getByTestId("toolbar-selection").getByRole("button", { name: "Ungroup", exact: true }).click({ timeout: 5000 }); }],
     ["a latch toggle", async (p) => { await p.getByTestId("latch-strip").getByRole("button").first().click(); }],
     ["the help overlay", async (p) => { await blur(p); await p.keyboard.press("?"); await p.waitForTimeout(300); await p.keyboard.press("Escape"); }],
     ["an inspector write", async (p, i) => { await touchHold(p, columns(p).nth(i)); await p.getByTestId("column-inspector").getByRole("button", { name: /dead|ghost|x/i }).first().click(); await p.keyboard.press("Escape"); }],
@@ -388,9 +398,18 @@ test("INV-004 stills the implementation's spec does not cover", async ({ page },
       // Settle any tap used to reach the column, then measure across the still alone.
       await columns(page).nth(target.i).click();
       await page.waitForTimeout(800);
+      const at = name === "ungroup" ? (grouped[where] ?? target.i) : target.i;
+      // When one line is all that is in view, top and bottom pick the same columns; the first ungroup took the bracket, so put it back (unmeasured).
+      if (name === "ungroup" && ungrouped.has(at)) {
+        await STILLS[1][1](page, at);
+        await page.getByTestId("toolbar-selection").getByRole("button", { name: "cancel" }).click({ timeout: 1000 }).catch(() => undefined);
+        await page.waitForTimeout(800);
+      }
       const before = await state();
       try {
-        await still(page, target.i);
+        await still(page, at);
+        if (name === "ungroup") ungrouped.add(at);
+        if (name === "group from a selection") grouped[where] = target.i;
       } catch (error) {
         moved.push(`${name} (${where}): could not run: ${String(error).split("\n")[0].slice(0, 120)}`);
         continue;

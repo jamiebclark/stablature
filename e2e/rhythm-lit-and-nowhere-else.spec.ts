@@ -12,7 +12,7 @@ const lit = (page: Page) =>
     .getByTestId("duration-row")
     .getByRole("button")
     .evaluateAll((els) =>
-      els.filter((el) => el.getAttribute("aria-pressed") === "true").map((el) => el.textContent),
+      els.filter((el) => el.getAttribute("aria-pressed") === "true").map((el) => el.getAttribute("data-duration")),
     );
 
 const stored = async (page: Page) =>
@@ -49,7 +49,7 @@ for (const pair of [
     await expect(inspector(page)).toBeVisible();
     await page.getByTestId("duration-row").evaluate((row, p) => {
       const find = (t: string) =>
-        [...row.querySelectorAll("button")].find((b) => b.textContent === t) as HTMLButtonElement;
+        row.querySelector(`button[data-duration="${t}"]`) as HTMLButtonElement;
       find(p[0]).click();
       find(p[1]).click();
     }, pair);

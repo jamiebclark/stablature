@@ -254,7 +254,7 @@ test("INV-039 a duration and a barline landing mid-run change nothing until the 
   await expect(state(page)).toHaveText("Following the notation.", { timeout: 4000 });
   await patchEvent(page, 6, { durationHint: null });
   await patchEvent(page, 3, { kind: "barline", frets: {} });
-  await expect(page.getByTestId("tab-rhythm").nth(6)).toHaveText("");
+  await expect(page.getByTestId("tab-rhythm").nth(6)).not.toHaveAttribute("data-duration", /.+/);
   await page.waitForTimeout(3500);
   const levels = (await rec(page)).starts.map((s) => level(s.hz));
   // Twelve quarters, one bar: an accent once, no second accent from the new barline, no fall to plain.

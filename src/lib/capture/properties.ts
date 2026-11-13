@@ -50,6 +50,8 @@ export interface ColumnSegment {
   readonly label: string;
   readonly ariaLabel: string;
   readonly on: boolean;
+  /** Draws this note symbol in place of `label`. */
+  readonly symbol?: DurationId;
 }
 
 export interface ColumnProperty {
@@ -178,6 +180,7 @@ export const COLUMN_PROPERTIES: readonly ColumnProperty[] = [
         label: d.mark,
         ariaLabel: d.words,
         on: d.id === lit,
+        symbol: d.id,
       }));
     },
     commit: async (ctx, value) => {
