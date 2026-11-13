@@ -611,7 +611,9 @@ export function CaptureScreen({
         >
           &larr;<span> {song.title}</span>
         </button>
-        <div className="flex min-w-0 flex-[0_1_auto] items-center gap-1.5 overflow-x-auto">
+        {/* `pe-px scroll-pe-px`: the strip's width is fractional, and Linux Chrome snaps the scroll to device pixels,
+            so without a pixel of slack `+ part` scrolled into view ends 0.125px past the edge (capture-matrix FR-001). */}
+        <div className="flex min-w-0 flex-[0_1_auto] items-center gap-1.5 overflow-x-auto pe-px scroll-pe-px">
           {parts.map((candidate) => (
             <Link
               key={candidate.id}
