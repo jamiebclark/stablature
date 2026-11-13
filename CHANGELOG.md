@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/jamiebclark/stablature/compare/v1.12.0...v1.13.0) (2026-11-13)
+
+
+### Features
+
+* **rhythm-notation:** rhythm drawn as stems, flags and beams under the tab ([#18](https://github.com/jamiebclark/stablature/issues/18)) ([03fc3c7](https://github.com/jamiebclark/stablature/commit/03fc3c7e405596912347ed7fac26dfc7a8ebff4c))
+
 # [1.12.0](https://github.com/jamiebclark/stablature/compare/v1.11.3...v1.12.0) (2026-11-10)
 
 
