@@ -18,6 +18,8 @@
     "check:untouched-rhythm": "bash scripts/untouched-by-rhythm.sh",
     "check:untouched-reading": "bash scripts/untouched-by-reading.sh",
     "check:untouched-usability": "bash scripts/untouched-by-usability.sh",
+    "check:untouched-polish": "bash scripts/untouched-by-polish.sh",
+    "check:polish-amendments": "bash scripts/check-polish-amendments.sh",
     "check:usability-amendments": "bash scripts/check-usability-amendments.sh",
     "check:usability-audit": "bash scripts/check-usability-audit.sh",
     "test:e2e": "playwright test",

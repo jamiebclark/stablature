@@ -60,12 +60,19 @@ test("INV-001/002 selecting with seven controls keeps every string, 36x36 frets,
     await selectColumns(page, 0, 3);
     await expect(selectionBar(page).getByRole("button")).toHaveCount(7);
     const m = await page.evaluate(() => {
+      // The cursor's line: its caret's run when the band wraps (the last run when none is drawn), the staff when it does not.
+      const lineOf = (): Element => {
+        const staff = document.querySelector('[data-testid="tab-staff"]')!;
+        const runs = [...staff.querySelectorAll(".tab-wrapped-body .tab-bar-run")];
+        if (!runs.length) return staff;
+        return staff.querySelector('[data-testid="tab-caret"]')?.closest(".tab-bar-run") ?? runs[runs.length - 1];
+      };
       const h = (id: string) => document.querySelector(`[data-testid="${id}"]`)!.getBoundingClientRect().height;
       const cell = document.querySelector('[data-testid="fret-grid"] button')!.getBoundingClientRect();
       return {
         sel: h("toolbar-selection"), band: h("tab-band"), cw: cell.width, ch: cell.height,
         over: document.documentElement.scrollHeight - window.innerHeight,
-        cells: new Set([...document.querySelectorAll('[data-testid="tab-staff"] .tab-cell')].map((c) => Math.round(c.getBoundingClientRect().top))).size,
+        cells: new Set([...lineOf().querySelectorAll(".tab-cell")].map((c) => Math.round(c.getBoundingClientRect().top))).size,
       };
     });
     expect(m.sel).toBeLessThanOrEqual(46);
@@ -130,11 +137,18 @@ for (const tuning of TUNINGS) {
     await addRests(page, 4);
     const measure = () =>
       page.evaluate(() => {
+        // The cursor's line: its caret's run when the band wraps (the last run when none is drawn), the staff when it does not.
+        const lineOf = (): Element => {
+          const staff = document.querySelector('[data-testid="tab-staff"]')!;
+          const runs = [...staff.querySelectorAll(".tab-wrapped-body .tab-bar-run")];
+          if (!runs.length) return staff;
+          return staff.querySelector('[data-testid="tab-caret"]')?.closest(".tab-bar-run") ?? runs[runs.length - 1];
+        };
         const h = (id: string) => document.querySelector(`[data-testid="${id}"]`)?.getBoundingClientRect().height ?? 0;
         return {
           title: h("capture-title-row"), status: h("status-row"), stable: h("toolbar-stable"), band: h("tab-band"),
           over: document.documentElement.scrollHeight - window.innerHeight,
-          cells: new Set([...document.querySelectorAll('[data-testid="tab-staff"] .tab-cell')].map((c) => Math.round(c.getBoundingClientRect().top))).size,
+          cells: new Set([...lineOf().querySelectorAll(".tab-cell")].map((c) => Math.round(c.getBoundingClientRect().top))).size,
         };
       });
     const hold = async (where: string) => {

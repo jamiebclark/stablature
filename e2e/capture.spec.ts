@@ -1,4 +1,5 @@
 import { openArrange, openTools } from "./usability-helpers";
+import { partAction } from "./part-card-helpers";
 import { expect, test, type Page } from "@playwright/test";
 
 /**
@@ -568,7 +569,7 @@ test("plays a variant on the final pass only", async ({ page }) => {
   await page.goto(songUrl);
 
   // A variant copies the part so it can diverge -- "A, but with a flourish".
-  await page.getByRole("button", { name: "+ variant" }).click();
+  await partAction(page, "A", "+ variant");
   await expect(page.getByText("variant of")).toBeVisible();
 
   await openArrange(page);

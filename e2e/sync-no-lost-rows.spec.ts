@@ -8,6 +8,7 @@
  * 23 of 48 runs at 6 workers on one machine, and 0 of 48 after.
  */
 import { randomUUID } from "node:crypto";
+import { partAction } from "./part-card-helpers";
 import { expect, test, type Browser, type Page } from "@playwright/test";
 import { fret, startCapturing } from "./capture-surface-helpers";
 import { idb } from "./reading-helpers";
@@ -60,7 +61,7 @@ test("variants made on one device all reach the other, even after a slow pull", 
   await expect(second.getByTestId("tab-column").first()).toBeVisible({ timeout: 60_000 });
 
   for (let made = 1; made <= 4; made += 1) {
-    await second.getByRole("button", { name: "+ variant" }).first().click();
+    await partAction(second, "A", "+ variant");
     await expect(second.getByTestId("tab-staff")).toHaveCount(made + 1);
     await expect.poll(() => outbox(second), { timeout: 60_000 }).toBe(0);
     const arrived = await expect(first.getByTestId("tab-staff"))

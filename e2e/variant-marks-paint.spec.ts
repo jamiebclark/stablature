@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { partAction } from "./part-card-helpers";
 import { fret } from "./capture-surface-helpers";
 import { bar, choose, n, seedReadable, seedSong } from "./reading-helpers";
 
@@ -6,8 +7,8 @@ import { bar, choose, n, seedReadable, seedSong } from "./reading-helpers";
 
 async function seedVariant(page: Page) {
   const { songUrl } = await seedReadable(page);
-  await page.getByRole("button", { name: "+ variant" }).click();
-  await page.getByRole("link", { name: "Edit" }).nth(1).click();
+  await partAction(page, "A", "+ variant");
+  await partAction(page, "A'", "Edit");
   await fret(page, "E", 3).click();
   await expect(page.getByTestId("tab-column")).toHaveCount(3);
   await page.goto(songUrl);

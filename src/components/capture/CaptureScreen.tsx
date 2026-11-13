@@ -19,6 +19,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCaptureBand } from "./useCaptureBand";
 import Link from "next/link";
 import {
   ClipboardPaste,
@@ -31,7 +32,7 @@ import {
 } from "lucide-react";
 import { BarlineGlyph, SpaceGlyph, BracketGlyph } from "@/components/icons";
 import { useRouter } from "next/navigation";
-import { groupOffer, TRIPLET_REFUSAL } from "@/lib/capture/grouping";
+import { groupOffer } from "@/lib/capture/grouping";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { Button, Input, Loading, Sheet, TouchLabel } from "@/components/ui";
 import { TempoControl } from "@/components/rhythm/TempoControl";
@@ -47,7 +48,7 @@ import {
 import {
   chordInForceAt,
   chordToneMap,
-  chordToneNames,
+
   parseChord,
 } from "@/lib/chords";
 import {
@@ -65,10 +66,15 @@ import {
   useClipboard,
   useEvents,
   useParts,
-  usePendingWrites,
   useSong,
   useSongTuning,
 } from "@/lib/local/hooks";
+import { listAnnotations, listEvents } from "@/lib/local/queries";
+import {
+  contentSignature,
+  type AnchorRequest,
+  type AnchorWait,
+} from "./useCaptureBand";
 import type { AnnotationRow, EventRow, FretValue, PartRow } from "@/lib/model";
 import { type Tuning } from "@/lib/tunings";
 import {
@@ -79,7 +85,7 @@ import {
   nextNote,
   prunedArmed,
   statusFor,
-  statusShortFor,
+
   type LatchId,
 } from "@/lib/capture/latches";
 import { isPresent, TOOLBAR_CONTROLS } from "@/lib/capture/controls";
@@ -91,11 +97,14 @@ import {
 import { resolveTarget } from "@/lib/capture/target";
 import { Fretboard } from "./Fretboard";
 import { HelpOpen } from "@/components/keys/HelpOpen";
+import { useSaving } from "@/components/app/useSaving";
+import { SAVED_HERE_NAME, SAVED_HERE_SHORT } from "@/lib/saving";
 import { useScreenKeys } from "@/components/keys/useScreenKeys";
 import { FRET_WAIT_MS, IDLE, stepFretEntry, type FretEntry, type FretInput } from "@/lib/keys/fretEntry";
 import { cursorBar, cursorStep, nextCursorAfterDelete, type Cursor } from "@/lib/capture/cursor";
 import { ColumnInspector } from "./ColumnInspector";
 import { LatchStrip } from "./LatchStrip";
+import { StatusRow } from "./StatusRow";
 
 /**
  * Where the next note lands.
@@ -105,7 +114,6 @@ import { LatchStrip } from "./LatchStrip";
  * insert. `null` is the very start, which is otherwise unreachable when the
  * rule is "insert after".
  */
-
 
 const ignoreLongPress = () => {};
 
@@ -129,8 +137,6 @@ const useWideRow = () =>
     () => false,
   );
 
-const symbolFit = (symbol: string) => (symbol.length <= 10 ? "shrink-0" : "min-w-[10ch] truncate");
-
 export function CaptureScreen({
   songId,
   partId,
@@ -142,12 +148,25 @@ export function CaptureScreen({
   const song = useSong(songId);
   const tuning = useSongTuning(song);
   const parts = useParts(songId);
-  const pending = usePendingWrites();
+  const { words: savingWords } = useSaving();
 
   const [cursor, setCursor] = useState<Cursor>("end");
   // Bumped just before a write that makes a group, so the staff scrolls that group into view.
   const [revealGroups, setRevealGroups] = useState(0);
   const [keyMoves, setKeyMoves] = useState(0);
+  // Set before a write or move that must bring the cursor's line to the bottom of the band. A tap, a
+  // selection, the inspector and a sync arrival never set it.
+  const [anchorRequest, setAnchorRequest] = useState<AnchorRequest>({ id: 0, wait: "now" });
+  const anchorId = useRef(0);
+  const request = useCallback((wait: AnchorWait) => {
+    const id = ++anchorId.current;
+    setAnchorRequest({ id, wait });
+    return id;
+  }, []);
+  /** A move that needs no write: the band anchors on this render. */
+  const anchor = () => {
+    request("now");
+  };
   const [armed, setArmed] = useState<ReadonlySet<LatchId>>(() => new Set());
   /** The last cursor column seen in `columns`: tells "not delivered yet" from "really gone". */
   const [deliveredId, setDeliveredId] = useState<string | null>(null);
@@ -188,6 +207,33 @@ export function CaptureScreen({
   const columns = events ?? [];
   /** The column to insert after; null when the cursor is at the start. */
   const afterId = cursor === "end" ? (columns.at(-1)?.id ?? null) : cursor;
+  const band = useCaptureBand({
+    content: events,
+    annotations,
+    request: anchorRequest,
+  });
+  const { bandRef, wrapped, runway, leftWrapped, spend } = band;
+  /**
+   * A trigger with a write. The request is set before the write starts, and it ends on the render that
+   * shows what the write committed (the signature read back once its promise settles).
+   */
+  const anchored = <T,>(write: () => T | Promise<T>): Promise<T> => {
+    const id = request("write");
+    const done = Promise.resolve().then(write);
+    void done
+      .then(async () => {
+        if (!part) return spend();
+        const [rows, notes] = await Promise.all([listEvents(part.id), listAnnotations(part.id)]);
+        band.deliver(id, contentSignature(rows, notes));
+      })
+      .catch(() => spend());
+    return done;
+  };
+  // `press` is memoised, so it reaches this through a ref rather than closing over it.
+  const anchoredRef = useRef(anchored);
+  useEffect(() => {
+    anchoredRef.current = anchored;
+  });
   const focused = afterId
     ? columns.find((event) => event.id === afterId)
     : undefined;
@@ -275,6 +321,8 @@ export function CaptureScreen({
   const offer = groupOffer(selectedEvents);
 
   const endSelection = (moveCursorToEnd = false) => {
+    // Cut and delete bump the anchor themselves; every other way out of a selection is a Still.
+    if (!moveCursorToEnd) spend();
     setSelection(null);
     if (moveCursorToEnd) setCursor("end");
   };
@@ -302,20 +350,18 @@ export function CaptureScreen({
         });
       }
       if (next.stackOnto) {
-        await stackNote(next.stackOnto, stringIndex, fret, {
-          techniques: next.techniques,
-        });
+        const onto = next.stackOnto;
+        await anchoredRef.current(() =>
+          stackNote(onto, stringIndex, fret, {
+            techniques: next.techniques,
+          }),
+        );
         return;
       }
-      const inserted = await insertNote(
-        part,
-        columns,
-        afterId,
-        stringIndex,
-        fret,
-        {
+      const inserted = await anchoredRef.current(() =>
+        insertNote(part, columns, afterId, stringIndex, fret, {
           techniques: next.techniques,
-        },
+        }),
       );
       advance(inserted.id);
     },
@@ -378,6 +424,8 @@ export function CaptureScreen({
       .then(() => {
         const target = navRef.current[name]?.();
         setKeyMoves((n) => n + 1);
+        // A key that moves the cursor brings its line to the bottom; one that moves a selection's head rests.
+        if (target !== undefined) anchor();
         // Wait for the render that carries the move, so the next press reads the new cursor.
         return new Promise<void>((resolve) => {
           const timer = setTimeout(resolve, 250);
@@ -435,6 +483,7 @@ export function CaptureScreen({
 
   /** The route a tap on a column takes: a selection extends its head, otherwise the cursor moves and latches clear. */
   const routeCursor = (next: Cursor) => {
+    spend();
     if (selection) {
       if (typeof next === "string" && next !== "end") setSelection({ ...selection, headId: next });
       return;
@@ -445,6 +494,9 @@ export function CaptureScreen({
   /** The chips' route: reset the cursor and latches. The link (or a key) then replaces the URL. */
   const openPart = (id: string) => {
     flushEntry();
+    // Another part's columns have to load first; the one already open has nothing to wait for.
+    if (id === part?.id) anchor();
+    else request("load");
     setCursor("end");
     setArmed(new Set());
     return id;
@@ -559,7 +611,9 @@ export function CaptureScreen({
         >
           &larr;<span> {song.title}</span>
         </button>
-        <div className="flex min-w-0 flex-[0_1_auto] items-center gap-1.5 overflow-x-auto">
+        {/* `pe-px scroll-pe-px`: the strip's width is fractional, and Linux Chrome snaps the scroll to device pixels,
+            so without a pixel of slack `+ part` scrolled into view ends 0.125px past the edge (capture-matrix FR-001). */}
+        <div className="flex min-w-0 flex-[0_1_auto] items-center gap-1.5 overflow-x-auto pe-px scroll-pe-px">
           {parts.map((candidate) => (
             <Link
               key={candidate.id}
@@ -596,9 +650,17 @@ export function CaptureScreen({
         </div>
         <TempoControl song={song} variant="header" />
         <HelpOpen />
-        {pending ? (
+        {savingWords === "saved-here" ? (
+          <Link
+            href="/sign-in"
+            aria-label={SAVED_HERE_NAME}
+            className="inline-flex min-h-(--control) shrink-0 items-center text-[0.7rem] text-text-faint hover:text-accent"
+          >
+            {SAVED_HERE_SHORT}
+          </Link>
+        ) : savingWords ? (
           <span className="shrink-0 font-mono text-[0.7rem] text-text-faint">
-            {pending} unsynced
+            {savingWords.count} unsynced
           </span>
         ) : null}
       </header>
@@ -611,23 +673,32 @@ export function CaptureScreen({
           starts at the bottom and keeps its overflow on the side a swipe can reach. */}
       <div
         data-testid="tab-band"
-        className="flex min-h-0 flex-1 flex-col-reverse overflow-y-auto px-3 pt-1"
+        ref={bandRef}
+        className="flex min-h-0 flex-1 flex-col-reverse gap-y-(--line-gap) overflow-y-auto px-3 pt-1"
       >
         {part ? (
-          <div className="shrink-0">
+          <div className="shrink-0" style={wrapped ? { paddingTop: runway } : undefined}>
             <TabStaff
               events={columns}
               tuning={tuning}
               annotations={annotations ?? []}
               followTail={atEnd}
               revealGroups={revealGroups}
-              keepCaretInView={keyMoves}
+              keepCaretInView={keyMoves + leftWrapped}
+              wrap={wrapped}
               activeEventId={focused?.id ?? null}
               insertAfterEventId={selection ? undefined : afterId}
               selectedEventIds={selectedIds}
               // A selection-time hold is swallowed (FR-022): the handler does nothing, but its
               // presence arms the press hook, whose click suppression stops the hold extending.
-              onInspectColumn={selection ? ignoreLongPress : setInspecting}
+              onInspectColumn={
+                selection
+                  ? ignoreLongPress
+                  : (id) => {
+                      spend();
+                      setInspecting(id);
+                    }
+              }
               onSelectColumn={routeCursor}
             />
           </div>
@@ -649,89 +720,27 @@ export function CaptureScreen({
           </span>
         </div>
       ) : part ? (
-        <div
-          data-testid="status-row"
-          className="flex h-(--status-row) shrink-0 items-center gap-1 overflow-hidden whitespace-nowrap border-t border-border-subtle px-3 text-[0.7rem]"
-        >
-          <span
-            className={`shrink-0 ${refused || status || !atEnd ? "text-accent" : "text-text-faint"}`}
-          >
-            {refused ? (
-              TRIPLET_REFUSAL
-            ) : (
-              <>
-                {/* A waiting digit takes the room the long words need, so they go short while it waits. */}
-                {waiting
-                  ? status
-                    ? wideRow
-                      ? status
-                      : statusShortFor(lit)
-                    : atEnd
-                      ? "at the end"
-                      : afterId === null
-                        ? "at the start"
-                        : "after the mark"
-                  : status ||
-                    (atEnd
-                      ? "adding at the end"
-                      : afterId === null
-                        ? "adding at the start"
-                        : "adding after the marked column")}
-              </>
-            )}
-          </span>
-          {/* Which notes the lit frets are. The unreadable-symbol case says so
-              rather than leaving an unexplained bare neck. */}
-          {chord ? (
-            <>
-              <span className={`${refused ? "min-w-0 truncate" : symbolFit(chord.symbol)} font-mono text-accent`}>
-                {chord.symbol}
-              </span>
-              {refused ? null : (
-                <span className="min-w-0 truncate font-mono text-text-dim">
-                  {chordToneNames(chord).join(" ")}
-                </span>
-              )}
-            </>
-          ) : chordSymbol ? (
-            <>
-              <span className={`${refused ? "min-w-0 truncate" : symbolFit(chordSymbol)} font-mono text-text-faint`}>{chordSymbol}</span>
-              <span
-                className="min-w-0 truncate font-mono text-text-faint"
-                title="Not a chord this app can read"
-              >
-                &mdash; not a chord I know
-              </span>
-            </>
-          ) : null}
-          {waiting ? (
-            <span data-testid="digit-waiting" className="shrink-0 font-mono text-accent">
-              fret {waiting}&hellip;
-            </span>
-          ) : !refused && cursorDuration ? (
-            <span data-testid="cursor-duration" className="min-w-0 truncate font-mono text-text-dim">
-              {cursorDuration.words}
-            </span>
-          ) : null}
-          {columns.length > 0 ? (
-            <>
-              <button
-                type="button"
-                onClick={() => setCursor(null)}
-                className="inline-flex h-6 min-w-[44px] shrink-0 items-center justify-center rounded px-1.5 text-text-dim hover:text-accent"
-              >
-                &#8676; start
-              </button>
-              <button
-                type="button"
-                onClick={() => setCursor("end")}
-                className="inline-flex h-6 min-w-[44px] shrink-0 items-center justify-center rounded px-1.5 text-text-dim hover:text-accent"
-              >
-                end &#8677;
-              </button>
-            </>
-          ) : null}
-        </div>
+        <StatusRow
+          status={status}
+          lit={lit}
+          waiting={waiting}
+          wideRow={wideRow}
+          refused={refused}
+          atEnd={atEnd}
+          afterId={afterId}
+          chord={chord}
+          chordSymbol={chordSymbol}
+          cursorDuration={cursorDuration}
+          hasColumns={columns.length > 0}
+          onStart={() => {
+            anchor();
+            setCursor(null);
+          }}
+          onEnd={() => {
+            anchor();
+            setCursor("end");
+          }}
+        />
       ) : null}
 
       {chordFormShowing ? (
@@ -739,8 +748,9 @@ export function CaptureScreen({
           className="flex gap-2 border-t border-border-subtle p-3"
           onSubmit={async (e) => {
             e.preventDefault();
-            if (chordProp && propCtx)
-              await chordProp.commit(propCtx, chordDraft);
+            await anchored(() =>
+              chordProp && propCtx ? chordProp.commit(propCtx, chordDraft) : undefined,
+            );
             setChordDraft(null);
           }}
         >
@@ -772,7 +782,7 @@ export function CaptureScreen({
           disabled={!part}
           onClick={async () => {
             if (!part) return;
-            const inserted = await insertRest(part, columns, afterId);
+            const inserted = await anchored(() => insertRest(part, columns, afterId));
             setArmed(new Set());
             advance(inserted.id);
           }}
@@ -786,7 +796,7 @@ export function CaptureScreen({
           disabled={!part}
           onClick={async () => {
             if (!part) return;
-            const inserted = await insertBarline(part, columns, afterId);
+            const inserted = await anchored(() => insertBarline(part, columns, afterId));
             setArmed(new Set());
             advance(inserted.id);
           }}
@@ -799,8 +809,7 @@ export function CaptureScreen({
         <Button
           disabled={!focused || Boolean(selection)}
           onClick={() =>
-            focused &&
-            setSelection({ anchorId: focused.id, headId: focused.id })
+            focused && (spend(), setSelection({ anchorId: focused.id, headId: focused.id }))
           }
           title="Select a run of columns to copy, cut or delete"
         >
@@ -812,11 +821,8 @@ export function CaptureScreen({
           disabled={!part || !clipboard}
           onClick={async () => {
             if (!part || !clipboard) return;
-            const pasted = await pasteClipboard(
-              part,
-              columns,
-              afterId,
-              clipboard,
+            const pasted = await anchored(() =>
+              pasteClipboard(part, columns, afterId, clipboard),
             );
             const last = pasted.at(-1);
             if (last && cursor !== "end") setCursor(last.id);
@@ -839,9 +845,8 @@ export function CaptureScreen({
             if (!focused || !part) return;
             const next = nextCursorAfterDelete(columns, focused.id, cursor);
             if (!tuning) return;
-            await deleteProp?.commit(
-              { part, event: focused, annotations: [], tuning },
-              "",
+            await anchored(() =>
+              deleteProp?.commit({ part, event: focused, annotations: [], tuning }, ""),
             );
             setCursor(next);
           }}
@@ -877,7 +882,7 @@ export function CaptureScreen({
             className={SELECTION_ACTION}
             title="Cut"
             onClick={async () => {
-              await cutColumns(selectedEvents, annotations ?? []);
+              await anchored(() => cutColumns(selectedEvents, annotations ?? []));
               endSelection(true);
             }}
           >
@@ -894,7 +899,7 @@ export function CaptureScreen({
             className={`${SELECTION_ACTION} mx-1 text-danger`}
             title="Delete"
             onClick={async () => {
-              await deleteColumns(selectedEvents);
+              await anchored(() => deleteColumns(selectedEvents));
               endSelection(true);
             }}
           >
@@ -972,10 +977,8 @@ export function CaptureScreen({
                 // The three columns ending at the cursor, so this works mid-part
                 // and not only at the tail.
                 setRevealGroups((n) => n + 1);
-                const made = await groupRunEndingAt(
-                  part.id,
-                  atEnd ? null : editable.id,
-                  3,
+                const made = await anchored(() =>
+                  groupRunEndingAt(part.id, atEnd ? null : editable.id, 3),
                 );
                 if (!made) {
                   // Disarm: a refusal makes no group, so the next one to
@@ -996,7 +999,9 @@ export function CaptureScreen({
               <button
                 type="button"
                 disabled={editable.repeat <= 1}
-                onClick={() => void repeatProp.commit(propCtx, -1)}
+                onClick={() => {
+                  void anchored(() => repeatProp.commit(propCtx, -1));
+                }}
                 className="min-h-(--control) min-w-8 px-2.5 text-sm disabled:opacity-30"
                 aria-label="Repeat one fewer time"
               >
@@ -1013,7 +1018,9 @@ export function CaptureScreen({
               </span>
               <button
                 type="button"
-                onClick={() => void repeatProp.commit(propCtx, 1)}
+                onClick={() => {
+                  void anchored(() => repeatProp.commit(propCtx, 1));
+                }}
                 className="min-h-(--control) min-w-8 px-2.5 text-sm"
                 aria-label="Repeat one more time"
               >
@@ -1024,7 +1031,9 @@ export function CaptureScreen({
 
           {repeatProp && presentIds.has("times4") ? (
             <Button
-              onClick={() => void repeatProp.commit(propCtx, 3)}
+              onClick={() => {
+                void anchored(() => repeatProp.commit(propCtx, 3));
+              }}
               title="Four of these"
             >
               &times;4
@@ -1048,7 +1057,10 @@ export function CaptureScreen({
 
           {presentIds.has("inspect") ? (
             <Button
-              onClick={() => setInspecting(editable.id)}
+              onClick={() => {
+                spend();
+                setInspecting(editable.id);
+              }}
               className="min-h-11 min-w-11"
               title="Open column details"
               aria-label="Open column details"

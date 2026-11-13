@@ -28,7 +28,7 @@ describe("INV-025 source", () => {
   const regions = {
     press: between(screen, "const press = useCallback(", "if (song === undefined"),
     status: between(screen, "const status = statusFor(lit)", "const toggleLatch"),
-    statusLine: between(screen, ": status ||", "adding after the marked column"),
+    statusLine: between(read("src/components/capture/StatusRow.tsx"), ": status ||", "adding after the marked column"),
   };
   for (const [name, text] of Object.entries(regions)) {
     for (const id of ids) {

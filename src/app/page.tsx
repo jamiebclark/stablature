@@ -6,11 +6,13 @@ import Link from "next/link";
 import { Button, Card, Input, Loading, PageHeader } from "@/components/ui";
 import { LogoMark } from "@/components/app/Logo";
 import { createBand, createTuningFromPreset } from "@/lib/local/editing";
-import { useBands } from "@/lib/local/hooks";
+import { useBands, useSongCounts } from "@/lib/local/hooks";
+import { songCountWords } from "@/lib/words";
 import { DEFAULT_PRESET_ID, presetById } from "@/lib/tunings";
 
 export default function BandsPage() {
   const bands = useBands();
+  const counts = useSongCounts();
   const router = useRouter();
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
@@ -80,7 +82,7 @@ export default function BandsPage() {
               <Link href={`/bands/${band.id}`} className="block">
                 <Card className="transition hover:border-border-strong">
                   <p className="font-medium">{band.name}</p>
-                  <p className="mt-0.5 font-mono text-xs text-text-faint">{band.slug}</p>
+                  <p className="mt-0.5 text-xs text-text-faint">{songCountWords(counts?.[band.id] ?? 0)}</p>
                 </Card>
               </Link>
             </li>

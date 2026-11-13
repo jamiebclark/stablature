@@ -3,6 +3,7 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import { details, inspector, openDialog } from "./capture-surface-helpers";
 import { FLOORS, SENTENCE_LINKS, TARGETS, targets } from "./usability-helpers";
 import { songWorld } from "./usability-world";
+import { openPartMenu } from "./part-card-helpers";
 import { startCapturing } from "./capture-surface-helpers";
 
 test.setTimeout(120_000);
@@ -299,4 +300,20 @@ test("INV-012 every action in the sheet is reachable with taps alone", async ({ 
   // Control: with the details button hidden the sheet cannot be opened, so `reachable` would report it.
   await page.addStyleTag({ content: '[aria-label="Open column details"]{display:none !important}' });
   await expect(details(page)).toBeHidden();
+});
+
+test("INV-014 every target meets its floor with a part menu open", async ({ page, isMobile }) => {
+  const world = await songWorld(page);
+  for (const size of isMobile ? SIZES : [{ width: 1280, height: 800 }]) {
+    await page.setViewportSize(size);
+    await page.goto(world.songUrl);
+    await page.waitForLoadState("networkidle");
+    await openPartMenu(page, "A");
+    const items = page.getByRole("menuitem");
+    for (const box of await items.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height))) {
+      if (isMobile) expect(box).toBeGreaterThanOrEqual(43.5);
+    }
+    expect(await walk(page, isMobile, `part menu @${size.width}x${size.height}`), "targets under their floor").toEqual([]);
+    await page.keyboard.press("Escape");
+  }
 });

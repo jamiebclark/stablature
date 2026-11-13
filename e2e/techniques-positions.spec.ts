@@ -1,3 +1,4 @@
+import { partAction } from "./part-card-helpers";
 import { openTools } from "./usability-helpers";
 /**
  * INV-006 (position half), SC-010. Base part on the A string: 3, 5, h7 (spec US3 scenario 6).
@@ -140,7 +141,7 @@ test("paste the arrival at the very start: no source, nothing drawn, still store
 test("a variant carries the transition", async ({ page }) => {
   const { songUrl } = await base(page);
   await page.goto(songUrl);
-  await page.getByRole("button", { name: /variant/ }).first().click();
+  await partAction(page, "A", "+ variant");
   await expect(page.getByText(/variant of/)).toBeVisible();
   await openTools(page);
   const download = page.waitForEvent("download");

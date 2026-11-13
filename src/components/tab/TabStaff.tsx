@@ -105,7 +105,7 @@ export interface TabStaffProps {
   keepCaretInView?: number;
   /** Draws a bar number row. `offset` is added to each column's `barNumber`. Off for capture and the paste preview. */
   barNumbers?: { offset: number };
-  /** Breaks at barlines across as many lines as it needs. Play view only; the wrapped markup is drawn there. */
+  /** Breaks at barlines across as many lines as it needs. The play view and capture; the wrapped markup is drawn there. */
   wrap?: boolean;
   /** Which pass this is, written on the wrapper for the reading position. */
   pass?: number;
@@ -154,6 +154,7 @@ export function TabStaff({
   const spans = useMemo(() => tupletSpans(layout), [layout]);
 
   const scroller = useRef<HTMLDivElement>(null);
+  const wrappedRoot = useRef<HTMLDivElement>(null);
   const drawnGroups = useRef<Set<string> | null>(null);
   const revealed = useRef(revealGroups);
   const kept = useRef(keepCaretInView);
@@ -168,12 +169,19 @@ export function TabStaff({
 
   useEffect(() => {
     if (!followTail) return;
+    if (wrap) {
+      // Wrapped, each line scrolls on its own: the newest column is on the last run.
+      const runsEls = wrappedRoot.current?.querySelectorAll<HTMLElement>(".tab-bar-run");
+      const last = runsEls?.[runsEls.length - 1];
+      if (last) last.scrollLeft = last.scrollWidth;
+      return;
+    }
     const el = scroller.current;
     if (!el) return;
     // Capture appends to the right, so the newest column is the one that
     // matters. Jumping to the end beats asking the user to chase it.
     el.scrollLeft = el.scrollWidth;
-  }, [followTail, columnCount, drawnWidth]);
+  }, [followTail, columnCount, drawnWidth, wrap]);
 
   useEffect(() => {
     const ids = new Set(spans.map((span) => span.tupletId));
@@ -184,18 +192,30 @@ export function TabStaff({
     if (!fresh) return;
     revealed.current = revealGroups;
     // Markup is pinned by the frets baseline, so find the bracket by order rather than by an id attribute.
-    const el =
-      scroller.current?.querySelectorAll("[data-start]")[spans.indexOf(fresh)];
+    const el = (wrap ? wrappedRoot.current : scroller.current)?.querySelectorAll(
+      "[data-start]",
+    )[spans.indexOf(fresh)];
     el?.scrollIntoView({ block: "nearest", inline: "nearest" });
-  }, [spans, revealGroups]);
+  }, [spans, revealGroups, wrap]);
 
   useEffect(() => {
     if (keepCaretInView === kept.current) return;
     kept.current = keepCaretInView;
+    if (wrap) {
+      // Horizontal only: the band owns vertical movement. Move the caret's own line, nothing above it.
+      const caret = wrappedRoot.current?.querySelector<HTMLElement>('[data-testid="tab-caret"]');
+      const run = caret?.closest<HTMLElement>(".tab-bar-run");
+      if (!caret || !run) return;
+      const at = caret.getBoundingClientRect().left;
+      const box = run.getBoundingClientRect();
+      if (at < box.left) run.scrollLeft -= box.left - at + 8;
+      else if (at > box.right) run.scrollLeft += at - box.right + 8;
+      return;
+    }
     scroller.current
       ?.querySelector('[data-testid="tab-caret"]')
       ?.scrollIntoView({ block: "nearest", inline: "nearest" });
-  }, [keepCaretInView, insertAfterEventId]);
+  }, [keepCaretInView, insertAfterEventId, wrap]);
 
   const rooms = useMemo(() => chordRooms(layout.columns), [layout]);
   const starts = useMemo(() => barStarts(layout.columns), [layout]);
@@ -315,6 +335,7 @@ export function TabStaff({
           <Caret
             stringCount={layout.stringCount}
             offset={offsetFor(hasBarRow, hasChords, hasTuplets)}
+            inline={!wrap}
           />
         ) : null}
       </Fragment>
@@ -357,6 +378,7 @@ export function TabStaff({
     const blocks = Math.max(runs.length, 1) + Math.min(layout.columns.length, 40);
     return (
       <div
+        ref={wrappedRoot}
         className="tab-staff tab-staff-wrapped"
         data-surface={surface}
         data-testid="tab-staff"
@@ -373,6 +395,13 @@ export function TabStaff({
           <div className="tab-lines" role="group" aria-label="Tablature">
             {layout.columns.length === 0 ? (
               <div className="tab-bar-run">
+                {showCaret && insertAfterEventId === null ? (
+                  <Caret
+                    stringCount={layout.stringCount}
+                    offset={offsetFor(hasBarRow, hasChords, hasTuplets)}
+                    inline={false}
+                  />
+                ) : null}
                 <EmptyStaff
                   stringCount={layout.stringCount}
                   offset={offsetFor(hasBarRow, hasChords, hasTuplets)}
@@ -381,6 +410,13 @@ export function TabStaff({
             ) : (
               runs.map((run, runIndex) => (
                 <div key={run.start} className="tab-bar-run">
+                  {runIndex === 0 && showCaret && insertAfterEventId === null ? (
+                    <Caret
+                      stringCount={layout.stringCount}
+                      offset={offsetFor(hasBarRow, hasChords, hasTuplets)}
+                      inline={false}
+                    />
+                  ) : null}
                   {layout.columns
                     .slice(run.start, run.end + 1)
                     .map((column, offset) =>
@@ -871,19 +907,26 @@ function columnClass(active: boolean, selected: boolean): string | undefined {
 function Caret({
   stringCount,
   offset,
+  inline = true,
 }: {
   stringCount: number;
   offset: string;
+  /** False when wrapped: the caret then takes no room, so moving it can never move a line break. */
+  inline?: boolean;
 }) {
   return (
     <div
-      className="relative w-0.5 shrink-0"
+      className={inline ? "relative w-0.5 shrink-0" : "relative w-0 shrink-0"}
       data-testid="tab-caret"
       aria-hidden
     >
       <div style={{ paddingTop: offset }}>
         <div
-          className="w-0.5 rounded-full bg-accent"
+          className={
+            inline
+              ? "w-0.5 rounded-full bg-accent"
+              : "absolute -left-px w-0.5 rounded-full bg-accent"
+          }
           style={{ height: `calc(var(--string-height) * ${stringCount})` }}
         />
       </div>
