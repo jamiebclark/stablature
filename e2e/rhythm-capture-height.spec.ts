@@ -130,7 +130,7 @@ test("INV-009 a long title and `N unsynced` leave the header as it was, and the 
      await new Promise((res) => (tx.oncomplete = res));`,
   );
   await page.goto(partUrl);
-  await expect(page.getByText(/\d+ unsynced/)).toBeVisible();
+  await expect(page.getByRole("link", { name: "Saved on this device. Sign in to sync with your band." })).toHaveText("saved · sign in");
   const base = await withoutThisEntry(page);
   expect(await boxes(page)).toEqual(base);
   const control = (await page.getByTestId("tempo-control").boundingBox())!;

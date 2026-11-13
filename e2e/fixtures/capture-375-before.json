@@ -1,0 +1,1772 @@
+{
+  "viewport": [
+    375,
+    667
+  ],
+  "states": {
+    "4|plain|dark|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 261.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 332.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 378.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 425.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 464.59375,
+          "width": 375,
+          "height": 202.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-b08f-7695-8df1-c168741bda57-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-b0b0-77b2-9bde-56a6655757a0-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-b0d1-7af9-9d96-a22a6988ef91-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-b0f2-706c-a964-7670c2f302be-0\" aria-label=\"Empty column\" aria-current=\"true\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 4);\"></div></div></div></div></div></div></div>"
+    },
+    "4|plain|dark|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 261.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 332.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 378.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 425.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 464.59375,
+          "width": 375,
+          "height": 202.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-b08f-7695-8df1-c168741bda57-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" aria-current=\"true\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-b0b0-77b2-9bde-56a6655757a0-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-b0d1-7af9-9d96-a22a6988ef91-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-b0f2-706c-a964-7670c2f302be-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "4|plain|light|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 261.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 332.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 378.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 425.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 464.59375,
+          "width": 375,
+          "height": 202.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-b08f-7695-8df1-c168741bda57-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" aria-current=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 4);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-b0b0-77b2-9bde-56a6655757a0-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-b0d1-7af9-9d96-a22a6988ef91-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-b0f2-706c-a964-7670c2f302be-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "4|plain|light|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 261.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 332.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 378.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 425.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 464.59375,
+          "width": 375,
+          "height": 202.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-b08f-7695-8df1-c168741bda57-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" aria-current=\"true\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-b0b0-77b2-9bde-56a6655757a0-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-b0d1-7af9-9d96-a22a6988ef91-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-b0f2-706c-a964-7670c2f302be-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "4|chord|dark|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 261.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 332.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 378.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 425.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 464.59375,
+          "width": 375,
+          "height": 202.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-b6e0-769a-a74c-cdefaf1419ff-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 4);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-b700-7ec3-b103-0a743dee2dc8-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-b722-71fc-9dd5-6e8e8dc99fd8-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-b743-7d9e-acfa-529315cc19c3-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "4|chord|dark|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 261.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 332.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 378.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 425.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 464.59375,
+          "width": 375,
+          "height": 202.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-b6e0-769a-a74c-cdefaf1419ff-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-b700-7ec3-b103-0a743dee2dc8-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-b722-71fc-9dd5-6e8e8dc99fd8-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-b743-7d9e-acfa-529315cc19c3-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "4|chord|light|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 261.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 332.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 378.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 425.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 464.59375,
+          "width": 375,
+          "height": 202.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-b6e0-769a-a74c-cdefaf1419ff-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 4);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-b700-7ec3-b103-0a743dee2dc8-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-b722-71fc-9dd5-6e8e8dc99fd8-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-b743-7d9e-acfa-529315cc19c3-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "4|chord|light|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 261.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 332.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 378.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 425.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 464.59375,
+          "width": 375,
+          "height": 202.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-b6e0-769a-a74c-cdefaf1419ff-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-b700-7ec3-b103-0a743dee2dc8-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-b722-71fc-9dd5-6e8e8dc99fd8-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-b743-7d9e-acfa-529315cc19c3-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "4|chord+bracket|dark|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 261.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 332.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 378.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 425.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 464.59375,
+          "width": 375,
+          "height": 202.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-bdb5-7c57-90f5-7812ea7be306-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" data-start=\"\" style=\"border-left-width: 1px; border-right-width: 0px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div><div class=\"tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]\">2</div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 4);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-bdd7-76bd-a5ba-06f5cc5e32ba-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" style=\"border-left-width: 0px; border-right-width: 1px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-bdf8-79c6-b2fc-541e6659c117-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-be1a-7581-8cf6-0cec9a6967d2-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "4|chord+bracket|dark|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 261.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 332.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 378.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 425.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 464.59375,
+          "width": 375,
+          "height": 202.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-bdb5-7c57-90f5-7812ea7be306-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" data-start=\"\" style=\"border-left-width: 1px; border-right-width: 0px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div><div class=\"tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]\">2</div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-bdd7-76bd-a5ba-06f5cc5e32ba-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" style=\"border-left-width: 0px; border-right-width: 1px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-bdf8-79c6-b2fc-541e6659c117-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-be1a-7581-8cf6-0cec9a6967d2-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "4|chord+bracket|light|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 261.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 332.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 378.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 425.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 464.59375,
+          "width": 375,
+          "height": 202.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-bdb5-7c57-90f5-7812ea7be306-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" data-start=\"\" style=\"border-left-width: 1px; border-right-width: 0px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div><div class=\"tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]\">2</div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 4);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-bdd7-76bd-a5ba-06f5cc5e32ba-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" style=\"border-left-width: 0px; border-right-width: 1px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-bdf8-79c6-b2fc-541e6659c117-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-be1a-7581-8cf6-0cec9a6967d2-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "4|chord+bracket|light|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 261.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 332.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 378.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 425.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 464.59375,
+          "width": 375,
+          "height": 202.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-bdb5-7c57-90f5-7812ea7be306-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" data-start=\"\" style=\"border-left-width: 1px; border-right-width: 0px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div><div class=\"tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]\">2</div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-bdd7-76bd-a5ba-06f5cc5e32ba-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" style=\"border-left-width: 0px; border-right-width: 1px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-bdf8-79c6-b2fc-541e6659c117-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-be1a-7581-8cf6-0cec9a6967d2-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "5|plain|dark|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 225.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 270.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 296.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 342.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 389.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 428.59375,
+          "width": 375,
+          "height": 238.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-c510-739d-9418-b059deba1294-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-c532-7ed8-808c-ce4b30b0a519-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-c554-759d-bfdd-b0a9dbe71906-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-c573-7984-8ac8-8a966a42f240-0\" aria-label=\"Empty column\" aria-current=\"true\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 5);\"></div></div></div></div></div></div></div>"
+    },
+    "5|plain|dark|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 225.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 270.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 296.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 342.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 389.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 428.59375,
+          "width": 375,
+          "height": 238.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-c510-739d-9418-b059deba1294-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" aria-current=\"true\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-c532-7ed8-808c-ce4b30b0a519-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-c554-759d-bfdd-b0a9dbe71906-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-c573-7984-8ac8-8a966a42f240-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "5|plain|light|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 225.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 270.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 296.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 342.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 389.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 428.59375,
+          "width": 375,
+          "height": 238.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-c510-739d-9418-b059deba1294-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" aria-current=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 5);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-c532-7ed8-808c-ce4b30b0a519-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-c554-759d-bfdd-b0a9dbe71906-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-c573-7984-8ac8-8a966a42f240-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "5|plain|light|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 225.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 270.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 296.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 342.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 389.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 428.59375,
+          "width": 375,
+          "height": 238.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-c510-739d-9418-b059deba1294-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" aria-current=\"true\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-c532-7ed8-808c-ce4b30b0a519-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-c554-759d-bfdd-b0a9dbe71906-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-c573-7984-8ac8-8a966a42f240-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "5|chord|dark|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 225.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 270.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 296.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 342.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 389.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 428.59375,
+          "width": 375,
+          "height": 238.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-cb40-7704-a019-852fe542882a-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 5);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-cb61-751a-a49f-1affe64ba894-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-cb81-7d27-a932-939034f1a0b8-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-cba5-70f7-825f-2fb792bf4a68-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "5|chord|dark|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 225.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 270.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 296.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 342.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 389.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 428.59375,
+          "width": 375,
+          "height": 238.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-cb40-7704-a019-852fe542882a-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-cb61-751a-a49f-1affe64ba894-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-cb81-7d27-a932-939034f1a0b8-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-cba5-70f7-825f-2fb792bf4a68-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "5|chord|light|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 225.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 270.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 296.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 342.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 389.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 428.59375,
+          "width": 375,
+          "height": 238.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-cb40-7704-a019-852fe542882a-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 5);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-cb61-751a-a49f-1affe64ba894-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-cb81-7d27-a932-939034f1a0b8-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-cba5-70f7-825f-2fb792bf4a68-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "5|chord|light|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 225.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 270.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 296.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 342.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 389.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 428.59375,
+          "width": 375,
+          "height": 238.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-cb40-7704-a019-852fe542882a-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-cb61-751a-a49f-1affe64ba894-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-cb81-7d27-a932-939034f1a0b8-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-cba5-70f7-825f-2fb792bf4a68-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "5|chord+bracket|dark|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 225.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 270.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 296.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 342.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 389.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 428.59375,
+          "width": 375,
+          "height": 238.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-d214-7048-8f34-b70dae359099-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" data-start=\"\" style=\"border-left-width: 1px; border-right-width: 0px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div><div class=\"tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]\">2</div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 5);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-d236-7bf6-bd3b-613afe1255b6-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" style=\"border-left-width: 0px; border-right-width: 1px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-d258-7deb-b918-7995b76b72d2-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-d279-7d0a-8c32-984e42e552f9-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "5|chord+bracket|dark|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 225.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 270.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 296.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 342.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 389.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 428.59375,
+          "width": 375,
+          "height": 238.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-d214-7048-8f34-b70dae359099-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" data-start=\"\" style=\"border-left-width: 1px; border-right-width: 0px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div><div class=\"tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]\">2</div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-d236-7bf6-bd3b-613afe1255b6-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" style=\"border-left-width: 0px; border-right-width: 1px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-d258-7deb-b918-7995b76b72d2-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-d279-7d0a-8c32-984e42e552f9-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "5|chord+bracket|light|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 225.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 270.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 296.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 342.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 389.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 428.59375,
+          "width": 375,
+          "height": 238.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-d214-7048-8f34-b70dae359099-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" data-start=\"\" style=\"border-left-width: 1px; border-right-width: 0px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div><div class=\"tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]\">2</div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 5);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-d236-7bf6-bd3b-613afe1255b6-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" style=\"border-left-width: 0px; border-right-width: 1px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-d258-7deb-b918-7995b76b72d2-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-d279-7d0a-8c32-984e42e552f9-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "5|chord+bracket|light|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 225.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 270.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 296.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 342.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 389.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 428.59375,
+          "width": 375,
+          "height": 238.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-d214-7048-8f34-b70dae359099-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" data-start=\"\" style=\"border-left-width: 1px; border-right-width: 0px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div><div class=\"tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]\">2</div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-d236-7bf6-bd3b-613afe1255b6-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" style=\"border-left-width: 0px; border-right-width: 1px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-d258-7deb-b918-7995b76b72d2-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-d279-7d0a-8c32-984e42e552f9-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "6|plain|dark|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 189.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 234.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 260.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 353.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 392.59375,
+          "width": 375,
+          "height": 274.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">B</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-d992-71c1-bce2-dadf998c14bf-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-d9b3-7150-9b91-0295f1443842-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-d9d5-771f-92df-f3343c3e9e40-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-d9f6-70dc-a35c-04e4d0db72cd-0\" aria-label=\"Empty column\" aria-current=\"true\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 6);\"></div></div></div></div></div></div></div>"
+    },
+    "6|plain|dark|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 189.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 234.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 260.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 353.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 392.59375,
+          "width": 375,
+          "height": 274.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">B</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-d992-71c1-bce2-dadf998c14bf-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" aria-current=\"true\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-d9b3-7150-9b91-0295f1443842-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-d9d5-771f-92df-f3343c3e9e40-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-d9f6-70dc-a35c-04e4d0db72cd-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "6|plain|light|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 189.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 234.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 260.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 353.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 392.59375,
+          "width": 375,
+          "height": 274.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">B</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-d992-71c1-bce2-dadf998c14bf-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" aria-current=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 6);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-d9b3-7150-9b91-0295f1443842-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-d9d5-771f-92df-f3343c3e9e40-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-d9f6-70dc-a35c-04e4d0db72cd-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "6|plain|light|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 189.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 234.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 260.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 353.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 392.59375,
+          "width": 375,
+          "height": 274.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(0 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">B</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-d992-71c1-bce2-dadf998c14bf-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" aria-current=\"true\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-d9b3-7150-9b91-0295f1443842-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-d9d5-771f-92df-f3343c3e9e40-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-d9f6-70dc-a35c-04e4d0db72cd-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "6|chord|dark|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 189.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 234.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 260.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 353.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 392.59375,
+          "width": 375,
+          "height": 274.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">B</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-dfc0-719d-8519-cfe5f03351ad-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 6);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-dfe4-797d-9eb1-afa4999c1ae3-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-e004-724d-acd5-ab53f5621078-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-e026-771f-b2ef-658f411af96b-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "6|chord|dark|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 189.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 234.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 260.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 353.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 392.59375,
+          "width": 375,
+          "height": 274.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">B</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-dfc0-719d-8519-cfe5f03351ad-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-dfe4-797d-9eb1-afa4999c1ae3-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-e004-724d-acd5-ab53f5621078-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-e026-771f-b2ef-658f411af96b-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "6|chord|light|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 189.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 234.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 260.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 353.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 392.59375,
+          "width": 375,
+          "height": 274.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">B</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-dfc0-719d-8519-cfe5f03351ad-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 6);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-dfe4-797d-9eb1-afa4999c1ae3-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-e004-724d-acd5-ab53f5621078-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-e026-771f-b2ef-658f411af96b-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "6|chord|light|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 189.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 234.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 260.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 353.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 392.59375,
+          "width": 375,
+          "height": 274.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(1 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">B</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-dfc0-719d-8519-cfe5f03351ad-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-dfe4-797d-9eb1-afa4999c1ae3-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-e004-724d-acd5-ab53f5621078-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-e026-771f-b2ef-658f411af96b-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "6|chord+bracket|dark|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 189.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 234.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 260.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 353.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 392.59375,
+          "width": 375,
+          "height": 274.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">B</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-e6d9-7bc8-a809-20712c7fb48f-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" data-start=\"\" style=\"border-left-width: 1px; border-right-width: 0px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div><div class=\"tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]\">2</div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 6);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-e6fe-7c99-a32d-445941103748-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" style=\"border-left-width: 0px; border-right-width: 1px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-e71e-7568-9edb-5618f0638fbd-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-e740-741e-92c2-34182a370067-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "6|chord+bracket|dark|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 189.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 234.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 260.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 353.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 392.59375,
+          "width": 375,
+          "height": 274.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">B</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-e6d9-7bc8-a809-20712c7fb48f-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" data-start=\"\" style=\"border-left-width: 1px; border-right-width: 0px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div><div class=\"tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]\">2</div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-e6fe-7c99-a32d-445941103748-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" style=\"border-left-width: 0px; border-right-width: 1px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-e71e-7568-9edb-5618f0638fbd-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-e740-741e-92c2-34182a370067-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "6|chord+bracket|light|rest": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 189.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 234.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 260.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-selection": null,
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 353.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 392.59375,
+          "width": 375,
+          "height": 274.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">B</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-e6d9-7bc8-a809-20712c7fb48f-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" data-start=\"\" style=\"border-left-width: 1px; border-right-width: 0px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div><div class=\"tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]\">2</div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><div class=\"relative w-0.5 shrink-0\" data-testid=\"tab-caret\" aria-hidden=\"true\"><div style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"w-0.5 rounded-full bg-accent\" style=\"height: calc(var(--string-height) * 6);\"></div></div></div><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-e6fe-7c99-a32d-445941103748-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" style=\"border-left-width: 0px; border-right-width: 1px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-e71e-7568-9edb-5618f0638fbd-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left hover:bg-bg-raised\" data-testid=\"tab-column\" data-column=\"01a1d29f-e740-741e-92c2-34182a370067-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    },
+    "6|chord+bracket|light|selecting": {
+      "rows": {
+        "capture-title-row": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 45
+        },
+        "tab-band": {
+          "x": 0,
+          "y": 45,
+          "width": 375,
+          "height": 189.59375
+        },
+        "status-row": {
+          "x": 0,
+          "y": 234.59375,
+          "width": 375,
+          "height": 26
+        },
+        "toolbar-stable": {
+          "x": 0,
+          "y": 260.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-contextual": null,
+        "toolbar-selection": {
+          "x": 0,
+          "y": 306.59375,
+          "width": 375,
+          "height": 46
+        },
+        "toolbar-reserved": null,
+        "latch-strip": {
+          "x": 0,
+          "y": 353.59375,
+          "width": 375,
+          "height": 39
+        },
+        "fret-grid": {
+          "x": 0,
+          "y": 392.59375,
+          "width": 375,
+          "height": 274.40625
+        }
+      },
+      "staff": "<div class=\"tab-staff\" data-surface=\"base\" data-testid=\"tab-staff\"><div class=\"flex items-stretch gap-1\"><div class=\"shrink-0 pr-1 text-right text-xs text-text-dim\" aria-hidden=\"true\" style=\"padding-top: calc(2 * var(--staff-row));\"><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">B</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">G</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">D</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">A</span></div><div class=\"tab-cell justify-end\"><span class=\"bg-transparent px-0\">E</span></div></div><div class=\"min-w-0 flex-1 overflow-x-auto overflow-y-hidden\" role=\"group\" aria-label=\"Tablature\"><div class=\"flex w-max items-stretch\"><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected tab-column-active\" data-testid=\"tab-column\" data-column=\"01a1d29f-e6d9-7bc8-a809-20712c7fb48f-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad) + max(0px, 2 * var(--chord-ch) + var(--chord-gap) - (4ch + 4 * var(--col-pad))));\" aria-current=\"true\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\">Am</div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" data-start=\"\" style=\"border-left-width: 1px; border-right-width: 0px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div><div class=\"tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]\">2</div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-e6fe-7c99-a32d-445941103748-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"><div class=\"tab-bracket absolute inset-x-0 bottom-0 border-t\" data-testid=\"tab-bracket\" style=\"border-left-width: 0px; border-right-width: 1px; border-left-style: solid; border-right-style: solid; height: 0.2rem;\"></div></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-e71e-7568-9edb-5618f0638fbd-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button><button type=\"button\" aria-keyshortcuts=\"Shift+F10\" aria-haspopup=\"dialog\" class=\"select-none text-left tab-column-selected\" data-testid=\"tab-column\" data-column=\"01a1d29f-e740-741e-92c2-34182a370067-0\" aria-label=\"Empty column\" style=\"width: calc(1ch + var(--col-pad));\" data-selected=\"true\"><div class=\"relative z-[1] h-[var(--staff-row)] whitespace-nowrap text-[0.7rem] font-semibold text-accent\"></div><div class=\"relative h-[var(--staff-row)]\"></div><div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div><div class=\"tab-cell\"></div></div></button></div></div></div></div>"
+    }
+  }
+}

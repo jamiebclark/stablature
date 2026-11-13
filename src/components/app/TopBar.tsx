@@ -14,16 +14,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "@/lib/auth-client";
-import { usePendingWrites } from "@/lib/local/hooks";
-import { useSyncStatus } from "@/lib/sync/hooks";
+import { SAVED_HERE, type PendingWords } from "@/lib/saving";
 import { HelpOpen } from "@/components/keys/HelpOpen";
 import { Logo } from "./Logo";
+import { useSaving } from "./useSaving";
 
 export function TopBar() {
   const pathname = usePathname();
   const { data: session, isPending } = useSession();
-  const pending = usePendingWrites();
-  const status = useSyncStatus();
+  const { words, status } = useSaving();
 
   if (pathname?.endsWith("/capture") || pathname?.includes("/capture/")) return null;
 
@@ -39,7 +38,7 @@ export function TopBar() {
 
         <div className="flex items-center gap-3 text-xs">
           <HelpOpen />
-          <SyncBadge pending={pending ?? 0} state={status?.state} message={status?.message} />
+          <SyncBadge words={words} state={status?.state} message={status?.message} />
 
           {isPending ? null : session ? (
             <button
@@ -68,11 +67,11 @@ export function TopBar() {
  * basement with no signal and nothing is wrong.
  */
 function SyncBadge({
-  pending,
+  words,
   state,
   message,
 }: {
-  pending: number;
+  words: PendingWords;
   state: string | undefined;
   message: string | null | undefined;
 }) {
@@ -84,18 +83,12 @@ function SyncBadge({
     );
   }
 
-  if (state === "signed-out" && pending > 0) {
-    return (
-      <span className="text-text-faint" title="Sign in to sync these to your band">
-        {pending} local
-      </span>
-    );
-  }
+  if (words === "saved-here") return <span className="text-text-faint">{SAVED_HERE}</span>;
 
-  if (pending > 0) {
+  if (words) {
     return (
       <span className="font-mono text-text-faint" title="Not pushed yet">
-        {pending} unsynced
+        {words.count} unsynced
       </span>
     );
   }

@@ -633,3 +633,96 @@ Calls made without waiting, per the standing instruction. Worth your eye: the fi
 - **Test races from main's CI, fixed as the review said:** FU27 (`variant-marks.spec.ts` waits for the variant line before reading it) and FU22 (`usability-bars-sections.spec.ts` waits for a column, not just the staff).
 - **The help reopens on a quick second `?` (FU24).** `Sheet` closes its dialog in an effect, and the dialog's `close` event arrives a task later and calls `onClose`. A `?` in between reopened the help, then the late event closed it. `Sheet` now ignores the `close` event of a close it made itself. Adopted as `e2e/usability-help-reopen.spec.ts`, asserting every delay from 0 to 200ms: 6 of 6 failed without the fix, 45 of 45 passed with it (with `usability-keys.spec.ts`, x3). Not fixed: Escape and then `?` inside the same task still toggles the help shut, because React has not heard about the native close yet. No hand is that quick, and the test pauses 120ms there, as the probe did.
 - **Still open: `durations.spec.ts:7` fails under full-suite load** (6 workers locally). Only one of the two expected marks is found. It passes 8 of 8 at 4 workers, with or without this branch's changes, and a waiting assertion did not fix it, so the cause is not a read-once race. Not chased further.
+
+## 008 T056 — "unchanged" applies where two whole lines do not fit; two usability specs are re-pinned
+
+A four-string line with a bracket is 116.8px, so two lines and the gap (245.6) fit the 257px band at 375×667, and FR-002 wraps it. That contradicts "unchanged at 375×667 for 4 and 5 strings" and trips `usability-height-budget.spec.ts` (it counts distinct `.tab-cell` tops, one per string) and `usability-staves.spec.ts` INV-016/017 (chord past the staff, measured on the wrapped capture).
+
+**Decided: accept FR-002 and amend the two specs per line.** FR-003 and INV-001 now read "where two whole lines do not fit"; six strings with a chord and a bracket at 375×667 stays byte-identical (the deciding case, `polish-band-unchanged.spec.ts`). `usability-height-budget.spec.ts` counts the strings of the cursor's line and still requires all of them in view; `usability-staves.spec.ts` `measureSurface` takes each chord's edge from the run it sits in. Both left the "must pass unedited" list and `scripts/untouched-by-polish.sh`, and join the re-pinned table checked by `check:polish-amendments`.
+
+**Rejected:** (b) a minimum band height below which capture never wraps. It is a hidden breakpoint, which FR-002 forbids (wrapping depends only on the height available). (c) Shrinking the touch rows or dropping a row so four strings still do not fit. It breaks FR-003 at 375 for the six-string case.
+
+## 008 T027 — saving words: three e2e specs re-pinned (FR-028)
+
+Signed-out users are no longer told `N unsynced`; the words are `Saved on this device` (top bar) and `saved · sign in` (capture header). Each edit below follows from that, none weakens a check.
+
+- `grouping-queued-row.spec.ts`: the quiet state waits for no `N unsynced` AND no `Saved on this device` / `saved · sign in`, so it cannot pass on a page that merely lost the count. The Postgres poll is still the real check.
+- `capture-matrix.spec.ts`: the many-pending cases pin the short form (`saved · sign in`, named `SAVED_HERE_NAME`) in place of `N unsynced`.
+- `rhythm-capture-height.spec.ts`: INV-009 pins the short form in place of `N unsynced`; the header and control measurements are unchanged.
+
+## 008 T036 — part card actions move into a menu: seven e2e specs reroute through `partAction`
+
+The card face no longer carries Delete, `+ variant` or Edit (FR-012, FR-015); they live in an `OverflowMenu`. Each spec below pressed those controls directly, so each now calls `partAction(page, label, item)` from `e2e/part-card-helpers.ts`. Every assertion after the press is unchanged; no check is weakened.
+
+- `e2e/capture-surface.spec.ts`: the deleting page uses `partAction(…, "Delete")`; "the part is gone" asserts the part's menu trigger is gone.
+- `e2e/capture.spec.ts`, `e2e/grouping.spec.ts`, `e2e/sync-no-lost-rows.spec.ts`: `+ variant` through the menu.
+- `e2e/reading-sync.spec.ts`: `+ variant`, Delete and the Nth part's Edit through the menu (the Nth part is labelled by its letter).
+- `e2e/variant-marks.spec.ts`, `e2e/variant-marks-paint.spec.ts`: `+ variant`, Delete and Edit through the menu.
+- `e2e/usability-toolbars.spec.ts`: the "part delete" gap is measured with the menu open (Delete against its nearest item, ≥8).
+
+`e2e/usability-every-input.spec.ts` stays unedited.
+
+## 008 T037 — `capture-surface.spec.ts` counts the cursor's line, not every wrapped line
+
+On a fine pointer at 375×667 two whole lines fit, so FR-002 wraps the capture band (same cause as T056 above). Three measurements counted every `.tab-cell` in the staff, so a wrapped staff read as "strings clipped" (15 vs ≤2) and "rows outside the band": INV-012 "needs no scrolling", INV-012 "keeps its strings during a selection", and "chord form open". Each now reads the cursor's line (its caret's run when wrapped, the staff when not), as `usability-height-budget.spec.ts` does. Bounds are unchanged; the page-overflow and band-overflow checks are untouched.
+
+## 008 T048/T049 — measured figures, the re-pinned tests, and what the plan decided
+
+**Measured before (research R1, R6, R7, R10), six strings with a chord row and a bracket row, cursor at the end:**
+
+| Size | Band content | One line | Two lines + gap | Blank at rest, before | Blank at rest, after |
+|---|---|---|---|---|---|
+| 375×667 touch | 186 | 184 | 380 | 2 | 2 (one line, unchanged) |
+| 390×844 touch | 363 | 184 | 380 | 179 | 179 (Deviation 1: two lines need 380, the band has 363) |
+| 412×915 touch | 434 | 184 | 380 | 250 | 54 by R1's sum, 434 − 380 |
+| 1280×800 fine | 376 | 155.2 | 322.4 | 220.8 | 53.6 by R1's sum, 376 − 322.4 |
+
+"After" at 412×915 and 1280×800 is pinned by `e2e/polish-band.spec.ts` INV-003, which asserts the blank above the first line in view is less than one line (13 of 13 passed on the production build). The research probe (`specs/008-usability-polish/research-probes/measure.probe.ts`) was re-run and now builds a multi-bar part so that capture wraps, and reports `runs` and `blank`; its blank figure at 1280×800 and 390×844 reads the band before it has settled and is not the pinned number, so the spec's is the one to trust. 375×667 and 390×844 stay one line, as designed.
+
+- **R6, top bar:** inner width 343, 102.4px free beside `2 unsynced`; `Saved on this device` is 107.9, so 66.5px is left once the 72px count goes.
+- **R7, capture header:** `saved · sign in` is 69.4px against the 73.9px `99 unsynced` budget (fallback `local · sign in`, 64.0).
+- **R10, status row:** the tightest case has 5.6px spare; 1px rules and a 2px gap net −3px there. Semibold symbols cost 0px (JetBrains Mono is width-stable).
+
+**Existing tests changed on purpose (named here for `check:polish-amendments`):** `e2e/usability-floors.spec.ts` (FR-036: the song-page walk also runs with a part menu open, floors unchanged); `e2e/grouping-queued-row.spec.ts`, `e2e/capture-matrix.spec.ts`, `e2e/rhythm-capture-height.spec.ts` (saving words, FR-028); `e2e/usability-status-row.spec.ts` (FR-033: `read` walks segments by test id, plus separation checks); `e2e/capture-surface.spec.ts`, `e2e/capture.spec.ts`, `e2e/grouping.spec.ts`, `e2e/reading-sync.spec.ts`, `e2e/sync-no-lost-rows.spec.ts`, `e2e/usability-toolbars.spec.ts`, `e2e/variant-marks.spec.ts`, `e2e/variant-marks-paint.spec.ts` (FR-018, through `partAction`); `e2e/usability-height-budget.spec.ts` and `e2e/usability-staves.spec.ts` (FR-003 as amended, per line). Detail is in the T027, T036, T037 and T056 entries above.
+
+**Deviations 1–3 and decisions 4–11 (plan.md, all cheap to overturn):**
+
+1. 390×844 with six strings, a chord and a bracket stays one line (380 needed, 363 there).
+2. A part that fits whole shows every line, even with lines below the cursor's.
+3. Beside a triplet refusal a ten-character symbol is cut (376.4px needed of 351), carried over from spec 007 Deviation 3.
+4. "Shown as cut" is an ellipsis while there is room, else the segment and its rule clip to nothing.
+5. More routes anchor the caret than FR-005 lists (space, barline, paste, delete, the contextual row, cut/delete of a selection, entering wrapped mode, resizes).
+6. The part menu is modal; closing one and opening another is two taps.
+7. The capture short form is `saved · sign in`.
+8. The top bar's words are `Saved on this device`, in the sans face. (Plan Deviation 8, 4-string parts wrapping at 375×667, is the T056 entry above.)
+9. A just-signed-in user may see the saved words for one sync cycle; fixing it would touch the fenced `src/lib/sync/`.
+10. `--line-gap` moves to `:root`, value unchanged.
+11. The status row's gap goes from 4px to 2px.
+
+## Browser pass findings (T052)
+
+Not yet done. It needs a person at a real browser (`quickstart.md` §6, four sizes, both themes), plus the three phone checks of §7 (T053–T055).
+
+## 008 T050 — `check:untouched-reading` reports this branch's own files
+
+`scripts/untouched-by-reading.sh` is spec 004's fence, diffed against `main`. It now lists `src/app/page.tsx` (the band list's song count, FR-021), `src/components/capture/StatusRow.tsx` and `useCaptureBand.ts` (US-1, FR-033). All are planned work for this spec, whose own fence is `check:untouched-polish` (passes). The script is left as it is: loosening an earlier spec's fence is a decision for a person, not for this pass. Also: `no-id-branch.test.tsx` now reads the status line from `StatusRow.tsx`, where it moved, with the same assertions.
+
+## 008 T050 — `techniques-positions.spec.ts` presses `+ variant` through the menu
+
+Found by the full e2e run: its "a variant carries the transition" test pressed the `+ variant` button on the card, which FR-012 moved into the menu. It now calls `partAction(page, "A", "+ variant")`; every assertion after is unchanged. `polish-saving.spec.ts:45` (signed-in) and `techniques-surfaces.spec.ts:86` failed once under full-suite load and passed on a rerun of the three files; not chased.
+
+## 008 T060/T061 — `usability-status-row.spec.ts` checks FR-031's order: the tones give way before the duration (FR-036)
+
+Review F2: at 375, 78 of the 465 states cut `cursor-duration` while `status-tones` still had width (for example `Am` with `whole note`), because both segments were `min-w-0 truncate` with equal shrink. `readSegments` in `e2e/usability-status-row.spec.ts` now fails a state where `cursor-duration` is cut (`scrollWidth > clientWidth`) while `status-tones` has width, and its matrix gains a whole-note duration with an `Am` chord. Seen failing on 6 states first. The fix is `shrink-[1000]` on the tones and `shrink` on the duration in `StatusRow.tsx`; each still ellipsizes while it has room. `contracts/status-row.md` sketch updated. The full review probe `INV-021-022-status-matrix` passes (15 tests, 0 problems).
+
+## 008 T062/T063 — spec 007 FR-026's amendment note says what changed (FR-035)
+
+`check:polish-amendments` now requires each FR-035 member's `Amended by spec 008` note to state its change, not only carry the marker. It failed on 007 FR-026, whose note omitted the order of giving way. Before: "…segments are separated by rules and the row gap is 2px; beside a triplet refusal a ten-character symbol is cut (Deviation 3)." After: the same, plus "the duration may give way after the tones (FR-031), so the tones are cut first and then the duration."
+
+## 008 T064–T067 — round-1 review probes adopted as specs, one file per probe
+
+The probes that held are now `e2e/polish-band-{rows-sizes,every-trigger,every-column,repeat-column,tap-latency,after-figures,caret-chord,same-result,followtail}.spec.ts`, `e2e/polish-part-card-menu.spec.ts` and `e2e/polish-saving-{surfaces,short-form,error-first}.spec.ts`, with the drivers in `e2e/polish-review-helpers.ts`. Separate files rather than appending to `polish-band-interactions.spec.ts`, `polish-part-card.spec.ts` and `polish-saving.spec.ts`: the probes share top-level names and are long-running, so one file each keeps them from colliding and lets them run alone. `polish-band-caret-chord` is test 2 of the caret probe only (test 1 waits on review.md FU1). One change to a probe: the every-trigger negative control now runs only where the part overflows; on the 1280×800 fine config its part is one line, so there is no line to swipe away from the cursor. `polish-band-every-column` failed once in a parallel run (the band was momentarily absent) and passed alone with one worker.
+
+## 008 T068 — `polish-saving.spec.ts` INV-018 signed-in holds the push
+
+The re-verify run found the signed-in case failing: with the push aborted the top bar shows "Failed to fetch", which outranks the count (INV-020), so the spec never saw "N unsynced". The spec now holds the push for that case, as the adopted `polish-saving-surfaces` does. A test-only change; the product behaves as INV-020 says.

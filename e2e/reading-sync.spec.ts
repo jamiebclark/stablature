@@ -1,4 +1,5 @@
 import { openCluster, openTools } from "./usability-helpers";
+import { partAction } from "./part-card-helpers";
 import { appendFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { expect, test, type Browser, type Page } from "@playwright/test";
@@ -153,7 +154,7 @@ test("INV-015 a variant arriving from another device shows only Same as A", asyn
   const { first, second } = await twoDevices(browser);
   await record(first);
   for (let made = 1; made <= 4; made += 1) {
-    await second.getByRole("button", { name: "+ variant" }).first().click();
+    await partAction(second, "A", "+ variant");
     await expect(second.getByTestId("variant-line")).toHaveCount(made);
     await expect.poll(() => outbox(second), { timeout: 30_000 }).toBe(0);
     await expect(first.getByTestId("variant-line")).toHaveCount(made, { timeout: 30_000 });
@@ -165,9 +166,9 @@ test("INV-015 a variant arriving from another device shows only Same as A", asyn
 
 test("INV-031 a pull reaches the marks with the page open", async ({ browser }) => {
   const { first, second } = await twoDevices(browser);
-  await second.getByRole("button", { name: "+ variant" }).first().click();
+  await partAction(second, "A", "+ variant");
   await expect(first.getByTestId("variant-line")).toHaveText("Same as A", { timeout: 30_000 });
-  await second.getByRole("link", { name: "Edit" }).nth(1).click();
+  await partAction(second, "A'", "Edit");
   await expect(second).toHaveURL(/\/capture\/[0-9a-f-]+$/);
   await expect(second.getByTestId("tab-column")).toHaveCount(3);
   await fret(second, "E", 3).click();
@@ -284,12 +285,11 @@ test("INV-031 a local edit during a sync reaches the page at once", async ({ bro
   test.setTimeout(120_000);
   const { page } = await signedInWithASong(browser);
   await slowPull(page, 6_000);
-  const variant = page.getByRole("button", { name: "+ variant" }).first();
-  await variant.click();
+  await partAction(page, "A", "+ variant");
   await expect(page.getByTestId("variant-line")).toHaveCount(1);
   await expect.poll(() => syncState(page), { timeout: 10_000 }).toBe("syncing");
   const started = Date.now();
-  await variant.click();
+  await partAction(page, "A", "+ variant");
   await expect(page.getByTestId("variant-line")).toHaveCount(2, { timeout: 12_000 });
   expect(Date.now() - started).toBeLessThan(2_000);
 });
@@ -300,7 +300,7 @@ test("INV-015 a pull slower than the stuck timer still lands whole", async ({ br
   await record(first);
   await slowPull(first, 11_500);
   for (let made = 1; made <= 3; made += 1) {
-    await second.getByRole("button", { name: "+ variant" }).first().click();
+    await partAction(second, "A", "+ variant");
     await expect(second.getByTestId("variant-line")).toHaveCount(made);
     await expect.poll(() => outbox(second), { timeout: 30_000 }).toBe(0);
     await expect(first.getByTestId("variant-line")).toHaveCount(made, { timeout: 40_000 });
@@ -355,7 +355,7 @@ test("INV-015 a pull slower than the stuck timer still lands whole", async ({ br
     await fret(first, "A", 5).click();
     await expect(first.getByTestId("tab-column")).toHaveCount(2);
     await first.goto(songUrl);
-    await first.getByRole("button", { name: "+ variant" }).first().click();
+    await partAction(first, "A", "+ variant");
     await expect(line(first)).toHaveText("Same as A");
     await first.getByRole("button", { name: "Each part once" }).click();
     await expect(first.getByTestId("roadmap-chip")).toHaveCount(1);
@@ -371,7 +371,7 @@ test("INV-015 a pull slower than the stuck timer still lands whole", async ({ br
 
   /** Open the Nth part's capture screen from the song page, and come back when `work` is done. */
   const inCapture = async (page: Page, songUrl: string, index: number, work: () => Promise<unknown>) => {
-    await page.getByRole("link", { name: "Edit" }).nth(index).click();
+    await partAction(page, ["A", "A'"][index], "Edit");
     await expect(page).toHaveURL(/\/capture\/[0-9a-f-]+$/);
     await expect(page.getByTestId("tab-column").first()).toBeVisible();
     await work();
@@ -420,7 +420,7 @@ test("INV-015 a pull slower than the stuck timer still lands whole", async ({ br
       await expect(line(first)).toHaveText("Same as A", WAIT);
 
       // Delete the parent: the comparison goes away, and the variant stays.
-      await second.getByRole("button", { name: "Delete part A", exact: true }).click();
+      await partAction(second, "A", "Delete");
       await expect(line(first)).toHaveCount(0, WAIT);
       await expect(first.locator("[data-diff]")).toHaveCount(0);
       await expect(first.getByTestId("tab-removal")).toHaveCount(0);
@@ -448,7 +448,7 @@ test("INV-015 a pull slower than the stuck timer still lands whole", async ({ br
       await setChord(other, "Am");
       await expect(line(page)).toHaveText("Same as A");
       await other.goto(songUrl);
-      await other.getByRole("button", { name: "Delete part A", exact: true }).click();
+      await partAction(other, "A", "Delete");
       await expect(line(page)).toHaveCount(0);
       await other.close();
     });
@@ -492,7 +492,7 @@ test("INV-015 a pull slower than the stuck timer still lands whole", async ({ br
         const second = await signIn(browser, id);
         await second.goto(songUrl);
         await expect(second.getByTestId("tab-column").first()).toBeVisible(WAIT);
-        await second.getByRole("button", { name: "+ variant" }).first().click();
+        await partAction(second, "A", "+ variant");
         await expect(line(second)).toHaveText("Same as A");
         // Inside the one-second debounce, so the variant and the entry that plays it go in one push.
         await second.getByTestId("roadmap-chip").first().click();

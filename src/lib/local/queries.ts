@@ -226,3 +226,14 @@ export async function barCountsBySong(
 export async function pendingWriteCount(database: StablatureDb = defaultDb): Promise<number> {
   return database.outbox.count();
 }
+
+/** Live songs per band on this device. Filters with the same `isLive` as `listSongs`, so the two agree. */
+export async function songCountsByBand(
+  database: StablatureDb = defaultDb,
+): Promise<Record<string, number>> {
+  const counts: Record<string, number> = {};
+  for (const song of live(await database.songs.toArray())) {
+    counts[song.bandId] = (counts[song.bandId] ?? 0) + 1;
+  }
+  return counts;
+}

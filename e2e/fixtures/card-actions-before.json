@@ -1,0 +1,2347 @@
+{
+  "+ variant": {
+    "stablature": {
+      "annotations": [],
+      "arrangementEntries": [
+        {
+          "id": "<id1>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "rank": "a0",
+          "kind": "part",
+          "partId": "<id4>",
+          "repeat": 1,
+          "fromBar": null,
+          "toBar": null,
+          "lastRepeatPartId": null,
+          "label": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "partId": "<clock>",
+            "repeat": "<clock>",
+            "fromBar": "<clock>",
+            "toBar": "<clock>",
+            "lastRepeatPartId": "<clock>",
+            "label": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "bands": [
+        {
+          "id": "<id2>",
+          "name": "Hollow Crown",
+          "slug": "hollow-crown",
+          "deletedAt": null,
+          "fieldClocks": {
+            "name": "<clock>",
+            "slug": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "events": [
+        {
+          "id": "<id5>",
+          "bandId": "<id2>",
+          "partId": "<id4>",
+          "rank": "a0",
+          "kind": "notes",
+          "frets": {
+            "3": 7
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        {
+          "id": "<id6>",
+          "bandId": "<id2>",
+          "partId": "<id4>",
+          "rank": "a1",
+          "kind": "notes",
+          "frets": {
+            "2": 5
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        {
+          "id": "<id7>",
+          "bandId": "<id2>",
+          "partId": "<id8>",
+          "rank": "a0",
+          "kind": "notes",
+          "frets": {
+            "3": 7
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        {
+          "id": "<id9>",
+          "bandId": "<id2>",
+          "partId": "<id8>",
+          "rank": "a1",
+          "kind": "notes",
+          "frets": {
+            "2": 5
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "meta": [],
+      "outbox": [
+        {
+          "table": "bands",
+          "rowId": "<id2>",
+          "row": {
+            "id": "<id2>",
+            "name": "Hollow Crown",
+            "slug": "hollow-crown",
+            "deletedAt": null,
+            "fieldClocks": {
+              "name": "<clock>",
+              "slug": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 1
+        },
+        {
+          "table": "tunings",
+          "rowId": "<id10>",
+          "row": {
+            "id": "<id10>",
+            "bandId": "<id2>",
+            "name": "B Standard (Bass 5)",
+            "strings": [
+              {
+                "note": "G",
+                "octave": 2
+              },
+              {
+                "note": "D",
+                "octave": 2
+              },
+              {
+                "note": "A",
+                "octave": 1
+              },
+              {
+                "note": "E",
+                "octave": 1
+              },
+              {
+                "note": "B",
+                "octave": 0
+              }
+            ],
+            "isDefault": true,
+            "deletedAt": null,
+            "fieldClocks": {
+              "name": "<clock>",
+              "strings": "<clock>",
+              "isDefault": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 2
+        },
+        {
+          "table": "songs",
+          "rowId": "<id3>",
+          "row": {
+            "id": "<id3>",
+            "bandId": "<id2>",
+            "title": "Dirge",
+            "tuningId": "<id10>",
+            "bpm": null,
+            "notes": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "title": "<clock>",
+              "tuningId": "<clock>",
+              "bpm": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 3
+        },
+        {
+          "table": "parts",
+          "rowId": "<id4>",
+          "row": {
+            "id": "<id4>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "label": "A",
+            "name": null,
+            "rank": "a0",
+            "variantOfPartId": null,
+            "notes": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "label": "<clock>",
+              "name": "<clock>",
+              "rank": "<clock>",
+              "variantOfPartId": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 4
+        },
+        {
+          "table": "events",
+          "rowId": "<id5>",
+          "row": {
+            "id": "<id5>",
+            "bandId": "<id2>",
+            "partId": "<id4>",
+            "rank": "a0",
+            "kind": "notes",
+            "frets": {
+              "3": 7
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 5
+        },
+        {
+          "table": "events",
+          "rowId": "<id6>",
+          "row": {
+            "id": "<id6>",
+            "bandId": "<id2>",
+            "partId": "<id4>",
+            "rank": "a1",
+            "kind": "notes",
+            "frets": {
+              "2": 5
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 6
+        },
+        {
+          "table": "arrangementEntries",
+          "rowId": "<id1>",
+          "row": {
+            "id": "<id1>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "rank": "a0",
+            "kind": "part",
+            "partId": "<id4>",
+            "repeat": 1,
+            "fromBar": null,
+            "toBar": null,
+            "lastRepeatPartId": null,
+            "label": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "partId": "<clock>",
+              "repeat": "<clock>",
+              "fromBar": "<clock>",
+              "toBar": "<clock>",
+              "lastRepeatPartId": "<clock>",
+              "label": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 7
+        },
+        {
+          "table": "parts",
+          "rowId": "<id8>",
+          "row": {
+            "id": "<id8>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "label": "A'",
+            "name": null,
+            "rank": "a1",
+            "variantOfPartId": "<id4>",
+            "notes": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "label": "<clock>",
+              "name": "<clock>",
+              "rank": "<clock>",
+              "variantOfPartId": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 8
+        },
+        {
+          "table": "events",
+          "rowId": "<id7>",
+          "row": {
+            "id": "<id7>",
+            "bandId": "<id2>",
+            "partId": "<id8>",
+            "rank": "a0",
+            "kind": "notes",
+            "frets": {
+              "3": 7
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 9
+        },
+        {
+          "table": "events",
+          "rowId": "<id9>",
+          "row": {
+            "id": "<id9>",
+            "bandId": "<id2>",
+            "partId": "<id8>",
+            "rank": "a1",
+            "kind": "notes",
+            "frets": {
+              "2": 5
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 10
+        }
+      ],
+      "parts": [
+        {
+          "id": "<id4>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "label": "A",
+          "name": null,
+          "rank": "a0",
+          "variantOfPartId": null,
+          "notes": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "label": "<clock>",
+            "name": "<clock>",
+            "rank": "<clock>",
+            "variantOfPartId": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        {
+          "id": "<id8>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "label": "A'",
+          "name": null,
+          "rank": "a1",
+          "variantOfPartId": "<id4>",
+          "notes": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "label": "<clock>",
+            "name": "<clock>",
+            "rank": "<clock>",
+            "variantOfPartId": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "songs": [
+        {
+          "id": "<id3>",
+          "bandId": "<id2>",
+          "title": "Dirge",
+          "tuningId": "<id10>",
+          "bpm": null,
+          "notes": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "title": "<clock>",
+            "tuningId": "<clock>",
+            "bpm": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "tunings": [
+        {
+          "id": "<id10>",
+          "bandId": "<id2>",
+          "name": "B Standard (Bass 5)",
+          "strings": [
+            {
+              "note": "G",
+              "octave": 2
+            },
+            {
+              "note": "D",
+              "octave": 2
+            },
+            {
+              "note": "A",
+              "octave": 1
+            },
+            {
+              "note": "E",
+              "octave": 1
+            },
+            {
+              "note": "B",
+              "octave": 0
+            }
+          ],
+          "isDefault": true,
+          "deletedAt": null,
+          "fieldClocks": {
+            "name": "<clock>",
+            "strings": "<clock>",
+            "isDefault": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ]
+    }
+  },
+  "delete a part used in the arrangement": {
+    "stablature": {
+      "annotations": [],
+      "arrangementEntries": [
+        {
+          "id": "<id1>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "rank": "a0",
+          "kind": "part",
+          "partId": "<id4>",
+          "repeat": 1,
+          "fromBar": null,
+          "toBar": null,
+          "lastRepeatPartId": null,
+          "label": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "partId": "<clock>",
+            "repeat": "<clock>",
+            "fromBar": "<clock>",
+            "toBar": "<clock>",
+            "lastRepeatPartId": "<clock>",
+            "label": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "bands": [
+        {
+          "id": "<id2>",
+          "name": "Hollow Crown",
+          "slug": "hollow-crown",
+          "deletedAt": null,
+          "fieldClocks": {
+            "name": "<clock>",
+            "slug": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "events": [
+        {
+          "id": "<id5>",
+          "bandId": "<id2>",
+          "partId": "<id4>",
+          "rank": "a0",
+          "kind": "notes",
+          "frets": {
+            "3": 7
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        {
+          "id": "<id6>",
+          "bandId": "<id2>",
+          "partId": "<id4>",
+          "rank": "a1",
+          "kind": "notes",
+          "frets": {
+            "2": 5
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "meta": [],
+      "outbox": [
+        {
+          "table": "bands",
+          "rowId": "<id2>",
+          "row": {
+            "id": "<id2>",
+            "name": "Hollow Crown",
+            "slug": "hollow-crown",
+            "deletedAt": null,
+            "fieldClocks": {
+              "name": "<clock>",
+              "slug": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 1
+        },
+        {
+          "table": "tunings",
+          "rowId": "<id7>",
+          "row": {
+            "id": "<id7>",
+            "bandId": "<id2>",
+            "name": "B Standard (Bass 5)",
+            "strings": [
+              {
+                "note": "G",
+                "octave": 2
+              },
+              {
+                "note": "D",
+                "octave": 2
+              },
+              {
+                "note": "A",
+                "octave": 1
+              },
+              {
+                "note": "E",
+                "octave": 1
+              },
+              {
+                "note": "B",
+                "octave": 0
+              }
+            ],
+            "isDefault": true,
+            "deletedAt": null,
+            "fieldClocks": {
+              "name": "<clock>",
+              "strings": "<clock>",
+              "isDefault": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 2
+        },
+        {
+          "table": "songs",
+          "rowId": "<id3>",
+          "row": {
+            "id": "<id3>",
+            "bandId": "<id2>",
+            "title": "Dirge",
+            "tuningId": "<id7>",
+            "bpm": null,
+            "notes": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "title": "<clock>",
+              "tuningId": "<clock>",
+              "bpm": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 3
+        },
+        {
+          "table": "parts",
+          "rowId": "<id4>",
+          "row": {
+            "id": "<id4>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "label": "A",
+            "name": null,
+            "rank": "a0",
+            "variantOfPartId": null,
+            "notes": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "label": "<clock>",
+              "name": "<clock>",
+              "rank": "<clock>",
+              "variantOfPartId": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 4
+        },
+        {
+          "table": "events",
+          "rowId": "<id5>",
+          "row": {
+            "id": "<id5>",
+            "bandId": "<id2>",
+            "partId": "<id4>",
+            "rank": "a0",
+            "kind": "notes",
+            "frets": {
+              "3": 7
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 5
+        },
+        {
+          "table": "events",
+          "rowId": "<id6>",
+          "row": {
+            "id": "<id6>",
+            "bandId": "<id2>",
+            "partId": "<id4>",
+            "rank": "a1",
+            "kind": "notes",
+            "frets": {
+              "2": 5
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 6
+        },
+        {
+          "table": "arrangementEntries",
+          "rowId": "<id1>",
+          "row": {
+            "id": "<id1>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "rank": "a0",
+            "kind": "part",
+            "partId": "<id4>",
+            "repeat": 1,
+            "fromBar": null,
+            "toBar": null,
+            "lastRepeatPartId": null,
+            "label": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "partId": "<clock>",
+              "repeat": "<clock>",
+              "fromBar": "<clock>",
+              "toBar": "<clock>",
+              "lastRepeatPartId": "<clock>",
+              "label": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 7
+        },
+        {
+          "table": "parts",
+          "rowId": "<id4>",
+          "row": {
+            "id": "<id4>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "label": "A",
+            "name": null,
+            "rank": "a0",
+            "variantOfPartId": null,
+            "notes": null,
+            "deletedAt": "<clock>",
+            "fieldClocks": {
+              "label": "<clock>",
+              "name": "<clock>",
+              "rank": "<clock>",
+              "variantOfPartId": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 8
+        }
+      ],
+      "parts": [
+        {
+          "id": "<id4>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "label": "A",
+          "name": null,
+          "rank": "a0",
+          "variantOfPartId": null,
+          "notes": null,
+          "deletedAt": "<clock>",
+          "fieldClocks": {
+            "label": "<clock>",
+            "name": "<clock>",
+            "rank": "<clock>",
+            "variantOfPartId": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "songs": [
+        {
+          "id": "<id3>",
+          "bandId": "<id2>",
+          "title": "Dirge",
+          "tuningId": "<id7>",
+          "bpm": null,
+          "notes": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "title": "<clock>",
+            "tuningId": "<clock>",
+            "bpm": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "tunings": [
+        {
+          "id": "<id7>",
+          "bandId": "<id2>",
+          "name": "B Standard (Bass 5)",
+          "strings": [
+            {
+              "note": "G",
+              "octave": 2
+            },
+            {
+              "note": "D",
+              "octave": 2
+            },
+            {
+              "note": "A",
+              "octave": 1
+            },
+            {
+              "note": "E",
+              "octave": 1
+            },
+            {
+              "note": "B",
+              "octave": 0
+            }
+          ],
+          "isDefault": true,
+          "deletedAt": null,
+          "fieldClocks": {
+            "name": "<clock>",
+            "strings": "<clock>",
+            "isDefault": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ]
+    }
+  },
+  "delete a variant": {
+    "stablature": {
+      "annotations": [],
+      "arrangementEntries": [
+        {
+          "id": "<id1>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "rank": "a0",
+          "kind": "part",
+          "partId": "<id4>",
+          "repeat": 1,
+          "fromBar": null,
+          "toBar": null,
+          "lastRepeatPartId": null,
+          "label": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "partId": "<clock>",
+            "repeat": "<clock>",
+            "fromBar": "<clock>",
+            "toBar": "<clock>",
+            "lastRepeatPartId": "<clock>",
+            "label": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "bands": [
+        {
+          "id": "<id2>",
+          "name": "Hollow Crown",
+          "slug": "hollow-crown",
+          "deletedAt": null,
+          "fieldClocks": {
+            "name": "<clock>",
+            "slug": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "events": [
+        {
+          "id": "<id5>",
+          "bandId": "<id2>",
+          "partId": "<id4>",
+          "rank": "a0",
+          "kind": "notes",
+          "frets": {
+            "3": 7
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        {
+          "id": "<id6>",
+          "bandId": "<id2>",
+          "partId": "<id4>",
+          "rank": "a1",
+          "kind": "notes",
+          "frets": {
+            "2": 5
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        {
+          "id": "<id7>",
+          "bandId": "<id2>",
+          "partId": "<id8>",
+          "rank": "a0",
+          "kind": "notes",
+          "frets": {
+            "3": 7
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        {
+          "id": "<id9>",
+          "bandId": "<id2>",
+          "partId": "<id8>",
+          "rank": "a1",
+          "kind": "notes",
+          "frets": {
+            "2": 5
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "meta": [],
+      "outbox": [
+        {
+          "table": "bands",
+          "rowId": "<id2>",
+          "row": {
+            "id": "<id2>",
+            "name": "Hollow Crown",
+            "slug": "hollow-crown",
+            "deletedAt": null,
+            "fieldClocks": {
+              "name": "<clock>",
+              "slug": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 1
+        },
+        {
+          "table": "tunings",
+          "rowId": "<id10>",
+          "row": {
+            "id": "<id10>",
+            "bandId": "<id2>",
+            "name": "B Standard (Bass 5)",
+            "strings": [
+              {
+                "note": "G",
+                "octave": 2
+              },
+              {
+                "note": "D",
+                "octave": 2
+              },
+              {
+                "note": "A",
+                "octave": 1
+              },
+              {
+                "note": "E",
+                "octave": 1
+              },
+              {
+                "note": "B",
+                "octave": 0
+              }
+            ],
+            "isDefault": true,
+            "deletedAt": null,
+            "fieldClocks": {
+              "name": "<clock>",
+              "strings": "<clock>",
+              "isDefault": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 2
+        },
+        {
+          "table": "songs",
+          "rowId": "<id3>",
+          "row": {
+            "id": "<id3>",
+            "bandId": "<id2>",
+            "title": "Dirge",
+            "tuningId": "<id10>",
+            "bpm": null,
+            "notes": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "title": "<clock>",
+              "tuningId": "<clock>",
+              "bpm": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 3
+        },
+        {
+          "table": "parts",
+          "rowId": "<id4>",
+          "row": {
+            "id": "<id4>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "label": "A",
+            "name": null,
+            "rank": "a0",
+            "variantOfPartId": null,
+            "notes": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "label": "<clock>",
+              "name": "<clock>",
+              "rank": "<clock>",
+              "variantOfPartId": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 4
+        },
+        {
+          "table": "events",
+          "rowId": "<id5>",
+          "row": {
+            "id": "<id5>",
+            "bandId": "<id2>",
+            "partId": "<id4>",
+            "rank": "a0",
+            "kind": "notes",
+            "frets": {
+              "3": 7
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 5
+        },
+        {
+          "table": "events",
+          "rowId": "<id6>",
+          "row": {
+            "id": "<id6>",
+            "bandId": "<id2>",
+            "partId": "<id4>",
+            "rank": "a1",
+            "kind": "notes",
+            "frets": {
+              "2": 5
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 6
+        },
+        {
+          "table": "arrangementEntries",
+          "rowId": "<id1>",
+          "row": {
+            "id": "<id1>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "rank": "a0",
+            "kind": "part",
+            "partId": "<id4>",
+            "repeat": 1,
+            "fromBar": null,
+            "toBar": null,
+            "lastRepeatPartId": null,
+            "label": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "partId": "<clock>",
+              "repeat": "<clock>",
+              "fromBar": "<clock>",
+              "toBar": "<clock>",
+              "lastRepeatPartId": "<clock>",
+              "label": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 7
+        },
+        {
+          "table": "parts",
+          "rowId": "<id8>",
+          "row": {
+            "id": "<id8>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "label": "A'",
+            "name": null,
+            "rank": "a1",
+            "variantOfPartId": "<id4>",
+            "notes": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "label": "<clock>",
+              "name": "<clock>",
+              "rank": "<clock>",
+              "variantOfPartId": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 8
+        },
+        {
+          "table": "events",
+          "rowId": "<id7>",
+          "row": {
+            "id": "<id7>",
+            "bandId": "<id2>",
+            "partId": "<id8>",
+            "rank": "a0",
+            "kind": "notes",
+            "frets": {
+              "3": 7
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 9
+        },
+        {
+          "table": "events",
+          "rowId": "<id9>",
+          "row": {
+            "id": "<id9>",
+            "bandId": "<id2>",
+            "partId": "<id8>",
+            "rank": "a1",
+            "kind": "notes",
+            "frets": {
+              "2": 5
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 10
+        },
+        {
+          "table": "parts",
+          "rowId": "<id8>",
+          "row": {
+            "id": "<id8>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "label": "A'",
+            "name": null,
+            "rank": "a1",
+            "variantOfPartId": "<id4>",
+            "notes": null,
+            "deletedAt": "<clock>",
+            "fieldClocks": {
+              "label": "<clock>",
+              "name": "<clock>",
+              "rank": "<clock>",
+              "variantOfPartId": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 11
+        }
+      ],
+      "parts": [
+        {
+          "id": "<id4>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "label": "A",
+          "name": null,
+          "rank": "a0",
+          "variantOfPartId": null,
+          "notes": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "label": "<clock>",
+            "name": "<clock>",
+            "rank": "<clock>",
+            "variantOfPartId": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        {
+          "id": "<id8>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "label": "A'",
+          "name": null,
+          "rank": "a1",
+          "variantOfPartId": "<id4>",
+          "notes": null,
+          "deletedAt": "<clock>",
+          "fieldClocks": {
+            "label": "<clock>",
+            "name": "<clock>",
+            "rank": "<clock>",
+            "variantOfPartId": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "songs": [
+        {
+          "id": "<id3>",
+          "bandId": "<id2>",
+          "title": "Dirge",
+          "tuningId": "<id10>",
+          "bpm": null,
+          "notes": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "title": "<clock>",
+            "tuningId": "<clock>",
+            "bpm": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "tunings": [
+        {
+          "id": "<id10>",
+          "bandId": "<id2>",
+          "name": "B Standard (Bass 5)",
+          "strings": [
+            {
+              "note": "G",
+              "octave": 2
+            },
+            {
+              "note": "D",
+              "octave": 2
+            },
+            {
+              "note": "A",
+              "octave": 1
+            },
+            {
+              "note": "E",
+              "octave": 1
+            },
+            {
+              "note": "B",
+              "octave": 0
+            }
+          ],
+          "isDefault": true,
+          "deletedAt": null,
+          "fieldClocks": {
+            "name": "<clock>",
+            "strings": "<clock>",
+            "isDefault": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ]
+    }
+  },
+  "delete a variant's base": {
+    "stablature": {
+      "annotations": [],
+      "arrangementEntries": [
+        {
+          "id": "<id1>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "rank": "a0",
+          "kind": "part",
+          "partId": "<id4>",
+          "repeat": 1,
+          "fromBar": null,
+          "toBar": null,
+          "lastRepeatPartId": null,
+          "label": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "partId": "<clock>",
+            "repeat": "<clock>",
+            "fromBar": "<clock>",
+            "toBar": "<clock>",
+            "lastRepeatPartId": "<clock>",
+            "label": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "bands": [
+        {
+          "id": "<id2>",
+          "name": "Hollow Crown",
+          "slug": "hollow-crown",
+          "deletedAt": null,
+          "fieldClocks": {
+            "name": "<clock>",
+            "slug": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "events": [
+        {
+          "id": "<id5>",
+          "bandId": "<id2>",
+          "partId": "<id4>",
+          "rank": "a0",
+          "kind": "notes",
+          "frets": {
+            "3": 7
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        {
+          "id": "<id6>",
+          "bandId": "<id2>",
+          "partId": "<id4>",
+          "rank": "a1",
+          "kind": "notes",
+          "frets": {
+            "2": 5
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        {
+          "id": "<id7>",
+          "bandId": "<id2>",
+          "partId": "<id8>",
+          "rank": "a0",
+          "kind": "notes",
+          "frets": {
+            "3": 7
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        {
+          "id": "<id9>",
+          "bandId": "<id2>",
+          "partId": "<id8>",
+          "rank": "a1",
+          "kind": "notes",
+          "frets": {
+            "2": 5
+          },
+          "techniques": {},
+          "repeat": 1,
+          "durationHint": null,
+          "tupletId": null,
+          "tupletCount": null,
+          "groupKind": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "rank": "<clock>",
+            "kind": "<clock>",
+            "frets": "<clock>",
+            "techniques": "<clock>",
+            "repeat": "<clock>",
+            "durationHint": "<clock>",
+            "tupletId": "<clock>",
+            "tupletCount": "<clock>",
+            "groupKind": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "meta": [],
+      "outbox": [
+        {
+          "table": "bands",
+          "rowId": "<id2>",
+          "row": {
+            "id": "<id2>",
+            "name": "Hollow Crown",
+            "slug": "hollow-crown",
+            "deletedAt": null,
+            "fieldClocks": {
+              "name": "<clock>",
+              "slug": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 1
+        },
+        {
+          "table": "tunings",
+          "rowId": "<id10>",
+          "row": {
+            "id": "<id10>",
+            "bandId": "<id2>",
+            "name": "B Standard (Bass 5)",
+            "strings": [
+              {
+                "note": "G",
+                "octave": 2
+              },
+              {
+                "note": "D",
+                "octave": 2
+              },
+              {
+                "note": "A",
+                "octave": 1
+              },
+              {
+                "note": "E",
+                "octave": 1
+              },
+              {
+                "note": "B",
+                "octave": 0
+              }
+            ],
+            "isDefault": true,
+            "deletedAt": null,
+            "fieldClocks": {
+              "name": "<clock>",
+              "strings": "<clock>",
+              "isDefault": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 2
+        },
+        {
+          "table": "songs",
+          "rowId": "<id3>",
+          "row": {
+            "id": "<id3>",
+            "bandId": "<id2>",
+            "title": "Dirge",
+            "tuningId": "<id10>",
+            "bpm": null,
+            "notes": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "title": "<clock>",
+              "tuningId": "<clock>",
+              "bpm": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 3
+        },
+        {
+          "table": "parts",
+          "rowId": "<id4>",
+          "row": {
+            "id": "<id4>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "label": "A",
+            "name": null,
+            "rank": "a0",
+            "variantOfPartId": null,
+            "notes": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "label": "<clock>",
+              "name": "<clock>",
+              "rank": "<clock>",
+              "variantOfPartId": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 4
+        },
+        {
+          "table": "events",
+          "rowId": "<id5>",
+          "row": {
+            "id": "<id5>",
+            "bandId": "<id2>",
+            "partId": "<id4>",
+            "rank": "a0",
+            "kind": "notes",
+            "frets": {
+              "3": 7
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 5
+        },
+        {
+          "table": "events",
+          "rowId": "<id6>",
+          "row": {
+            "id": "<id6>",
+            "bandId": "<id2>",
+            "partId": "<id4>",
+            "rank": "a1",
+            "kind": "notes",
+            "frets": {
+              "2": 5
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 6
+        },
+        {
+          "table": "arrangementEntries",
+          "rowId": "<id1>",
+          "row": {
+            "id": "<id1>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "rank": "a0",
+            "kind": "part",
+            "partId": "<id4>",
+            "repeat": 1,
+            "fromBar": null,
+            "toBar": null,
+            "lastRepeatPartId": null,
+            "label": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "partId": "<clock>",
+              "repeat": "<clock>",
+              "fromBar": "<clock>",
+              "toBar": "<clock>",
+              "lastRepeatPartId": "<clock>",
+              "label": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 7
+        },
+        {
+          "table": "parts",
+          "rowId": "<id8>",
+          "row": {
+            "id": "<id8>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "label": "A'",
+            "name": null,
+            "rank": "a1",
+            "variantOfPartId": "<id4>",
+            "notes": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "label": "<clock>",
+              "name": "<clock>",
+              "rank": "<clock>",
+              "variantOfPartId": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 8
+        },
+        {
+          "table": "events",
+          "rowId": "<id7>",
+          "row": {
+            "id": "<id7>",
+            "bandId": "<id2>",
+            "partId": "<id8>",
+            "rank": "a0",
+            "kind": "notes",
+            "frets": {
+              "3": 7
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 9
+        },
+        {
+          "table": "events",
+          "rowId": "<id9>",
+          "row": {
+            "id": "<id9>",
+            "bandId": "<id2>",
+            "partId": "<id8>",
+            "rank": "a1",
+            "kind": "notes",
+            "frets": {
+              "2": 5
+            },
+            "techniques": {},
+            "repeat": 1,
+            "durationHint": null,
+            "tupletId": null,
+            "tupletCount": null,
+            "groupKind": null,
+            "deletedAt": null,
+            "fieldClocks": {
+              "rank": "<clock>",
+              "kind": "<clock>",
+              "frets": "<clock>",
+              "techniques": "<clock>",
+              "repeat": "<clock>",
+              "durationHint": "<clock>",
+              "tupletId": "<clock>",
+              "tupletCount": "<clock>",
+              "groupKind": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 10
+        },
+        {
+          "table": "parts",
+          "rowId": "<id4>",
+          "row": {
+            "id": "<id4>",
+            "bandId": "<id2>",
+            "songId": "<id3>",
+            "label": "A",
+            "name": null,
+            "rank": "a0",
+            "variantOfPartId": null,
+            "notes": null,
+            "deletedAt": "<clock>",
+            "fieldClocks": {
+              "label": "<clock>",
+              "name": "<clock>",
+              "rank": "<clock>",
+              "variantOfPartId": "<clock>",
+              "notes": "<clock>",
+              "deletedAt": "<clock>"
+            },
+            "updatedAt": "<clock>",
+            "serverSeq": 0
+          },
+          "hlc": "<clock>",
+          "attempts": 0,
+          "seq": 11
+        }
+      ],
+      "parts": [
+        {
+          "id": "<id4>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "label": "A",
+          "name": null,
+          "rank": "a0",
+          "variantOfPartId": null,
+          "notes": null,
+          "deletedAt": "<clock>",
+          "fieldClocks": {
+            "label": "<clock>",
+            "name": "<clock>",
+            "rank": "<clock>",
+            "variantOfPartId": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        {
+          "id": "<id8>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "label": "A'",
+          "name": null,
+          "rank": "a1",
+          "variantOfPartId": "<id4>",
+          "notes": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "label": "<clock>",
+            "name": "<clock>",
+            "rank": "<clock>",
+            "variantOfPartId": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "songs": [
+        {
+          "id": "<id3>",
+          "bandId": "<id2>",
+          "title": "Dirge",
+          "tuningId": "<id10>",
+          "bpm": null,
+          "notes": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "title": "<clock>",
+            "tuningId": "<clock>",
+            "bpm": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ],
+      "tunings": [
+        {
+          "id": "<id10>",
+          "bandId": "<id2>",
+          "name": "B Standard (Bass 5)",
+          "strings": [
+            {
+              "note": "G",
+              "octave": 2
+            },
+            {
+              "note": "D",
+              "octave": 2
+            },
+            {
+              "note": "A",
+              "octave": 1
+            },
+            {
+              "note": "E",
+              "octave": 1
+            },
+            {
+              "note": "B",
+              "octave": 0
+            }
+          ],
+          "isDefault": true,
+          "deletedAt": null,
+          "fieldClocks": {
+            "name": "<clock>",
+            "strings": "<clock>",
+            "isDefault": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      ]
+    }
+  }
+}

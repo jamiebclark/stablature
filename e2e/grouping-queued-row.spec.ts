@@ -93,8 +93,9 @@ test("a queued row with no key pushes, beside a plain group of 20, and reaches P
   await signUp(page);
   const { partUrl } = await startCapturing(page, `Band ${randomUUID().slice(0, 8)}`);
   const partId = partUrl.split("/").pop()!;
-  // `all synced` no longer renders (spec 007): the quiet state is no `N unsynced` text.
+  // `all synced` no longer renders (spec 007): the quiet state is no `N unsynced` text, and no saved-here words either (the signed-out words, so it cannot pass on a page that lost the count).
   await expect(page.getByText(/\d+ unsynced/)).toHaveCount(0, { timeout: 25_000 });
+  await expect(page.getByText(/Saved on this device|saved · sign in/)).toHaveCount(0);
 
   await context.setOffline(true);
   await addNotes(page, 23);
@@ -116,5 +117,6 @@ test("a queued row with no key pushes, beside a plain group of 20, and reaches P
       [null, "plain", 20],
     ]);
   await expect(page.getByText(/\d+ unsynced/)).toHaveCount(0, { timeout: 25_000 });
+  await expect(page.getByText(/Saved on this device|saved · sign in/)).toHaveCount(0);
   await expect(page.getByText(/sync error|rejected/i)).toHaveCount(0);
 });

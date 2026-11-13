@@ -311,3 +311,104 @@ for (const { name, symbol } of PROBE_SYMBOLS.filter((s) => s.refusal)) {
     expect(r.problems).toEqual([]);
   });
 }
+
+/** INV-021 (US4): the facts are separate segments, found by test id, never by child index. */
+const readSegments = (page: Page) =>
+  page.getByTestId("status-row").evaluate((row) => {
+    const q = (id: string) => row.querySelector<HTMLElement>(`[data-testid="${id}"]`);
+    const position = q("status-position");
+    const symbol = q("status-symbol");
+    const tones = q("status-tones");
+    const problems: string[] = [];
+    const box = row.getBoundingClientRect();
+    if (box.height > 26.5) problems.push(`row ${box.height}px`);
+    if (!position) problems.push("no status-position");
+    else if (position.scrollWidth > position.clientWidth + 0.5) problems.push(`position cut: ${position.textContent}`);
+    // Separators: each segment after the position opens with a 1px rule (the symbol and the first jump button
+    // after a sibling rule; the duration and the waiting digit with one drawn inside them).
+    const ruleBefore = (el: Element | null | undefined) => {
+      const prev = el?.previousElementSibling as HTMLElement | null;
+      return !!prev && prev.getAttribute("aria-hidden") === "true" && prev.getBoundingClientRect().width <= 1.5;
+    };
+    if (symbol && !ruleBefore(symbol)) problems.push("no rule before the symbol");
+    const first = row.querySelector("button");
+    if (first && !ruleBefore(first)) problems.push("no rule before the jumps");
+    for (const id of ["cursor-duration", "digit-waiting"]) {
+      const seg = q(id);
+      if (seg && !seg.querySelector("[aria-hidden=true]")) problems.push(`no rule inside ${id}`);
+    }
+    if (symbol && tones) {
+      const ws = (el: HTMLElement) => Number(getComputedStyle(el).fontWeight);
+      if (ws(symbol) <= ws(tones)) problems.push("symbol is not heavier than the tones");
+    }
+    // FR-031: the tones give way before the duration. The duration is never cut while the tones still have width.
+    const dur = q("cursor-duration");
+    if (dur && tones && dur.scrollWidth > dur.clientWidth + 0.5 && tones.clientWidth > 2) {
+      problems.push(`duration cut while tones show (tones ${tones.clientWidth}px, duration ${dur.clientWidth}/${dur.scrollWidth}px)`);
+    }
+    const hears = (row as HTMLElement).textContent ?? "";
+    return { problems, hears, symbol: symbol?.textContent ?? null, position: position?.textContent ?? null };
+  });
+
+const LAT = [
+  { name: "no latch", press: (_p: Page): Locator[] => [] },
+  { name: "stack", press: (p: Page) => [stackLatch(p)] },
+];
+const DUR = [
+  { name: "no duration", d: undefined as string | undefined },
+  { name: "a duration", d: "q" },
+  { name: "a whole note", d: "w" },
+];
+
+for (const lat of LAT) {
+  for (const dur of DUR) {
+    for (const digit of [false, true]) {
+      for (const position of POSITIONS) {
+        test(`INV-021 segments: ${lat.name}, ${dur.name}, digit ${digit}, ${position.name}`, async ({ page }) => {
+          const columns = [n(3, { d: dur.d, chord: dur.d === "w" ? "Am" : "Dsus4" }), n(5, { d: dur.d }), n(7, { d: dur.d })];
+          const { songId, parts } = await seedSong(page, [{ key: "a", label: "A", columns }], [{ part: "a" }]);
+          await page.setViewportSize({ width: 375, height: 667 });
+          await page.goto(`/songs/${songId}/capture/${parts.a}`);
+          await expect(page.getByTestId("tab-column").first()).toBeVisible();
+          await position.go(page);
+          for (const c of lat.press(page)) {
+            if (!(await c.isEnabled({ timeout: 1000 }))) test.skip(true, "latch not a member here");
+            await c.click();
+          }
+          if (digit) {
+            await page.keyboard.press("1");
+            await expect(page.getByTestId("digit-waiting")).toBeVisible();
+          }
+          await page.waitForTimeout(60);
+          const r = await readSegments(page);
+          expect(r.problems).toEqual([]);
+          if (r.symbol) expect(r.hears).toContain(`${r.symbol} chord:`);
+        });
+      }
+    }
+  }
+}
+
+test("INV-021 a symbol of ten characters is whole, with its separators, at 375", async ({ page }) => {
+  const { songId, parts } = await seedSong(
+    page,
+    [{ key: "a", label: "A", columns: [n(3, { chord: "Cm7b5add11", d: "32" }), n(5, { d: "32" })] }],
+    [{ part: "a" }],
+  );
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.goto(`/songs/${songId}/capture/${parts.a}`);
+  const r = await readSegments(page);
+  expect(r.problems).toEqual([]);
+  expect(r.symbol).toBe("Cm7b5add11");
+});
+
+test("INV-022 status-position text equals today's literal", async ({ page }) => {
+  const { songId, parts } = await seedSong(page, [{ key: "a", label: "A", columns: [n(3), n(5)] }], [{ part: "a" }]);
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.goto(`/songs/${songId}/capture/${parts.a}`);
+  await expect(page.getByTestId("status-position")).toHaveText("adding at the end");
+  await page.getByRole("button", { name: /start$/ }).click();
+  await expect(page.getByTestId("status-position")).toHaveText("adding at the start");
+  await page.getByTestId("tab-column").nth(0).click();
+  await expect(page.getByTestId("status-position")).toHaveText("adding after the marked column");
+});

@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { partAction } from "./part-card-helpers";
 import {
   caret,
   columns,
@@ -231,7 +232,7 @@ test.describe("ungroup reach and scope (US3)", () => {
     await grouped(page);
     const partUrl = page.url();
     await page.goto(partUrl.replace(/\/capture\/.*$/, ""));
-    await page.getByRole("button", { name: "+ variant" }).click();
+    await partAction(page, "A", "+ variant");
     await expect(page.getByText("variant of")).toBeVisible();
     await page.getByRole("link", { name: "Capture" }).click();
     await expect(page).toHaveURL(/\/capture$/);

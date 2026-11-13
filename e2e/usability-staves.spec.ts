@@ -65,7 +65,9 @@ const measure = (page: Page) =>
         if ((el.textContent ?? "").includes("…")) bad.push(`chord cut: ${el.textContent}`);
         const scrolls = el.closest(".tab-bar-run, [role=group]");
         const ownScroller = scrolls && getComputedStyle(scrolls).overflowX !== "visible" && scrolls.scrollWidth > scrolls.clientWidth;
-        if (r.right > edge + 1 && !ownScroller) bad.push(`chord past the staff: ${(el.textContent ?? "").slice(0, 12)} by ${Math.round(r.right - edge)}`);
+        // Wrapped, a chord sits in a run of its own line: its edge is that run's, not the staff's.
+        const runEdge = el.closest(".tab-bar-run")?.getBoundingClientRect().right ?? edge;
+        if (r.right > runEdge + 1 && !ownScroller) bad.push(`chord past the staff: ${(el.textContent ?? "").slice(0, 12)} by ${Math.round(r.right - runEdge)}`);
         const next = rects[i + 1];
         if (next && near(next.r.top, r.top) && next.r.left - r.right < 2) bad.push(`chords touch: ${el.textContent} ${next.el.textContent}`);
       });
@@ -297,7 +299,12 @@ const measureSurface = (page: Page) =>
       const rects = labels.map((el) => ({ el, r: textRect(el) }));
       rects.forEach(({ el, r }, i) => {
         if ((el.textContent ?? "").includes("…")) bad.push(`chord cut: ${el.textContent}`);
-        if (r.right > edge + 1) bad.push(`chord past the staff by ${Math.round(r.right - edge)}`);
+        // Wrapped, a chord sits in a run of its own line: its edge is that run's, not the staff's.
+        const runEdge = el.closest(".tab-bar-run")?.getBoundingClientRect().right ?? edge;
+        // A run that scrolls sideways on its own owns the overflow, as in `measure` above.
+        const run = el.closest(".tab-bar-run");
+        const ownScroller = !!run && getComputedStyle(run).overflowX !== "visible" && run.scrollWidth > run.clientWidth;
+        if (r.right > runEdge + 1 && !ownScroller) bad.push(`chord past the staff by ${Math.round(r.right - runEdge)}`);
         const next = rects[i + 1];
         if (next && Math.abs(next.r.top - r.top) <= 1 && next.r.left - r.right < 2) bad.push(`chords touch: ${(el.textContent ?? "").slice(0, 12)}`);
         const column = el.closest('[data-testid="tab-column"]')!.getBoundingClientRect();

@@ -3,6 +3,7 @@
  * so this reads each control's own content against its box.
  */
 import { expect, test, type Page } from "@playwright/test";
+import { openPartMenu } from "./part-card-helpers";
 import { columns, details, inspector } from "./capture-surface-helpers";
 import { addRests, groupControl, selectColumns, startWith, tupletControl } from "./probe-helpers";
 import { fullWorld, reach, SCREENS } from "./probe-screens";
@@ -117,6 +118,7 @@ for (const width of [375, 390]) {
 
     await page.goto(world.songUrl);
     await page.getByTestId("part-heading").first().waitFor();
+    await openPartMenu(page, "A");
     note("part delete", await gap(page, /^Delete part/));
 
     await page.goto(`${world.bandUrl}/tunings`);

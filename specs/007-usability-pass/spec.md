@@ -330,7 +330,7 @@ At a desk, a capturer enters a riff by number without leaving the keyboard. A re
 
 **Height on the capture screen**
 
-- **FR-001**: The title and the part chips MUST share one row of at most 45px at 375px wide. It MUST hold the way back, the part chips, adding a part, the tempo, and the sync word when something is unsynced. Every action on the two rows today MUST stay on it.
+- **FR-001**: The title and the part chips MUST share one row of at most 45px at 375px wide. It MUST hold the way back, the part chips, adding a part, the tempo, and the sync word when something is unsynced. Every action on the two rows today MUST stay on it. Amended by spec 008 (FR-011, FR-012, FR-015): the title row also carries the saving words, and a part's Edit, `+ variant` and Delete live in a menu on its card.
 - **FR-002**: The stable, contextual and selection rows MUST each be at most 46px high including their border, with the reserved row matching, so the stable row still does not move as the cursor moves (spec 001, FR-012).
 - **FR-003**: The status row MUST be at most 26px high in every state, and the selection status line the same.
 - **FR-004**: All height recovered MUST go to the tab band. The neck, the latch strip and the fret cells MUST keep their size on touch.
@@ -364,7 +364,7 @@ At a desk, a capturer enters a riff by number without leaving the keyboard. A re
 
 - **FR-024**: A chord symbol MUST be shown whole on every staff, with no ellipsis, and no two symbols may touch. Where they would, the columns on screen widen as needed. This MUST NOT change the text export or the stored data.
 - **FR-025**: A chord label MUST NOT be clipped by the band when a chord and a bracket share a column, at any string count that FR-006 covers.
-- **FR-026**: In the status row at 375px, the status words MUST be whole, the chord symbol whole up to ten characters, and both jump buttons present, in every combination of status and chord. Only the chord's list of tones may be cut, since the neck shows them. Spec 001, FR-007's wording stands.
+- **FR-026**: In the status row at 375px, the status words MUST be whole, the chord symbol whole up to ten characters, and both jump buttons present, in every combination of status and chord. Only the chord's list of tones may be cut, since the neck shows them. Spec 001, FR-007's wording stands. Amended by spec 008 (FR-031 to FR-033): segments are separated by rules and the row gap is 2px; beside a triplet refusal a ten-character symbol is cut (Deviation 3); the duration may give way after the tones (FR-031), so the tones are cut first and then the duration.
 - **FR-027**: A long title MUST wrap to at most two lines on lists and page headings. Only the capture row cuts it.
 - **FR-028**: The chord form's hint MUST fit its box at 375px at 16px text.
 - **FR-029**: All text MUST reach 4.5:1 on the surface it is drawn on, in both themes, apart from disabled controls. The faint grey and the grey of the neck's numbers change to reach this, everywhere they are used.
@@ -412,7 +412,7 @@ At a desk, a capturer enters a riff by number without leaving the keyboard. A re
 **Filling the width**
 
 - **FR-055**: The play view MUST draw each pass across as many lines as it needs, breaking at barlines, filling at least 90% of the window at 1280 wide and all of the column on a phone. String labels repeat on each line. Every row stays aligned on every line, in frets, notes and intervals.
-- **FR-056**: A bar wider than a line MUST take a line of its own and scroll sideways alone. The song page's staff, capture and the paste preview stay as they are.
+- **FR-056**: A bar wider than a line MUST take a line of its own and scroll sideways alone. The song page's staff, capture and the paste preview stay as they are. Amended by spec 008 (FR-001 to FR-005): capture wraps inside its band where two whole lines fit; the paste preview and the song page's staves stay as they are.
 
 **Keyboard**
 
@@ -519,7 +519,7 @@ Made without waiting, as agreed, so they can be overturned at review. **Worth yo
 - New notation, new event data, or any new stored field.
 - Audio beyond what `rhythm-and-tempo` shipped. The click always starts from the top.
 - Track mixing, transposition, printing, and any change to sync or storage.
-- Wrapping the song page's staves, capture or the paste preview.
+- Wrapping the song page's staves, capture or the paste preview. Amended by spec 008 (FR-035): capture now wraps inside its band.
 - Songsterr's layout, artwork, colours, wording or tab content.
 - Landscape redesign.
 

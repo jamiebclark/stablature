@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { partAction } from "./part-card-helpers";
 import { openTools } from "./usability-helpers";
 import {
   addPart,
@@ -766,7 +767,13 @@ test.describe("fits", () => {
           scroller = scroller.parentElement;
         }
         const box = scroller!.getBoundingClientRect();
-        const rows = [...staff.querySelectorAll(".tab-cell")].map((c) =>
+        // The cursor's line: its caret's run when the band wraps (the last run when none is drawn), the staff when it does not.
+        const lineOf = (): Element => {
+          const runs = [...staff.querySelectorAll(".tab-wrapped-body .tab-bar-run")];
+          if (!runs.length) return staff;
+          return staff.querySelector('[data-testid="tab-caret"]')?.closest(".tab-bar-run") ?? runs[runs.length - 1];
+        };
+        const rows = [...lineOf().querySelectorAll(".tab-cell")].map((c) =>
           c.getBoundingClientRect(),
         );
         return {
@@ -869,7 +876,13 @@ test.describe("fits", () => {
           scroller = scroller.parentElement;
         }
         const band = scroller!.getBoundingClientRect();
-        const rows = [...staff.querySelectorAll(".tab-cell")].map((c) =>
+        // The cursor's line: its caret's run when the band wraps (the last run when none is drawn), the staff when it does not.
+        const lineOf = (): Element => {
+          const runs = [...staff.querySelectorAll(".tab-wrapped-body .tab-bar-run")];
+          if (!runs.length) return staff;
+          return staff.querySelector('[data-testid="tab-caret"]')?.closest(".tab-bar-run") ?? runs[runs.length - 1];
+        };
+        const rows = [...lineOf().querySelectorAll(".tab-cell")].map((c) =>
           c.getBoundingClientRect(),
         );
         const tops = [...new Set(rows.map((r) => Math.round(r.top)))];
@@ -1732,9 +1745,9 @@ test.describe("probe INV-008-inspector-closes-when-column-gone", () => {
 
       const other = await page.context().newPage();
       await other.goto(songUrl);
-      await other.getByRole("button", { name: "Delete part A" }).click();
+      await partAction(other, "A", "Delete");
       await expect(
-        other.getByRole("button", { name: "Delete part A" }),
+        other.getByRole("button", { name: "Actions for part A" }),
       ).toHaveCount(0);
       await other.close();
 
@@ -2137,7 +2150,13 @@ test.describe("probe FR-017-024-inspector-scope-and-keyboard", () => {
         scroller = scroller.parentElement;
       }
       const box = scroller!.getBoundingClientRect();
-      const rows = [...staff.querySelectorAll(".tab-cell")].map((c) =>
+      // The cursor's line: its caret's run when the band wraps (the last run when none is drawn), the staff when it does not.
+      const lineOf = (): Element => {
+        const runs = [...staff.querySelectorAll(".tab-wrapped-body .tab-bar-run")];
+        if (!runs.length) return staff;
+        return staff.querySelector('[data-testid="tab-caret"]')?.closest(".tab-bar-run") ?? runs[runs.length - 1];
+      };
+      const rows = [...lineOf().querySelectorAll(".tab-cell")].map((c) =>
         c.getBoundingClientRect(),
       );
       return {

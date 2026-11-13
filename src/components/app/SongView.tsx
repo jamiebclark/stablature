@@ -11,7 +11,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { GitBranch, Pencil, Play, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { GitBranch, Pencil, Play, Plus, Trash2 } from "lucide-react";
 import { ArrangementEditor } from "@/components/arrangement/ArrangementEditor";
 import { ExportSong } from "@/components/app/ExportSong";
 import { PasteTab } from "@/components/app/PasteTab";
@@ -19,7 +20,8 @@ import { ViewControl } from "@/components/reading/ViewControl";
 import { useStaffView } from "@/components/reading/useStaffView";
 import { VariantLine } from "@/components/reading/VariantLine";
 import { TabStaff } from "@/components/tab/TabStaff";
-import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader, Panel, TouchLabel } from "@/components/ui";
+import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader, Panel } from "@/components/ui";
+import { OverflowMenu } from "@/components/ui/OverflowMenu";
 import { partHeading } from "@/lib/reading/bars";
 import { createPart, createVariant } from "@/lib/local/editing";
 import {
@@ -280,6 +282,11 @@ export function SongView({ songId }: { songId: string }) {
   );
 }
 
+/** Where a part is edited. The label link and the menu's Edit item both come here. */
+export function partCaptureHref(songId: string, partId: string): string {
+  return `/songs/${songId}/capture/${partId}`;
+}
+
 function PartCard({
   part,
   parts,
@@ -323,9 +330,14 @@ function PartCard({
   return (
     <Card className="relative">
       <div className="mb-2 flex flex-wrap items-center gap-2">
-        <span className="rounded bg-bg-sunken px-2 py-0.5 font-mono text-sm font-semibold">
+        <Link
+          href={partCaptureHref(songId, part.id)}
+          aria-label={`Edit part ${part.label}${part.name ? `, ${part.name}` : ""}`}
+          className="inline-flex min-h-(--control) items-center gap-1 rounded bg-bg-sunken px-2 font-mono text-sm font-semibold hover:text-accent"
+        >
           {part.label}
-        </span>
+          <Pencil size={13} aria-hidden />
+        </Link>
 
         {renaming ? (
           <form
@@ -348,13 +360,25 @@ function PartCard({
             </Button>
           </form>
         ) : (
-          <button
-            type="button"
-            onClick={() => setRenaming(true)}
-            className="inline-flex min-h-(--control) items-center text-sm text-text-dim hover:text-accent"
-          >
-            {part.name ?? "name this part"}
-          </button>
+          part.name?.trim() ? (
+            <button
+              type="button"
+              onClick={() => setRenaming(true)}
+              className="inline-flex min-h-(--control) items-center text-sm text-text-dim hover:text-accent"
+            >
+              {part.name}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setRenaming(true)}
+              aria-label={`Name part ${part.label}`}
+              className="inline-flex min-h-(--control) items-center gap-1 text-sm text-text-dim underline decoration-dashed underline-offset-4 hover:text-accent"
+            >
+              <Plus size={13} aria-hidden />
+              Add a name
+            </button>
+          )
         )}
 
         {heading.text ? (
@@ -369,32 +393,17 @@ function PartCard({
           </span>
         ) : null}
 
-        <div className="ml-auto flex gap-1 no-print">
-          {part.variantOfPartId ? null : (
-            <Button onClick={() => createVariant(part)} title="Copy this part so it can diverge">
-              <GitBranch size={15} aria-hidden />
-              + variant
-            </Button>
-          )}
-          <ButtonLink
-            href={`/songs/${songId}/capture/${part.id}`}
-            className="min-w-(--control)"
-            title="Edit"
-          >
-            <Pencil size={15} aria-hidden />
-            <TouchLabel>Edit</TouchLabel>
-          </ButtonLink>
-          <Button
-            variant="danger"
-            className="ml-2 min-w-(--control)"
-            onClick={() => deleteRow("parts", part.id)}
-            aria-label={`Delete part ${part.label}`}
-            title="Delete"
-          >
-            <Trash2 size={15} aria-hidden />
-            <TouchLabel>Delete</TouchLabel>
-          </Button>
-        </div>
+        <OverflowMenu
+          className="ml-auto"
+          label={`Actions for part ${part.label}${part.name ? `, ${part.name}` : ""}`}
+          items={[
+            { label: "Edit", ariaLabel: `Edit part ${part.label}`, icon: <Pencil size={15} aria-hidden />, href: partCaptureHref(songId, part.id) },
+            ...(part.variantOfPartId
+              ? []
+              : [{ label: "+ variant", icon: <GitBranch size={15} aria-hidden />, onSelect: () => createVariant(part) }]),
+            { label: "Delete", ariaLabel: `Delete part ${part.label}`, icon: <Trash2 size={15} aria-hidden />, destructive: true, onSelect: () => deleteRow("parts", part.id) },
+          ]}
+        />
       </div>
 
       {tuning ? (

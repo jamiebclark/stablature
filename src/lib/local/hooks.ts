@@ -42,6 +42,7 @@ import {
   listTunings,
   pendingWriteCount,
   resolveTuning,
+  songCountsByBand,
   type SongContent,
 } from "./queries";
 
@@ -51,6 +52,10 @@ export function useBands(): BandRow[] | undefined {
 
 export function useBand(bandId: string | undefined): BandRow | undefined {
   return useLiveQuery(() => (bandId ? getBand(bandId) : undefined), [bandId]);
+}
+
+export function useSongCounts(): Record<string, number> | undefined {
+  return useLiveQuery(() => songCountsByBand(), []);
 }
 
 export function useSongs(bandId: string | undefined): SongRow[] | undefined {

@@ -13,6 +13,8 @@ const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`;
  */
 const PHONE_ONLY = [
   "capture.spec.ts",
+  "polish-saving.spec.ts",
+  "polish-bands-list.spec.ts",
   "click-offline.spec.ts",
   "click-offline-arrivals.spec.ts",
   "durations-layout.spec.ts",

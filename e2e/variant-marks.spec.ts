@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { partAction } from "./part-card-helpers";
 import { deleteButton, fret } from "./capture-surface-helpers";
 import { bar, choose, contrast, dump, dumpDatabase, g, idb, landed, n, seedReadable, seedSong, VIEWS, type Col, type PartSpec } from "./reading-helpers";
 // The review probes ran with a 120 s test timeout; the sweeps need it.test.setTimeout(120_000);
@@ -20,7 +21,7 @@ test("a just-made variant says it is the same, and only that, and marks follow e
     new MutationObserver(record).observe(document.body, { childList: true, subtree: true, characterData: true });
   });
 
-  await page.getByRole("button", { name: "+ variant" }).click();
+  await partAction(page, "A", "+ variant");
   const line = page.getByTestId("variant-line");
   await expect(line).toHaveText("Same as A");
   await expect(page.getByTestId("tab-removal")).toHaveCount(0);
@@ -37,7 +38,7 @@ test("a just-made variant says it is the same, and only that, and marks follow e
   expect(await dumpDatabase(page)).toBe(before);
 
   // Add a note to the variant: one addition.
-  await page.getByRole("link", { name: "Edit" }).nth(1).click();
+  await partAction(page, "A'", "Edit");
   await expect(page).toHaveURL(/\/capture\/[0-9a-f-]+$/);
   await expect(page.getByTestId("tab-column")).toHaveCount(2);
   await fret(page, "E", 3).click();
@@ -47,7 +48,7 @@ test("a just-made variant says it is the same, and only that, and marks follow e
   await expect(page.locator('[data-diff="added"]')).toHaveCount(1);
 
   // Delete the parent: the variant has nothing to be compared with.
-  await page.getByRole("button", { name: "Delete part A", exact: true }).click();
+  await partAction(page, "A", "Delete");
   await expect(page.getByTestId("variant-line")).toHaveCount(0);
   await expect(page.locator("[data-diff]")).toHaveCount(0);
 });
@@ -58,9 +59,9 @@ test("the play view marks only the pass that plays the variant", async ({ page }
   const { songUrl } = await seedReadable(page);
 
   // A variant of A with one more note.
-  await page.getByRole("button", { name: "+ variant" }).click();
+  await partAction(page, "A", "+ variant");
   await expect(page.getByTestId("variant-line")).toHaveText("Same as A");
-  await page.getByRole("link", { name: "Edit" }).nth(1).click();
+  await partAction(page, "A'", "Edit");
   await expect(page.getByTestId("tab-column")).toHaveCount(2);
   await fret(page, "E", 3).click();
   await expect(page.getByTestId("tab-column")).toHaveCount(3);
@@ -375,7 +376,7 @@ test.describe("INV-031 a write reaches the marks with the page open", () => {
   test("deleting the parent from this tab clears line and marks", async ({ page }) => {
     await seed(page);
     await expect(line(page)).toHaveText("Same as A");
-    await page.getByRole("button", { name: "Delete part A", exact: true }).click();
+    await partAction(page, "A", "Delete");
     await expect(line(page)).toHaveCount(0);
     expect(await marksOf(page)).toEqual(NONE);
   });
@@ -495,7 +496,7 @@ test("INV-015 a just-made variant says only Same as A, in each labelling view", 
         }
       }).observe(document.body, { childList: true, subtree: true, characterData: true });
     });
-    await page.getByRole("button", { name: "+ variant" }).click();
+    await partAction(page, "A", "+ variant");
     await expect(page.getByTestId("variant-line")).toHaveText("Same as A");
     const seen = await page.evaluate(() => (window as unknown as { __seen: string[] }).__seen);
     expect(new Set(seen)).toEqual(new Set(["Same as A"]));

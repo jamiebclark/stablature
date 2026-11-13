@@ -450,6 +450,7 @@ for (const { name, title, tempo, count, load, width } of FULL_CASES) {
     expect.soft(row.h, "row height").toBeLessThanOrEqual(45);
     expect.soft(row.back, "the way back is at its floor").toBeGreaterThanOrEqual(43.5);
     expect.soft(row.over, "nothing past the row").toBeLessThanOrEqual(0.5);
+    if (load === "many") await expect(page.getByRole("link", { name: "Saved on this device. Sign in to sync with your band." })).toHaveText("saved · sign in");
     expect.soft(row.cut, "tempo and sync word whole").toEqual([]);
     expect.soft(row.strip, "room for at least one chip").toBeGreaterThanOrEqual(36);
     // One swipe, then one tap, and the new part is open.
