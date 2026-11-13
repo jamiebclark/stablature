@@ -24,13 +24,13 @@ test.describe("duration marks", () => {
     await eighth.click();
     await expect(eighth).toHaveAttribute("aria-pressed", "true"); // the write landed before the page is left
     await page.keyboard.press("Escape");
-    await expect(rhythm(page)).toHaveCount(0); // capture staff unchanged
+    await expect(rhythm(page).first()).toHaveAttribute("data-duration", "8"); // spec 009: capture draws the row
     const widthAfter = await columns(page).first().evaluate((el) => el.getBoundingClientRect().width);
     expect(widthAfter).toBe(widthBefore);
 
     await page.goto(songUrl);
-    await expect(rhythm(page).first()).toHaveText("8");
-    const marks = await rhythm(page).allTextContents();
-    expect(marks).toEqual(["8", ""]);
+    await expect(rhythm(page).first()).toHaveAttribute("data-duration", "8");
+    const marks = await rhythm(page).evaluateAll((els) => els.map((e) => e.getAttribute("data-duration")));
+    expect(marks).toEqual(["8", null]);
   });
 });

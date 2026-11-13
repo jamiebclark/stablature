@@ -25,8 +25,10 @@ describe("TabStaff showRhythm", () => {
     ];
     const out = html(events, true);
     expect(out.match(/data-testid="tab-rhythm"/g)).toHaveLength(4);
-    const marks = [...out.matchAll(/data-testid="tab-rhythm"[^>]*>([^<]*)</g)].map((m) => m[1]);
-    expect(marks).toEqual(["8", "", "", "q"]);
+    // No symbol is text: the cell's attributes say what it draws.
+    const cells = [...out.matchAll(/<div class="tab-rhythm"[^>]*>/g)].map((m) => m[0]);
+    const durations = cells.map((c) => c.match(/data-duration="([^"]*)"/)?.[1] ?? "");
+    expect(durations).toEqual(["8", "", "", "q"]);
     expect(html(events, false)).not.toContain("tab-rhythm");
   });
 });

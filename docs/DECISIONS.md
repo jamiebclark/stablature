@@ -726,3 +726,47 @@ The probes that held are now `e2e/polish-band-{rows-sizes,every-trigger,every-co
 ## 008 T068 — `polish-saving.spec.ts` INV-018 signed-in holds the push
 
 The re-verify run found the signed-in case failing: with the push aborted the top bar shows "Failed to fetch", which outranks the count (INV-020), so the spec never saw "N unsynced". The spec now holds the push for that case, as the adopted `polish-saving-surfaces` does. A test-only change; the product behaves as INV-020 says.
+
+## 009 — re-pinned tests
+
+Each pin below changed because the rhythm row now draws stems, beams, flags and rests instead of letters. None was weakened; the new assertion reads attributes and sizes, never the text of a symbol.
+
+- `tab-staff-rhythm.test.tsx`: the cells' marks were `8`, none, none, `q` as text; they are now each cell's `data-duration` (`"8"`, none, none, `"q"`). The no-duration case is unedited.
+- `TabStaff.test.tsx`: "draws rhythm marks at 12px" becomes the FR-027 sizes (stem 1px, beam 2px, flag stroke 2px); the 12px numeral is still pinned.
+- `e2e/rhythm-marks.spec.ts`: marks are read by `data-duration`; "fits" is every part inside its column's rect; "under its column" is the stem, rest or oval centre against the fret's centre. Contrast, opacity and distinctness assertions unchanged in spirit (six distinct durations, ≥ 4.5, opacity 1).
+- `e2e/rhythm-members.spec.ts`: the offset probe measures the stem, rest or oval, not a text range (the old `textContent` guard would have skipped every column).
+- `e2e/durations.spec.ts`: first cell `data-duration="8"`, second has none. The capture-staff "no `tab-rhythm`" assertion stays until Phase 5 (US3) makes capture draw the row; T029 flips it.
+- `e2e/click-following.spec.ts`, `e2e/click-running.spec.ts`, `e2e/click-state.spec.ts`: the bar's marks are read from `data-duration`; "no mark" is no `data-duration`.
+- `e2e/usability-neck.spec.ts`, `e2e/usability-contrast.spec.ts`: a drawn mark has no font size, so the 12px rule is kept for numerals and bar numbers only; marks are counted by `data-duration` and checked to stay inside their column (neck), and their sizes are pinned in `e2e/notation-alignment.spec.ts`.
+- `e2e/usability-staves.spec.ts`, `e2e/usability-staff.spec.ts`: the "mark on the note" centring now measures the stem/rest/oval rect; the old `textContent` guard had become vacuous.
+- `e2e/notation-flags-clear.spec.ts` (T063): adopted from review-probes INV-008; stroke-inclusive ink must lie in the stem band, end 1px above the bracket line, and leave the lowest fret label's pixels unchanged. New, not a re-pin.
+- `scripts/check-line-endings.sh` (`npm run check:line-endings`, T065, review F1): new guard. Fails when a modified tracked file's working-tree ending differs from its index ending, when a new file under `src/`, `e2e/` or `scripts/` holds a CR, or when `git diff --stat` differs from `--ignore-cr-at-eol`. Phase 9 had turned this file CRLF; it is LF again.
+- `e2e/usability-surfaces.spec.ts`: unchanged; its mark read still passes (the element exists), and font rules apply to text only.
+- Glyph changes found by the 009 symbol probe: whole and half rests were near-identical at 20px; the whole rest now hangs from a line and the half sits on one, and the 8/16/32 rests carry larger hooks (rest stroke 1.6px). The probe measures the 2% difference against the pixels either mark inks.
+
+- `e2e/polish-band-interactions.spec.ts` INV-004 "stills the implementation's spec does not cover": the "an inspector write" still clicks `sixteenth note`, and `longPart` seeds no duration, so that write was the part's first duration and added the capture rhythm row (every `.tab-bar-run` 184 to 188px; on `main` capture drew no rhythm row). The test now gives the part one duration on another column and settles before measuring, so the measured write is an ordinary one. Other stills and both lines unchanged; `polish-long-part.ts` untouched. Rejected: reserving the row on every capture staff, which spends height on parts with no rhythm. The same test also changed: `ungroup` selects the columns the preceding `group from a selection` grouped on that line (once the part holds a duration `pickColumn` lands elsewhere; when one line is all in view, top and bottom pick the same columns, so the bracket is put back unmeasured before the second ungroup), and the selection-toolbar clicks take `{ timeout: 5000 }` so a missing button fails at once.
+
+### 009 capture draws the rhythm row (US3, T027–T029)
+
+- Capture passes `showRhythm`; `tab-band` carries `data-rhythm` while any column has a duration, and `globals.css` drops the band's `pt-1` then (research R1: content 189.6, rows 188.0, band outer unchanged). `useCaptureBand`'s `measure` already reads the computed padding, so it needed no change.
+- Measured by `e2e/notation-capture-height.spec.ts` at 375×667 (5 and 6 strings, with and without a chord row, cursor at the end / on a group / selecting): band content ≥ 189px, no page scroll, every cell, chord and rhythm cell inside the band. Figures were not kept: Playwright clears `test-results/` on each run.
+- `PasteTab` passes `showRhythm` (FR-024).
+- `e2e/rhythm-capture-height.spec.ts` changed on purpose (T029): its last assertion said capture draws no `tab-rhythm`; it now expects 8 rhythm cells, `data-rhythm` on the band, and the strings inside the band on one-line staves. Its header and staff-box comparisons are unchanged and still pass. The three height/wrap/band specs ran unedited and pass.
+
+### 009 duration buttons are note symbols (US4, T031–T035)
+
+- `ColumnSegment.symbol` (set by the duration property) makes `SegmentRow` draw `NoteSymbol` and a `title`; text content is empty. The commit path is unchanged.
+- `e2e/rhythm-lit-and-nowhere-else.spec.ts`, `e2e/durations-layout.spec.ts`, `e2e/durations-row-every-column.spec.ts` changed on purpose: buttons are addressed and read by `data-duration`, and the layout specs assert empty text. `e2e/durations-row-tall-sheets.spec.ts` ran unedited.
+- `src/components/capture/__tests__/duration-row.test.tsx` re-pinned the same way (lit read from `data-duration`).
+
+## 009 T040 — capture height: before and after (FR-018, Deviation 1)
+
+Before (`measure-before.json`, unedited build, 375×667 touch, six strings, chord row and bracket row): band outer 189.59px, content 185.59px (4px top padding), string height 24.8px, lowest string mask 16px with 4.41px free below, 12px numeral in a 9px line box.
+After (`notation-capture-height.spec.ts`): band outer unchanged at 189.59px; the `pt-1` is dropped while `data-rhythm` is set, so content is 189.6px (≥189 required), no page scroll, every cell, chord and rhythm cell inside the band. The rhythm row is `--rhythm-row: 1.35rem` (1.4rem on the touch rule) with `--rhythm-lead` derived from string height and staff text; no adjustment to either was needed because T001's figures matched research R1/R2 within 0.5px.
+
+**T064 — flag figures (review F1).** The staff flag was a 7×10 curve whose path started on the box's bottom edge (half the stroke below the stem) at a 6px step, so a thirty-second's stack needed 18.5px against an 11.6px stem band. Now `STAFF_FLAG` is a 7×4 straight stroke `M0.5 2.95 L6.5 2.15` (rise 0.8px, ink ends on the stem's end) and `--rhythm-flag-step` is 4.05px: vertical gap between strokes about 2.03px (INV-009 needs 2px), three-flag stack about 11.1px (limit 11.4px fine, 11.6px touch), flag 1 ends at least 1px above the bracket line (INV-008). A 4.1px step with a 1px rise left 5 differing label pixels at 32 on mobile; this is the tightest pair that gave 0.
+
+## 009 T039 — full browser suite, pass 1 findings
+
+Run in 8 shards. Re-pinned on purpose (capture now draws the rhythm row; numerals sit under the bracket line): `durations.spec.ts:27` (capture draws `data-duration="8"`), `rhythm-members.spec.ts` (duration buttons read by `data-duration`), `usability-neck.spec.ts` and `usability-contrast.spec.ts` (a numeral is crossed only if it rises into the line above it; was: falls below it). Flaky under load, green alone: `capture-surface.spec.ts:1089`, `notation-measure-before.spec.ts`.
+Open: `polish-band-interactions.spec.ts:363` ("an inspector write", top line) moves the bar-run tops. Its `/dead|ghost|x/i` button match now also matches "sixteenth note", so the still writes a first duration and the rhythm row appears. Shards 6 to 8 were not yet run.

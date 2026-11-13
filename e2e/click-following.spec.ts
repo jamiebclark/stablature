@@ -17,7 +17,7 @@ const barsOnScreen = (page: Page) =>
       const bars: string[][] = [[]];
       for (const col of li.querySelectorAll("[data-testid=tab-column]")) {
         if (col.getAttribute("data-barline") === "true") bars.push([]);
-        else bars[bars.length - 1].push(col.querySelector("[data-testid=tab-rhythm]")?.textContent ?? "");
+        else bars[bars.length - 1].push(col.querySelector("[data-testid=tab-rhythm]")?.getAttribute("data-duration") ?? "");
       }
       return bars.filter((b) => b.length > 0);
     }),

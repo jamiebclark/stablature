@@ -81,7 +81,7 @@ function readBar(
   bar: readonly EventRow[],
   groups: Map<string, Group | null>,
   startedPlain: Set<string>,
-  hit?: (eventId: string, repetition: number, at: number) => void,
+  hit?: (eventId: string, repetition: number, at: number, counted: boolean) => void,
 ): { clicks: ScoreClick[]; length: number } | null {
   const levels = new Map<number, ClickLevel>();
   const put = (tick: number, level: ClickLevel) => {
@@ -108,7 +108,7 @@ function readBar(
     }
     const hits = Math.max(1, e.repeat);
     for (let h = 0; h < hits; h++) {
-      hit?.(e.id, h, at);
+      hit?.(e.id, h, at, counted);
       if (counted || (firstOfPlain && h === 0)) put(at, "soft");
       at += hitTicks;
     }
@@ -208,4 +208,35 @@ export function beatsPerBar(events: readonly EventRow[]): number | null {
   if (length === null || length <= 0) return null;
   const beats = length / TICKS_PER_BEAT;
   return Number.isInteger(beats) ? beats : null;
+}
+
+/** Where one hit starts in its bar, from the same arithmetic the click uses. */
+export interface BarPosition {
+  /** Ticks from the start of the bar this hit is in. */
+  readonly tick: number;
+  /** The group's id when the hit is in a counted group that reads; otherwise null. */
+  readonly countedGroup: string | null;
+}
+
+/**
+ * Key `${eventId}:${repetition}`. A missing key means the position is unknown: the hit follows a column
+ * with no readable duration, or sits in a group that does not read. A failing bar never stops the next.
+ */
+export function barPositions(events: readonly EventRow[]): ReadonlyMap<string, BarPosition> {
+  const out = new Map<string, BarPosition>();
+  const groups = census(events);
+  const startedPlain = new Set<string>();
+  const tupletOf = new Map(events.map((e) => [e.id, e.tupletId] as const));
+  const bars: EventRow[][] = [[]];
+  for (const e of events) {
+    if (e.kind === "barline") bars.push([]);
+    else if (playable(e)) bars[bars.length - 1].push(e);
+  }
+  for (const bar of bars) {
+    if (bar.length === 0) continue;
+    readBar(bar, groups, startedPlain, (eventId, repetition, at, counted) =>
+      out.set(`${eventId}:${repetition}`, { tick: at, countedGroup: counted ? (tupletOf.get(eventId) ?? null) : null }),
+    );
+  }
+  return out;
 }

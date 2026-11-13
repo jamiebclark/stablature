@@ -192,6 +192,7 @@ export function PasteTab({
         {reading.kind === "ready" && draft ? (
           <>
             <TabStaff
+              showRhythm
               events={draft.events}
               annotations={draft.annotations}
               tuning={reading.tuning}

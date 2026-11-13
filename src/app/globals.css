@@ -75,6 +75,13 @@
   --col-pad: 0.6rem;
   --string-height: 1.55rem;
   --staff-row: 1.1rem;
+  --rhythm-row: 1.35rem;
+  --rhythm-lead: calc((var(--string-height) - var(--staff-text)) / 2);
+  --rhythm-stem: calc(var(--rhythm-lead) + 0.45rem);
+  --rhythm-beam: 2px;
+  --rhythm-beam-gap: 2px;
+  --rhythm-flag-step: 4.05px;
+  --rhythm-stub: 0.35rem;
   /* 7px, not 0.6em (6.72px): Linux Chrome rounds glyph advances to whole pixels */
   --chord-ch: 0.4375rem;
   --chord-gap: 0.25rem;
@@ -98,6 +105,8 @@
     --col-pad: 0.5rem;
     --string-height: 1.3rem;
     --staff-row: 0.95rem;
+    --rhythm-row: 1.4rem;
+    --rhythm-stem: calc(var(--rhythm-lead) + 0.5rem);
   }
 }
 
@@ -365,8 +374,110 @@ button,
 .tab-bracket-label {
   color: var(--text-dim);
 }
+/* The rhythm row under the tab: solid currentColor, never opacity or color-mix. */
 .tab-rhythm {
-  color: var(--text-dim);
+  position: relative;
+  height: var(--rhythm-row);
+  color: var(--text);
+}
+.tab-rhythm [data-part="stem"] {
+  position: absolute;
+  left: 50%;
+  top: calc(-1 * var(--rhythm-lead));
+  width: 1px;
+  height: var(--rhythm-stem);
+  background: currentColor;
+  transform: translateX(-50%);
+}
+.tab-rhythm[data-duration="h"] [data-part="stem"] {
+  height: calc(var(--rhythm-stem) / 2);
+}
+.tab-rhythm [data-part="beam"],
+.tab-rhythm [data-part="stub"] {
+  position: absolute;
+  height: var(--rhythm-beam);
+  background: currentColor;
+  /* level k sits (k - 1) steps above the stem's lower end */
+  bottom: calc(100% - var(--rhythm-stem) + var(--rhythm-lead) + (var(--level, 1) - 1) * (var(--rhythm-beam) + var(--rhythm-beam-gap)));
+}
+.tab-rhythm [data-part="beam"][data-level="2"],
+.tab-rhythm [data-part="stub"][data-level="2"] {
+  --level: 2;
+}
+.tab-rhythm [data-part="beam"][data-level="3"],
+.tab-rhythm [data-part="stub"][data-level="3"] {
+  --level: 3;
+}
+/* A connector's spacer: the arriving column's beam runs the whole gap. */
+.tab-rhythm [data-part="beam"]:not([data-side]) {
+  left: 0;
+  right: 0;
+}
+.tab-rhythm [data-part="beam"][data-side="left"] {
+  left: 0;
+  right: 50%;
+}
+.tab-rhythm [data-part="beam"][data-side="right"] {
+  left: 50%;
+  right: 0;
+}
+.tab-rhythm [data-part="stub"] {
+  width: min(var(--rhythm-stub), 50%);
+}
+.tab-rhythm [data-part="stub"][data-side="left"] {
+  right: 50%;
+}
+.tab-rhythm [data-part="stub"][data-side="right"] {
+  left: 50%;
+}
+.tab-rhythm [data-part="rest"],
+.tab-rhythm [data-part="oval"] {
+  position: absolute;
+  top: calc(-1 * var(--rhythm-lead));
+  left: 50%;
+  height: var(--rhythm-stem);
+  width: calc(var(--rhythm-stem) * 0.6);
+  transform: translateX(-50%);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6px;
+}
+.tab-rhythm [data-part="flag"] {
+  position: absolute;
+  left: 50%;
+  width: 7px;
+  height: 4px;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2px;
+  /* its lower left sits on the stem's lower end; level k rises one beam step */
+  bottom: calc(100% - var(--rhythm-stem) + var(--rhythm-lead) + (var(--level, 1) - 1) * var(--rhythm-flag-step));
+  margin-left: -0.5px;
+}
+.tab-rhythm [data-part="flag"][data-level="2"] {
+  --level: 2;
+}
+.tab-rhythm [data-part="flag"][data-level="3"] {
+  --level: 3;
+}
+/* A group's bracket drawn under the tab: a 1px line with hooks at the outer edges. */
+.tab-rhythm .tab-bracket {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--rhythm-stem) - var(--rhythm-lead) + 2px - 0.2rem);
+  height: 0.2rem;
+  border-bottom: 1px solid;
+}
+.tab-rhythm .tab-bracket-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2.5px;
+  font-size: 12px;
+  line-height: 9px;
+  text-align: center;
 }
 
 .tab-column-selected .tab-bracket {
@@ -521,4 +632,9 @@ button,
 /* Long-press on a capture column must not start a text selection or callout. */
 .select-none {
   -webkit-touch-callout: none;
+}
+
+/* Capture: the rhythm row takes the band's top padding (research R1: content 189.6, rows 188.0, band outer unchanged). */
+[data-testid="tab-band"][data-rhythm] {
+  padding-top: 0;
 }

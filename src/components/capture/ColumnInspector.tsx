@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { NoteSymbol } from "@/components/rhythm/NoteSymbol";
 import { Button, Input } from "@/components/ui";
 import type { ColumnProperty, PropertyContext } from "@/lib/capture/properties";
 
@@ -165,14 +166,16 @@ function SegmentRow({ property, ctx }: { property: ColumnProperty; ctx: Property
           type="button"
           aria-pressed={segment.on}
           aria-label={segment.ariaLabel}
+          title={segment.ariaLabel}
+          data-duration={segment.value}
           onClick={() => void property.commit(ctx, segment.value)}
-          className={`min-h-11 min-w-0 rounded-md border px-0.5 font-mono text-xs ${
+          className={`flex min-h-11 min-w-0 items-center justify-center rounded-md border px-0.5 font-mono text-xs ${
             segment.on
               ? "border-accent bg-accent text-accent-text"
               : "border-border-subtle bg-bg-raised text-text"
           }`}
         >
-          {segment.label}
+          {segment.symbol ? <NoteSymbol id={segment.symbol} /> : segment.label}
         </button>
       ))}
     </div>

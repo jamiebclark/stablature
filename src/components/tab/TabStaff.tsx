@@ -36,6 +36,9 @@ import { layoutReading, type ReadingLayout } from "@/lib/reading/labels";
 import type { StaffView } from "@/lib/reading/view";
 import type { ColumnMark, StaffMarks } from "@/lib/reading/marks";
 import type { Tuning } from "@/lib/tunings";
+import { barPositions } from "@/lib/rhythm/notation";
+import { groupLabels, rhythmMarks, type RhythmMark } from "@/lib/rhythm/beams";
+import { RhythmCell } from "./RhythmCell";
 import { useLongPress } from "@/components/capture/useLongPress";
 
 export interface StaffReading {
@@ -225,10 +228,19 @@ export function TabStaff({
   );
   const hasBarRow = !!barNumbers && layout.columns.length > 0;
   const hasChords = layout.columns.some((column) => column.chord !== null);
-  const hasTuplets = spans.length > 0;
   const hasRhythm =
     showRhythm && layout.columns.some((column) => column.duration !== null);
+  // The one place a group's bracket and number go: under the tab with the rhythm, above it as ever without.
+  const bracketRow: "above" | "under" = hasRhythm ? "under" : "above";
+  // Whether a row above the cells is drawn for them; the offset, gutter, caret and gaps all read this.
+  const hasTuplets = bracketRow === "above" && spans.length > 0;
+  const labels = useMemo(() => groupLabels(spans), [spans]);
   const marks = reading?.marks && reading.marks.any ? reading.marks : null;
+  // One position map for both densities, so a compact repeat and its expansion read the same beats.
+  const rhythm = useMemo(
+    () => (hasRhythm ? rhythmMarks(layout.columns, barPositions(events), density) : null),
+    [hasRhythm, layout, events, density],
+  );
 
   const showCaret = insertAfterEventId !== undefined;
   /*
@@ -262,6 +274,8 @@ export function TabStaff({
     const key = `${column.eventId}-${column.repetition}`;
     const removed = marks?.removals.get(key) ?? 0;
     const mark = marks?.columns.get(key);
+    const own = rhythm?.[index] ?? null;
+    const arriving = own?.kind === "note" ? own.left : 0;
     return (
       <Fragment key={key}>
         {marks && removed > 0 ? (
@@ -273,7 +287,9 @@ export function TabStaff({
             showTupletRow={hasTuplets}
             showRhythmRow={hasRhythm}
             stringCount={layout.stringCount}
+            beams={arriving}
             bracket={!!span && !!previous && spanAt(index - 1) === span}
+            bracketUnder={bracketRow === "under"}
           />
         ) : null}
         {column.connectors.some(Boolean) ? (
@@ -282,7 +298,10 @@ export function TabStaff({
             showBarRow={hasBarRow}
             showChordRow={hasChords}
             showTupletRow={hasTuplets}
+            showRhythmRow={hasRhythm}
+            beams={arriving}
             bracket={!!span && !!previous && spanAt(index - 1) === span}
+            bracketUnder={bracketRow === "under"}
             selected={selectedEventIds?.has(column.eventId) ?? false}
             active={
               column.eventId === activeEventId &&
@@ -309,7 +328,7 @@ export function TabStaff({
           selected={selectedEventIds?.has(column.eventId) ?? false}
           showChordRow={hasChords}
           showTupletRow={hasTuplets}
-          rhythm={hasRhythm ? (column.duration?.mark ?? "") : null}
+          rhythm={own ?? (hasRhythm ? { kind: "none" } : null)}
           diff={marks ? { mark, parent: marks.parentLabel } : null}
           tuplet={
             span
@@ -317,13 +336,12 @@ export function TabStaff({
                   count: span.count,
                   start: index === span.start,
                   end: index === span.end,
-                  // Centred over the middle column of the span. On
-                  // the first one it sits above the opening note
-                  // rather than above the bracket it labels.
-                  labelled: index === Math.floor((span.start + span.end) / 2),
+                  // The number is drawn once per group id, centred on its middle column.
+                  labelled: labels.get(span.tupletId) === index,
                 }
               : null
           }
+          bracketUnder={bracketRow === "under"}
           onSelect={
             onSelectColumn ? () => onSelectColumn(column.eventId) : undefined
           }
@@ -351,7 +369,9 @@ export function TabStaff({
         showTupletRow={hasTuplets}
         showRhythmRow={hasRhythm}
         stringCount={layout.stringCount}
+        beams={0}
         bracket={endsInOpenGroup}
+        bracketUnder={bracketRow === "under"}
       />
     ) : null;
 
@@ -369,7 +389,7 @@ export function TabStaff({
             <span className="bg-transparent px-0">{label}</span>
           </div>
         ))}
-        {hasRhythm ? <div className="h-[var(--staff-row)]" /> : null}
+        {hasRhythm ? <div className="h-[var(--rhythm-row)]" /> : null}
         {marks ? <div className="tab-diff-mark" /> : null}
       </>
     );
@@ -383,6 +403,7 @@ export function TabStaff({
         data-surface={surface}
         data-testid="tab-staff"
         data-pass={pass}
+        data-rhythm={hasRhythm ? "" : undefined}
       >
         <div className="tab-wrapped-body">
           <div className="tab-gutter" aria-hidden>
@@ -447,6 +468,7 @@ export function TabStaff({
       data-surface={surface}
       data-testid="tab-staff"
       data-pass={pass}
+      data-rhythm={hasRhythm ? "" : undefined}
     >
       <div className="flex items-stretch gap-1">
         {/* String labels stay put while the staff scrolls. */}
@@ -534,8 +556,8 @@ interface ColumnProps {
   selected: boolean;
   showChordRow: boolean;
   showTupletRow: boolean;
-  /** The mark text ("" for none), or null when the row is not drawn at all. */
-  rhythm: string | null;
+  /** What the rhythm row draws, or null when the row is not drawn at all. */
+  rhythm: RhythmMark | null;
   /** Null when the mark row is not drawn; otherwise this column's mark, if it has one. */
   diff: { mark: ColumnMark | undefined; parent: string } | null;
   tuplet: {
@@ -544,6 +566,8 @@ interface ColumnProps {
     end: boolean;
     labelled: boolean;
   } | null;
+  /** Draw the bracket in the rhythm row (true) or the row above the cells (false). */
+  bracketUnder: boolean;
   onSelect?: () => void;
   onInspect?: () => void;
 }
@@ -564,6 +588,7 @@ function Column({
   rhythm,
   diff,
   tuplet,
+  bracketUnder,
   onSelect,
   onInspect,
 }: ColumnProps) {
@@ -600,25 +625,7 @@ function Column({
 
       {showTupletRow ? (
         <div className="relative h-[var(--staff-row)]">
-          {tuplet ? (
-            <div
-              className="tab-bracket absolute inset-x-0 bottom-0 border-t"
-              data-testid="tab-bracket"
-              data-start={tuplet.start ? "" : undefined}
-              style={{
-                borderLeftWidth: tuplet.start ? 1 : 0,
-                borderRightWidth: tuplet.end ? 1 : 0,
-                borderLeftStyle: "solid",
-                borderRightStyle: "solid",
-                height: "0.2rem",
-              }}
-            />
-          ) : null}
-          {tuplet?.labelled && tuplet.count !== null ? (
-            <div className="tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]">
-              {tuplet.count}
-            </div>
-          ) : null}
+          <Bracket tuplet={tuplet} under={false} />
         </div>
       ) : null}
 
@@ -637,12 +644,9 @@ function Column({
       </div>
 
       {rhythm !== null ? (
-        <div
-          className="tab-rhythm flex h-[var(--staff-row)] items-center justify-center text-[12px] leading-none"
-          data-testid="tab-rhythm"
-        >
-          {rhythm}
-        </div>
+        <RhythmCell mark={rhythm}>
+          {bracketUnder ? <Bracket tuplet={tuplet} under /> : null}
+        </RhythmCell>
       ) : null}
 
       {diff ? (
@@ -786,7 +790,10 @@ function Gap({
   showBarRow,
   showChordRow,
   showTupletRow,
+  showRhythmRow,
+  beams,
   bracket,
+  bracketUnder,
   selected,
   active,
 }: {
@@ -794,7 +801,11 @@ function Gap({
   showBarRow: boolean;
   showChordRow: boolean;
   showTupletRow: boolean;
+  showRhythmRow: boolean;
+  /** Beam levels the arriving column shares with the one before it: they run across the gap. */
+  beams: number;
   bracket: boolean;
+  bracketUnder: boolean;
   selected: boolean;
   active: boolean;
 }) {
@@ -824,6 +835,56 @@ function Gap({
           </div>
         ))}
       </div>
+      {showRhythmRow ? <GapBeams beams={beams} bracket={bracketUnder && bracket} /> : null}
+    </div>
+  );
+}
+
+/**
+ * A group's bracket and, on the one column that carries it, its number. One element for both places: above the
+ * cells it is a row of its own, under them it sits inside the rhythm cell and CSS places it.
+ */
+function Bracket({ tuplet, under }: { tuplet: ColumnProps["tuplet"]; under: boolean }) {
+  if (!tuplet) return null;
+  return (
+    <>
+      <div
+        className={under ? "tab-bracket" : "tab-bracket absolute inset-x-0 bottom-0 border-t"}
+        data-testid="tab-bracket"
+        data-start={tuplet.start ? "" : undefined}
+        style={{
+          borderLeftWidth: tuplet.start ? 1 : 0,
+          borderRightWidth: tuplet.end ? 1 : 0,
+          borderLeftStyle: "solid",
+          borderRightStyle: "solid",
+          height: "0.2rem",
+        }}
+      />
+      {tuplet.labelled && tuplet.count !== null ? (
+        <div
+          className={
+            under
+              ? "tab-bracket-label"
+              : "tab-bracket-label absolute inset-x-0 top-0 text-center text-[12px] leading-[12px]"
+          }
+        >
+          {tuplet.count}
+        </div>
+      ) : null}
+    </>
+  );
+}
+
+/** The rhythm row's spacer in a gap: full-width beams for the levels the arriving column shares. */
+function GapBeams({ beams, bracket }: { beams: number; bracket: boolean }) {
+  return (
+    <div className="tab-rhythm" aria-hidden="true">
+      {bracket ? <div className="tab-bracket" /> : null}
+      {[1, 2, 3]
+        .filter((k) => k <= beams)
+        .map((k) => (
+          <div key={k} data-part="beam" data-level={k} />
+        ))}
     </div>
   );
 }
@@ -850,7 +911,9 @@ function RemovalGap({
   showTupletRow,
   showRhythmRow,
   stringCount,
+  beams,
   bracket,
+  bracketUnder,
 }: {
   count: number;
   parent: string;
@@ -859,8 +922,10 @@ function RemovalGap({
   showTupletRow: boolean;
   showRhythmRow: boolean;
   stringCount: number;
+  beams: number;
   /** The gap sits inside a group, so the group's line runs across it like a connector's does. */
   bracket: boolean;
+  bracketUnder: boolean;
 }) {
   return (
     <div
@@ -887,7 +952,7 @@ function RemovalGap({
           <div key={index} className="tab-cell" />
         ))}
       </div>
-      {showRhythmRow ? <div className="h-[var(--staff-row)]" /> : null}
+      {showRhythmRow ? <GapBeams beams={beams} bracket={bracketUnder && bracket} /> : null}
       <div className="tab-diff-mark">{`−${count}`}</div>
     </div>
   );

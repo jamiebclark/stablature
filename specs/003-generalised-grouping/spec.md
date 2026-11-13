@@ -191,7 +191,7 @@ The capturer is mid-flow and hears a triplet. They tap the triplet button in the
 
 - **FR-018**: Copy, cut and delete MUST keep their places and their behaviour. The three new controls come after delete, in the order tuplet, group, ungroup, and cancel stays last.
 - **FR-019**: After a group or ungroup action the selection MUST end and the cursor MUST stay where it was.
-- **FR-020**: At 375×667 with all seven controls present, labels MUST NOT wrap, the staff MUST keep every string of a four-, five- or six-string part in view with a chord row and a bracket row, and the page MUST NOT scroll. Where a part does not fit, at seven strings or on a shorter screen, every string and the bracket MUST be reachable with a swipe. *(Amended by spec 007: this is the wording from 007 FR-064; the earlier six-string allowance is withdrawn.)*
+- **FR-020**: At 375×667 with all seven controls present, labels MUST NOT wrap, the staff MUST keep every string of a four-, five- or six-string part in view with a chord row and a bracket row, and the page MUST NOT scroll. Where a part does not fit, at seven strings or on a shorter screen, every string and the bracket MUST be reachable with a swipe. *(Amended by spec 007: this is the wording from 007 FR-064; the earlier six-string allowance is withdrawn.)* *(Amended by spec 009: the capture staff carries a rhythm row, and the 375x667 fit is re-measured with it; see docs/DECISIONS.md.)*
 
 **The main toolbar's triplet button**
 
@@ -214,7 +214,7 @@ The capturer is mid-flow and hears a triplet. They tap the triplet button in the
 
 - **FR-030**: A counted tuplet MUST draw as it does today, on the staff and in the text export. Output for every part with no plain group MUST be unchanged, byte for byte.
 - **FR-031**: A plain group MUST draw as a bracket with no number, on the staff and in the text export, following the notation table. It MUST reach the same extents as a counted tuplet over the same columns.
-- **FR-032**: Plain groups MUST use the same bracket row as counted tuplets, on every surface that draws a staff, and the export's option to hide tuplets MUST hide both.
+- **FR-032**: Plain groups MUST use the same bracket row as counted tuplets, on every surface that draws a staff, and the export's option to hide tuplets MUST hide both. *(Amended by spec 009: on a staff that draws rhythm, a group's bracket and numeral move under the tab, inside the rhythm row below the beams; on a staff that draws none they stay above the strings as before.)*
 - **FR-033**: A group MUST draw as one unbroken bracket with at most one number across any repeated columns inside it, in both densities.
 - **FR-034**: The bracket line MUST have a contrast of at least 3:1 against every surface a staff is drawn on, in both themes. If it does not read at actual size, the fix MUST be a colour named per theme, not opacity over a surface.
 
@@ -249,7 +249,7 @@ The capturer is mid-flow and hears a triplet. They tap the triplet button in the
 - **SC-006**: After any group or ungroup action, every counted tuplet in the part that the action touched holds exactly as many columns as its number, and no dissolved group leaves a remnant.
 - **SC-007**: A group can be removed from both routes, the selection toolbar and the column sheet, with one tap once the toolbar or sheet is open.
 - **SC-008**: The bracket line measures at least 3:1 contrast on every staff surface in both themes. A person looking at a phone-sized view at actual size in both themes confirms a plain bracket is visible and reads as a bracket.
-- **SC-009**: On a 375×667 viewport in both themes, the selection toolbar with all seven controls shows every label on one line, the staff keeps every string of a four- or five-string part in view, a six-string part has at most one string out of view with every string and the bracket reachable by a swipe, and the page does not scroll. *(Amended by spec 007: at 375×667 the staff keeps every string of a four-, five- or six-string part in view with a chord row and a bracket row (before: six strings could leave one string out of view); a seven-string part or a shorter screen is reached by swipe.)*
+- **SC-009**: On a 375×667 viewport in both themes, the selection toolbar with all seven controls shows every label on one line, the staff keeps every string of a four- or five-string part in view, a six-string part has at most one string out of view with every string and the bracket reachable by a swipe, and the page does not scroll. *(Amended by spec 007: at 375×667 the staff keeps every string of a four-, five- or six-string part in view with a chord row and a bracket row (before: six strings could leave one string out of view); a seven-string part or a shorter screen is reached by swipe.)* *(Amended by spec 009: the capture staff carries a rhythm row, and the 375x667 fit is re-measured with it; see docs/DECISIONS.md.)*
 - **SC-010**: A capturer who never groups anything sees no change in taps, toolbar layout or stored rows, apart from the new field being null.
 
 ## Out of Scope

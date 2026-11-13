@@ -206,6 +206,7 @@ export function CaptureScreen({
 
   const columns = events ?? [];
   /** The column to insert after; null when the cursor is at the start. */
+  const hasRhythm = columns.some((event) => readDuration(event.durationHint) !== null);
   const afterId = cursor === "end" ? (columns.at(-1)?.id ?? null) : cursor;
   const band = useCaptureBand({
     content: events,
@@ -673,12 +674,14 @@ export function CaptureScreen({
           starts at the bottom and keeps its overflow on the side a swipe can reach. */}
       <div
         data-testid="tab-band"
+        data-rhythm={hasRhythm ? "" : undefined}
         ref={bandRef}
         className="flex min-h-0 flex-1 flex-col-reverse gap-y-(--line-gap) overflow-y-auto px-3 pt-1"
       >
         {part ? (
           <div className="shrink-0" style={wrapped ? { paddingTop: runway } : undefined}>
             <TabStaff
+              showRhythm
               events={columns}
               tuning={tuning}
               annotations={annotations ?? []}

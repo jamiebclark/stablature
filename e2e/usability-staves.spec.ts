@@ -52,11 +52,11 @@ const measure = (page: Page) =>
           if (!near(b.left, c.left) || !near(b.right, c.right)) bad.push(`bracket off column ${key}`);
         }
         const note = col.querySelector(".tab-cell span");
-        const rhythm = col.querySelector('[data-testid="tab-rhythm"]');
-        if (note && rhythm && rhythm.textContent) {
+        const rhythm = col.querySelector('[data-testid="tab-rhythm"] [data-part="stem"], [data-testid="tab-rhythm"] [data-part="rest"], [data-testid="tab-rhythm"] [data-part="oval"]');
+        if (note && rhythm) {
           const a = note.getBoundingClientRect();
-          const b = textRect(rhythm);
-          if (!near(a.left + a.width / 2, b.left + b.width / 2)) bad.push(`mark off note ${key}: ${rhythm.textContent}`);
+          const b = rhythm.getBoundingClientRect();
+          if (!near(a.left + a.width / 2, b.left + b.width / 2)) bad.push(`mark off note ${key}: ${rhythm.getAttribute("data-part")}`);
         }
       }
       const labels = [...staff.querySelectorAll('[data-testid="tab-column"] > div.text-accent')].filter((e) => e.textContent);

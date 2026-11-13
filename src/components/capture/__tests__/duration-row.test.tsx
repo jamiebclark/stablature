@@ -13,7 +13,7 @@ const ctxFor = (durationHint: unknown) =>
 function lit(view: ReturnType<typeof render>): string[] {
   return Array.from(view.getByTestId("duration-row").querySelectorAll("button"))
     .filter((b) => b.getAttribute("aria-pressed") === "true")
-    .map((b) => b.textContent ?? "");
+    .map((b) => b.getAttribute("data-duration") ?? "");
 }
 
 describe("duration row", () => {
@@ -32,7 +32,7 @@ describe("duration row", () => {
         view.rerender(
           <ColumnInspector properties={[p]} ctx={ctxFor(current)} title="Column 1" onClose={() => {}} />,
         );
-        expect(lit(view)).toEqual(current === null ? [] : [DURATIONS.find((d) => d.id === current)!.mark]);
+        expect(lit(view)).toEqual(current === null ? [] : [current]);
         view.unmount();
       }
     }
@@ -56,6 +56,17 @@ describe("duration row", () => {
       expect(lit(v)).toEqual([]);
       v.unmount();
     }
+  });
+  it("draws symbols in order, named in words, with no letters", () => {
+    const view = render(<ColumnInspector properties={[property]} ctx={ctxFor("q")} title="C" onClose={() => {}} />);
+    const buttons = Array.from(view.getByTestId("duration-row").querySelectorAll("button"));
+    expect(buttons.map((b) => b.getAttribute("data-duration"))).toEqual(DURATIONS.map((d) => d.id));
+    buttons.forEach((b, i) => {
+      expect(b.getAttribute("aria-label")).toBe(DURATIONS[i].words);
+      expect(b.getAttribute("title")).toBe(DURATIONS[i].words);
+      expect(b.textContent).toBe("");
+      expect(b.querySelector("svg[data-part=note-symbol]")).not.toBeNull();
+    });
   });
   it("is not a toolbar control", () => {
     expect(JSON.stringify(TOOLBAR_CONTROLS)).not.toContain("duration");
