@@ -9,7 +9,7 @@
  * one actually goes.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GitBranch, Pencil, Play, Plus, Trash2 } from "lucide-react";
@@ -18,6 +18,8 @@ import { ExportSong } from "@/components/app/ExportSong";
 import { PasteTab } from "@/components/app/PasteTab";
 import { ViewControl } from "@/components/reading/ViewControl";
 import { useStaffView } from "@/components/reading/useStaffView";
+import { useCardTrack } from "@/components/reading/useCardTrack";
+import { useWide } from "@/components/reading/useWide";
 import { VariantLine } from "@/components/reading/VariantLine";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader, Panel } from "@/components/ui";
@@ -58,6 +60,9 @@ export function SongView({ songId }: { songId: string }) {
   const [pasting, setPasting] = useState(false);
   const [scrollTo, setScrollTo] = useState<string | null>(null);
   const router = useRouter();
+  const wide = useWide();
+  const listRef = useRef<HTMLUListElement>(null);
+  useCardTrack(listRef, wide);
 
   // Compared once per read of the song, and only when the whole song has arrived (FR-026).
   const comparisons = useMemo(
@@ -93,7 +98,7 @@ export function SongView({ songId }: { songId: string }) {
   );
 
   return (
-    <main className="mx-auto max-w-3xl px-4 pb-6 pt-3">
+    <main className="mx-auto max-w-3xl wide:max-w-screen-2xl px-4 pb-6 pt-3 wide:pl-[max(0.5rem,var(--safe-left))] wide:pr-[max(0.5rem,var(--safe-right))]">
       <PageHeader
         title={song.title}
         subtitle={
@@ -251,7 +256,7 @@ export function SongView({ songId }: { songId: string }) {
             </div>
           </EmptyState>
         ) : (
-          <ul className="grid gap-3">
+          <ul ref={listRef} className="reading-cards grid gap-3">
             {parts.map((part) => (
               <li key={part.id} id={`part-${part.id}`}>
                 <PartCard
@@ -265,6 +270,7 @@ export function SongView({ songId }: { songId: string }) {
                   comparison={comparisons?.get(part.id)}
                   songId={songId}
                   bpm={song.bpm}
+                  wide={wide}
                 />
               </li>
             ))}
@@ -274,7 +280,7 @@ export function SongView({ songId }: { songId: string }) {
 
       <div
         data-testid="song-actions"
-        className="no-print sticky bottom-0 z-10 -mx-4 mt-4 flex gap-2 border-t border-border-subtle bg-bg px-4 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] fine:hidden"
+        className="no-print sticky bottom-0 z-10 -mx-4 wide:-mx-2 mt-4 flex gap-2 border-t border-border-subtle bg-bg px-4 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] wide:pl-[max(0.5rem,env(safe-area-inset-left))] wide:pr-[max(0.5rem,env(safe-area-inset-right))] fine:hidden"
       >
         {actions}
       </div>
@@ -298,6 +304,7 @@ function PartCard({
   comparison,
   songId,
   bpm,
+  wide,
 }: {
   part: PartRow;
   parts: readonly PartRow[];
@@ -309,6 +316,7 @@ function PartCard({
   comparison: VariantComparison | undefined;
   songId: string;
   bpm: number | null;
+  wide: boolean;
 }) {
   const [renaming, setRenaming] = useState(false);
   const [name, setName] = useState(part.name ?? "");
@@ -328,7 +336,7 @@ function PartCard({
   );
 
   return (
-    <Card className="relative">
+    <Card className="reading-card relative">
       <div className="mb-2 flex flex-wrap items-center gap-2">
         <Link
           href={partCaptureHref(songId, part.id)}
@@ -414,6 +422,8 @@ function PartCard({
           density={density}
           surface="raised"
           showRhythm
+          wrap={wide}
+          ruler={wide}
           barNumbers={{ offset: 0 }}
           reading={{ view, partEvents: events, marks }}
         />

@@ -55,7 +55,7 @@ for (const size of [
   test(`INV-037 the followed column is never under the cluster at ${size.width}x${size.height}`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await recorder(page);
-    const { playUrl } = await seed(page, LONG, { bpm: 300, passes: 3 });
+    const { playUrl } = await seed(page, LONG, { bpm: 300, entries: 3 });
     await page.setViewportSize(size);
     await page.goto(playUrl);
     await expect(page.getByTestId("tab-staff").first()).toBeVisible();
@@ -78,7 +78,7 @@ for (const size of [
 test("INV-037 following resumes after the four-second rest", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await recorder(page);
-  const { playUrl } = await seed(page, LONG, { bpm: 300, passes: 3 });
+  const { playUrl } = await seed(page, LONG, { bpm: 300, entries: 3 });
   await page.setViewportSize({ width: 375, height: 667 });
   await page.goto(playUrl);
   await page.getByTestId("click-start").click();

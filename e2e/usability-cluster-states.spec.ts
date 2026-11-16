@@ -1,6 +1,6 @@
 /**
  * INV-026, each state forced by its real route, x {collapsed, open} x **Sz**. usability-reach.spec.ts checks the idle
- * height alone. `click-state` is visible when it must be, the cluster is at least 44 high and at most 60 idle, the last
+ * height alone. `click-state` is visible when it must be, the cluster is at least 44 high and held at its running height idle (spec 010), the last
  * staff's bottom clears it, and print hides it.
  */
 import { expect, test, type Page } from "@playwright/test";
@@ -147,7 +147,7 @@ for (const state of STATES) {
   }
 }
 
-test("INV-026 idle, collapsed, at most 60 high with nothing to say", async ({ page }) => {
+test("INV-026 idle, collapsed, held at its running height with nothing to say", async ({ page }) => {
   const { playUrl } = await seed(page, TIMED, { bpm: 120 });
   await page.setViewportSize(SIZES[0]);
   await page.goto(playUrl);
@@ -155,7 +155,12 @@ test("INV-026 idle, collapsed, at most 60 high with nothing to say", async ({ pa
   await setPanel(page, false);
   const box = (await page.getByTestId("click-bar").boundingBox())!;
   expect(box.height).toBeGreaterThanOrEqual(44);
-  expect(box.height).toBeLessThanOrEqual(60);
+  // Spec 010 amends spec 007 SC-010: idle is held at the running height (no jump on start), and is held at the measured 97 at 375 (the status slot holds the longest message), plus 1.
+  expect(box.height).toBeLessThanOrEqual(98);
+  await page.getByTestId("click-start").click();
+  await expect(page.getByTestId("click-stop")).toBeVisible();
+  const running = (await page.getByTestId("click-bar").boundingBox())!;
+  expect(Math.abs(box.height - running.height), "idle equals running height").toBeLessThanOrEqual(0.5);
 });
 
 /** INV-026, round 3: `fell behind` by a real stall of the page; no engine call is stubbed. */

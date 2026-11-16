@@ -3,7 +3,7 @@ import { installRecorder, seedPlayable } from "./click-helpers";
 
 test("the bar is reachable at the start and the end of a long song, with 44px targets", async ({ page, isMobile }) => {
   await installRecorder(page);
-  await seedPlayable(page, { passes: 12 });
+  await seedPlayable(page, { entries: 12 });
   const bar = page.getByTestId("click-bar");
   for (const where of [0, 0.5, 1]) {
     await page.evaluate((f) => window.scrollTo(0, (document.body.scrollHeight - innerHeight) * f), where);

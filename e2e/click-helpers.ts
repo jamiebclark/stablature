@@ -177,12 +177,13 @@ const arrangedPasses = (page: Page) =>
   );
 
 /**
- * A song with a tempo of 120 and one part with two notes, arranged `passes` times when more than one.
+ * A song with a tempo of 120 and one part with two notes, arranged `passes` times when more than one,
+ * or as `entries` separate entries of the part (one pass each) when that is given.
  * Ends on the play view.
  */
 export async function seedPlayable(
   page: Page,
-  opts: { passes?: number; tempo?: boolean; durations?: (number | null)[] } = {},
+  opts: { passes?: number; entries?: number; tempo?: boolean; durations?: (number | null)[] } = {},
 ) {
   const { songUrl } = await startCapturing(page);
   await fret(page, "E", 7).click();
@@ -203,6 +204,15 @@ export async function seedPlayable(
   await page.getByRole("button", { name: "Each part once" }).click();
   // Each write must land before the page is left, or `page.goto` can drop it.
   await expect.poll(() => arrangedPasses(page)).toBe(1);
+  const entries = opts.entries ?? 1;
+  for (let i = 1; i < entries; i++) {
+    const add = page.getByRole("button", { name: /^Add part .* to the arrangement$/ }).first();
+
+    if (!(await add.isVisible())) await page.getByRole("button", { name: "Add to the arrangement" }).click();
+
+    await add.click();
+    await expect.poll(() => arrangedPasses(page)).toBe(i + 1);
+  }
   const passes = opts.passes ?? 1;
   if (passes > 1) {
     await page.getByRole("button", { name: "One more repeat" }).waitFor({ state: "attached", timeout: 2000 }).catch(async () => {

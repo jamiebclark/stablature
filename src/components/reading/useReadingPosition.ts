@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, type RefObject } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, type RefObject } from "react";
+import type { DrawnPass } from "@/lib/arrangement/passes";
+import { livePassWords, type DrawnCard } from "@/lib/reading/cards";
 import { mayFollow } from "@/lib/reading/position";
 
 export interface Position {
@@ -15,20 +17,50 @@ const SCROLL_KEYS = new Set(["PageUp", "PageDown", "Home", "End", "ArrowUp", "Ar
  * Owns the one highlighted column in the play view. The class is written straight onto the DOM so a
  * moving highlight never re-renders the staff, and is reapplied after any commit of `passes`.
  */
-export function useReadingPosition(passes: unknown, cluster?: RefObject<HTMLElement | null>) {
+export function useReadingPosition(
+  passes: readonly DrawnPass[],
+  cluster?: RefObject<HTMLElement | null>,
+  cardOf?: readonly number[],
+  cards?: readonly DrawnCard[],
+) {
   const current = useRef<Position | null>(null);
   const element = useRef<Element | null>(null);
+  const card = useRef<Element | null>(null);
+  // Read inside `apply` so the callback stays stable while the maps change.
+  const maps = useRef({ passes, cardOf, cards });
+  useLayoutEffect(() => {
+    maps.current = { passes, cardOf, cards };
+  });
   const lastScroll = useRef<number | null>(null);
 
   const apply = useCallback((follow: boolean) => {
     element.current?.classList.remove(CLASS);
     element.current = null;
+    if (card.current) {
+      const live = card.current.querySelector('[data-testid="card-passes-live"]');
+      if (live) live.textContent = "";
+      card.current.removeAttribute("data-reading");
+      card.current.removeAttribute("data-live-words");
+      card.current = null;
+    }
     const at = current.current;
     if (!at) return;
-    const el = document.querySelector(
-      `[data-pass="${at.pass}"] [data-column="${CSS.escape(at.key)}"]`,
-    );
+    const { passes: all, cardOf: of, cards: drawn } = maps.current;
+    const index = of?.[at.pass];
+    const li = index === undefined ? null : document.querySelector(`[data-card="${index}"]`);
+    const el = li
+      ? li.querySelector(`[data-column="${CSS.escape(at.key)}"]`)
+      : document.querySelector(`[data-pass="${at.pass}"] [data-column="${CSS.escape(at.key)}"]`);
     if (!el) return;
+    if (li && index !== undefined && drawn) {
+      li.setAttribute("data-reading", "");
+      const live = li.querySelector('[data-testid="card-passes-live"]');
+      const words = livePassWords(drawn[index], all, at.pass);
+      if (live) live.textContent = words ?? "";
+      // The rest words give way only when live words replace them; a single pass keeps its `pass k of n`.
+      if (words) li.setAttribute("data-live-words", "");
+      card.current = li;
+    }
     el.classList.add(CLASS);
     element.current = el;
     if (follow && mayFollow(lastScroll.current, performance.now())) {
@@ -78,6 +110,7 @@ export function useReadingPosition(passes: unknown, cluster?: RefObject<HTMLElem
     const root = document.documentElement;
     const write = () => {
       root.style.scrollPaddingBottom = `${target.offsetHeight}px`;
+      root.style.setProperty("--click-bar-h", `${target.offsetHeight}px`);
     };
     write();
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(write);
@@ -85,6 +118,7 @@ export function useReadingPosition(passes: unknown, cluster?: RefObject<HTMLElem
     return () => {
       observer?.disconnect();
       root.style.scrollPaddingBottom = "";
+      root.style.removeProperty("--click-bar-h");
     };
   }, [cluster]);
 

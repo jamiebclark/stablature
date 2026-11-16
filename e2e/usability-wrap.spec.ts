@@ -20,7 +20,8 @@ const numbers = (page: Page) =>
  * says the part's own facts, and a line never scrolls sideways at any width.
  */
 test("INV-032 bar numbers run on across passes, from 1", async ({ page }) => {
-  const { playUrl } = await seed(page, SIXTEEN, { bpm: 120, passes: 2 });
+  // Two separate entries stay two cards (spec 010 folds one entry's passes into one card).
+  const { playUrl } = await seed(page, SIXTEEN, { bpm: 120, entries: 2 });
   await page.goto(playUrl);
   await expect(page.locator("ol > li")).toHaveCount(2);
   const [first, second] = await numbers(page);
@@ -39,15 +40,25 @@ test("INV-032 capture has no bar numbers", async ({ page }) => {
   await expect(page.getByTestId("tab-bar-number")).toHaveCount(0);
 });
 
-test("INV-033/034 the heading names the pass and counts beats, never a fraction", async ({ page }) => {
-  const { playUrl } = await seed(page, SIXTEEN, { bpm: 120, passes: 2 });
+test("INV-033/034 the heading is on the first card only and counts beats, never a fraction", async ({ page }) => {
+  const { playUrl } = await seed(page, SIXTEEN, { bpm: 120, entries: 2 });
   await page.goto(playUrl);
   const items = page.locator("ol > li");
   await expect(items).toHaveCount(2);
-  await expect(items.nth(0)).toContainText("pass 1 of 2");
-  await expect(items.nth(1)).toContainText("pass 2 of 2");
   await expect(items.nth(0)).toContainText("120 bpm · 4 beats a bar");
   await expect(items.nth(1)).not.toContainText("beats a bar");
+  const head = await items.nth(0).innerText();
+  expect(head).not.toMatch(/\d\s*\/\s*\d/);
+});
+
+test("INV-033/034 two passes of one entry are one card, heading kept, never a fraction", async ({ page }) => {
+  const { playUrl } = await seed(page, SIXTEEN, { bpm: 120, passes: 2 });
+  await page.goto(playUrl);
+  const items = page.locator("ol > li");
+  await expect(items).toHaveCount(1);
+  await expect(items.nth(0).getByTestId("card-passes-rest")).toHaveText("×2 · passes 1–2 of 2");
+  await expect(items.nth(0).getByTestId("card-bars")).toHaveText("bars 1–32");
+  await expect(items.nth(0)).toContainText("120 bpm · 4 beats a bar");
   const head = await items.nth(0).innerText();
   expect(head).not.toMatch(/\d\s*\/\s*\d/);
 });

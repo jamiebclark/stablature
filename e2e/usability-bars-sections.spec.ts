@@ -74,7 +74,7 @@ for (const arr of ARR) {
   });
 }
 
-/** Twice through, so the second card shows what the first pass added. */
+/** Twice through (two entries, so two cards; the folded twin is F11 in wide-fold.spec.ts), so the second card shows what the first pass added. */
 const SHAPES: { name: string; columns: Col[]; numbers: number[][] }[] = [
   // A leading barline opens an empty bar 1, so the first number drawn is not 1.
   { name: "a leading barline", columns: [bar(), ...four], numbers: [[2], [4]] },
@@ -84,7 +84,7 @@ const SHAPES: { name: string; columns: Col[]; numbers: number[][] }[] = [
 
 for (const shape of SHAPES) {
   test(`INV-032 ${shape.name}, twice through`, async ({ page }) => {
-    const { playUrl } = await seedSong(page, [{ key: "a", label: "A", columns: shape.columns }], [{ part: "a", repeat: 2 }]);
+    const { playUrl } = await seedSong(page, [{ key: "a", label: "A", columns: shape.columns }], [{ part: "a" }, { part: "a" }]);
     await page.goto(playUrl);
     await expect(page.locator("ol > li")).toHaveCount(2);
     expect((await cards(page)).map((c) => c.numbers)).toEqual(shape.numbers);
@@ -92,7 +92,7 @@ for (const shape of SHAPES) {
 }
 
 test("INV-032 a song page numbers from 1", async ({ page }) => {
-  const { songUrl } = await seedSong(page, [{ key: "a", label: "A", columns: TWO }], [{ part: "a", repeat: 2 }]);
+  const { songUrl } = await seedSong(page, [{ key: "a", label: "A", columns: TWO }], [{ part: "a" }, { part: "a" }]);
   await page.goto(songUrl);
   await expect(page.getByTestId("tab-bar-number").first()).toHaveText("1");
 });

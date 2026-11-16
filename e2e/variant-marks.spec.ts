@@ -75,15 +75,14 @@ test("the play view marks only the pass that plays the variant", async ({ page }
   await expect(page.getByTestId("roadmap-chip").first()).toContainText("last: A'");
 
   await page.getByRole("link", { name: "Play view" }).click();
-  await expect(page.getByTestId("tab-staff")).toHaveCount(4);
+  await expect(page.getByTestId("tab-staff")).toHaveCount(2);
   const passes = page.locator("ol > li");
-  for (let i = 0; i < 3; i += 1) {
-    await expect(passes.nth(i).getByTestId("variant-line")).toHaveCount(0);
-    await expect(passes.nth(i).getByTestId("tab-diff")).toHaveCount(0);
-    await expect(passes.nth(i).getByTestId("tab-removal")).toHaveCount(0);
-  }
-  await expect(passes.nth(3).getByTestId("variant-line")).toHaveText("Differs from A in bar 1: 1 added");
-  await expect(passes.nth(3).locator('[data-diff="added"]')).toHaveCount(1);
+  // Spec 010 folds A's first three passes into one card with no marks; the variant's pass is its own card.
+  await expect(passes.nth(0).getByTestId("variant-line")).toHaveCount(0);
+  await expect(passes.nth(0).getByTestId("tab-diff")).toHaveCount(0);
+  await expect(passes.nth(0).getByTestId("tab-removal")).toHaveCount(0);
+  await expect(passes.nth(1).getByTestId("variant-line")).toHaveText("Differs from A in bar 1: 1 added");
+  await expect(passes.nth(1).locator('[data-diff="added"]')).toHaveCount(1);
 });
 
 const A: Col[] = [n(5, { chord: "Am" }), n(7), bar(), n(9), n(10), bar(), n(3), n(2)];
@@ -308,12 +307,13 @@ test("INV-030 passes, parents and text entries draw nothing but the pass that pl
   await expect(page.locator('[id^="part-"]').first().locator("[data-diff], [data-testid='tab-removal'], [data-testid='variant-line']")).toHaveCount(0);
   expect(songUrl).toBeTruthy();
   await page.goto(playUrl);
-  await expect(page.getByTestId("tab-staff").nth(6)).toBeVisible();
+  await expect(page.getByTestId("tab-staff").nth(4)).toBeVisible();
+  // Five cards: [A x3, A', P, A, P]; only the second plays the variant.
   const lines: (string | null)[] = [];
-  for (let i = 0; i < 7; i += 1) lines.push((await staffReport(page, i)).line);
-  expect(lines).toEqual([null, null, null, onSongPage.line, null, null, null]);
-  expect(await staffReport(page, 3)).toEqual(onSongPage);
-  for (const i of [0, 1, 2, 4, 5, 6]) {
+  for (let i = 0; i < 5; i += 1) lines.push((await staffReport(page, i)).line);
+  expect(lines).toEqual([null, onSongPage.line, null, null, null]);
+  expect(await staffReport(page, 1)).toEqual(onSongPage);
+  for (const i of [0, 2, 3, 4]) {
     expect((await staffReport(page, i)).counts).toEqual({ changed: 0, added: 0, removed: 0 });
   }
 });

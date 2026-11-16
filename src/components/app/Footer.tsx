@@ -11,10 +11,14 @@ import { usePathname } from "next/navigation";
 export function Footer() {
   const pathname = usePathname();
   if (pathname?.includes("/capture")) return null;
+  // The play view fills the viewport with cards (spec 010); the song page drops it when wide.
+  const play = /\/songs\/[^/]+\/play\/?$/.test(pathname ?? "");
+  if (play) return null;
+  const song = /\/songs\/[^/]+\/?$/.test(pathname ?? "");
 
   return (
     <footer
-      className="mx-auto mt-12 max-w-3xl px-4 text-xs text-text-faint no-print"
+      className={`mx-auto mt-12 max-w-3xl px-4 text-xs text-text-faint no-print${song ? " wide:hidden" : ""}`}
       style={{ paddingBottom: "calc(2rem + var(--safe-bottom))" }}
     >
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border-subtle pt-4">

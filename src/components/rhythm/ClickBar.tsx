@@ -26,11 +26,38 @@ export interface ClickBarProps {
   rootRef?: (el: HTMLDivElement | null) => void;
 }
 
-const STOPPED_WORDS = {
-  hidden: "Stopped because the screen was hidden. Start again when you are ready.",
-  "audio-lost": "Stopped because the device took the audio. Start again when you are ready.",
-  "fell-behind": "Stopped because the click could not keep time. Start again when you are ready.",
+/** Every message the bar can show. The live words and their hidden ghosts both read this, so a new message has a ghost. */
+export const CLICK_WORDS = {
+  noTempo: "Set a tempo to use the click.",
+  idleFollowing: "Click follows the notation.",
+  idlePlainNothingTimed: "Click is a plain beat. Nothing at the start has a note length to follow.",
+  idlePlain: "Click is a plain beat.",
+  stopped: {
+    hidden: "Stopped because the screen was hidden. Start again when you are ready.",
+    "audio-lost": "Stopped because the device took the audio. Start again when you are ready.",
+    "fell-behind": "Stopped because the click could not keep time. Start again when you are ready.",
+  },
+  running: {
+    counting: "Counting in.",
+    following: "Following the notation.",
+    plain: "Plain beat.",
+  },
+  help: {
+    sound: "Can't hear it? Check the silent switch and volume.",
+    soundless: "No sound on this device. The beat is still shown.",
+  },
 } as const;
+
+const IDLE_GHOSTS: string[] = [
+  CLICK_WORDS.noTempo,
+  CLICK_WORDS.idleFollowing,
+  CLICK_WORDS.idlePlainNothingTimed,
+  CLICK_WORDS.idlePlain,
+  ...Object.values(CLICK_WORDS.stopped),
+];
+const RUNNING_GHOSTS: [string, string][] = Object.values(CLICK_WORDS.running).flatMap((w) =>
+  Object.values(CLICK_WORDS.help).map((h): [string, string] => [w, h]),
+);
 
 /* The shape is set by data-level on the box; nothing animates. */
 const SHAPE =
@@ -81,18 +108,18 @@ export function ClickBar({ song, passes, notationReady, cluster, onColumn, onSta
   }, [idle]);
 
   let words: string;
-  if (usable === null) words = "Set a tempo to use the click.";
+  if (usable === null) words = CLICK_WORDS.noTempo;
   else if (idle) {
     words = stopped
-      ? STOPPED_WORDS[stopped]
+      ? CLICK_WORDS.stopped[stopped]
       : follow
-        ? "Click follows the notation."
+        ? CLICK_WORDS.idleFollowing
         : wantFollow
-          ? "Click is a plain beat. Nothing at the start has a note length to follow."
-          : "Click is a plain beat.";
-  } else if (phase === "following") words = "Following the notation.";
-  else if (phase === "plain") words = "Plain beat.";
-  else words = "Counting in.";
+          ? CLICK_WORDS.idlePlainNothingTimed
+          : CLICK_WORDS.idlePlain;
+  } else if (phase === "following") words = CLICK_WORDS.running.following;
+  else if (phase === "plain") words = CLICK_WORDS.running.plain;
+  else words = CLICK_WORDS.running.counting;
 
   // Idle with nothing to report is read aloud, and shown only when the panel is open.
   const quiet = idle && usable !== null && !stopped && !open;
@@ -101,8 +128,9 @@ export function ClickBar({ song, passes, notationReady, cluster, onColumn, onSta
     <div
       ref={rootRef}
       data-testid="click-bar"
-      className="no-print sticky bottom-0 z-10 -mx-4 mt-4 border-t border-border-subtle bg-bg px-4 py-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]"
+      className="no-print fixed inset-x-0 bottom-0 z-10 border-t border-border-subtle bg-bg py-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] wide:pl-[max(0.5rem,env(safe-area-inset-left))] wide:pr-[max(0.5rem,env(safe-area-inset-right))]"
     >
+      <div className="click-bar-inner mx-auto max-w-screen-2xl">
       <div
         id="panel-play-cluster-body"
         data-testid="panel-play-cluster-body"
@@ -120,7 +148,8 @@ export function ClickBar({ song, passes, notationReady, cluster, onColumn, onSta
         ) : null}
         {cluster}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="click-bar-row">
+        <div className="click-lead flex items-center gap-2">
         {idle ? (
           <Button
             variant="primary"
@@ -151,10 +180,34 @@ export function ClickBar({ song, passes, notationReady, cluster, onColumn, onSta
             Stop
           </Button>
         )}
-        <span className="ml-auto flex items-center gap-2">
+        </div>
+        <div className="click-status">
+          {IDLE_GHOSTS.map((g) => (
+            <span key={g} aria-hidden="true" className="click-ghost" data-ghost={g} />
+          ))}
+          {RUNNING_GHOSTS.map(([g, h]) => (
+            <span key={g + h} aria-hidden="true" className="click-ghost click-ghost-2" data-ghost={g} data-ghost-2={h} />
+          ))}
+          <div className="click-live">
+            <p
+              data-testid="click-state"
+              role="status"
+              className={quiet ? "sr-only" : "text-xs text-text-dim"}
+            >
+              {words}
+            </p>
+            {!idle ? (
+              <p data-testid="click-help" className="text-xs text-text-dim">
+                {soundless ? CLICK_WORDS.help.soundless : CLICK_WORDS.help.sound}
+              </p>
+            ) : null}
+          </div>
+        </div>
+        <span className="click-tools flex items-center gap-2">
           <TempoControl song={song} variant="bar" />
           <Button
             data-testid="panel-play-cluster"
+            className="min-w-[4.5rem]"
             aria-expanded={open}
             aria-controls="panel-play-cluster-body"
             onClick={() => setOpen(!open)}
@@ -163,20 +216,7 @@ export function ClickBar({ song, passes, notationReady, cluster, onColumn, onSta
           </Button>
         </span>
       </div>
-      <p
-        data-testid="click-state"
-        role="status"
-        className={quiet ? "sr-only" : "mt-1 text-xs text-text-dim"}
-      >
-        {words}
-      </p>
-      {!idle ? (
-        <p data-testid="click-help" className="text-xs text-text-dim">
-          {soundless
-            ? "No sound on this device. The beat is still shown."
-            : "Can't hear it? Check the silent switch and volume."}
-        </p>
-      ) : null}
+      </div>
     </div>
   );
 }

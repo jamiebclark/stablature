@@ -117,7 +117,7 @@ test.describe("the click: endings, motion and data", () => {
       await page.setViewportSize({ width: 375, height: 667 });
       await page.emulateMedia({ colorScheme: theme });
       await installRecorder(page);
-      await seedPlayable(page, { passes: 40 });
+      await seedPlayable(page, { entries: 40 });
       for (const f of [0, 0.5, 1]) {
         await page.evaluate((x) => window.scrollTo(0, (document.body.scrollHeight - innerHeight) * x), f);
         for (const id of ["click-start", "tempo-control"]) {

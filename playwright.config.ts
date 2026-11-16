@@ -72,15 +72,15 @@ export default defineConfig({
   use: { baseURL, trace: "on-first-retry" },
   projects: [
     // Capture is a phone screen first, so that is the primary target.
-    { name: "mobile", use: { ...devices["Pixel 7"] } },
+    { name: "mobile", use: { ...devices["Pixel 7"] }, testIgnore: /wide-sideways-firefox\.spec\.ts/ },
     // Only what a desktop can do differently: keys, a mouse, hover, a fine pointer's density, a wide layout.
     // Specs of sync, import, data and touch-only flows run once, on the phone.
-    { name: "desktop", use: { ...devices["Desktop Chrome"] }, testIgnore: PHONE_ONLY.map((name) => `**/${name}`) },
+    { name: "desktop", use: { ...devices["Desktop Chrome"] }, testIgnore: [...PHONE_ONLY.map((name) => `**/${name}`), "**/wide-sideways-firefox.spec.ts"] },
     // Firefox sizes a flex line from its items' content, not their flex-basis, so a bar in the play view
     // came out narrower than its columns and hid its last note. The staff layout runs there too.
     {
       name: "firefox",
-      testMatch: /usability-staves\.spec\.ts/,
+      testMatch: [/usability-staves\.spec\.ts/, /wide-sideways-firefox\.spec\.ts/],
       use: { ...devices["Desktop Firefox"], viewport: { width: 412, height: 915 } },
     },
     // A screen with no touch and no hover-less pointer ambiguity: the density pass reads sizes as a mouse

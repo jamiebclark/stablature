@@ -553,12 +553,14 @@ test("builds the brief's arrangement and reads it back in order", async ({ page 
   }
   await expect(page.getByTestId("roadmap-chip").first()).toContainText("A×4");
 
-  // The play view unrolls it: four passes of A, then one of B.
+  // The play view folds it (spec 010, Deviation 2): one card for A's four passes, then one for B.
   await page.getByRole("link", { name: "Play view" }).click();
   await expect(page).toHaveURL(/\/play$/);
-  await expect(page.getByTestId("tab-staff")).toHaveCount(5);
-  await expect(page.getByText("pass 1 of 4")).toBeVisible();
-  await expect(page.getByText("pass 4 of 4")).toBeVisible();
+  await expect(page.getByTestId("tab-staff")).toHaveCount(2);
+  const cards = page.locator("ol.reading-cards > li");
+  await expect(cards.nth(0).getByTestId("card-passes-rest")).toHaveText("×4 · passes 1–4 of 4");
+  await expect(cards.nth(0).getByTestId("card-bars")).toHaveText("bars 1–4");
+  await expect(cards.nth(1)).toContainText("B");
 });
 
 test("plays a variant on the final pass only", async ({ page }) => {

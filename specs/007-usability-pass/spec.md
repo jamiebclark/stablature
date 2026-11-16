@@ -411,7 +411,7 @@ At a desk, a capturer enters a riff by number without leaving the keyboard. A re
 
 **Filling the width**
 
-- **FR-055**: The play view MUST draw each pass across as many lines as it needs, breaking at barlines, filling at least 90% of the window at 1280 wide and all of the column on a phone. String labels repeat on each line. Every row stays aligned on every line, in frets, notes and intervals.
+- **FR-055**: The play view MUST draw each pass across as many lines as it needs, breaking at barlines, filling at least 90% of the window at 1280 wide and all of the column on a phone. String labels repeat on each line. Every row stays aligned on every line, in frets, notes and intervals. *(Amended by spec 010: before, each pass was its own full-width card, one per row. Now, at 768px and wider, cards sit two or more to a row in a grid, and a staff that fits its card draws on one line; the rule that a line breaks at barlines and keeps every row aligned holds in every card. A lone card still fills the row. Below 768px nothing changes.)*
 - **FR-056**: A bar wider than a line MUST take a line of its own and scroll sideways alone. The song page's staff, capture and the paste preview stay as they are. Amended by spec 008 (FR-001 to FR-005): capture wraps inside its band where two whole lines fit; the paste preview and the song page's staves stay as they are.
 
 **Keyboard**
@@ -468,7 +468,7 @@ At a desk, a capturer enters a riff by number without leaving the keyboard. A re
 - **SC-007**: 0 chord labels are cut on any staff, including `F#m7b5` over a one-digit column.
 - **SC-008**: Rhythm marks are within 1px of their notes' centres, down from 5 to 10px, and numerals and marks are at least 12px, up from 10.4px.
 - **SC-009**: In the same 500×800 and 1280×800 windows, a mouse shows at least 15% more columns on a line than touch, and a six-string staff is at least 15% shorter. All touch sizes match the floors table in a window of any width.
-- **SC-010**: At 375×667 on touch, the song page's first staff starts within the first screen, at y≤520, up from y=744, and the play view's at y≤160, up from y=244. Its idle cluster is at most 60px, down from 81px.
+- **SC-010**: At 375×667 on touch, the song page's first staff starts within the first screen, at y≤520, up from y=744, and the play view's at y≤160, up from y=244. Its idle cluster is at most 60px, down from 81px. *(Amended by spec 010: before, the idle cluster was at most 60px. Now the bar is held at one height whether idle, running or stopped, so nothing under it moves when the click starts: at least 44px, equal to its running height within 0.5px, and 97px at 375×667 (it was 57px idle and 93px running; the status slot now holds the longest message). The first staff's y bounds are unchanged.)*
 - **SC-011**: A sixteen-bar part needs no sideways scrolling on the play view, at 375px or at 1280px, where a phone shows 11% of it today. At 1280 it uses at least 90% of the window, up from 54%.
 - **SC-012**: Any bar a band names by number on the play view is the same bar on every device, and every pass through a repeated section is labelled.
 - **SC-013**: While the click follows the notation, the highlight changes within 50ms of the on-screen beat, and spec 005's timing checks pass unchanged.

@@ -103,7 +103,17 @@ const wrapped = (page: Page) =>
       bad,
       over: Math.max(0, ...overs),
       page: document.documentElement.scrollWidth - window.innerWidth,
-      widthShare: (document.querySelector(".tab-lines")?.getBoundingClientRect().width ?? 0) / window.innerWidth,
+      // Spec 010: wide cards sit side by side, so the share is the widest ROW of staves (one card's staff when
+      // there is one card to a row), never a single card's. Same 0.9 floor.
+      widthShare: (() => {
+        const rows = new Map<number, number>();
+        for (const l of document.querySelectorAll(".tab-lines")) {
+          const b = l.getBoundingClientRect();
+          const row = Math.round(l.closest("li")?.getBoundingClientRect().top ?? b.top);
+          rows.set(row, (rows.get(row) ?? 0) + b.width);
+        }
+        return Math.max(0, ...rows.values()) / window.innerWidth;
+      })(),
       runsScrolling: [...document.querySelectorAll(".tab-bar-run")].filter((r) => r.scrollWidth > r.clientWidth + 1).length,
     };
   });
