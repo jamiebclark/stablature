@@ -405,6 +405,7 @@ function PartCard({
           className="ml-auto"
           label={`Actions for part ${part.label}${part.name ? `, ${part.name}` : ""}`}
           items={[
+            { label: "Play", ariaLabel: `Play part ${part.label}`, icon: <Play size={15} aria-hidden />, href: `/songs/${songId}/play/${part.id}` },
             { label: "Edit", ariaLabel: `Edit part ${part.label}`, icon: <Pencil size={15} aria-hidden />, href: partCaptureHref(songId, part.id) },
             ...(part.variantOfPartId
               ? []

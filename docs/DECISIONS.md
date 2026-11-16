@@ -803,3 +803,36 @@ Each test is re-pinned, never deleted or weakened. One entry's repeated passes a
 - `e2e/usability-staves.spec.ts` (INV-016/017/038): its `widthShare` pinned one card's staff at >= 90% of the window at 1280 on the play page. Cards now sit two across, so each staff is 46%. It is re-pinned to the widest ROW of staves, same 0.9 floor, so two cards side by side count together and one card to a row is the old check. Not weakened: a squeezed staff still fails. Firefox's other two failures (`:169`, `:242`) did not reproduce on the rebuilt tree.
 - `e2e/usability-insets.spec.ts` (landscape, mobile): not a pin move, a product defect. The song page's `main` took `wide:px-2` at 768+ and dropped the safe-area inset, so controls sat under the notch at 844x390. `SongView.tsx` now uses `wide:pl-[max(0.5rem,var(--safe-left))]` and the right twin, as the play view does. The test is unedited.
 - Second full run (T063): 1919 passed, 10 failed. Nine were one defect of mine, not pins: restoring `pb-6` on the play view's `main` (T059) left the fixed bar covering the last card (`click-bar-at-size`, `click-layout`, `wide-click-bar` 375/412). Fixed in `globals.css` with a `body:has([data-testid="click-bar"]) main` rule, so the markup stays main's. The tenth, `durations.spec.ts:7`, is the known load flake and passed alone. All ten pass on the rebuilt tree.
+
+## 011 — suite before
+
+Recorded on the unedited tree (spec 011 T001). `npm test`: 164 files, 6395 tests (including the new `engine-golden.test.ts`), all passed. `npx playwright test e2e/click-*.spec.ts e2e/wide-click-*.spec.ts e2e/reading-*.spec.ts e2e/wide-narrow-unchanged.spec.ts`: 348 passed, 61 skipped, 0 failed (3.7 minutes). `src/lib/rhythm/__tests__/engine-golden.json` records the engine's `schedule()` and `due()` calls for plain, following and following-then-plain streams at 40, 120 and 240 bpm (INV-001's oracle).
+
+## 011 — decisions
+
+- **Part playback goes through the play view.** One cluster, highlight, keys and held-height bar; a second transport would cost the wide fit target. Price: one more tap.
+- **Capture gets no play control.** Its header row is full at 375 wide; the card's Play is two taps away.
+- **An unset length takes the last set length in its pass, or one beat.** Reset at each pass so a part sounds the same wherever it is played.
+- **A bend plays at its fretted pitch.** No target is stored, and a guessed one teaches the wrong note.
+- **`tap` is ignored.** It sounds as a picked note.
+- **Notes start off in the play view, and on in part playback.** Keeps every click test true.
+- **Speed runs from 50% to 100% in 5% steps.** Faster than written is a later tool.
+- **Speed is held per song for as long as the app is open.** Reopening restores the written tempo.
+- **The count-in always sounds**, even with Click off.
+- **One voice, built from the browser's own audio building blocks, with no worklet.** No static file, so the service worker is untouched.
+- **Natural harmonics are 12, 7, 19, 5, 24, 4, 9 and 16.** Fret 3's harmonic (about 3.2) cannot be stored.
+
+Plan deviations from the spec:
+
+- **A transition that starts a part connects across the loop seam, so round 1 can differ from later rounds.** Deviation 1, worth the owner's eye.
+- **"Loop is read at the run's end" means "when the end is queued"**, up to `LOOKAHEAD_S` (0.75 s) before it sounds.
+- **With Click off, the beat box still pulses.** Off clicks are not sounded but stay on the display.
+- **The release at the end, and at Stop, is a 5 ms-time-constant fade.**
+
+## 011 — re-pinned tests
+
+- `e2e/polish-part-card-menu.spec.ts`: the part card menu gains **Play** as its first item, so the expected item count is `card.variantOf ? 3 : 4` (was `2 : 3`). Only the line assigning `want` changed; the check still fails on a missing or extra item.
+
+## 011 T060 — earlier entries' untouched guards report this branch's own files
+
+`check:untouched-reading`, `-polish`, `-wide`, `-notation` and `-usability` diff against `main` and name paths this entry changes on purpose: `src/lib/rhythm/audio.ts`, `scheduler.ts`, `notation.ts`, the new `engine-golden` test and fixture, `src/lib/arrangement/passes.ts`, `src/components/app/PlayView.tsx` and `SongView.tsx`, `src/components/rhythm/*`, the new `play/[partId]/page.tsx` and `click-bar.notes.test.tsx`. Every reported path is planned playback work. This entry's own fence, `check:untouched-playback`, and the amendment, line-ending, `untouched`, `untouched-rhythm` and `backbone` guards pass. The same was accepted for specs 004 to 006 (see 008 T050); none of these runs in CI.

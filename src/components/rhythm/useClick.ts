@@ -1,6 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { DrawnPass } from "@/lib/arrangement/passes";
+import { getClick, getLoop } from "@/lib/playback/choices";
+import { audibleFor, playRounds, playStream } from "@/lib/playback/stream";
+import type { Tuning } from "@/lib/tunings";
 import { columnAt } from "@/lib/reading/position";
 import type { ClickPhase, ColumnTick, Score } from "@/lib/rhythm/notation";
 import {
@@ -21,6 +25,10 @@ export interface UseClickOptions {
   columns?: readonly ColumnTick[];
   /** Called when the column under the click changes. Never with a column while `follow` is false. */
   onColumn?: (column: ColumnTick | null) => void;
+  /** Notes on: the passes and tuning the notes are read from, and the tempo as a percentage. Absent or null: the click alone. */
+  play?: { passes: readonly DrawnPass[]; tuning: Tuning | null | undefined } | null;
+  /** The tempo as a percentage, for the click alone as for the notes. One clock serves both. */
+  speed?: number;
 }
 
 /** The reasons that leave a line on screen until the next start. */
@@ -64,12 +72,22 @@ interface Run {
   readonly columns: readonly ColumnTick[];
   readonly lengthTicks: number;
   readonly follow: boolean;
+  /** A notes run: the highlight reads the marks. */
+  readonly notes: boolean;
 }
 
 const sameColumn = (a: ColumnTick | null, b: ColumnTick | null) =>
   a === b || (!!a && !!b && a.pass === b.pass && a.eventId === b.eventId && a.repetition === b.repetition);
 
-export function useClick({ bpm, score, follow, columns = NO_COLUMNS, onColumn }: UseClickOptions) {
+export function useClick({ bpm, score, follow, columns = NO_COLUMNS, onColumn, play, speed = 100 }: UseClickOptions) {
+  const playPasses = play?.passes;
+  const playTuning = play?.tuning;
+  // Built before the tap, so starting does no more than hand the engine a stream.
+  const rounds = useMemo(
+    () => (playPasses && playTuning ? playRounds(playPasses, playTuning) : null),
+    [playPasses, playTuning],
+  );
+  const notesOn = !!play && rounds !== null;
   const onColumnRef = useRef(onColumn);
   useEffect(() => {
     onColumnRef.current = onColumn;
@@ -79,6 +97,7 @@ export function useClick({ bpm, score, follow, columns = NO_COLUMNS, onColumn }:
   const [phase, setPhase] = useState<ClickPhase | null>(null);
   const [soundless, setSoundless] = useState(false);
   const [stopped, setStopped] = useState<StoppedWhy | null>(null);
+  const [ended, setEnded] = useState(false);
   const beatRef = useRef<HTMLDivElement>(null);
   const [lock] = useState<WakeHeld>(() => ({ wanted: false, sentinel: null }));
 
@@ -87,7 +106,8 @@ export function useClick({ bpm, score, follow, columns = NO_COLUMNS, onColumn }:
       onChange(change) {
         if (change.kind === "soundless") setSoundless(true);
         else if (change.kind === "stopped") {
-          if (change.reason !== "tap" && change.reason !== "left") setStopped(change.reason);
+          setEnded(change.reason === "ended");
+          if (change.reason !== "tap" && change.reason !== "left" && change.reason !== "ended") setStopped(change.reason);
         } else {
           setState(change.state);
           if (change.state === "running") setWakeLock(lock, true);
@@ -106,11 +126,22 @@ export function useClick({ bpm, score, follow, columns = NO_COLUMNS, onColumn }:
   const start = useCallback(() => {
     if (usable === null) return;
     setStopped(null);
+    setEnded(false);
     setSoundless(false);
     // The score, its columns and the choice are held together, so the highlight reads what is sounding.
-    runRef.current = { columns, lengthTicks: score.lengthTicks, follow };
-    engine.start({ bpm: usable, stream: clickStream(score, follow) });
-  }, [engine, usable, score, follow, columns]);
+    if (rounds && notesOn) {
+      runRef.current = { columns, lengthTicks: rounds.first.lengthTicks, follow: false, notes: true };
+      engine.start({
+        bpm: (usable * speed) / 100,
+        stream: playStream(rounds, score, follow, { loop: getLoop }),
+        audible: audibleFor({ click: getClick }),
+        voices: true,
+      });
+      return;
+    }
+    runRef.current = { columns, lengthTicks: score.lengthTicks, follow, notes: false };
+    engine.start({ bpm: (usable * speed) / 100, stream: clickStream(score, follow) });
+  }, [engine, usable, score, follow, columns, rounds, notesOn, speed]);
 
   const stop = useCallback(() => engine.stop("tap"), [engine]);
 
@@ -121,8 +152,8 @@ export function useClick({ bpm, score, follow, columns = NO_COLUMNS, onColumn }:
   }, [engine, start]);
 
   useEffect(() => {
-    if (usable !== null && engine.state === "running") engine.setTempo(usable);
-  }, [engine, usable]);
+    if (usable !== null && engine.state === "running") engine.setTempo((usable * speed) / 100);
+  }, [engine, usable, speed]);
 
   useEffect(() => {
     const hide = () => engine.stop("hidden");
@@ -173,7 +204,12 @@ export function useClick({ bpm, score, follow, columns = NO_COLUMNS, onColumn }:
       }
       const run = runRef.current;
       const head = engine.playhead();
-      if (!run || !run.follow || head === null) place(null);
+      const marks = engine.dueMarks();
+      if (run?.notes) {
+        // Notes run: the highlight reads the marks, which are on the notes' own clock.
+        const last = marks[marks.length - 1];
+        if (last) place({ tick: 0, pass: last.mark.pass, eventId: last.mark.eventId, repetition: last.mark.repetition });
+      } else if (!run || !run.follow || head === null) place(null);
       else place(columnAt(run.columns, head - COUNT_IN_CLICKS * TICKS_PER_BEAT, run.lengthTicks));
       frame = requestAnimationFrame(tick);
     };
@@ -186,5 +222,5 @@ export function useClick({ bpm, score, follow, columns = NO_COLUMNS, onColumn }:
     };
   }, [engine, state]);
 
-  return { state, phase, soundless, stopped, usable, start, stop, restart, beatRef };
+  return { state, phase, soundless, stopped, ended, usable, notesOn, rule: rounds?.first.rule ?? null, start, stop, restart, beatRef };
 }

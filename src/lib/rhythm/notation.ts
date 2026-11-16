@@ -1,6 +1,6 @@
 import type { DrawnPass } from "@/lib/arrangement/passes";
 import { groupNumber, type EventRow } from "@/lib/model";
-import { readDuration, TICKS_PER_BEAT } from "./durations";
+import { readDuration, TICKS_PER_BEAT, type Duration } from "./durations";
 
 /** Types for reading a pass as timed notation. `readNotation` follows. */
 
@@ -41,13 +41,13 @@ function fitFor(n: number): number | null {
   return 2 ** Math.floor(Math.log2(n));
 }
 
-interface Group {
+export interface Group {
   /** Null for a plain group. */
   readonly counted: { readonly n: number; readonly fit: number } | null;
 }
 
 /** Per pass and per group id, over playable rows only: the group as it reads, or null when it fails. */
-function census(events: readonly EventRow[]): Map<string, Group | null> {
+export function readGroups(events: readonly EventRow[]): Map<string, Group | null> {
   const seen = new Map<string, { columns: number; repeated: boolean; numbers: Set<number | null> }>();
   for (const e of events) {
     if (!playable(e) || !e.tupletId) continue;
@@ -74,6 +74,11 @@ function census(events: readonly EventRow[]): Map<string, Group | null> {
   return out;
 }
 
+/** One hit's length: the duration, shortened by a counted group that reads (ticks x fit / n). */
+export function hitTicks(duration: Duration, group: Group | null | undefined): number {
+  return group?.counted ? (duration.ticks * group.counted.fit) / group.counted.n : duration.ticks;
+}
+
 const RANK = { soft: 1, beat: 2, accent: 3 } as const;
 
 /** One bar's clicks and length, or null when the bar is not timed. */
@@ -92,14 +97,14 @@ function readBar(
   for (const e of bar) {
     const duration = readDuration(e.durationHint);
     if (!duration) return null;
-    let hitTicks = duration.ticks;
+    let ticksOfHit = duration.ticks;
     let counted = false;
     let firstOfPlain = false;
     if (e.tupletId) {
       const group = groups.get(e.tupletId);
       if (!group) return null;
       if (group.counted) {
-        hitTicks = (duration.ticks * group.counted.fit) / group.counted.n;
+        ticksOfHit = hitTicks(duration, group);
         counted = true;
       } else if (!startedPlain.has(e.tupletId)) {
         startedPlain.add(e.tupletId);
@@ -110,7 +115,7 @@ function readBar(
     for (let h = 0; h < hits; h++) {
       hit?.(e.id, h, at, counted);
       if (counted || (firstOfPlain && h === 0)) put(at, "soft");
-      at += hitTicks;
+      at += ticksOfHit;
     }
   }
   put(0, "accent");
@@ -143,7 +148,7 @@ function walk(passes: readonly DrawnPass[], sink: Sink): { lengthTicks: number; 
   let timed = false;
   for (let p = 0; p < passes.length; p++) {
     const pass = passes[p];
-    const groups = census(pass.events);
+    const groups = readGroups(pass.events);
     const startedPlain = new Set<string>();
     const bars: EventRow[][] = [[]];
     for (const e of pass.events) {
@@ -185,7 +190,7 @@ export function notationColumns(passes: readonly DrawnPass[]): ColumnTick[] {
  * A leading or trailing empty bar is skipped; an empty bar in the middle gives null.
  */
 export function beatsPerBar(events: readonly EventRow[]): number | null {
-  const groups = census(events);
+  const groups = readGroups(events);
   const startedPlain = new Set<string>();
   const bars: EventRow[][] = [[]];
   for (const e of events) {
@@ -224,7 +229,7 @@ export interface BarPosition {
  */
 export function barPositions(events: readonly EventRow[]): ReadonlyMap<string, BarPosition> {
   const out = new Map<string, BarPosition>();
-  const groups = census(events);
+  const groups = readGroups(events);
   const startedPlain = new Set<string>();
   const tupletOf = new Map(events.map((e) => [e.id, e.tupletId] as const));
   const bars: EventRow[][] = [[]];

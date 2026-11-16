@@ -1,4 +1,4 @@
-import type { EventRow } from "@/lib/model";
+import type { EventRow, PartRow } from "@/lib/model";
 import { eventsInBars } from "@/lib/tab/layout";
 import type { ArrangementStep } from "./expand";
 
@@ -17,4 +17,12 @@ export function drawnPasses(
     step,
     events: eventsInBars(eventsByPart[step.partId] ?? [], step.fromBar, step.toBar),
   }));
+}
+
+/** One whole pass of a part: every column, bar numbers from 1. Used by part playback. */
+export function partPass(part: Pick<PartRow, "id">, events: readonly EventRow[]): DrawnPass {
+  return {
+    step: { partId: part.id, entryId: "", pass: 1, passes: 1, fromBar: null, toBar: null, sections: [], visits: [] },
+    events,
+  };
 }
