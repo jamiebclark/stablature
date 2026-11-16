@@ -32,15 +32,17 @@ describe("TabStaff ruler", () => {
     const doc = new DOMParser().parseFromString(html, "text/html");
     const ruler = doc.querySelector<HTMLElement>('[data-testid="tab-ruler"]');
     expect(ruler).not.toBeNull();
-    expect(ruler!.getAttribute("aria-hidden")).toBe("true");
-    expect(ruler!.parentElement!.classList.contains("tab-staff-wrapped")).toBe(true);
+    expect(ruler!.parentElement!.getAttribute("aria-hidden")).toBe("true");
+    expect(ruler!.closest(".tab-staff-wrapped")).not.toBeNull();
+    expect(ruler!.parentElement!.classList.contains("tab-ruler-host")).toBe(true);
     const width = ruler!.style.width;
     expect(width.startsWith("calc(")).toBe(true);
     expect(width.endsWith("var(--gutter))")).toBe(true);
     const widths = columnWidths(html);
     expect(widths.length).toBeGreaterThan(0);
     for (const w of widths) {
-      const terms = w.slice("calc(".length, -1);
+      // The ruler is set in the chord font, so the staff's `ch` reaches it as `--staff-ch`.
+      const terms = w.slice("calc(".length, -1).replace(/(\d+)ch/g, "$1 * var(--staff-ch)");
       expect(width).toContain(terms);
     }
   });

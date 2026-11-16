@@ -515,8 +515,24 @@ button,
   position: relative;
   padding-left: var(--gutter);
 }
+/* The staff's `ch`, resolved on the ruler's host in the staff's font: the ruler itself is set in the chord font. */
+@property --staff-ch {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+.tab-ruler-host {
+  --staff-ch: 1ch;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+  pointer-events: none;
+}
 /* Measured, never seen: visibility, not opacity, so it takes no paint and no hits. */
 .tab-ruler {
+  font-size: 0.7rem;
+  font-weight: 600;
   position: absolute;
   top: 0;
   left: 0;

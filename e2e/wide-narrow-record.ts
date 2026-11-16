@@ -10,7 +10,8 @@ import { plainBars as bars, FIT_PARTS } from "./wide-helpers";
 
 test.setTimeout(600_000);
 
-const OUT = "e2e/fixtures/narrow-before.json";
+/** Linux gets its own file: it rounds glyph positions, so the same build draws differently there (spec 007 T183). */
+const OUT = `e2e/fixtures/narrow-before${process.platform === "linux" ? ".linux" : ""}.json`;
 
 interface Size {
   name: string;

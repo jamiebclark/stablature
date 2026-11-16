@@ -454,12 +454,13 @@ export function TabStaff({
           </div>
         </div>
         {ruler ? (
-          <div
-            className="tab-ruler"
-            aria-hidden="true"
-            data-testid="tab-ruler"
-            style={{ width: rulerWidth(layout.columns, rooms, marks) }}
-          />
+          <div className="tab-ruler-host" aria-hidden="true">
+            <div
+              className="tab-ruler"
+              data-testid="tab-ruler"
+              style={{ width: rulerWidth(layout.columns, rooms, marks) }}
+            />
+          </div>
         ) : null}
         {caption ? (
           <p
@@ -540,18 +541,19 @@ function rulerWidth(
   marks: { removals: ReadonlyMap<string, number>; removedAtEnd: number } | null,
 ): string {
   // A chord symbol wider than its column still counts toward the bar's content width, which is what a wrapped
-  // bar's flex basis is made of; 0.42rem is the symbol's advance at its 0.7rem size (`--chord-ch` rounds up).
+  // bar's flex basis is made of. The ruler is set in the chord font, so `1ch` there is the symbol's rendered advance
+  // on any platform; the staff's own `ch` comes through `--staff-ch`, resolved on the host in the staff's font.
   const terms = columns.map((column, index) => {
     const room = rooms.get(index);
-    const own = widthTerms(column.width, room);
-    return room ? `max(${own}, ${room.chars} * 0.42rem)` : own;
+    const own = widthTerms(column.width, room, "var(--staff-ch)");
+    return room ? `max(${own}, ${room.chars} * 1ch)` : own;
   });
   const connectors = columns.filter((column) => column.connectors.some(Boolean)).length;
   const removals = marks
     ? columns.filter((column) => (marks.removals.get(`${column.eventId}-${column.repetition}`) ?? 0) > 0).length
     : 0;
   const gaps = removals + (marks && marks.removedAtEnd > 0 ? 1 : 0);
-  return `calc(${[...terms, `${connectors} * 1ch`, `${gaps} * 3ch`, "var(--gutter)"].join(" + ")})`;
+  return `calc(${[...terms, `${connectors} * var(--staff-ch)`, `${gaps} * 3 * var(--staff-ch)`, "var(--gutter)"].join(" + ")})`;
 }
 
 /** Height of the rows drawn above the staff, so the labels line up with it. */
@@ -565,10 +567,11 @@ function offsetFor(
 }
 
 /** The terms of a column's width, unwrapped: its cells plus padding, widened only as far as its chord symbol needs. */
-function widthTerms(width: number, room: ChordRoom | undefined): string {
-  const base = `${width}ch + var(--col-pad)`;
+function widthTerms(width: number, room: ChordRoom | undefined, ch?: string): string {
+  const times = (n: number) => (ch ? `${n} * ${ch}` : `${n}ch`);
+  const base = `${times(width)} + var(--col-pad)`;
   if (!room) return base;
-  const have = `${room.roomChars}ch + ${room.roomColumns} * var(--col-pad)`;
+  const have = `${times(room.roomChars)} + ${room.roomColumns} * var(--col-pad)`;
   return `${base} + max(0px, ${room.chars} * var(--chord-ch) + var(--chord-gap) - (${have}))`;
 }
 

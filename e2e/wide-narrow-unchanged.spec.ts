@@ -1,6 +1,8 @@
 /**
  * INV-001 (spec 010): below 768px both pages draw as on `main`. Held to e2e/fixtures/narrow-before.json, which
- * wide-narrow-record.ts wrote from the unedited build. Never edit the fixture to make this pass.
+ * wide-narrow-record.ts wrote from the unedited build. Never edit the fixture to make this pass. Linux (CI) holds to
+ * narrow-before.linux.json, recorded the same way in the Linux replica: Linux rounds glyph positions, so `main` itself
+ * draws 56px apart from Windows at 375 (spec 007 T183).
  */
 import { expect, test, type Browser, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
@@ -11,7 +13,7 @@ import { plainBars as bars, FIT_PARTS, seedFitSong } from "./wide-helpers";
 test.setTimeout(600_000);
 
 type Rects = Record<string, number[][]>;
-const FIXTURE = JSON.parse(readFileSync("e2e/fixtures/narrow-before.json", "utf8")) as Record<
+const FIXTURE = JSON.parse(readFileSync(`e2e/fixtures/narrow-before${process.platform === "linux" ? ".linux" : ""}.json`, "utf8")) as Record<
   string,
   { html: string; rects: Rects }
 >;
@@ -43,7 +45,7 @@ const context = (browser: Browser, baseURL: string, s: { width: number; height: 
 const normalize = (page: Page, html: string) =>
   page.evaluate((src) => {
     const doc = new DOMParser().parseFromString(`<body>${src}</body>`, "text/html");
-    const drop = '[data-testid="card-number"], [data-testid^="card-passes"], [data-testid="card-bars"], [data-testid="tab-ruler"], [data-testid="click-bar"]';
+    const drop = '[data-testid="card-number"], [data-testid^="card-passes"], [data-testid="card-bars"], .tab-ruler-host, [data-testid="click-bar"]';
     doc.querySelectorAll(drop).forEach((el) => el.remove());
     doc.querySelectorAll("*").forEach((el) => {
       for (const a of ["id", "for", "aria-controls", "aria-labelledby", "aria-describedby", "data-card", "data-first-pass", "data-last-pass"]) {
