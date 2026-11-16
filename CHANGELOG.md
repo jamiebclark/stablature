@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/jamiebclark/stablature/compare/v1.13.0...v1.14.0) (2026-11-16)
+
+
+### Features
+
+* **tab-playback:** tab playback through a synthesised bass voice ([#20](https://github.com/jamiebclark/stablature/issues/20)) ([c5c9774](https://github.com/jamiebclark/stablature/commit/c5c977406751122384f522ddd20e36dbd81d72f3))
+
 # [1.13.0](https://github.com/jamiebclark/stablature/compare/v1.12.0...v1.13.0) (2026-11-13)
 
 
