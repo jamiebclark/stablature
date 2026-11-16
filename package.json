@@ -19,6 +19,8 @@
     "check:untouched-reading": "bash scripts/untouched-by-reading.sh",
     "check:untouched-usability": "bash scripts/untouched-by-usability.sh",
     "check:untouched-polish": "bash scripts/untouched-by-polish.sh",
+    "check:untouched-playback": "bash scripts/untouched-by-playback.sh",
+    "check:playback-amendments": "bash scripts/check-playback-amendments.sh",
     "check:polish-amendments": "bash scripts/check-polish-amendments.sh",
     "check:untouched-wide": "bash scripts/untouched-by-wide.sh",
     "check:wide-amendments": "bash scripts/check-wide-amendments.sh",

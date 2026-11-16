@@ -315,7 +315,7 @@ A desktop browser cannot prove these. They stay open until someone has done them
 
 ## Out of Scope
 
-- **Pitched playback of the notes.** This is a click, not a synthesiser.
+- **Pitched playback of the notes.** This is a click, not a synthesiser. *(Amended by spec 011: the notes can now be played from the play view, as a plucked-string voice built from the browser's own audio blocks; the click itself is still not a synthesiser and FR-033 is unchanged.)*
 - **A time signature field.** Bars are barline events.
 - **Per-part tempo.** Tempo stays per song.
 - **A scrolling playhead, or highlighting where the click has got to.** It is a reading feature, and this entry is already large.

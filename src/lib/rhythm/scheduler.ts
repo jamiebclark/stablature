@@ -1,5 +1,6 @@
 import { createClock, silentClock, type ClickClock } from "./audio";
 import { TICKS_PER_BEAT } from "./durations";
+import type { PlayMark, Voice } from "@/lib/playback/types";
 import type { ClickLevel, ClickPhase, StreamClick } from "./notation";
 
 export const LOOKAHEAD_S = 0.75;
@@ -8,7 +9,7 @@ export const START_LEAD_S = 0.05;
 export const AUDIO_START_TIMEOUT_MS = 1000;
 export const PULSE_MS = 100;
 
-export type StopReason = "tap" | "left" | "hidden" | "audio-lost" | "fell-behind";
+export type StopReason = "tap" | "left" | "hidden" | "audio-lost" | "fell-behind" | "ended";
 export type EngineState = "idle" | "starting" | "running";
 
 export interface QueuedClick {
@@ -19,6 +20,24 @@ export interface QueuedClick {
   readonly count: number | null;
 }
 
+export interface StreamNote {
+  readonly kind: "note";
+  readonly tick: number;
+  readonly endTick: number;
+  readonly voice: Voice;
+}
+export interface StreamMark {
+  readonly kind: "mark";
+  readonly tick: number;
+  readonly mark: PlayMark;
+}
+export interface StreamEnd {
+  readonly kind: "end";
+  readonly tick: number;
+}
+/** `StreamClick` has no `kind`, so every click stream and test still fits. */
+export type StreamItem = StreamClick | StreamNote | StreamMark | StreamEnd;
+
 export type EngineChange =
   | { kind: "state"; state: EngineState }
   | { kind: "soundless" }
@@ -27,7 +46,14 @@ export type EngineChange =
 export interface ClickEngine {
   readonly state: EngineState;
   /** Synchronous up to and including making the clock. Does nothing unless idle. */
-  start(run: { bpm: number; stream: Iterator<StreamClick> }): void;
+  start(run: {
+    bpm: number;
+    stream: Iterator<StreamItem>;
+    /** Decides at queue time whether a click is sent to the port; the display queue always gets it. Default: every click. */
+    audible?: (click: StreamClick) => boolean;
+    /** Passed to `makeClock`, so the port builds its notes bus only for a notes run. */
+    voices?: boolean;
+  }): void;
   stop(reason: StopReason): void;
   /** Takes effect at the next click not yet queued. */
   setTempo(bpm: number): void;
@@ -35,10 +61,12 @@ export interface ClickEngine {
   due(): readonly QueuedClick[];
   /** The tick now, between the last click shown and the next one queued. Null before the first click. Reads only. */
   playhead(): number | null;
+  /** Marks whose time has arrived, oldest first, removed from the mark queue. */
+  dueMarks(): readonly { time: number; mark: PlayMark }[];
 }
 
 export interface EngineDeps {
-  makeClock?: () => ClickClock;
+  makeClock?: (opts?: { voices?: boolean }) => ClickClock;
   makeSilentClock?: () => ClickClock;
   setTimer?: (fn: () => void, ms: number) => unknown;
   clearTimer?: (handle: unknown) => void;
@@ -54,13 +82,17 @@ export function createEngine(deps: EngineDeps = {}): ClickEngine {
 
   let state: EngineState = "idle";
   let clock: ClickClock | null = null;
-  let stream: Iterator<StreamClick> | null = null;
+  let stream: Iterator<StreamItem> | null = null;
+  let audible: ((click: StreamClick) => boolean) | undefined;
   let bpm = 0;
   let anchor = { tick: 0, time: 0 };
-  let pending: StreamClick | null = null;
+  let pending: StreamItem | null = null;
   let last: { tick: number; time: number } | null = null;
   let queue: QueuedClick[] = [];
   let shown: QueuedClick | null = null;
+  let marks: { time: number; mark: PlayMark }[] = [];
+  let endAt = 0;
+  let ended = false;
   let timer: unknown = null;
   let startTimer: unknown = null;
   let generation = 0;
@@ -91,6 +123,10 @@ export function createEngine(deps: EngineDeps = {}): ClickEngine {
     last = null;
     queue = [];
     shown = null;
+    marks = [];
+    endAt = 0;
+    ended = false;
+    audible = undefined;
     closing?.close();
     setState("idle");
     emit({ kind: "stopped", reason });
@@ -100,7 +136,7 @@ export function createEngine(deps: EngineDeps = {}): ClickEngine {
     timer = null;
     if (state !== "running" || !clock || !stream) return;
     const now = clock.now();
-    for (;;) {
+    while (!ended) {
       if (!pending) {
         const step = stream.next();
         if (step.done) {
@@ -110,22 +146,30 @@ export function createEngine(deps: EngineDeps = {}): ClickEngine {
         }
         pending = step.value;
       }
-      const time = timeOf(pending.tick);
+      const item = pending;
+      const time = timeOf(item.tick);
       if (time >= now + LOOKAHEAD_S) break;
       if (time < now) {
         stop("fell-behind");
         return;
       }
-      clock.schedule(time, pending.level);
-      queue.push({
-        time,
-        tick: pending.tick,
-        level: pending.level,
-        phase: pending.phase,
-        count: pending.count,
-      });
-      last = { tick: pending.tick, time };
+      if (!("kind" in item)) {
+        if (audible?.(item) ?? true) clock.schedule(time, item.level);
+        queue.push({ time, tick: item.tick, level: item.level, phase: item.phase, count: item.count });
+      } else if (item.kind === "note") {
+        clock.note?.(time, timeOf(item.endTick), item.voice);
+      } else if (item.kind === "mark") {
+        marks.push({ time, mark: item.mark });
+      } else {
+        endAt = time;
+        ended = true;
+      }
+      last = { tick: item.tick, time };
       pending = null;
+    }
+    if (ended && now >= endAt) {
+      stop("ended");
+      return;
     }
     timer = setTimer(topUp, TOP_UP_MS);
   }
@@ -150,13 +194,17 @@ export function createEngine(deps: EngineDeps = {}): ClickEngine {
     },
     start(run) {
       if (state !== "idle") return;
-      const made = makeClock();
+      const made = makeClock({ voices: run.voices === true });
       clock = made;
       stream = run.stream;
+      audible = run.audible;
       bpm = run.bpm;
       pending = null;
       last = null;
       queue = [];
+      marks = [];
+      endAt = 0;
+      ended = false;
       const token = ++generation;
       setState("starting");
       made.onLost(() => {
@@ -190,6 +238,13 @@ export function createEngine(deps: EngineDeps = {}): ClickEngine {
       const taken = queue.splice(0, n);
       shown = taken[taken.length - 1];
       return taken;
+    },
+    dueMarks() {
+      if (!clock || marks.length === 0) return [];
+      const now = clock.now();
+      let n = 0;
+      while (n < marks.length && marks[n].time <= now) n++;
+      return n === 0 ? [] : marks.splice(0, n);
     },
     playhead() {
       if (!clock || !shown) return null;

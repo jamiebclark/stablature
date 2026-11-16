@@ -1,10 +1,26 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { Button } from "@/components/ui";
 import { usePanel } from "@/components/reading/usePanel";
 import type { DrawnPass } from "@/lib/arrangement/passes";
 import type { SongRow } from "@/lib/model";
+import {
+  effective,
+  getClick,
+  getLoop,
+  getNotes,
+  getSpeed,
+  setClick,
+  setLoop,
+  setNotes,
+  setSpeed,
+  SPEED_MAX,
+  SPEED_MIN,
+  SPEED_STEP,
+  subscribe as subscribePlay,
+} from "@/lib/playback/choices";
+import type { Tuning } from "@/lib/tunings";
 import { notationColumns, readNotation, type ColumnTick } from "@/lib/rhythm/notation";
 import { TempoControl } from "./TempoControl";
 import { useScreenKeys } from "@/components/keys/useScreenKeys";
@@ -24,6 +40,8 @@ export interface ClickBarProps {
   idleRef?: { current: boolean };
   /** Receives the bar's root, so the reading position can keep scroll padding as tall as the bar. */
   rootRef?: (el: HTMLDivElement | null) => void;
+  /** Absent: Notes is never offered and the bar is exactly the click's. */
+  playback?: { readonly scope: "song" | "part"; readonly tuning: Tuning | null | undefined };
 }
 
 /** Every message the bar can show. The live words and their hidden ghosts both read this, so a new message has a ghost. */
@@ -37,7 +55,15 @@ export const CLICK_WORDS = {
     "audio-lost": "Stopped because the device took the audio. Start again when you are ready.",
     "fell-behind": "Stopped because the click could not keep time. Start again when you are ready.",
   },
+  notes: {
+    noTuning: "Add a tuning to hear the notes.",
+    written: "Notes play the lengths written.",
+    some: "Notes with no length take the last length, or one beat.",
+    none: "No note has a length, so each plays one beat.",
+    empty: "There are no notes to play here.",
+  },
   running: {
+    playing: "Playing.",
     counting: "Counting in.",
     following: "Following the notation.",
     plain: "Plain beat.",
@@ -54,6 +80,7 @@ const IDLE_GHOSTS: string[] = [
   CLICK_WORDS.idlePlainNothingTimed,
   CLICK_WORDS.idlePlain,
   ...Object.values(CLICK_WORDS.stopped),
+  ...Object.values(CLICK_WORDS.notes),
 ];
 const RUNNING_GHOSTS: [string, string][] = Object.values(CLICK_WORDS.running).flatMap((w) =>
   Object.values(CLICK_WORDS.help).map((h): [string, string] => [w, h]),
@@ -66,13 +93,33 @@ const SHAPE =
   "group-data-[level=beat]:h-5 group-data-[level=beat]:w-5 group-data-[level=beat]:border-accent group-data-[level=beat]:bg-accent " +
   "group-data-[level=accent]:h-8 group-data-[level=accent]:w-8 group-data-[level=accent]:rounded-none group-data-[level=accent]:border-accent group-data-[level=accent]:bg-accent";
 
-export function ClickBar({ song, passes, notationReady, cluster, onColumn, onStart, idleRef, rootRef }: ClickBarProps) {
+export function ClickBar({ song, passes, notationReady, cluster, onColumn, onStart, idleRef, rootRef, playback }: ClickBarProps) {
   const [open, setOpen] = usePanel("play-cluster");
   const score = useMemo(() => readNotation(passes), [passes]);
   const columns = useMemo(() => notationColumns(passes), [passes]);
   const [wantFollow, setWantFollow] = useState(true);
   const follow = wantFollow && score.timedFromStart;
-  const { state, phase, soundless, stopped, usable, start, stop, restart, beatRef } = useClick({
+  // A part opens with Notes and Loop on, without writing the whole-song choice.
+  const storedNotes = useSyncExternalStore(subscribePlay, getNotes, () => false);
+  const notes = !!playback && (playback.scope === "part" || storedNotes);
+  useEffect(() => {
+    if (playback?.scope === "part") setLoop(true);
+  }, [playback?.scope]);
+  const speed = useSyncExternalStore(
+    subscribePlay,
+    () => getSpeed(song.id),
+    () => 100,
+  );
+  const clickOn = useSyncExternalStore(subscribePlay, getClick, () => true);
+  const loopOn = useSyncExternalStore(subscribePlay, getLoop, () => false);
+  const playTuning = playback?.tuning;
+  const play = useMemo(
+    () => (notes && playTuning ? { passes, tuning: playTuning } : null),
+    [notes, playTuning, passes],
+  );
+  const { state, phase, soundless, stopped, ended, usable, rule, start, stop, restart, beatRef } = useClick({
+    play,
+    speed,
     bpm: song.bpm,
     score,
     follow,
@@ -83,7 +130,7 @@ export function ClickBar({ song, passes, notationReady, cluster, onColumn, onSta
   useEffect(() => {
     if (idleRef) idleRef.current = idle;
   }, [idleRef, idle]);
-  const ready = usable !== null && notationReady;
+  const ready = usable !== null && notationReady && (!notes || (!!playback?.tuning && rule !== "empty"));
   const begin = () => {
     onStart?.();
     start();
@@ -103,26 +150,34 @@ export function ClickBar({ song, passes, notationReady, cluster, onColumn, onSta
   });
   const stopRef = useRef<HTMLButtonElement>(null);
 
+  const startRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!idle) stopRef.current?.focus();
-  }, [idle]);
+    // After a run ends by itself, a Stop that held focus has gone; focus returns to the start button.
+    else if (ended && (!document.activeElement || document.activeElement === document.body)) startRef.current?.focus();
+  }, [idle, ended]);
 
   let words: string;
   if (usable === null) words = CLICK_WORDS.noTempo;
   else if (idle) {
     words = stopped
       ? CLICK_WORDS.stopped[stopped]
-      : follow
+      : notes
+        ? !playback?.tuning
+          ? CLICK_WORDS.notes.noTuning
+          : CLICK_WORDS.notes[rule ?? "empty"]
+        : follow
         ? CLICK_WORDS.idleFollowing
         : wantFollow
           ? CLICK_WORDS.idlePlainNothingTimed
           : CLICK_WORDS.idlePlain;
-  } else if (phase === "following") words = CLICK_WORDS.running.following;
+  } else if (notes) words = phase === "count-in" || phase === null ? CLICK_WORDS.running.counting : CLICK_WORDS.running.playing;
+  else if (phase === "following") words = CLICK_WORDS.running.following;
   else if (phase === "plain") words = CLICK_WORDS.running.plain;
   else words = CLICK_WORDS.running.counting;
 
   // Idle with nothing to report is read aloud, and shown only when the panel is open.
-  const quiet = idle && usable !== null && !stopped && !open;
+  const quiet = idle && usable !== null && !stopped && !open && !(notes && (!playback?.tuning || rule === "empty"));
 
   return (
     <div
@@ -146,6 +201,51 @@ export function ClickBar({ song, passes, notationReady, cluster, onColumn, onSta
             {wantFollow ? "Following notation" : "Plain beat"}
           </Button>
         ) : null}
+        {playback ? (
+          <>
+            {playback.scope === "song" ? (
+              <Button
+                data-testid="play-notes"
+                aria-pressed={notes}
+                disabled={!idle}
+                onClick={() => setNotes(!notes)}
+              >
+                {`Notes ${notes ? "on" : "off"}`}
+              </Button>
+            ) : null}
+            {notes ? (
+              <>
+                <Button data-testid="play-click" aria-pressed={clickOn} onClick={() => setClick(!clickOn)}>
+                  {`Click ${clickOn ? "on" : "off"}`}
+                </Button>
+                <Button data-testid="play-loop" aria-pressed={loopOn} onClick={() => setLoop(!loopOn)}>
+                  {`Loop ${loopOn ? "on" : "off"}`}
+                </Button>
+              </>
+            ) : null}
+            {playback ? (
+              <span className="flex items-center gap-1" role="group" aria-label="Speed">
+                <Button
+                  data-testid="play-slower"
+                  aria-label="Slower"
+                  disabled={speed <= SPEED_MIN}
+                  onClick={() => setSpeed(song.id, speed - SPEED_STEP)}
+                >
+                  Slower
+                </Button>
+                <span data-testid="play-speed" className="min-w-[3.25rem] text-center font-mono text-sm">{speed < 100 && usable !== null ? `${speed}% · ${Math.round(effective(usable, speed))} bpm` : `${speed}%`}</span>
+                <Button
+                  data-testid="play-faster"
+                  aria-label="Faster"
+                  disabled={speed >= SPEED_MAX}
+                  onClick={() => setSpeed(song.id, speed + SPEED_STEP)}
+                >
+                  Faster
+                </Button>
+              </span>
+            ) : null}
+          </>
+        ) : null}
         {cluster}
       </div>
       <div className="click-bar-row">
@@ -155,10 +255,11 @@ export function ClickBar({ song, passes, notationReady, cluster, onColumn, onSta
             variant="primary"
             data-testid="click-start"
             className="h-11 w-[86px] shrink-0"
-            disabled={usable === null || !notationReady}
+            ref={startRef}
+            disabled={!ready}
             onClick={begin}
           >
-            Start click
+            {notes ? "Play" : "Start click"}
           </Button>
         ) : (
           <div
@@ -204,7 +305,7 @@ export function ClickBar({ song, passes, notationReady, cluster, onColumn, onSta
           </div>
         </div>
         <span className="click-tools flex items-center gap-2">
-          <TempoControl song={song} variant="bar" />
+          <TempoControl song={song} variant="bar" speed={speed} />
           <Button
             data-testid="panel-play-cluster"
             className="min-w-[4.5rem]"

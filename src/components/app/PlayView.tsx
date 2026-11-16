@@ -24,7 +24,7 @@ import { useWide } from "@/components/reading/useWide";
 import { VariantLine } from "@/components/reading/VariantLine";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { expandArrangement, ordinal, parseArrangement } from "@/lib/arrangement/expand";
-import { drawnPasses } from "@/lib/arrangement/passes";
+import { drawnPasses, partPass } from "@/lib/arrangement/passes";
 import {
   useArrangement,
   useParts,
@@ -39,8 +39,9 @@ import { staffMarks } from "@/lib/reading/marks";
 import { columnKey, readingStops, stepBar, stepColumn, type ReadingStop } from "@/lib/reading/position";
 import type { ColumnTick } from "@/lib/rhythm/notation";
 import { stringLabels } from "@/lib/tunings";
+import Link from "next/link";
 
-export function PlayView({ songId }: { songId: string }) {
+export function PlayView({ songId, partId }: { songId: string; partId?: string }) {
   const song = useSong(songId);
   const tuning = useSongTuning(song);
   const parts = useParts(songId);
@@ -54,7 +55,17 @@ export function PlayView({ songId }: { songId: string }) {
     () => (entries ? expandArrangement(parseArrangement(entries)) : []),
     [entries],
   );
-  const passes = useMemo(() => drawnPasses(steps, eventsByPart ?? {}), [steps, eventsByPart]);
+  const onePart = partId !== undefined ? parts?.find((p) => p.id === partId) : undefined;
+  // One array, computed once, feeds the cards, the reading stops, the highlight and the bar (data-model §3).
+  const passes = useMemo(
+    () =>
+      partId !== undefined
+        ? onePart && eventsByPart
+          ? [partPass(onePart, eventsByPart[onePart.id] ?? [])]
+          : []
+        : drawnPasses(steps, eventsByPart ?? {}),
+    [partId, onePart, steps, eventsByPart],
+  );
 
   const bars = useMemo(() => passBars(passes), [passes]);
   // The bar mounts only once the song has loaded, so its root is held in state to re-run the padding effect.
@@ -108,6 +119,7 @@ export function PlayView({ songId }: { songId: string }) {
   }
 
   const partsById = new Map(parts.map((part) => [part.id, part]));
+  const missingPart = partId !== undefined && !onePart;
 
   return (
     <main className="mx-auto max-w-screen-2xl pb-6 pl-[max(1rem,var(--safe-left))] pr-[max(1rem,var(--safe-right))] pt-2 wide:pl-[max(0.5rem,var(--safe-left))] wide:pr-[max(0.5rem,var(--safe-right))]">
@@ -121,7 +133,20 @@ export function PlayView({ songId }: { songId: string }) {
         back={{ href: `/songs/${songId}`, label: "Song" }}
       />
 
-      {steps.length === 0 ? (
+      {onePart ? (
+        <p data-testid="part-playback" className="mb-2 text-sm text-text-dim">
+          Part {onePart.label}
+          {onePart.name ? `, ${onePart.name}` : ""}
+          {" · "}
+          <Link href={`/songs/${songId}/play`} className="underline hover:text-accent">
+            Whole song
+          </Link>
+        </p>
+      ) : null}
+
+      {missingPart ? (
+        <p className="text-sm text-text-dim">That part is not on this song.</p>
+      ) : partId === undefined && steps.length === 0 ? (
         <EmptyState title="No arrangement yet, so there is nothing to lay out in order.">
           <ButtonLink href={`/songs/${songId}`} variant="primary">
             Build the arrangement
@@ -224,8 +249,10 @@ export function PlayView({ songId }: { songId: string }) {
         </>
       )}
 
+      {missingPart ? null : (
       <ClickBar
         song={song}
+        playback={{ scope: partId !== undefined ? "part" : "song", tuning }}
         passes={passes}
         notationReady={eventsByPart !== undefined}
         onColumn={onColumn}
@@ -234,11 +261,12 @@ export function PlayView({ songId }: { songId: string }) {
         rootRef={setBarRoot}
         cluster={
           <>
-            {tuning && steps.length > 0 ? <ViewControl /> : null}
-            <ButtonLink href={`/songs/${songId}/capture`}>Capture</ButtonLink>
+            {tuning && cards.length > 0 ? <ViewControl /> : null}
+            <ButtonLink href={`/songs/${songId}/capture`} prefetch={false}>Capture</ButtonLink>
           </>
         }
       />
+      )}
     </main>
   );
 }

@@ -10,6 +10,8 @@ import { TAP_TEMPO_MAX, TAP_TEMPO_MIN, usableTempo } from "@/lib/rhythm/tempo";
 export interface TempoControlProps {
   song: Pick<SongRow, "id" | "bpm">;
   variant: "header" | "bar";
+  /** Playback speed, 50..100. Below 100 a `bg-bg` bordered mark shows it on the button. */
+  speed?: number;
 }
 
 const RANGE = `Tempo runs from ${TAP_TEMPO_MIN} to ${TAP_TEMPO_MAX}.`;
@@ -46,7 +48,7 @@ function shieldPresses() {
   }, SHIELD_MS);
 }
 
-export function TempoControl({ song, variant }: TempoControlProps) {
+export function TempoControl({ song, variant, speed = 100 }: TempoControlProps) {
   const [open, setOpen] = useState(false);
   const tempo = usableTempo(song.bpm);
   return (
@@ -55,15 +57,26 @@ export function TempoControl({ song, variant }: TempoControlProps) {
         type="button"
         data-testid="tempo-control"
         aria-haspopup="dialog"
-        aria-label={tempo === null ? "Tempo: not given" : `Tempo: ${tempo} bpm`}
+        aria-label={
+          tempo === null ? "Tempo: not given" : speed < 100 ? `Tempo: ${tempo} bpm, playing at ${speed}%` : `Tempo: ${tempo} bpm`
+        }
         onClick={() => setOpen(true)}
         className={
           variant === "header"
             ? "min-h-(--control) min-w-(--control) shrink-0 px-1 font-mono text-[0.7rem] text-text-dim hover:text-accent"
-            : "min-h-(--control) shrink-0 rounded-md border border-border-subtle bg-bg-raised px-3 font-mono text-sm text-text-dim"
+            : "relative min-h-(--control) shrink-0 rounded-md border border-border-subtle bg-bg-raised px-3 font-mono text-sm text-text-dim"
         }
       >
         {tempo === null ? "no tempo" : `${tempo} bpm`}
+        {speed < 100 ? (
+          <span
+            data-testid="speed-mark"
+            aria-hidden="true"
+            className="absolute -top-2 right-1 rounded border border-border-subtle bg-bg px-1 font-mono text-[0.65rem] leading-4 text-text"
+          >
+            {`${speed}%`}
+          </span>
+        ) : null}
       </button>
       <Sheet open={open} onClose={() => setOpen(false)} label="Tempo">
         <TempoSheet song={song} onClose={() => setOpen(false)} />

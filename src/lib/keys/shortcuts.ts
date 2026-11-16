@@ -17,7 +17,7 @@ const DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 /** Every row of FR-057 and nothing else. Dispatch and the help both read this. */
 export const SHORTCUTS: readonly Shortcut[] = [
-  { id: "toggle-click", keys: [" "], label: "Space", words: "Start or stop the click", screens: ["play"] },
+  { id: "toggle-click", keys: [" "], label: "Space", words: "Start or stop the click, or the notes when Notes is on", screens: ["play"] },
   { id: "restart", keys: ["r"], label: "r", words: "Start again from the top, with the count-in", screens: ["play"] },
   { id: "column-back", keys: ["ArrowLeft"], label: "Left", words: "Back a column", screens: ["play", "capture"] },
   { id: "column-on", keys: ["ArrowRight"], label: "Right", words: "On a column", screens: ["play", "capture"] },
