@@ -19,6 +19,8 @@ import { ClickBar } from "@/components/rhythm/ClickBar";
 import { ViewControl } from "@/components/reading/ViewControl";
 import { useStaffView } from "@/components/reading/useStaffView";
 import { useReadingPosition } from "@/components/reading/useReadingPosition";
+import { useCardTrack } from "@/components/reading/useCardTrack";
+import { useWide } from "@/components/reading/useWide";
 import { VariantLine } from "@/components/reading/VariantLine";
 import { TabStaff } from "@/components/tab/TabStaff";
 import { expandArrangement, ordinal, parseArrangement } from "@/lib/arrangement/expand";
@@ -31,6 +33,7 @@ import {
   useSongTuning,
 } from "@/lib/local/hooks";
 import { passBars, partHeading } from "@/lib/reading/bars";
+import { cardSpanWords, cardWords, drawnCards } from "@/lib/reading/cards";
 import { compareVariants } from "@/lib/reading/compare";
 import { staffMarks } from "@/lib/reading/marks";
 import { columnKey, readingStops, stepBar, stepColumn, type ReadingStop } from "@/lib/reading/position";
@@ -57,7 +60,11 @@ export function PlayView({ songId }: { songId: string }) {
   // The bar mounts only once the song has loaded, so its root is held in state to re-run the padding effect.
   const [barRoot, setBarRoot] = useState<HTMLDivElement | null>(null);
   const cluster = useMemo(() => ({ current: barRoot }), [barRoot]);
-  const { place } = useReadingPosition(passes, cluster);
+  const { cards, cardOf } = useMemo(() => drawnCards(passes, bars), [passes, bars]);
+  const { place } = useReadingPosition(passes, cluster, cardOf, cards);
+  const listRef = useRef<HTMLOListElement>(null);
+  const wide = useWide();
+  useCardTrack(listRef, wide);
   const onColumn = useCallback(
     (column: ColumnTick | null) =>
       place(column ? { pass: column.pass, key: columnKey(column.eventId, column.repetition) } : null),
@@ -103,7 +110,7 @@ export function PlayView({ songId }: { songId: string }) {
   const partsById = new Map(parts.map((part) => [part.id, part]));
 
   return (
-    <main className="mx-auto max-w-screen-2xl pb-6 pl-[max(1rem,var(--safe-left))] pr-[max(1rem,var(--safe-right))] pt-2">
+    <main className="mx-auto max-w-screen-2xl pb-6 pl-[max(1rem,var(--safe-left))] pr-[max(1rem,var(--safe-right))] pt-2 wide:pl-[max(0.5rem,var(--safe-left))] wide:pr-[max(0.5rem,var(--safe-right))]">
       <PageHeader
         title={song.title}
         subtitle={
@@ -125,8 +132,10 @@ export function PlayView({ songId }: { songId: string }) {
         {content === undefined && view !== "frets" ? (
           <Loading />
         ) : (
-        <ol className="grid gap-4">
-          {passes.map(({ step, events }, index) => {
+        <ol ref={listRef} className="reading-cards grid gap-4">
+          {cards.map((card) => {
+            const { step, events } = card.pass;
+            const index = card.first;
             const part = partsById.get(step.partId);
             const partEvents = eventsByPart?.[step.partId] ?? events;
             const comparison = comparisons?.get(step.partId);
@@ -143,13 +152,24 @@ export function PlayView({ songId }: { songId: string }) {
               .map((visit) => (visit.time > 1 ? `${visit.label}, ${ordinal(visit.time)} time` : visit.label))
               .join(" / ");
             const firstOfPart = passes.findIndex((p) => p.step.partId === step.partId) === index;
+            const words = cardWords(card, passes);
+            const spanWords = cardSpanWords(card);
             const heading = firstOfPart ? partHeading(partEvents, song.bpm).text : null;
             const sliced = step.fromBar !== null || step.toBar !== null;
 
             return (
-              <li key={`${step.entryId}-${step.pass}-${index}`} className="print-keep">
-                <div className="relative rounded-lg border border-border-subtle bg-bg-raised p-3">
+              <li
+                key={`${step.entryId}-${step.pass}-${index}`}
+                className="print-keep"
+                data-card={card.index}
+                data-first-pass={card.first}
+                data-last-pass={card.last}
+              >
+                <div className="reading-card relative rounded-lg border border-border-subtle bg-bg-raised p-3">
                   <div className="mb-1.5 flex flex-wrap items-baseline gap-x-2">
+                    <span data-testid="card-number" className="font-mono text-sm font-semibold text-text-dim">
+                      {card.index + 1}
+                    </span>
                     <span className="font-mono text-sm font-semibold">
                       {part?.label ?? "?"}
                     </span>
@@ -158,9 +178,15 @@ export function PlayView({ songId }: { songId: string }) {
                         {sectionWords}
                       </span>
                     ) : null}
-                    {step.passes > 1 ? (
-                      <span className="text-xs text-text-faint">
-                        pass {step.pass} of {step.passes}
+                    {words ? (
+                      <span data-testid="card-passes" className="card-passes text-xs text-text-faint">
+                        <span data-testid="card-passes-rest">{words}</span>
+                        <span data-testid="card-passes-live"></span>
+                      </span>
+                    ) : null}
+                    {spanWords ? (
+                      <span data-testid="card-bars" className="text-xs text-text-faint">
+                        {spanWords}
                       </span>
                     ) : null}
                     {sliced ? (
@@ -182,8 +208,9 @@ export function PlayView({ songId }: { songId: string }) {
                       surface="raised"
                       showRhythm
                       wrap
+                      ruler
                       pass={index}
-                      barNumbers={{ offset: bars.offset[index] }}
+                      barNumbers={{ offset: card.offset }}
                       reading={{ view, partEvents: eventsByPart?.[step.partId] ?? events, marks }}
                     />
                   ) : null}

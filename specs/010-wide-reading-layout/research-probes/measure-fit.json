@@ -1,0 +1,6138 @@
+{
+  "1280x800-dark": {
+    "primitives": {
+      "stringHeight": 20.8,
+      "staffRow": 15.2,
+      "rhythmRow": 22.4,
+      "lineGap": 12,
+      "noteColumn": 16.81,
+      "barlineColumn": 16.81,
+      "gutter": 28,
+      "strings": 5
+    },
+    "play": {
+      "today": {
+        "innerHeight": 800,
+        "innerWidth": 1280,
+        "scrollHeight": 2549,
+        "overflow": 1749,
+        "mainWidth": 1280,
+        "headerBottom": 103,
+        "firstCardTop": 115,
+        "barHeight": 57,
+        "lastCardBottom": 2323.4,
+        "cards": [
+          {
+            "top": 115,
+            "left": 16,
+            "width": 1248,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 339.8,
+            "left": 16,
+            "width": 1248,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 564.5,
+            "left": 16,
+            "width": 1248,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 789.3,
+            "left": 16,
+            "width": 1248,
+            "height": 246.3,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 174.3,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              139.6
+            ]
+          },
+          {
+            "top": 1051.6,
+            "left": 16,
+            "width": 1248,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              156,
+              189.6,
+              156,
+              131.2
+            ]
+          },
+          {
+            "top": 1261.2,
+            "left": 16,
+            "width": 1248,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              156,
+              189.6,
+              156,
+              131.2
+            ]
+          },
+          {
+            "top": 1470.7,
+            "left": 16,
+            "width": 1248,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 1695.5,
+            "left": 16,
+            "width": 1248,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 1920.2,
+            "left": 16,
+            "width": 1248,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 2129.8,
+            "left": 16,
+            "width": 1248,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              156,
+              189.6,
+              156,
+              131.2
+            ]
+          }
+        ]
+      },
+      "barRest": 57,
+      "barRunning": 93,
+      "packings": {
+        "today (one per row)": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1666,
+          "overflow": 866,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1439.6,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 1248,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.4,
+                147.6,
+                147.6,
+                131.2
+              ]
+            },
+            {
+              "top": 339.8,
+              "left": 16,
+              "width": 1248,
+              "height": 246.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.4,
+                147.6,
+                147.6,
+                139.6
+              ]
+            },
+            {
+              "top": 602.1,
+              "left": 16,
+              "width": 1248,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                156,
+                189.6,
+                156,
+                131.2
+              ]
+            },
+            {
+              "top": 811.7,
+              "left": 16,
+              "width": 1248,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.4,
+                147.6,
+                147.6,
+                131.2
+              ]
+            },
+            {
+              "top": 1036.4,
+              "left": 16,
+              "width": 1248,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.6,
+                131.2
+              ]
+            },
+            {
+              "top": 1246,
+              "left": 16,
+              "width": 1248,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                156,
+                189.6,
+                156,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 16, card padding 12": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1530,
+          "overflow": 730,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1304.3000000000002,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 616,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                189.8,
+                186.1,
+                186.1,
+                131.2
+              ]
+            },
+            {
+              "top": 115,
+              "left": 648,
+              "width": 616,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                189.8,
+                186.1,
+                186.1,
+                139.6
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 16,
+              "width": 616,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                176.1,
+                209.8,
+                176.1,
+                131.2
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 648,
+              "width": 616,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                189.8,
+                186.1,
+                186.1,
+                131.2
+              ]
+            },
+            {
+              "top": 957.2,
+              "left": 16,
+              "width": 616,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 957.2,
+              "left": 648,
+              "width": 616,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                176.1,
+                209.8,
+                176.1,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 16, card padding 8": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1506,
+          "overflow": 706,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1280.3000000000002,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 616,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                192.5,
+                188.8,
+                188.7,
+                131.2
+              ]
+            },
+            {
+              "top": 115,
+              "left": 648,
+              "width": 616,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                192.5,
+                188.8,
+                188.7,
+                139.6
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 16,
+              "width": 616,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                178.8,
+                212.4,
+                178.8,
+                131.2
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 648,
+              "width": 616,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                192.5,
+                188.8,
+                188.7,
+                131.2
+              ]
+            },
+            {
+              "top": 941.2,
+              "left": 16,
+              "width": 616,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 941.2,
+              "left": 648,
+              "width": 616,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                178.8,
+                212.4,
+                178.8,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 12, card padding 12": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1522,
+          "overflow": 722,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1296.3000000000002,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 618,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                190.5,
+                186.8,
+                186.7,
+                131.2
+              ]
+            },
+            {
+              "top": 115,
+              "left": 646,
+              "width": 618,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                190.5,
+                186.8,
+                186.7,
+                139.6
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 16,
+              "width": 618,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                176.8,
+                210.4,
+                176.8,
+                131.2
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 646,
+              "width": 618,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                190.5,
+                186.8,
+                186.7,
+                131.2
+              ]
+            },
+            {
+              "top": 949.2,
+              "left": 16,
+              "width": 618,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 949.2,
+              "left": 646,
+              "width": 618,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                176.8,
+                210.4,
+                176.8,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 12, card padding 8": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1498,
+          "overflow": 698,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1272.3000000000002,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 618,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                193.2,
+                189.4,
+                189.4,
+                131.2
+              ]
+            },
+            {
+              "top": 115,
+              "left": 646,
+              "width": 618,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                193.2,
+                189.4,
+                189.4,
+                139.6
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 16,
+              "width": 618,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                179.5,
+                213.1,
+                179.5,
+                131.2
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 646,
+              "width": 618,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                193.2,
+                189.4,
+                189.4,
+                131.2
+              ]
+            },
+            {
+              "top": 933.2,
+              "left": 16,
+              "width": 618,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 933.2,
+              "left": 646,
+              "width": 618,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                179.5,
+                213.1,
+                179.5,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 8, card padding 12": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1514,
+          "overflow": 714,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1288.3000000000002,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 620,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                191.2,
+                187.4,
+                187.4,
+                131.2
+              ]
+            },
+            {
+              "top": 115,
+              "left": 644,
+              "width": 620,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                191.2,
+                187.4,
+                187.4,
+                139.6
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 16,
+              "width": 620,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                177.5,
+                211.1,
+                177.5,
+                131.2
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 644,
+              "width": 620,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                191.2,
+                187.4,
+                187.4,
+                131.2
+              ]
+            },
+            {
+              "top": 941.2,
+              "left": 16,
+              "width": 620,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 941.2,
+              "left": 644,
+              "width": 620,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                177.5,
+                211.1,
+                177.5,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 8, card padding 8": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1490,
+          "overflow": 690,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1264.3000000000002,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 620,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                193.8,
+                190.1,
+                190.1,
+                131.2
+              ]
+            },
+            {
+              "top": 115,
+              "left": 644,
+              "width": 620,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                193.8,
+                190.1,
+                190.1,
+                139.6
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 16,
+              "width": 620,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                180.1,
+                213.8,
+                180.1,
+                131.2
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 644,
+              "width": 620,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                193.8,
+                190.1,
+                190.1,
+                131.2
+              ]
+            },
+            {
+              "top": 925.2,
+              "left": 16,
+              "width": 620,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 925.2,
+              "left": 644,
+              "width": 620,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                180.1,
+                213.8,
+                180.1,
+                131.2
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 16, card padding 12": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1167,
+          "overflow": 367,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 941.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 405.3,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                177.5,
+                173.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 437.3,
+              "width": 405.3,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                177.5,
+                173.8,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 858.7,
+              "width": 405.3,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                158.9,
+                192.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 16,
+              "width": 405.3,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                177.5,
+                173.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 437.3,
+              "width": 405.3,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 858.7,
+              "width": 405.3,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                158.9,
+                192.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 16, card padding 8": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1151,
+          "overflow": 351,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 925.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 405.3,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                181.5,
+                177.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 437.3,
+              "width": 405.3,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                181.5,
+                177.8,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 858.7,
+              "width": 405.3,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                162.9,
+                196.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 16,
+              "width": 405.3,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                181.5,
+                177.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 437.3,
+              "width": 405.3,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 858.7,
+              "width": 405.3,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                162.9,
+                196.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 12, card padding 12": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1163,
+          "overflow": 363,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 937.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 408,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                178.9,
+                175.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 436,
+              "width": 408,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                178.9,
+                175.1,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 856,
+              "width": 408,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                160.2,
+                193.8,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 16,
+              "width": 408,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                178.9,
+                175.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 436,
+              "width": 408,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 856,
+              "width": 408,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                160.2,
+                193.8,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 12, card padding 8": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1147,
+          "overflow": 347,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 921.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 408,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                182.9,
+                179.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 436,
+              "width": 408,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                182.9,
+                179.1,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 856,
+              "width": 408,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                164.2,
+                197.8,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 16,
+              "width": 408,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                182.9,
+                179.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 436,
+              "width": 408,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 856,
+              "width": 408,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                164.2,
+                197.8,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 8, card padding 12": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1159,
+          "overflow": 359,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 933.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 410.7,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                180.2,
+                176.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 434.7,
+              "width": 410.7,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                180.2,
+                176.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 853.3,
+              "width": 410.7,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                161.5,
+                195.1,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 16,
+              "width": 410.7,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                180.2,
+                176.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 434.7,
+              "width": 410.7,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 853.3,
+              "width": 410.7,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                161.5,
+                195.1,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 8, card padding 8": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1143,
+          "overflow": 343,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 917.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 410.7,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                184.2,
+                180.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 434.7,
+              "width": 410.7,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                184.2,
+                180.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 853.3,
+              "width": 410.7,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                165.5,
+                199.1,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 16,
+              "width": 410.7,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                184.2,
+                180.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 434.7,
+              "width": 410.7,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 853.3,
+              "width": 410.7,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                165.5,
+                199.1,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "song": {
+      "mainWidth": 768,
+      "scrollHeight": 1503,
+      "innerHeight": 800,
+      "arrangementTop": 201,
+      "arrangementHeight": 126.4,
+      "partsTop": 343.4,
+      "sections": [
+        126.4,
+        1006.2
+      ],
+      "cards": [
+        {
+          "height": 230.8,
+          "width": 736,
+          "headRow": 32,
+          "staff": 156.8,
+          "oneLineWidth": 681
+        },
+        {
+          "height": 268.3,
+          "width": 736,
+          "headRow": 32,
+          "staff": 174.3,
+          "oneLineWidth": 681
+        },
+        {
+          "height": 215.6,
+          "width": 736,
+          "headRow": 32,
+          "staff": 141.6,
+          "oneLineWidth": 681
+        },
+        {
+          "height": 215.6,
+          "width": 736,
+          "headRow": 32,
+          "staff": 141.6,
+          "oneLineWidth": 681
+        }
+      ]
+    }
+  },
+  "1280x800-light": {
+    "primitives": {
+      "stringHeight": 20.8,
+      "staffRow": 15.2,
+      "rhythmRow": 22.4,
+      "lineGap": 12,
+      "noteColumn": 16.81,
+      "barlineColumn": 16.81,
+      "gutter": 28,
+      "strings": 5
+    },
+    "play": {
+      "today": {
+        "innerHeight": 800,
+        "innerWidth": 1280,
+        "scrollHeight": 2549,
+        "overflow": 1749,
+        "mainWidth": 1280,
+        "headerBottom": 103,
+        "firstCardTop": 115,
+        "barHeight": 57,
+        "lastCardBottom": 2323.4,
+        "cards": [
+          {
+            "top": 115,
+            "left": 16,
+            "width": 1248,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 339.8,
+            "left": 16,
+            "width": 1248,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 564.5,
+            "left": 16,
+            "width": 1248,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 789.3,
+            "left": 16,
+            "width": 1248,
+            "height": 246.3,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 174.3,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              139.6
+            ]
+          },
+          {
+            "top": 1051.6,
+            "left": 16,
+            "width": 1248,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              156,
+              189.6,
+              156,
+              131.2
+            ]
+          },
+          {
+            "top": 1261.2,
+            "left": 16,
+            "width": 1248,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              156,
+              189.6,
+              156,
+              131.2
+            ]
+          },
+          {
+            "top": 1470.7,
+            "left": 16,
+            "width": 1248,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 1695.5,
+            "left": 16,
+            "width": 1248,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 1920.2,
+            "left": 16,
+            "width": 1248,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 2129.8,
+            "left": 16,
+            "width": 1248,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              156,
+              189.6,
+              156,
+              131.2
+            ]
+          }
+        ]
+      },
+      "barRest": 57,
+      "barRunning": 93,
+      "packings": {
+        "today (one per row)": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1666,
+          "overflow": 866,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1439.6,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 1248,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.4,
+                147.6,
+                147.6,
+                131.2
+              ]
+            },
+            {
+              "top": 339.8,
+              "left": 16,
+              "width": 1248,
+              "height": 246.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.4,
+                147.6,
+                147.6,
+                139.6
+              ]
+            },
+            {
+              "top": 602.1,
+              "left": 16,
+              "width": 1248,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                156,
+                189.6,
+                156,
+                131.2
+              ]
+            },
+            {
+              "top": 811.7,
+              "left": 16,
+              "width": 1248,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.4,
+                147.6,
+                147.6,
+                131.2
+              ]
+            },
+            {
+              "top": 1036.4,
+              "left": 16,
+              "width": 1248,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.6,
+                131.2
+              ]
+            },
+            {
+              "top": 1246,
+              "left": 16,
+              "width": 1248,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                156,
+                189.6,
+                156,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 16, card padding 12": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1530,
+          "overflow": 730,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1304.3000000000002,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 616,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                189.8,
+                186.1,
+                186.1,
+                131.2
+              ]
+            },
+            {
+              "top": 115,
+              "left": 648,
+              "width": 616,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                189.8,
+                186.1,
+                186.1,
+                139.6
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 16,
+              "width": 616,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                176.1,
+                209.8,
+                176.1,
+                131.2
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 648,
+              "width": 616,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                189.8,
+                186.1,
+                186.1,
+                131.2
+              ]
+            },
+            {
+              "top": 957.2,
+              "left": 16,
+              "width": 616,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 957.2,
+              "left": 648,
+              "width": 616,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                176.1,
+                209.8,
+                176.1,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 16, card padding 8": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1506,
+          "overflow": 706,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1280.3000000000002,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 616,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                192.5,
+                188.8,
+                188.7,
+                131.2
+              ]
+            },
+            {
+              "top": 115,
+              "left": 648,
+              "width": 616,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                192.5,
+                188.8,
+                188.7,
+                139.6
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 16,
+              "width": 616,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                178.8,
+                212.4,
+                178.8,
+                131.2
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 648,
+              "width": 616,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                192.5,
+                188.8,
+                188.7,
+                131.2
+              ]
+            },
+            {
+              "top": 941.2,
+              "left": 16,
+              "width": 616,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 941.2,
+              "left": 648,
+              "width": 616,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                178.8,
+                212.4,
+                178.8,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 12, card padding 12": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1522,
+          "overflow": 722,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1296.3000000000002,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 618,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                190.5,
+                186.8,
+                186.7,
+                131.2
+              ]
+            },
+            {
+              "top": 115,
+              "left": 646,
+              "width": 618,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                190.5,
+                186.8,
+                186.7,
+                139.6
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 16,
+              "width": 618,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                176.8,
+                210.4,
+                176.8,
+                131.2
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 646,
+              "width": 618,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                190.5,
+                186.8,
+                186.7,
+                131.2
+              ]
+            },
+            {
+              "top": 949.2,
+              "left": 16,
+              "width": 618,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 949.2,
+              "left": 646,
+              "width": 618,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                176.8,
+                210.4,
+                176.8,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 12, card padding 8": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1498,
+          "overflow": 698,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1272.3000000000002,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 618,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                193.2,
+                189.4,
+                189.4,
+                131.2
+              ]
+            },
+            {
+              "top": 115,
+              "left": 646,
+              "width": 618,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                193.2,
+                189.4,
+                189.4,
+                139.6
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 16,
+              "width": 618,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                179.5,
+                213.1,
+                179.5,
+                131.2
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 646,
+              "width": 618,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                193.2,
+                189.4,
+                189.4,
+                131.2
+              ]
+            },
+            {
+              "top": 933.2,
+              "left": 16,
+              "width": 618,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 933.2,
+              "left": 646,
+              "width": 618,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                179.5,
+                213.1,
+                179.5,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 8, card padding 12": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1514,
+          "overflow": 714,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1288.3000000000002,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 620,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                191.2,
+                187.4,
+                187.4,
+                131.2
+              ]
+            },
+            {
+              "top": 115,
+              "left": 644,
+              "width": 620,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                191.2,
+                187.4,
+                187.4,
+                139.6
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 16,
+              "width": 620,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                177.5,
+                211.1,
+                177.5,
+                131.2
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 644,
+              "width": 620,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                191.2,
+                187.4,
+                187.4,
+                131.2
+              ]
+            },
+            {
+              "top": 941.2,
+              "left": 16,
+              "width": 620,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 941.2,
+              "left": 644,
+              "width": 620,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                177.5,
+                211.1,
+                177.5,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 8, card padding 8": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1490,
+          "overflow": 690,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1264.3000000000002,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 620,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                193.8,
+                190.1,
+                190.1,
+                131.2
+              ]
+            },
+            {
+              "top": 115,
+              "left": 644,
+              "width": 620,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                193.8,
+                190.1,
+                190.1,
+                139.6
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 16,
+              "width": 620,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                180.1,
+                213.8,
+                180.1,
+                131.2
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 644,
+              "width": 620,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                193.8,
+                190.1,
+                190.1,
+                131.2
+              ]
+            },
+            {
+              "top": 925.2,
+              "left": 16,
+              "width": 620,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 925.2,
+              "left": 644,
+              "width": 620,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                180.1,
+                213.8,
+                180.1,
+                131.2
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 16, card padding 12": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1167,
+          "overflow": 367,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 941.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 405.3,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                177.5,
+                173.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 437.3,
+              "width": 405.3,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                177.5,
+                173.8,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 858.7,
+              "width": 405.3,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                158.9,
+                192.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 16,
+              "width": 405.3,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                177.5,
+                173.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 437.3,
+              "width": 405.3,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 858.7,
+              "width": 405.3,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                158.9,
+                192.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 16, card padding 8": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1151,
+          "overflow": 351,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 925.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 405.3,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                181.5,
+                177.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 437.3,
+              "width": 405.3,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                181.5,
+                177.8,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 858.7,
+              "width": 405.3,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                162.9,
+                196.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 16,
+              "width": 405.3,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                181.5,
+                177.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 437.3,
+              "width": 405.3,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 858.7,
+              "width": 405.3,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                162.9,
+                196.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 12, card padding 12": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1163,
+          "overflow": 363,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 937.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 408,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                178.9,
+                175.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 436,
+              "width": 408,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                178.9,
+                175.1,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 856,
+              "width": 408,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                160.2,
+                193.8,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 16,
+              "width": 408,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                178.9,
+                175.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 436,
+              "width": 408,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 856,
+              "width": 408,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                160.2,
+                193.8,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 12, card padding 8": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1147,
+          "overflow": 347,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 921.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 408,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                182.9,
+                179.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 436,
+              "width": 408,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                182.9,
+                179.1,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 856,
+              "width": 408,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                164.2,
+                197.8,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 16,
+              "width": 408,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                182.9,
+                179.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 436,
+              "width": 408,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 856,
+              "width": 408,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                164.2,
+                197.8,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 8, card padding 12": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1159,
+          "overflow": 359,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 933.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 410.7,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                180.2,
+                176.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 434.7,
+              "width": 410.7,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                180.2,
+                176.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 853.3,
+              "width": 410.7,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                161.5,
+                195.1,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 16,
+              "width": 410.7,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                180.2,
+                176.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 434.7,
+              "width": 410.7,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 853.3,
+              "width": 410.7,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                161.5,
+                195.1,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 8, card padding 8": {
+          "innerHeight": 800,
+          "innerWidth": 1280,
+          "scrollHeight": 1143,
+          "overflow": 343,
+          "mainWidth": 1280,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 917.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 410.7,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                184.2,
+                180.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 434.7,
+              "width": 410.7,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                184.2,
+                180.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 853.3,
+              "width": 410.7,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                165.5,
+                199.1,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 16,
+              "width": 410.7,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                184.2,
+                180.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 434.7,
+              "width": 410.7,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 853.3,
+              "width": 410.7,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                165.5,
+                199.1,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "song": {
+      "mainWidth": 768,
+      "scrollHeight": 1503,
+      "innerHeight": 800,
+      "arrangementTop": 201,
+      "arrangementHeight": 126.4,
+      "partsTop": 343.4,
+      "sections": [
+        126.4,
+        1006.2
+      ],
+      "cards": [
+        {
+          "height": 230.8,
+          "width": 736,
+          "headRow": 32,
+          "staff": 156.8,
+          "oneLineWidth": 681
+        },
+        {
+          "height": 268.3,
+          "width": 736,
+          "headRow": 32,
+          "staff": 174.3,
+          "oneLineWidth": 681
+        },
+        {
+          "height": 215.6,
+          "width": 736,
+          "headRow": 32,
+          "staff": 141.6,
+          "oneLineWidth": 681
+        },
+        {
+          "height": 215.6,
+          "width": 736,
+          "headRow": 32,
+          "staff": 141.6,
+          "oneLineWidth": 681
+        }
+      ]
+    }
+  },
+  "1440x900-dark": {
+    "primitives": {
+      "stringHeight": 20.8,
+      "staffRow": 15.2,
+      "rhythmRow": 22.4,
+      "lineGap": 12,
+      "noteColumn": 16.81,
+      "barlineColumn": 16.81,
+      "gutter": 28,
+      "strings": 5
+    },
+    "play": {
+      "today": {
+        "innerHeight": 900,
+        "innerWidth": 1440,
+        "scrollHeight": 2549,
+        "overflow": 1649,
+        "mainWidth": 1440,
+        "headerBottom": 103,
+        "firstCardTop": 115,
+        "barHeight": 57,
+        "lastCardBottom": 2323.4,
+        "cards": [
+          {
+            "top": 115,
+            "left": 16,
+            "width": 1408,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 339.8,
+            "left": 16,
+            "width": 1408,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 564.5,
+            "left": 16,
+            "width": 1408,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 789.3,
+            "left": 16,
+            "width": 1408,
+            "height": 246.3,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 174.3,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              139.6
+            ]
+          },
+          {
+            "top": 1051.6,
+            "left": 16,
+            "width": 1408,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              156,
+              189.6,
+              156,
+              131.2
+            ]
+          },
+          {
+            "top": 1261.2,
+            "left": 16,
+            "width": 1408,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              156,
+              189.6,
+              156,
+              131.2
+            ]
+          },
+          {
+            "top": 1470.7,
+            "left": 16,
+            "width": 1408,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 1695.5,
+            "left": 16,
+            "width": 1408,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 1920.2,
+            "left": 16,
+            "width": 1408,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 2129.8,
+            "left": 16,
+            "width": 1408,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              156,
+              189.6,
+              156,
+              131.2
+            ]
+          }
+        ]
+      },
+      "barRest": 57,
+      "barRunning": 93,
+      "packings": {
+        "today (one per row)": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1666,
+          "overflow": 766,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1439.6,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 1408,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.4,
+                147.6,
+                147.6,
+                131.2
+              ]
+            },
+            {
+              "top": 339.8,
+              "left": 16,
+              "width": 1408,
+              "height": 246.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.4,
+                147.6,
+                147.6,
+                139.6
+              ]
+            },
+            {
+              "top": 602.1,
+              "left": 16,
+              "width": 1408,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                156,
+                189.6,
+                156,
+                131.2
+              ]
+            },
+            {
+              "top": 811.7,
+              "left": 16,
+              "width": 1408,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.4,
+                147.6,
+                147.6,
+                131.2
+              ]
+            },
+            {
+              "top": 1036.4,
+              "left": 16,
+              "width": 1408,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.6,
+                131.2
+              ]
+            },
+            {
+              "top": 1246,
+              "left": 16,
+              "width": 1408,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                156,
+                189.6,
+                156,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 16, card padding 12": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1022,
+          "overflow": 122,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 795.7,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 696,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 728,
+              "width": 696,
+              "height": 246.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 377.3,
+              "left": 16,
+              "width": 696,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 377.3,
+              "left": 728,
+              "width": 696,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 602.1,
+              "left": 16,
+              "width": 696,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 602.1,
+              "left": 728,
+              "width": 696,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 16, card padding 8": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 998,
+          "overflow": 98,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 771.7,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 696,
+              "height": 200.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 728,
+              "width": 696,
+              "height": 238.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 369.3,
+              "left": 16,
+              "width": 696,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 369.3,
+              "left": 728,
+              "width": 696,
+              "height": 200.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 586.1,
+              "left": 16,
+              "width": 696,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 586.1,
+              "left": 728,
+              "width": 696,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 12, card padding 12": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1014,
+          "overflow": 114,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 787.7,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 698,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 726,
+              "width": 698,
+              "height": 246.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 373.3,
+              "left": 16,
+              "width": 698,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 373.3,
+              "left": 726,
+              "width": 698,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 594.1,
+              "left": 16,
+              "width": 698,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 594.1,
+              "left": 726,
+              "width": 698,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 12, card padding 8": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 990,
+          "overflow": 90,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 763.7,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 698,
+              "height": 200.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 726,
+              "width": 698,
+              "height": 238.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 365.3,
+              "left": 16,
+              "width": 698,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 365.3,
+              "left": 726,
+              "width": 698,
+              "height": 200.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 578.1,
+              "left": 16,
+              "width": 698,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 578.1,
+              "left": 726,
+              "width": 698,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 8, card padding 12": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1006,
+          "overflow": 106,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 779.7,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 700,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 724,
+              "width": 700,
+              "height": 246.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 369.3,
+              "left": 16,
+              "width": 700,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 369.3,
+              "left": 724,
+              "width": 700,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 586.1,
+              "left": 16,
+              "width": 700,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 586.1,
+              "left": 724,
+              "width": 700,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 8, card padding 8": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 982,
+          "overflow": 82,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 755.7,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 700,
+              "height": 200.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 724,
+              "width": 700,
+              "height": 238.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 361.3,
+              "left": 16,
+              "width": 700,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.6,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 361.3,
+              "left": 724,
+              "width": 700,
+              "height": 200.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 570.1,
+              "left": 16,
+              "width": 700,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 570.1,
+              "left": 724,
+              "width": 700,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.6,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 16, card padding 12": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1167,
+          "overflow": 267,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 941.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 458.7,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                204.2,
+                200.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 490.7,
+              "width": 458.7,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                204.2,
+                200.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 965.3,
+              "width": 458.7,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                185.5,
+                219.1,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 16,
+              "width": 458.7,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                204.2,
+                200.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 490.7,
+              "width": 458.7,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 965.3,
+              "width": 458.7,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                185.5,
+                219.1,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 16, card padding 8": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1151,
+          "overflow": 251,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 925.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 458.7,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                208.2,
+                204.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 490.7,
+              "width": 458.7,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                208.2,
+                204.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 965.3,
+              "width": 458.7,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                189.5,
+                223.1,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 16,
+              "width": 458.7,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                208.2,
+                204.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 490.7,
+              "width": 458.7,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 965.3,
+              "width": 458.7,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                189.5,
+                223.1,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 12, card padding 12": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1163,
+          "overflow": 263,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 937.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 461.3,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                205.5,
+                201.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 489.3,
+              "width": 461.3,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                205.5,
+                201.8,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 962.7,
+              "width": 461.3,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                186.9,
+                220.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 16,
+              "width": 461.3,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                205.5,
+                201.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 489.3,
+              "width": 461.3,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 962.7,
+              "width": 461.3,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                186.9,
+                220.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 12, card padding 8": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1147,
+          "overflow": 247,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 921.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 461.3,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                209.5,
+                205.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 489.3,
+              "width": 461.3,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                209.5,
+                205.8,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 962.7,
+              "width": 461.3,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                190.9,
+                224.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 16,
+              "width": 461.3,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                209.5,
+                205.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 489.3,
+              "width": 461.3,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 962.7,
+              "width": 461.3,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                190.9,
+                224.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 8, card padding 12": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1159,
+          "overflow": 259,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 933.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 464,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                206.9,
+                203.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 488,
+              "width": 464,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                206.9,
+                203.1,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 960,
+              "width": 464,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                188.2,
+                221.8,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 16,
+              "width": 464,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                206.9,
+                203.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 488,
+              "width": 464,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 960,
+              "width": 464,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                188.2,
+                221.8,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 8, card padding 8": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1143,
+          "overflow": 243,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 917.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 464,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                210.9,
+                207.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 488,
+              "width": 464,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                210.9,
+                207.1,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 960,
+              "width": 464,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                192.2,
+                225.8,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 16,
+              "width": 464,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                210.9,
+                207.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 488,
+              "width": 464,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 960,
+              "width": 464,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                192.2,
+                225.8,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "song": {
+      "mainWidth": 768,
+      "scrollHeight": 1503,
+      "innerHeight": 900,
+      "arrangementTop": 201,
+      "arrangementHeight": 126.4,
+      "partsTop": 343.4,
+      "sections": [
+        126.4,
+        1006.2
+      ],
+      "cards": [
+        {
+          "height": 230.8,
+          "width": 736,
+          "headRow": 32,
+          "staff": 156.8,
+          "oneLineWidth": 681
+        },
+        {
+          "height": 268.3,
+          "width": 736,
+          "headRow": 32,
+          "staff": 174.3,
+          "oneLineWidth": 681
+        },
+        {
+          "height": 215.6,
+          "width": 736,
+          "headRow": 32,
+          "staff": 141.6,
+          "oneLineWidth": 681
+        },
+        {
+          "height": 215.6,
+          "width": 736,
+          "headRow": 32,
+          "staff": 141.6,
+          "oneLineWidth": 681
+        }
+      ]
+    }
+  },
+  "1440x900-light": {
+    "primitives": {
+      "stringHeight": 20.8,
+      "staffRow": 15.2,
+      "rhythmRow": 22.4,
+      "lineGap": 12,
+      "noteColumn": 16.81,
+      "barlineColumn": 16.81,
+      "gutter": 28,
+      "strings": 5
+    },
+    "play": {
+      "today": {
+        "innerHeight": 900,
+        "innerWidth": 1440,
+        "scrollHeight": 2549,
+        "overflow": 1649,
+        "mainWidth": 1440,
+        "headerBottom": 103,
+        "firstCardTop": 115,
+        "barHeight": 57,
+        "lastCardBottom": 2323.4,
+        "cards": [
+          {
+            "top": 115,
+            "left": 16,
+            "width": 1408,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 339.8,
+            "left": 16,
+            "width": 1408,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 564.5,
+            "left": 16,
+            "width": 1408,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 789.3,
+            "left": 16,
+            "width": 1408,
+            "height": 246.3,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 174.3,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              139.6
+            ]
+          },
+          {
+            "top": 1051.6,
+            "left": 16,
+            "width": 1408,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              156,
+              189.6,
+              156,
+              131.2
+            ]
+          },
+          {
+            "top": 1261.2,
+            "left": 16,
+            "width": 1408,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              156,
+              189.6,
+              156,
+              131.2
+            ]
+          },
+          {
+            "top": 1470.7,
+            "left": 16,
+            "width": 1408,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 1695.5,
+            "left": 16,
+            "width": 1408,
+            "height": 208.8,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 156.8,
+            "runWidths": [
+              151.4,
+              147.6,
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 1920.2,
+            "left": 16,
+            "width": 1408,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              147.6,
+              131.2
+            ]
+          },
+          {
+            "top": 2129.8,
+            "left": 16,
+            "width": 1408,
+            "height": 193.6,
+            "lines": 1,
+            "headRow": 20,
+            "staff": 141.6,
+            "runWidths": [
+              156,
+              189.6,
+              156,
+              131.2
+            ]
+          }
+        ]
+      },
+      "barRest": 57,
+      "barRunning": 93,
+      "packings": {
+        "today (one per row)": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1666,
+          "overflow": 766,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 1439.6,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 1408,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.4,
+                147.6,
+                147.6,
+                131.2
+              ]
+            },
+            {
+              "top": 339.8,
+              "left": 16,
+              "width": 1408,
+              "height": 246.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.4,
+                147.6,
+                147.6,
+                139.6
+              ]
+            },
+            {
+              "top": 602.1,
+              "left": 16,
+              "width": 1408,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                156,
+                189.6,
+                156,
+                131.2
+              ]
+            },
+            {
+              "top": 811.7,
+              "left": 16,
+              "width": 1408,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.4,
+                147.6,
+                147.6,
+                131.2
+              ]
+            },
+            {
+              "top": 1036.4,
+              "left": 16,
+              "width": 1408,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.6,
+                131.2
+              ]
+            },
+            {
+              "top": 1246,
+              "left": 16,
+              "width": 1408,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                156,
+                189.6,
+                156,
+                131.2
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 16, card padding 12": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1022,
+          "overflow": 122,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 795.7,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 696,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 728,
+              "width": 696,
+              "height": 246.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 377.3,
+              "left": 16,
+              "width": 696,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 377.3,
+              "left": 728,
+              "width": 696,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 602.1,
+              "left": 16,
+              "width": 696,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 602.1,
+              "left": 728,
+              "width": 696,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 16, card padding 8": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 998,
+          "overflow": 98,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 771.7,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 696,
+              "height": 200.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 728,
+              "width": 696,
+              "height": 238.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 369.3,
+              "left": 16,
+              "width": 696,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 369.3,
+              "left": 728,
+              "width": 696,
+              "height": 200.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 586.1,
+              "left": 16,
+              "width": 696,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 586.1,
+              "left": 728,
+              "width": 696,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 12, card padding 12": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1014,
+          "overflow": 114,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 787.7,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 698,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 726,
+              "width": 698,
+              "height": 246.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 373.3,
+              "left": 16,
+              "width": 698,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 373.3,
+              "left": 726,
+              "width": 698,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 594.1,
+              "left": 16,
+              "width": 698,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 594.1,
+              "left": 726,
+              "width": 698,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 12, card padding 8": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 990,
+          "overflow": 90,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 763.7,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 698,
+              "height": 200.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 726,
+              "width": 698,
+              "height": 238.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 365.3,
+              "left": 16,
+              "width": 698,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 365.3,
+              "left": 726,
+              "width": 698,
+              "height": 200.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 578.1,
+              "left": 16,
+              "width": 698,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 578.1,
+              "left": 726,
+              "width": 698,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 8, card padding 12": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1006,
+          "overflow": 106,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 779.7,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 700,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 724,
+              "width": 700,
+              "height": 246.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 369.3,
+              "left": 16,
+              "width": 700,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 369.3,
+              "left": 724,
+              "width": 700,
+              "height": 208.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 586.1,
+              "left": 16,
+              "width": 700,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 586.1,
+              "left": 724,
+              "width": 700,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "2 columns, gap 8, card padding 8": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 982,
+          "overflow": 82,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 755.7,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 700,
+              "height": 200.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 724,
+              "width": 700,
+              "height": 238.3,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 174.3,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 361.3,
+              "left": 16,
+              "width": 700,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.6,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 361.3,
+              "left": 724,
+              "width": 700,
+              "height": 200.8,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 156.8,
+              "runWidths": [
+                151.3,
+                147.5,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 570.1,
+              "left": 16,
+              "width": 700,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.2
+              ]
+            },
+            {
+              "top": 570.1,
+              "left": 724,
+              "width": 700,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                155.9,
+                189.6,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 16, card padding 12": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1167,
+          "overflow": 267,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 941.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 458.7,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                204.2,
+                200.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 490.7,
+              "width": 458.7,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                204.2,
+                200.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 965.3,
+              "width": 458.7,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                185.5,
+                219.1,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 16,
+              "width": 458.7,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                204.2,
+                200.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 490.7,
+              "width": 458.7,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 563.7,
+              "left": 965.3,
+              "width": 458.7,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                185.5,
+                219.1,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 16, card padding 8": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1151,
+          "overflow": 251,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 925.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 458.7,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                208.2,
+                204.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 490.7,
+              "width": 458.7,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                208.2,
+                204.5,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 965.3,
+              "width": 458.7,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                189.5,
+                223.1,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 16,
+              "width": 458.7,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                208.2,
+                204.4,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 490.7,
+              "width": 458.7,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 965.3,
+              "width": 458.7,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                189.5,
+                223.1,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 12, card padding 12": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1163,
+          "overflow": 263,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 937.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 461.3,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                205.5,
+                201.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 489.3,
+              "width": 461.3,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                205.5,
+                201.8,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 962.7,
+              "width": 461.3,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                186.9,
+                220.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 16,
+              "width": 461.3,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                205.5,
+                201.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 489.3,
+              "width": 461.3,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 559.7,
+              "left": 962.7,
+              "width": 461.3,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                186.9,
+                220.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 12, card padding 8": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1147,
+          "overflow": 247,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 921.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 461.3,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                209.5,
+                205.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 489.3,
+              "width": 461.3,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                209.5,
+                205.8,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 962.7,
+              "width": 461.3,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                190.9,
+                224.5,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 16,
+              "width": 461.3,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                209.5,
+                205.8,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 489.3,
+              "width": 461.3,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 551.7,
+              "left": 962.7,
+              "width": 461.3,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                190.9,
+                224.5,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 8, card padding 12": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1159,
+          "overflow": 259,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 933.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 464,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                206.9,
+                203.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 488,
+              "width": 464,
+              "height": 432.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                206.9,
+                203.1,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 960,
+              "width": 464,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                188.2,
+                221.8,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 16,
+              "width": 464,
+              "height": 377.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                206.9,
+                203.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 488,
+              "width": 464,
+              "height": 193.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 555.7,
+              "left": 960,
+              "width": 464,
+              "height": 347.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                188.2,
+                221.8,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        },
+        "3 columns, gap 8, card padding 8": {
+          "innerHeight": 900,
+          "innerWidth": 1440,
+          "scrollHeight": 1143,
+          "overflow": 243,
+          "mainWidth": 1440,
+          "headerBottom": 103,
+          "firstCardTop": 115,
+          "barHeight": 57,
+          "lastCardBottom": 917.2,
+          "cards": [
+            {
+              "top": 115,
+              "left": 16,
+              "width": 464,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                210.9,
+                207.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 115,
+              "left": 488,
+              "width": 464,
+              "height": 424.7,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 360.7,
+              "runWidths": [
+                210.9,
+                207.1,
+                147.5,
+                139.5
+              ]
+            },
+            {
+              "top": 115,
+              "left": 960,
+              "width": 464,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                192.2,
+                225.8,
+                155.9,
+                131.1
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 16,
+              "width": 464,
+              "height": 369.5,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 325.5,
+              "runWidths": [
+                210.9,
+                207.1,
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 488,
+              "width": 464,
+              "height": 185.6,
+              "lines": 1,
+              "headRow": 20,
+              "staff": 141.6,
+              "runWidths": [
+                147.5,
+                131.1
+              ]
+            },
+            {
+              "top": 547.7,
+              "left": 960,
+              "width": 464,
+              "height": 339.1,
+              "lines": 2,
+              "headRow": 20,
+              "staff": 295.1,
+              "runWidths": [
+                192.2,
+                225.8,
+                155.9,
+                131.1
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "song": {
+      "mainWidth": 768,
+      "scrollHeight": 1503,
+      "innerHeight": 900,
+      "arrangementTop": 201,
+      "arrangementHeight": 126.4,
+      "partsTop": 343.4,
+      "sections": [
+        126.4,
+        1006.2
+      ],
+      "cards": [
+        {
+          "height": 230.8,
+          "width": 736,
+          "headRow": 32,
+          "staff": 156.8,
+          "oneLineWidth": 681
+        },
+        {
+          "height": 268.3,
+          "width": 736,
+          "headRow": 32,
+          "staff": 174.3,
+          "oneLineWidth": 681
+        },
+        {
+          "height": 215.6,
+          "width": 736,
+          "headRow": 32,
+          "staff": 141.6,
+          "oneLineWidth": 681
+        },
+        {
+          "height": 215.6,
+          "width": 736,
+          "headRow": 32,
+          "staff": 141.6,
+          "oneLineWidth": 681
+        }
+      ]
+    }
+  }
+}

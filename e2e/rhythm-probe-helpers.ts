@@ -334,7 +334,7 @@ const idsFrom = (partUrl: string) => {
 export async function seed(
   page: Page,
   list: Col[],
-  opts: { bpm?: unknown; arrange?: boolean; passes?: number } = {},
+  opts: { bpm?: unknown; arrange?: boolean; passes?: number; entries?: number } = {},
 ) {
   const { songUrl, partUrl } = await startCapturing(page);
   const { songId, partId } = idsFrom(partUrl);
@@ -344,6 +344,12 @@ export async function seed(
     await page.goto(songUrl);
     await page.getByRole("button", { name: "Each part once" }).click();
     await page.waitForTimeout(150);
+    for (let i = 1; i < (opts.entries ?? 1); i++) {
+      const add = page.getByRole("button", { name: /^Add part .* to the arrangement$/ }).first();
+      if (!(await add.isVisible())) await page.getByRole("button", { name: "Add to the arrangement" }).click();
+      await add.click();
+      await page.waitForTimeout(150);
+    }
   }
   await writeColumns(page, partId, list);
   if ("bpm" in opts) await setStoredTempo(page, opts.bpm);

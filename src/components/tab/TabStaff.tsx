@@ -110,6 +110,8 @@ export interface TabStaffProps {
   barNumbers?: { offset: number };
   /** Breaks at barlines across as many lines as it needs. The play view and capture; the wrapped markup is drawn there. */
   wrap?: boolean;
+  /** Wrapped only: also draws a hidden `tab-ruler` as wide as the staff drawn on one line, for the reading cards to measure. */
+  ruler?: boolean;
   /** Which pass this is, written on the wrapper for the reading position. */
   pass?: number;
 }
@@ -132,6 +134,7 @@ export function TabStaff({
   keepCaretInView = 0,
   barNumbers,
   wrap = false,
+  ruler = false,
   pass,
 }: TabStaffProps) {
   const readingView = reading && reading.view !== "frets" ? reading.view : null;
@@ -450,6 +453,15 @@ export function TabStaff({
             <div className="tab-lines-end" />
           </div>
         </div>
+        {ruler ? (
+          <div className="tab-ruler-host" aria-hidden="true">
+            <div
+              className="tab-ruler"
+              data-testid="tab-ruler"
+              style={{ width: rulerWidth(layout.columns, rooms, marks) }}
+            />
+          </div>
+        ) : null}
         {caption ? (
           <p
             data-testid="staff-caption"
@@ -522,6 +534,28 @@ export function TabStaff({
   );
 }
 
+/** The staff's one-line width: every column's `widthTerms`, a connector gap of 1ch, a removal gap of 3ch, and the gutter. */
+function rulerWidth(
+  columns: TabLayout["columns"],
+  rooms: ReadonlyMap<number, ChordRoom>,
+  marks: { removals: ReadonlyMap<string, number>; removedAtEnd: number } | null,
+): string {
+  // A chord symbol wider than its column still counts toward the bar's content width, which is what a wrapped
+  // bar's flex basis is made of. The ruler is set in the chord font, so `1ch` there is the symbol's rendered advance
+  // on any platform; the staff's own `ch` comes through `--staff-ch`, resolved on the host in the staff's font.
+  const terms = columns.map((column, index) => {
+    const room = rooms.get(index);
+    const own = widthTerms(column.width, room, "var(--staff-ch)");
+    return room ? `max(${own}, ${room.chars} * 1ch)` : own;
+  });
+  const connectors = columns.filter((column) => column.connectors.some(Boolean)).length;
+  const removals = marks
+    ? columns.filter((column) => (marks.removals.get(`${column.eventId}-${column.repetition}`) ?? 0) > 0).length
+    : 0;
+  const gaps = removals + (marks && marks.removedAtEnd > 0 ? 1 : 0);
+  return `calc(${[...terms, `${connectors} * var(--staff-ch)`, `${gaps} * 3 * var(--staff-ch)`, "var(--gutter)"].join(" + ")})`;
+}
+
 /** Height of the rows drawn above the staff, so the labels line up with it. */
 function offsetFor(
   hasBarRow: boolean,
@@ -532,12 +566,18 @@ function offsetFor(
   return `calc(${rows} * var(--staff-row))`;
 }
 
-/** A column's width: its cells plus padding, widened only as far as its chord symbol needs. */
+/** The terms of a column's width, unwrapped: its cells plus padding, widened only as far as its chord symbol needs. */
+function widthTerms(width: number, room: ChordRoom | undefined, ch?: string): string {
+  const times = (n: number) => (ch ? `${n} * ${ch}` : `${n}ch`);
+  const base = `${times(width)} + var(--col-pad)`;
+  if (!room) return base;
+  const have = `${times(room.roomChars)} + ${room.roomColumns} * var(--col-pad)`;
+  return `${base} + max(0px, ${room.chars} * var(--chord-ch) + var(--chord-gap) - (${have}))`;
+}
+
+/** A column's width: see `widthTerms`. */
 function columnWidth(width: number, room: ChordRoom | undefined): string {
-  const base = `${width}ch + var(--col-pad)`;
-  if (!room) return `calc(${base})`;
-  const have = `${room.roomChars}ch + ${room.roomColumns} * var(--col-pad)`;
-  return `calc(${base} + max(0px, ${room.chars} * var(--chord-ch) + var(--chord-gap) - (${have})))`;
+  return `calc(${widthTerms(width, room)})`;
 }
 
 interface ColumnProps {

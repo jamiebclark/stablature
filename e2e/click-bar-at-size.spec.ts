@@ -42,11 +42,11 @@ for (const size of [
   { name: "desktop", viewport: { width: 1280, height: 720 } },
 ]) {
   for (const theme of ["light", "dark"] as const) {
-    test(`INV-040 ${size.name} ${theme}: timed song, three-digit tempo, 40 passes`, async ({ page }) => {
+    test(`INV-040 ${size.name} ${theme}: timed song, three-digit tempo, 40 entries`, async ({ page }) => {
       await page.setViewportSize(size.viewport);
       await page.emulateMedia({ colorScheme: theme });
       await recorder(page);
-      const { playUrl } = await seed(page, cols("q", "q", "|", "q", "q"), { bpm: 120, passes: 40 });
+      const { playUrl } = await seed(page, cols("q", "q", "|", "q", "q"), { bpm: 120, entries: 40 });
       await page.goto(playUrl);
       await openCluster(page);
       await expect(page.getByTestId("click-follow")).toBeVisible();
@@ -93,7 +93,7 @@ test("INV-040 no arrangement: the bar is there and reachable", async ({ page }) 
 test("INV-040 no tempo beside the follow chip: reachable, and nothing sideways", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
   await recorder(page);
-  const { playUrl } = await seed(page, cols("q", "q", "q", "q"), { bpm: null, passes: 40 });
+  const { playUrl } = await seed(page, cols("q", "q", "q", "q"), { bpm: null, entries: 40 });
   await page.goto(playUrl);
   await openCluster(page);
   await expect(page.getByTestId("click-follow")).toBeVisible();

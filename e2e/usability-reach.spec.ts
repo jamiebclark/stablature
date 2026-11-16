@@ -358,7 +358,14 @@ test("INV-026 the click cluster stays small and honest", async ({ page, isMobile
     // Idle, collapsed: one thin row, message for screen readers only.
     const idle = await box(bar);
     expect(idle.h, "idle height").toBeGreaterThanOrEqual(44);
-    expect(idle.h, "idle height").toBeLessThanOrEqual(60);
+    // Spec 010 amends SC-010: held at the running height, held at the measured 97 at 375 (the status slot holds the longest message), plus 1.
+    expect(idle.h, "idle height").toBeLessThanOrEqual(98);
+    await page.getByTestId("click-start").click();
+    await expect(page.getByTestId("click-stop")).toBeVisible();
+    const running = await box(bar);
+    expect(Math.abs(idle.h - running.h), "idle equals running height").toBeLessThanOrEqual(0.5);
+    await page.getByTestId("click-stop").click();
+    await expect(page.getByTestId("click-start")).toBeVisible();
     await expect(state).toHaveText(/Click (follows the notation|is a plain beat)\./);
     expect(await state.evaluate((el) => el.getBoundingClientRect().width <= 1 || el.className.includes("sr-only"))).toBe(true);
     // The first staff is near the top (SC-010).

@@ -194,7 +194,7 @@ test("INV-022 500 rows landing mid-run, and the whole play view drawn again, mov
 }, info) => {
   test.skip(info.project.name !== "desktop", "the engine and hook do not differ by device");
   await recorder(page);
-  const { playUrl, partId } = await seed(page, cols(null), { bpm: 120, passes: 8 });
+  const { playUrl, partId } = await seed(page, cols(null), { bpm: 120, entries: 8 });
   await page.goto(playUrl);
   await page.getByTestId("click-start").click();
   await expect(page.getByTestId("click-state")).toHaveText("Plain beat.", { timeout: 5000 });
