@@ -1,0 +1,21 @@
+# Every text file is stored and checked out with LF, whatever the editor or agent wrote. Edits on Windows kept
+# rewriting whole files to CRLF (five times across specs 008-011), which buried the real change in the diff.
+* text=auto eol=lf
+
+*.png binary
+*.ico binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.mp3 binary
+*.wav binary
+*.ogg binary
+*.webm binary
+*.m4a binary
+*.pdf binary
+*.zip binary

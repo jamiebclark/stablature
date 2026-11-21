@@ -4,17 +4,26 @@
 # docs/DECISIONS.md. This makes the check repeatable.
 #
 # Fails when:
+#   - a file in the index has CRLF or mixed endings (`git ls-files --eol`: i/crlf, i/mixed), or
 #   - a tracked file this branch modified has a working-tree line ending different from the one in the index
-#     (`git ls-files --eol`: i/lf w/crlf, or i/crlf w/lf, or a mixed w/), or
-#   - an untracked file this branch added under src/, e2e/ or scripts/ contains a CR.
+#     (i/lf w/crlf, or i/crlf w/lf, or a mixed w/), unless .gitattributes gives it `eol=lf`, or
+#   - an untracked file this branch added under src/, e2e/ or scripts/ contains a CR, with the same exception.
+# Under `eol=lf` git stores LF whatever the working tree holds, so a CRLF working copy cannot reach a commit; the
+# index check is what proves it.
 # Also prints `git diff --stat` beside `git diff --stat --ignore-cr-at-eol`: they must be equal.
 #
 #   bash scripts/check-line-endings.sh < /dev/null
 set -u
 cd "$(git rev-parse --show-toplevel)" || exit 2
 bad=0
+lf_attr() { [ "$(git check-attr eol -- "$1" | awk '{print $NF}')" = lf ]; }
+while IFS= read -r f; do
+  echo "CRLF in index   $f"
+  bad=1
+done < <(git ls-files --eol | awk '$1 == "i/crlf" || $1 == "i/mixed" {print $NF}')
 while IFS= read -r f; do
   [ -f "$f" ] || continue
+  lf_attr "$f" && continue
   line=$(git ls-files --eol -- "$f")
   i=$(printf '%s' "$line" | awk '{print $1}' | sed 's#^i/##')
   w=$(printf '%s' "$line" | awk '{print $2}' | sed 's#^w/##')
@@ -24,6 +33,7 @@ while IFS= read -r f; do
   fi
 done < <(git diff --name-only)
 while IFS= read -r f; do
+  lf_attr "$f" && continue
   if grep -Iq $'\r' "$f"; then
     echo "CR in new file  $f"
     bad=1
