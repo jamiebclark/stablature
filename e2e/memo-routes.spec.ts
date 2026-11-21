@@ -214,8 +214,12 @@ test("the audio routes answer every case of contracts §5", async ({ browser }, 
       headers: { "content-type": FORMAT, "content-length": "1000" },
       write: (s) => s.write(Buffer.alloc(9 * MIB, 1)),
     });
-    // The route says 422; Node's parser may answer 400 first, because the surplus bytes are not a request.
-    expect([422, 413, 400]).toContain(h6.status);
+    // The route says 422; Node's parser may answer 400 first, because the surplus bytes are not a request. On Linux
+    // the server closes with the surplus unread, which sends a reset that can reach this socket before the answer
+    // does (2 of 3 runs in the Linux replica, and CI): then there is no status to read, and what holds is that
+    // nothing is stored.
+    if (h6.status === null) expect(h6.closed).toBe(true);
+    else expect([422, 413, 400]).toContain(h6.status);
     expect(await audioRow(m)).toBeNull();
 
     // H7: chunked, no length, 9 MiB.

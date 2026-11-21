@@ -108,7 +108,7 @@ microphone. Before and after every case, the probe reads
 | H3 | N | PUT `m` | 404 `not_found` | unchanged |
 | H4 | V | PUT `m` | 403 `read_only` | unchanged |
 | H5 | V, E, O | GET `m` before upload | 404 `not_uploaded` | unchanged |
-| H6 | E | PUT `content-length: 1000`, then 9 MiB on a raw socket | 422 `size_mismatch` (or 413) | unchanged |
+| H6 | E | PUT `content-length: 1000`, then 9 MiB on a raw socket | 422 `size_mismatch` (or 413, or 400 from Node's parser, or a reset before any answer: Linux resets a socket closed with bytes unread) | unchanged |
 | H7 | E | PUT chunked, no length, 9 MiB | 413 `too_large`; the socket's later writes are refused or reset | unchanged |
 | H8 | E | PUT `content-length: 9437184` | 413 `too_large`, answered before the body is sent (`Expect: 100-continue` is not needed; time-to-answer < 1 s) | unchanged |
 | H9 | E | PUT `content-type` in **D** (below) | 415 `format` | unchanged |
