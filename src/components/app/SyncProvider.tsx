@@ -10,6 +10,7 @@
 
 import { useEffect } from "react";
 import { useSession } from "@/lib/auth-client";
+import { setMemoAccount } from "@/lib/local/memos";
 import { startSync } from "@/lib/sync/runner";
 
 export function SyncProvider() {
@@ -20,6 +21,7 @@ export function SyncProvider() {
     // No session means no server to talk to. Local writes keep queueing in the
     // outbox and go out whenever a session appears.
     if (!userId) return;
+    void setMemoAccount(userId).catch(() => undefined);
     return startSync();
   }, [userId]);
 

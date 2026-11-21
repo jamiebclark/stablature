@@ -22,6 +22,8 @@ export interface OverflowItem {
   onSelect?: () => unknown;
   /** Draws a divider and 8px above this item, and the danger ink. */
   destructive?: boolean;
+  /** Still focusable and chooseable, but drawn dim with "(unavailable)" and marked aria-disabled. */
+  unavailable?: boolean;
 }
 
 const ITEM =
@@ -171,11 +173,12 @@ export function OverflowMenu({
         >
           {open
             ? items.map((item) => {
-                const ink = item.destructive ? "text-danger" : "";
+                const ink = item.destructive ? "text-danger" : item.unavailable ? "text-text-dim" : "";
                 const content = (
                   <>
                     {item.icon}
                     {item.label}
+                    {item.unavailable ? <span className="ml-auto text-xs">(unavailable)</span> : null}
                   </>
                 );
                 const divider = item.destructive ? <hr key={`${item.label}-hr`} aria-hidden className="my-2 border-border-subtle" /> : null;
@@ -202,6 +205,7 @@ export function OverflowMenu({
                       type="button"
                       role="menuitem"
                       aria-label={item.ariaLabel}
+                      aria-disabled={item.unavailable ? "true" : undefined}
                       className={`${ITEM} ${ink}`}
                       onClick={async () => {
                         dialogRef.current?.close();

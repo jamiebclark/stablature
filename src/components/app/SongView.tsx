@@ -12,7 +12,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { GitBranch, Pencil, Play, Plus, Trash2 } from "lucide-react";
+import { GitBranch, Mic, MicOff, Pencil, Play, Plus, Trash2 } from "lucide-react";
 import { ArrangementEditor } from "@/components/arrangement/ArrangementEditor";
 import { ExportSong } from "@/components/app/ExportSong";
 import { PasteTab } from "@/components/app/PasteTab";
@@ -22,20 +22,27 @@ import { useCardTrack } from "@/components/reading/useCardTrack";
 import { useWide } from "@/components/reading/useWide";
 import { VariantLine } from "@/components/reading/VariantLine";
 import { TabStaff } from "@/components/tab/TabStaff";
-import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader, Panel } from "@/components/ui";
+import { Button, ButtonLink, Card, EmptyState, Input, Loading, PageHeader, Panel, Sheet } from "@/components/ui";
 import { OverflowMenu } from "@/components/ui/OverflowMenu";
+import { PartMemos } from "@/components/memos/PartMemos";
+import { useRecorder } from "@/components/memos/useRecorder";
+import { clearPartNotices, deletePart } from "@/lib/local/memos";
+import { getRecorder } from "@/lib/memos/ports";
+import { browserCapability, recordAvailability } from "@/lib/memos/capability";
+import type { Availability } from "@/lib/memos/words";
 import { partHeading } from "@/lib/reading/bars";
 import { createPart, createVariant } from "@/lib/local/editing";
 import {
   useArrangement,
   useBarCounts,
+  useMemos,
   useSong,
   useSongContent,
   useSongs,
   useSongTuning,
   useTunings,
 } from "@/lib/local/hooks";
-import { deleteRow, patchRow } from "@/lib/local/mutate";
+import { patchRow } from "@/lib/local/mutate";
 import type { AnnotationRow, EventRow, PartRow } from "@/lib/model";
 import { compareVariants, type VariantComparison } from "@/lib/reading/compare";
 import { staffMarks } from "@/lib/reading/marks";
@@ -55,6 +62,9 @@ export function SongView({ songId }: { songId: string }) {
   const entries = useArrangement(songId);
   const [view] = useStaffView();
   const barCounts = useBarCounts(songId);
+
+  // A recording does not outlive the song page it was started on (E9).
+  useEffect(() => () => getRecorder().leave(), []);
 
   const [density, setDensity] = useState<Density>("expanded");
   const [pasting, setPasting] = useState(false);
@@ -269,6 +279,7 @@ export function SongView({ songId }: { songId: string }) {
                   view={view}
                   comparison={comparisons?.get(part.id)}
                   songId={songId}
+                  songTitle={song.title}
                   bpm={song.bpm}
                   wide={wide}
                 />
@@ -293,6 +304,14 @@ export function partCaptureHref(songId: string, partId: string): string {
   return `/songs/${songId}/capture/${partId}`;
 }
 
+const RECORD_SUFFIX: Record<"ok" | Availability, string> = {
+  ok: "",
+  insecure: ", unavailable on this address",
+  "no-microphone": ", no microphone",
+  "no-recorder": ", this browser can't record",
+  busy: ", a recording is already running",
+};
+
 function PartCard({
   part,
   parts,
@@ -303,6 +322,7 @@ function PartCard({
   view,
   comparison,
   songId,
+  songTitle,
   bpm,
   wide,
 }: {
@@ -315,11 +335,18 @@ function PartCard({
   view: StaffView;
   comparison: VariantComparison | undefined;
   songId: string;
+  songTitle: string;
   bpm: number | null;
   wide: boolean;
 }) {
+  const { rec, snap } = useRecorder();
+  const recordingHere = snap.partId === part.id && snap.phase !== "idle";
   const [renaming, setRenaming] = useState(false);
   const [name, setName] = useState(part.name ?? "");
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const memoCount = useMemos(part.id)?.length ?? 0;
+  const [explaining, setExplaining] = useState<Availability | null>(null);
+  const availability = recordAvailability(browserCapability(snap.phase !== "idle"));
 
   const base = part.variantOfPartId
     ? parts.find((candidate) => candidate.id === part.variantOfPartId)
@@ -406,11 +433,29 @@ function PartCard({
           label={`Actions for part ${part.label}${part.name ? `, ${part.name}` : ""}`}
           items={[
             { label: "Play", ariaLabel: `Play part ${part.label}`, icon: <Play size={15} aria-hidden />, href: `/songs/${songId}/play/${part.id}` },
+            recordingHere
+              ? { label: "Stop recording", ariaLabel: `Stop recording on part ${part.label}`, icon: <MicOff size={15} aria-hidden />, onSelect: () => rec.stop() }
+              : {
+                  label: "Record memo",
+                  ariaLabel: `Record a memo on part ${part.label}${RECORD_SUFFIX[availability]}`,
+                  icon: <Mic size={15} aria-hidden />,
+                  unavailable: availability !== "ok",
+                  onSelect: async () => {
+                    const now = recordAvailability(browserCapability(snap.phase !== "idle"));
+                    if (now !== "ok") {
+                      setExplaining(now);
+                      return;
+                    }
+                    setExplaining(null);
+                    await clearPartNotices(part.id);
+                    rec.start({ id: part.id, bandId: part.bandId, songId, label: part.label });
+                  },
+                },
             { label: "Edit", ariaLabel: `Edit part ${part.label}`, icon: <Pencil size={15} aria-hidden />, href: partCaptureHref(songId, part.id) },
             ...(part.variantOfPartId
               ? []
               : [{ label: "+ variant", icon: <GitBranch size={15} aria-hidden />, onSelect: () => createVariant(part) }]),
-            { label: "Delete", ariaLabel: `Delete part ${part.label}`, icon: <Trash2 size={15} aria-hidden />, destructive: true, onSelect: () => deleteRow("parts", part.id) },
+            { label: "Delete", ariaLabel: `Delete part ${part.label}`, icon: <Trash2 size={15} aria-hidden />, destructive: true, onSelect: () => (memoCount > 0 ? setConfirmingDelete(true) : void deletePart(part.id)) },
           ]}
         />
       </div>
@@ -432,6 +477,27 @@ function PartCard({
         <p className="text-xs text-text-faint">Add a tuning to draw this part.</p>
       )}
       {marks ? <VariantLine text={marks.line} /> : null}
+      <PartMemos part={part} songTitle={songTitle} explanation={explaining} onCloseExplanation={() => setExplaining(null)} />
+      {/* Only a part with memos can need the question; a part without any draws the markup it always did. */}
+      {memoCount > 0 || confirmingDelete ? (
+        <Sheet open={confirmingDelete} onClose={() => setConfirmingDelete(false)} label={`Delete part ${part.label}?`}>
+          <p className="mb-3 text-sm">
+            This part has {memoCount} voice memo{memoCount === 1 ? "" : "s"}. Deleting the part deletes {memoCount === 1 ? "it" : "them"} for everyone in the band, and the recording{memoCount === 1 ? " is" : "s are"} erased.
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="danger"
+              onClick={() => {
+                setConfirmingDelete(false);
+                void deletePart(part.id);
+              }}
+            >
+              Delete part and memos
+            </Button>
+            <Button onClick={() => setConfirmingDelete(false)}>Cancel</Button>
+          </div>
+        </Sheet>
+      ) : null}
     </Card>
   );
 }

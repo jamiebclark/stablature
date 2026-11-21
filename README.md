@@ -34,6 +34,12 @@ Update with `docker compose pull && docker compose up -d`. To pin a version, set
 `STABLATURE_VERSION` in `.env`. To build from a checkout instead:
 `docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build`.
 
+Recording a voice memo needs a secure context: the page must be served over https or
+from `localhost`. A plain-http LAN address (say `http://192.168.1.20:3000`) will not record,
+because the browser withholds the microphone there; memos recorded elsewhere still play.
+To get https, put a reverse proxy (Caddy, nginx, Traefik) or a tunnel in front of the
+container. That needs no change to `docker-compose.yml`.
+
 Set `APP_URL` in `.env` to the address the **phone** will use, not
 `localhost` — the session cookie will not stick otherwise.
 

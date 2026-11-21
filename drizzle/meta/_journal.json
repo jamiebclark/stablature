@@ -43,6 +43,13 @@
       "when": 1794142819923,
       "tag": "0005_bands_slug_not_unique",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794867125372,
+      "tag": "0006_gifted_kingpin",
+      "breakpoints": true
     }
   ]
 }

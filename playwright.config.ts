@@ -1,5 +1,6 @@
 import { config as loadEnv } from "dotenv";
 import { defineConfig, devices } from "@playwright/test";
+import { INSECURE_HOST, INSECURE_HOST_RULE } from "./e2e/insecure-host";
 
 // The sync specs talk to Postgres directly to verify rows actually landed.
 loadEnv({ path: ".env.local", override: true, quiet: true });
@@ -59,7 +60,26 @@ const PHONE_ONLY = [
   "usability-neck.spec.ts",
   "variant-marks.spec.ts",
   "variant-marks-paint.spec.ts",
+  // Spec 012 voice memos: data-only specs (they add themselves here as written; the screen-size ones stay on both).
+  // memo-routes, memo-recorder, memo-sync-separate, memo-delete, memo-refusal, memo-band*, memo-recover, memo-full,
+  // memo-persist and memo-privacy join this list when their files exist (a name for a missing file is harmless).
+  "memo-routes.spec.ts",
+  "memo-recorder.spec.ts",
+  "memo-sync-separate.spec.ts",
+  "memo-band*.spec.ts",
+  "memo-delete.spec.ts",
+  "memo-delete-paths.spec.ts",
+  "memo-refusal.spec.ts",
+  "memo-recover.spec.ts",
+  "memo-full.spec.ts",
+  "memo-retry.spec.ts",
+  "memo-persist.spec.ts",
+  "memo-privacy.spec.ts",
+  "memo-push-cross-band.spec.ts",
 ];
+
+/** Spec 012: the origin the `insecure` project reaches the app by. A plain-http host that is not localhost is not a secure context. */
+const insecureURL = `http://${INSECURE_HOST}:${PORT}`;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -76,6 +96,17 @@ export default defineConfig({
     // Only what a desktop can do differently: keys, a mouse, hover, a fine pointer's density, a wide layout.
     // Specs of sync, import, data and touch-only flows run once, on the phone.
     { name: "desktop", use: { ...devices["Desktop Chrome"] }, testIgnore: [...PHONE_ONLY.map((name) => `**/${name}`), "**/wide-sideways-firefox.spec.ts"] },
+    // Spec 012 FR-028: a real non-secure origin, so `navigator.mediaDevices` is undefined and no API is patched.
+    // Only memo-unavailable runs here; the Origin is the one BETTER_AUTH accepts (see webServer.env).
+    {
+      name: "insecure",
+      testMatch: /memo-unavailable\.spec\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: insecureURL,
+        launchOptions: { args: [INSECURE_HOST_RULE] },
+      },
+    },
     // Firefox sizes a flex line from its items' content, not their flex-basis, so a bar in the play view
     // came out narrower than its columns and hid its last note. The staff layout runs there too.
     {
@@ -117,7 +148,7 @@ export default defineConfig({
     // the same thing that happens on a LAN when you reach the app by IP.
     env: {
       BETTER_AUTH_URL: baseURL,
-      STABLATURE_TRUSTED_ORIGINS: baseURL,
+      STABLATURE_TRUSTED_ORIGINS: `${baseURL},${insecureURL}`,
       // The suite signs up a dozen throwaway accounts from one address, which
       // trips the per-IP limit that protects the real credential endpoints.
       STABLATURE_AUTH_RATE_LIMIT: "off",

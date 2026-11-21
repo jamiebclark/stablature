@@ -17,7 +17,7 @@ export default function TermsPage() {
 
       <h2>Your work is yours</h2>
       <p>
-        The tablature, arrangements and notes you write remain entirely yours. Nothing here
+        The tablature, arrangements, notes and voice recordings you make remain entirely yours. Nothing here
         claims any licence over them. The export button exists so that leaving is never
         blocked on anyone&apos;s cooperation.
       </p>

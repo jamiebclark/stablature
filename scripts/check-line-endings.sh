@@ -24,7 +24,7 @@ while IFS= read -r f; do
   fi
 done < <(git diff --name-only)
 while IFS= read -r f; do
-  if grep -q $'\r' "$f"; then
+  if grep -Iq $'\r' "$f"; then
     echo "CR in new file  $f"
     bad=1
   fi

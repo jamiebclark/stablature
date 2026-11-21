@@ -34,6 +34,7 @@ import {
   timestamp,
   uniqueIndex,
   uuid,
+  customType,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import type { FieldClocks, FretMap, TechniqueMap } from "@/lib/model";
@@ -84,6 +85,11 @@ const sync = {
   fieldClocks: jsonb("field_clocks").$type<FieldClocks>().notNull().default({}),
   serverSeq: bigint("server_seq", { mode: "number" }).notNull(),
 };
+
+/** Postgres `bytea`, as a Node Buffer. Drizzle has no built-in one for pg-core. */
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({
+  dataType: () => "bytea",
+});
 
 export const bands = pgTable(
   "bands",
@@ -323,6 +329,62 @@ export const arrangementEntries = pgTable(
 );
 
 /**
+ * A voice memo on a part. The row syncs like any other; the audio does not (see
+ * `memoAudio`). `recordedById`/`recordedByName` are stamped by the server at
+ * insert, and the user FK is `set null` so deleting an account keeps the memo.
+ */
+export const memos = pgTable(
+  "memos",
+  {
+    id: uuid("id").primaryKey(),
+    bandId: uuid("band_id")
+      .notNull()
+      .references(() => bands.id, { onDelete: "cascade" }),
+    partId: uuid("part_id")
+      .notNull()
+      .references(() => parts.id, { onDelete: "cascade" }),
+    recordedById: text("recorded_by_id").references(() => user.id, { onDelete: "set null" }),
+    recordedByName: text("recorded_by_name"),
+    durationMs: integer("duration_ms").notNull(),
+    format: text("format").notNull(),
+    size: integer("size").notNull(),
+    recordedAt: bigint("recorded_at", { mode: "number" }).notNull(),
+    label: text("label"),
+    ...sync,
+  },
+  (t) => [
+    index("memos_part_idx").on(t.partId),
+    index("memos_band_idx").on(t.bandId),
+    index("memos_seq_idx").on(t.serverSeq),
+  ],
+);
+
+/**
+ * The clip's bytes, one row per memo at most. Not synced and never pulled:
+ * devices fetch it through /api/memos/{id}/audio. ERASED (bytes null) is
+ * terminal.
+ */
+export const memoAudio = pgTable(
+  "memo_audio",
+  {
+    memoId: uuid("memo_id")
+      .primaryKey()
+      .references(() => memos.id, { onDelete: "cascade" }),
+    bandId: uuid("band_id")
+      .notNull()
+      .references(() => bands.id, { onDelete: "cascade" }),
+    contentType: text("content_type").notNull(),
+    /** 0 once erased. */
+    size: integer("size").notNull(),
+    sha256: text("sha256"),
+    bytes: bytea("bytes"),
+    uploadedAt: timestamp("uploaded_at", { withTimezone: true }),
+    erasedAt: timestamp("erased_at", { withTimezone: true }),
+  },
+  (t) => [index("memo_audio_band_idx").on(t.bandId)],
+);
+
+/**
  * Push applies mutations in this order so a batch containing a parent and its
  * children satisfies foreign keys regardless of the order the client queued
  * them. Pull uses it too, so a client never briefly sees an orphan.
@@ -335,6 +397,7 @@ export const SYNC_TABLE_ORDER = [
   "events",
   "annotations",
   "arrangementEntries",
+  "memos",
 ] as const;
 
 export type SyncTableName = (typeof SYNC_TABLE_ORDER)[number];

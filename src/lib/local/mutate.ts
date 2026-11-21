@@ -145,6 +145,31 @@ export async function restoreRow<K extends SyncedTable>(
 }
 
 /**
+ * Put a row back in the outbox as it stands, with no new clock.
+ *
+ * For a row the server never accepted (`serverSeq === 0`) whose outbox entry
+ * was dropped on rejection: asking again must not invent an edit.
+ */
+export async function requeueRow<K extends SyncedTable>(
+  table: K,
+  id: string,
+  ctx: MutateContext = {},
+): Promise<void> {
+  const { database } = resolve(ctx);
+  await database.transaction("rw", [database[table], database.outbox], async () => {
+    const row = (await database[table].get(id)) as SyncedRows[K] | undefined;
+    if (!row) return;
+    await database.outbox.add({
+      table,
+      rowId: id,
+      row: row as SyncedRow,
+      hlc: row.updatedAt,
+      attempts: 0,
+    });
+  });
+}
+
+/**
  * Apply several mutations as one unit.
  *
  * Needed wherever a single user gesture produces several rows -- creating a
@@ -164,6 +189,12 @@ export async function mutateBatch(
     database.events,
     database.annotations,
     database.arrangementEntries,
+    database.memos,
+    database.memoAudio,
+    database.memoUploads,
+    database.memoFetches,
+    database.memoDrafts,
+    database.memoDraftChunks,
     database.outbox,
   ];
   await database.transaction("rw", tables, async () => {

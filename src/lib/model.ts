@@ -176,6 +176,22 @@ export interface ArrangementEntryRow extends SyncMeta {
   label: string | null;
 }
 
+export interface MemoRow extends SyncMeta {
+  id: string;
+  bandId: string;
+  partId: string;
+  /** Stamped by the server at insert; null until then. Never mergeable. */
+  recordedById: string | null;
+  recordedByName: string | null;
+  durationMs: number;
+  /** Normalised MIME type, one of the memo formats. */
+  format: string;
+  size: number;
+  /** Ms since epoch, at Stop (device clock). */
+  recordedAt: number;
+  label: string | null;
+}
+
 /** Every synced table, keyed by the name used in the sync protocol. */
 export interface SyncedRows {
   bands: BandRow;
@@ -185,6 +201,7 @@ export interface SyncedRows {
   events: EventRow;
   annotations: AnnotationRow;
   arrangementEntries: ArrangementEntryRow;
+  memos: MemoRow;
 }
 
 export type SyncedTable = keyof SyncedRows;
@@ -203,6 +220,7 @@ export const SYNCED_TABLES = [
   "events",
   "annotations",
   "arrangementEntries",
+  "memos",
 ] as const satisfies readonly SyncedTable[];
 
 /**
@@ -245,7 +263,17 @@ export const MERGEABLE_FIELDS = {
     "label",
     "deletedAt",
   ],
+  memos: ["label", "deletedAt"],
 } as const satisfies { [K in SyncedTable]: readonly (keyof SyncedRows[K])[] };
+
+/**
+ * Fields the server writes once, at insert, and no device may change. They are
+ * not mergeable (so a patch refuses them); a merge keeps whichever side has a
+ * value, so the server's echo fills in what a device left null.
+ */
+export const SERVER_STAMPED_FIELDS = {
+  memos: ["recordedById", "recordedByName"],
+} as const satisfies Partial<{ [K in SyncedTable]: readonly (keyof SyncedRows[K])[] }>;
 
 export type MergeableField<K extends SyncedTable> = (typeof MERGEABLE_FIELDS)[K][number];
 
