@@ -60,8 +60,9 @@ jobs:
 
       - run: npm test
 
-      # Wall-clock budgets (20 ms, 50 ms) cannot share a machine with the parallel run, so they run alone.
-      - run: npm run test:budget
+      # Wall-clock budgets (20 ms to 2,000 ms) cannot share a machine with the parallel run, so they run alone,
+      # one file at a time (TIMED in vitest.config.mts).
+      - run: npm run test:timing
 
   e2e:
     needs: changes
