@@ -14,11 +14,12 @@ import type {
   ArrangementEntryRow,
   BandRow,
   EventRow,
+  MemoRow,
   PartRow,
   SongRow,
   TuningRow,
 } from "@/lib/model";
-import { annotations, arrangementEntries, bands, events, parts, songs, tunings } from "./domain";
+import { annotations, arrangementEntries, bands, events, memos, parts, songs, tunings } from "./domain";
 
 /** Fails to compile unless `A` is assignable to `B`. */
 type AssertExtends<A extends B, B> = [A, B];
@@ -38,4 +39,9 @@ export type _Annotations = AssertExtends<typeof annotations.$inferSelect, Annota
 export type _Arrangement = AssertExtends<
   typeof arrangementEntries.$inferSelect,
   ArrangementEntryRow
+>;
+export type _Memos = AssertExtends<typeof memos.$inferSelect, MemoRow>;
+export type _MemoRecorder = AssertExtends<
+  (typeof memos.$inferSelect)["recordedById"],
+  MemoRow["recordedById"]
 >;

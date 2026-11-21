@@ -23,6 +23,18 @@ import {
   MIN_GROUP_COLUMNS,
   SYNCED_TABLES,
 } from "../model";
+import { parseFormat } from "../memos/formats";
+import {
+  DURATION_SLACK_MS,
+  LABEL_MAX,
+  MAX_BYTES,
+  MAX_DURATION_MS,
+  MIN_DURATION_MS,
+  RECORDER_NAME_MAX,
+} from "../memos/limits";
+
+/** The words for a write refused because the account may only read. */
+export const READ_ONLY_MESSAGE = "You have read-only access to that band.";
 
 /** Fixed-width HLC: 15 digits, 4 hex, node id. See hlc.ts. */
 const hlc = z.string().regex(/^\d{15}:[0-9a-f]{4}:[0-9a-z]{1,32}$/, "malformed HLC");
@@ -138,6 +150,23 @@ export const arrangementEntryRowSchema = z.object({
   ...syncMeta,
 });
 
+export const memoRowSchema = z.object({
+  id,
+  bandId: id,
+  partId: id,
+  recordedById: z.string().min(1).max(64).nullable(),
+  recordedByName: z.string().max(RECORDER_NAME_MAX).nullable(),
+  durationMs: z.number().int().min(MIN_DURATION_MS).max(MAX_DURATION_MS + DURATION_SLACK_MS),
+  format: z
+    .string()
+    .max(100)
+    .refine((s) => parseFormat(s) !== null, "format not allowed"),
+  size: z.number().int().min(1).max(MAX_BYTES),
+  recordedAt: z.number().int().min(0),
+  label: z.string().max(LABEL_MAX).nullable(),
+  ...syncMeta,
+});
+
 export const ROW_SCHEMAS = {
   bands: bandRowSchema,
   tunings: tuningRowSchema,
@@ -146,6 +175,7 @@ export const ROW_SCHEMAS = {
   events: eventRowSchema,
   annotations: annotationRowSchema,
   arrangementEntries: arrangementEntryRowSchema,
+  memos: memoRowSchema,
 } as const;
 
 export const mutationSchema = z.discriminatedUnion("table", [
@@ -156,6 +186,7 @@ export const mutationSchema = z.discriminatedUnion("table", [
   z.object({ table: z.literal("events"), row: eventRowSchema }),
   z.object({ table: z.literal("annotations"), row: annotationRowSchema }),
   z.object({ table: z.literal("arrangementEntries"), row: arrangementEntryRowSchema }),
+  z.object({ table: z.literal("memos"), row: memoRowSchema }),
 ]);
 
 export type Mutation = z.infer<typeof mutationSchema>;

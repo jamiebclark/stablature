@@ -27,9 +27,12 @@ import type {
   PushResponse,
   PulledRows,
 } from "@/lib/sync/protocol";
+import { READ_ONLY_MESSAGE } from "@/lib/sync/protocol";
+import { RECORDER_NAME_MAX } from "@/lib/memos/limits";
+import { eraseMemoAudio, memoIdsOfParts } from "./memos";
 import { canEdit, rolesForUser } from "./membership";
 
-const TABLES = {
+export const TABLES = {
   bands: schema.bands,
   tunings: schema.tunings,
   songs: schema.songs,
@@ -37,6 +40,7 @@ const TABLES = {
   events: schema.events,
   annotations: schema.annotations,
   arrangementEntries: schema.arrangementEntries,
+  memos: schema.memos,
 } as const;
 
 /**
@@ -58,7 +62,7 @@ function bandScope(name: SyncedTable): SQL.Aliased | never {
  * Key for the advisory lock that serialises pushes. Any constant works; it only
  * has to be the same for every push.
  */
-const PUSH_LOCK = 0x5ab1a7;
+export const PUSH_LOCK = 0x5ab1a7;
 
 /** Channel used to wake connected clients after a write. */
 export const SYNC_CHANNEL = "stablature_sync";
@@ -143,12 +147,53 @@ export async function applyPush(userId: string, mutations: readonly Mutation[]):
           table: mutation.table,
           id: mutation.row.id,
           reason: "read_only",
-          message: "You have read-only access to that band.",
+          message: READ_ONLY_MESSAGE,
         });
         continue;
       }
 
-      const stored = await upsert(tx, mutation);
+      if (mutation.table === "memos") {
+        const [part] = await tx
+          .select({ bandId: schema.parts.bandId })
+          .from(schema.parts)
+          .where(eq(schema.parts.id, mutation.row.partId))
+          .limit(1);
+        if (!part || part.bandId !== mutation.row.bandId) {
+          rejected.push({
+            table: mutation.table,
+            id: mutation.row.id,
+            reason: "invalid",
+            message: "That memo's part is not in that band.",
+          });
+          continue;
+        }
+      }
+
+      if (mutation.table !== "bands") {
+        // The role above was checked against the band the incoming row NAMES; the merge updates whatever row
+        // has that id. A row that already lives in another band (is not that row.
+        const mutated = columns(mutation.table);
+        const [held] = await tx
+          .select()
+          .from(TABLES[mutation.table] as unknown as AnyTable)
+          .where(eq(mutated.id, mutation.row.id))
+          .limit(1);
+        const heldRow = held as unknown as { bandId: string } | undefined;
+        // A memo re-pushed with another part in the SAME band is not refused: structure is set at insert and never
+        // merged (memo-recorder.spec's "structure never changes"), so it cannot move or erase anything.
+        if (heldRow && heldRow.bandId !== mutation.row.bandId) {
+          rejected.push({
+            table: mutation.table,
+            id: mutation.row.id,
+            reason: "invalid",
+            message: "That row belongs to a different band.",
+          });
+          continue;
+        }
+      }
+
+      const stored = await upsert(tx, mutation, userId);
+      await eraseAfterUpsert(tx, mutation, stored);
 
       if (claimOwnership) {
         await tx
@@ -172,7 +217,9 @@ export async function applyPush(userId: string, mutations: readonly Mutation[]):
 
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
-async function upsert(tx: Tx, mutation: Mutation): Promise<{ serverSeq: number | string }> {
+type Stored = { serverSeq: number | string; deletedAt?: string | null };
+
+async function upsert(tx: Tx, mutation: Mutation, userId: string): Promise<Stored> {
   const name = mutation.table;
   const table = TABLES[name] as unknown as AnyTable;
   const incoming = mutation.row as unknown as SyncedRows[SyncedTable];
@@ -209,14 +256,46 @@ async function upsert(tx: Tx, mutation: Mutation): Promise<{ serverSeq: number |
       .set(payload as never)
       .where(eq(columns(name).id, incoming.id))
       .returning();
-    return row as { serverSeq: number | string };
+    return row as Stored;
   }
 
-  const [row] = await tx
-    .insert(table)
-    .values({ ...(incoming as unknown as Record<string, unknown>), ...payload } as never)
-    .returning();
-  return row as { serverSeq: number | string };
+  const values: Record<string, unknown> = {
+    ...(incoming as unknown as Record<string, unknown>),
+    ...payload,
+  };
+  if (name === "memos") {
+    // Whatever the device sent is discarded: the account that pushed it is who
+    // recorded it. The name is cut to what the wire schema allows, or a long
+    // account name would make the row fail validation on every device.
+    const [account] = await tx
+      .select({ name: schema.user.name })
+      .from(schema.user)
+      .where(eq(schema.user.id, userId))
+      .limit(1);
+    values.recordedById = userId;
+    values.recordedByName = (account?.name ?? "").slice(0, RECORDER_NAME_MAX) || null;
+  }
+
+  const [row] = await tx.insert(table).values(values as never).returning();
+  return row as Stored;
+}
+
+/** A deleted memo, or a memo on a deleted part, never has storable audio. */
+async function eraseAfterUpsert(tx: Tx, mutation: Mutation, stored: Stored): Promise<void> {
+  if (mutation.table === "memos") {
+    let erase = stored.deletedAt !== null && stored.deletedAt !== undefined;
+    if (!erase) {
+      const [part] = await tx
+        .select({ deletedAt: schema.parts.deletedAt })
+        .from(schema.parts)
+        .where(eq(schema.parts.id, mutation.row.partId))
+        .limit(1);
+      erase = part?.deletedAt != null;
+    }
+    if (erase) await eraseMemoAudio(tx, [mutation.row.id], mutation.row.bandId);
+  } else if (mutation.table === "parts" && stored.deletedAt != null) {
+    await eraseMemoAudio(tx, await memoIdsOfParts(tx, [mutation.row.id]), mutation.row.bandId);
+  }
 }
 
 /** Tell every connected client in these bands that there is something new. */

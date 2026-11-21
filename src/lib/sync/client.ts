@@ -19,9 +19,10 @@
 
 import { db, getSyncCursor, setSyncCursor, type OutboxEntry, type StablatureDb } from "../local/db";
 import { getClock } from "../local/device";
-import { SYNCED_TABLES, type SyncedRow, type SyncedRows } from "../model";
+import { clearBandFull, currentMemoAccount, eraseLocalMemoAudio } from "../local/memos";
+import { SYNCED_TABLES, type MemoRow, type SyncedRow, type SyncedRows } from "../model";
 import { mergeRow } from "./merge";
-import { ROW_SCHEMAS, type PullResponse, type PushResponse } from "./protocol";
+import { ROW_SCHEMAS, type PullResponse, type PushRejection, type PushResponse } from "./protocol";
 
 /** How many local writes go in one push. */
 const PUSH_BATCH = 200;
@@ -84,7 +85,16 @@ export async function applyRemoteRows(
   if (batches.length === 0) return 0;
 
   // One transaction, so a reader sees a part with its columns and chords, or none of them.
-  await database.transaction("rw", batches.map(({ table }) => database[table]), async () => {
+  const tables = new Set([
+    ...batches.map(({ table }) => database[table]),
+    database.memos,
+    database.memoAudio,
+    database.memoUploads,
+    database.memoFetches,
+    database.memoDrafts,
+    database.memoDraftChunks,
+  ]);
+  await database.transaction("rw", [...tables], async () => {
     for (const { table, parsed } of batches) {
       for (const remote of parsed) {
         // Fold the remote clock in before merging, so a later local edit is
@@ -98,6 +108,18 @@ export async function applyRemoteRows(
         const merged = mergeRow(table, local, remote as never);
         await database[table].put(merged as never);
         applied += 1;
+
+        // A tombstone for a memo, or for a part, erases the audio in the same
+        // transaction as the merge, so no copy can outlive its memo.
+        if (merged.deletedAt !== null) {
+          if (table === "memos") {
+            await eraseLocalMemoAudio(database, [merged.id]);
+            await clearBandFull(database, (merged as MemoRow).bandId);
+          } else if (table === "parts") {
+            const ids = await database.memos.where("partId").equals(merged.id).primaryKeys();
+            await eraseLocalMemoAudio(database, ids);
+          }
+        }
       }
     }
   });
@@ -150,6 +172,8 @@ export async function pushOnce(database: StablatureDb = db): Promise<number> {
   // available outcome.
   await database.outbox.bulkDelete(sentIds);
 
+  await recordMemoRejections(result.rejected, database);
+
   if (result.rejected.length > 0) {
     const [first] = result.rejected;
     await setStatus(
@@ -165,6 +189,27 @@ export async function pushOnce(database: StablatureDb = db): Promise<number> {
   }
 
   return batch.length - result.rejected.length;
+}
+
+/** A refused memo row shows its refusal on its upload entry. */
+async function recordMemoRejections(
+  rejected: readonly PushRejection[],
+  database: StablatureDb,
+): Promise<void> {
+  const account = await currentMemoAccount(database);
+  for (const r of rejected) {
+    if (r.table !== "memos") continue;
+    if (r.reason !== "read_only" && r.reason !== "unknown_band" && r.reason !== "not_a_member") {
+      continue;
+    }
+    const entry = await database.memoUploads.get(r.id);
+    if (!entry) continue;
+    await database.memoUploads.put({
+      ...entry,
+      refusal: { code: r.reason, message: r.message },
+      account,
+    });
+  }
 }
 
 async function markAttempts(

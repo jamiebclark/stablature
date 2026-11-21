@@ -19,7 +19,7 @@ export const metadata: Metadata = {
  */
 export default function PrivacyPage() {
   return (
-    <Prose title="Privacy" updated="2 November 2026">
+    <Prose title="Privacy" updated="16 November 2026">
       <p>
         stablature is self-hosted software. There is no company behind it and no central
         service: it runs on a server somebody set up, and that person — the{" "}
@@ -40,6 +40,12 @@ export default function PrivacyPage() {
         <li>
           <strong>What you write</strong> — bands, songs, tunings, tablature, arrangements
           and the notes you add to them.
+        </li>
+        <li>
+          <strong>Voice recordings</strong> — short memos you record on a part. They are
+          stored on your device and in the operator&apos;s database, and every member of
+          the band can play and download them. The microphone is used only while you are
+          recording. A recording made while signed out never leaves your device.
         </li>
         <li>
           <strong>Session records</strong> — so you stay signed in, with the approximate
@@ -81,7 +87,12 @@ export default function PrivacyPage() {
         not be reconciled with a change made against it.
       </p>
       <p>
-        Deleted records remain in the database until the operator purges them. If you need
+        Voice recordings are the exception: deleting a memo erases its audio from the
+        server and from each device as it syncs. The small record of the memo stays, like
+        any other deleted record.
+      </p>
+      <p>
+        Other deleted records remain in the database until the operator purges them. If you need
         something genuinely erased, ask the operator to remove it at the database level.
       </p>
 

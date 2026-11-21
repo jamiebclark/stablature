@@ -47,11 +47,14 @@ export async function dumpDatabase(page: Page): Promise<string> {
       });
       const tables: Record<string, unknown> = {};
       for (const name of Array.from(db.objectStoreNames)) {
-        tables[name] = await new Promise((resolve, reject) => {
+        const rows = await new Promise<unknown[]>((resolve, reject) => {
           const request = db.transaction(name).objectStore(name).getAll();
           request.onsuccess = () => resolve(request.result);
           request.onerror = () => reject(request.error);
         });
+        // Memo tables that hold nothing are not part of what an app without memos wrote (spec 012).
+        if (name.startsWith("memo") && rows.length === 0) continue;
+        tables[name] = rows;
       }
       db.close();
       out[info.name] = tables;
@@ -164,19 +167,21 @@ export async function seedSong(page: Page, parts: PartSpec[], entries: EntrySpec
     page,
     `
     const { parts, entries, partRanks, entryRanks, columnRanks, songId } = arg;
+    // crypto.randomUUID is absent on a plain-http origin (the spec 012 insecure project).
+    const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : "xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx".replace(/x/g, () => ((Math.random() * 16) | 0).toString(16)));
     const [templatePart] = (await all("parts")).filter((r) => r.songId === songId);
     const [templateEvent] = (await all("events")).filter((r) => r.partId === templatePart.id);
     const [templateEntry] = (await all("arrangementEntries")).filter((r) => r.songId === songId);
     const meta = { updatedAt: templateEvent.updatedAt, deletedAt: null, fieldClocks: {}, serverSeq: templateEvent.serverSeq };
     const partIds = {};
-    parts.forEach((p) => { partIds[p.key] = crypto.randomUUID(); });
+    parts.forEach((p) => { partIds[p.key] = uuid(); });
     const eventIds = {};
     await write("events", (s) => {
       s.delete(templateEvent.id);
       for (const p of parts) {
         eventIds[p.key] = [];
         p.columns.forEach((c, i) => {
-          const id = crypto.randomUUID();
+          const id = uuid();
           eventIds[p.key].push(id);
           s.put({
             ...templateEvent, id, partId: partIds[p.key], rank: columnRanks[p.key][i], kind: c.kind ?? "notes",
@@ -190,7 +195,7 @@ export async function seedSong(page: Page, parts: PartSpec[], entries: EntrySpec
     await write("annotations", (s) => {
       for (const p of parts) p.columns.forEach((c, i) => {
         if (c.chord === undefined) return;
-        s.put({ ...meta, id: crypto.randomUUID(), bandId: templateEvent.bandId, partId: partIds[p.key], anchorEventId: eventIds[p.key][i], kind: "chord", value: c.chord });
+        s.put({ ...meta, id: uuid(), bandId: templateEvent.bandId, partId: partIds[p.key], anchorEventId: eventIds[p.key][i], kind: "chord", value: c.chord });
       });
     });
     await write("parts", (s) => {
@@ -203,7 +208,7 @@ export async function seedSong(page: Page, parts: PartSpec[], entries: EntrySpec
     await write("arrangementEntries", (s) => {
       s.delete(templateEntry.id);
       entries.forEach((e, i) => s.put({
-        ...templateEntry, id: crypto.randomUUID(), rank: entryRanks[i], kind: e.kind ?? "part",
+        ...templateEntry, id: uuid(), rank: entryRanks[i], kind: e.kind ?? "part",
         partId: e.part ? partIds[e.part] : null, repeat: e.repeat ?? 1, fromBar: e.fromBar ?? null, toBar: e.toBar ?? null,
         lastRepeatPartId: e.last ? partIds[e.last] : null, label: e.label ?? null,
       }));

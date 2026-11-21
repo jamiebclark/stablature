@@ -3,6 +3,7 @@ import { Geist, JetBrains_Mono } from "next/font/google";
 import { Footer } from "@/components/app/Footer";
 import { ServiceWorker } from "@/components/app/ServiceWorker";
 import { SyncProvider } from "@/components/app/SyncProvider";
+import { MemoBoot } from "@/components/memos/MemoBoot";
 import { KeyboardHelp } from "@/components/keys/KeyboardHelp";
 import { TopBar } from "@/components/app/TopBar";
 import "./globals.css";
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${sans.variable} ${mono.variable} antialiased`}>
         <ServiceWorker />
         <SyncProvider />
+        <MemoBoot />
         <KeyboardHelp />
         <TopBar />
         {children}

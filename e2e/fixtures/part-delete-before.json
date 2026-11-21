@@ -1,0 +1,84 @@
+{
+  "stablature/outbox": {
+    "added": [
+      {
+        "table": "parts",
+        "rowId": "<id1>",
+        "row": {
+          "id": "<id1>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "label": "A",
+          "name": null,
+          "rank": "a0",
+          "variantOfPartId": null,
+          "notes": null,
+          "deletedAt": "<clock>",
+          "fieldClocks": {
+            "label": "<clock>",
+            "name": "<clock>",
+            "rank": "<clock>",
+            "variantOfPartId": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        "hlc": "<clock>",
+        "attempts": 0,
+        "seq": 8
+      }
+    ],
+    "changed": []
+  },
+  "stablature/parts": {
+    "added": [],
+    "changed": [
+      {
+        "before": {
+          "id": "<id1>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "label": "A",
+          "name": null,
+          "rank": "a0",
+          "variantOfPartId": null,
+          "notes": null,
+          "deletedAt": null,
+          "fieldClocks": {
+            "label": "<clock>",
+            "name": "<clock>",
+            "rank": "<clock>",
+            "variantOfPartId": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        },
+        "after": {
+          "id": "<id1>",
+          "bandId": "<id2>",
+          "songId": "<id3>",
+          "label": "A",
+          "name": null,
+          "rank": "a0",
+          "variantOfPartId": null,
+          "notes": null,
+          "deletedAt": "<clock>",
+          "fieldClocks": {
+            "label": "<clock>",
+            "name": "<clock>",
+            "rank": "<clock>",
+            "variantOfPartId": "<clock>",
+            "notes": "<clock>",
+            "deletedAt": "<clock>"
+          },
+          "updatedAt": "<clock>",
+          "serverSeq": 0
+        }
+      }
+    ]
+  }
+}

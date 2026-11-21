@@ -45,7 +45,7 @@ test("INV-011 every card's menu from the keyboard, every close route returns foc
         await expect(menu).toBeVisible();
         const items = menu.getByRole("menuitem");
         const names = await items.evaluateAll((els) => els.map((e) => e.getAttribute("aria-label") ?? e.textContent?.trim()));
-        const want = card.variantOf ? 3 : 4;
+        const want = card.variantOf ? 4 : 5;
         if (names.length !== want) bad.push(`${card.label}: ${names.length} items (${names.join(", ")})`);
         const focusedIndex = () => items.evaluateAll((els) => els.indexOf(document.activeElement as HTMLElement));
         if ((await focusedIndex()) !== 0) bad.push(`${card.label} ${open}: first item not focused`);

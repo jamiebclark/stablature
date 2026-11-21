@@ -14,11 +14,14 @@
 
 import Dexie, { type Table } from "dexie";
 import type { Hlc } from "../hlc";
+import type { RefusalCode } from "../memos/refusals";
+import type { EndingKind } from "../memos/words";
 import type {
   AnnotationRow,
   ArrangementEntryRow,
   BandRow,
   EventRow,
+  MemoRow,
   PartRow,
   SongRow,
   SyncedRow,
@@ -51,6 +54,61 @@ export interface MetaEntry {
   value: unknown;
 }
 
+/** A clip this device holds. Exists exactly when the device has the bytes. */
+export interface MemoAudioEntry {
+  memoId: string;
+  bytes: ArrayBuffer;
+  format: string;
+  size: number;
+}
+
+/** The upload queue: one entry per memo recorded on this device. */
+export interface MemoUploadEntry {
+  memoId: string;
+  bandId: string;
+  /** Network/5xx failures so far. */
+  attempts: number;
+  /** Ms epoch; 0 means now. */
+  nextAt: number;
+  refusal: { code: RefusalCode | "unknown_band" | "not_a_member"; message: string } | null;
+  /** The user id the refusal was received under. */
+  account: string | null;
+}
+
+/** This device's fetch state for a memo recorded elsewhere. */
+export interface MemoFetchEntry {
+  memoId: string;
+  status: "waiting" | "failed" | "full" | "erased";
+  attempts: number;
+  nextAt: number;
+}
+
+/** A recording in progress, kept so a crash does not lose it. */
+export interface MemoDraft {
+  id: string;
+  memoId: string;
+  partId: string;
+  bandId: string;
+  songId: string;
+  format: string;
+  startedAt: number;
+}
+
+export interface MemoDraftChunk {
+  draftId: string;
+  index: number;
+  bytes: ArrayBuffer;
+}
+
+/** A line shown on a part's card about how a recording ended. */
+export interface MemoNotice {
+  id: string;
+  partId: string;
+  kind: EndingKind | "persist" | "saved";
+  words: string;
+  at: number;
+}
+
 export class StablatureDb extends Dexie {
   bands!: Table<BandRow, string>;
   tunings!: Table<TuningRow, string>;
@@ -59,6 +117,12 @@ export class StablatureDb extends Dexie {
   events!: Table<EventRow, string>;
   annotations!: Table<AnnotationRow, string>;
   arrangementEntries!: Table<ArrangementEntryRow, string>;
+  memos!: Table<MemoRow, string>;
+  memoAudio!: Table<MemoAudioEntry, string>;
+  memoUploads!: Table<MemoUploadEntry, string>;
+  memoFetches!: Table<MemoFetchEntry, string>;
+  memoDrafts!: Table<MemoDraft, string>;
+  memoDraftChunks!: Table<MemoDraftChunk, [string, number]>;
   outbox!: Table<OutboxEntry, number>;
   meta!: Table<MetaEntry, string>;
 
@@ -74,6 +138,15 @@ export class StablatureDb extends Dexie {
       arrangementEntries: "id, songId, bandId, serverSeq",
       outbox: "++seq, table, rowId",
       meta: "key",
+    });
+    // Version 1's stores are untouched, so no existing data moves.
+    this.version(2).stores({
+      memos: "id, partId, bandId, serverSeq",
+      memoAudio: "memoId",
+      memoUploads: "memoId",
+      memoFetches: "memoId",
+      memoDrafts: "id",
+      memoDraftChunks: "[draftId+index], draftId",
     });
   }
 }

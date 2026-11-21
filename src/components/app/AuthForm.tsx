@@ -108,7 +108,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
 
       {signingUp ? (
         <p className="mt-3 text-center text-xs text-text-faint">
-          Creating an account means your tablature syncs to this server. See{" "}
+          Creating an account means your tablature and voice recordings sync to this server. See{" "}
           <Link href="/privacy" className="text-accent hover:underline">
             what is stored
           </Link>{" "}

@@ -19,6 +19,7 @@
 import { compareHlc, maxHlc, ZERO_HLC, type Hlc } from "../hlc";
 import {
   MERGEABLE_FIELDS,
+  SERVER_STAMPED_FIELDS,
   type FieldClocks,
   type SyncedRows,
   type SyncedTable,
@@ -85,6 +86,12 @@ export function mergeRow<K extends SyncedTable>(
       asRecord(merged)[field] = asRecord(remote)[field];
       clocks[field] = remoteClock;
     }
+  }
+
+  // Server-stamped fields are not clocked: whichever side has a value keeps it.
+  const stamped = (SERVER_STAMPED_FIELDS as Partial<Record<SyncedTable, readonly string[]>>)[table];
+  for (const field of stamped ?? []) {
+    asRecord(merged)[field] = asRecord(local)[field] ?? asRecord(remote)[field] ?? null;
   }
 
   merged.fieldClocks = clocks;

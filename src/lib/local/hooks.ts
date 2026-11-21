@@ -16,11 +16,15 @@
 
 import { useLiveQuery } from "dexie-react-hooks";
 import { readClipboard, type Clipboard } from "./clipboard";
+import { db } from "./db";
+import type { MemoFetchEntry, MemoNotice, MemoUploadEntry } from "./db";
+import { listMemoNotices, liveMemos } from "./memos";
 import type {
   AnnotationRow,
   ArrangementEntryRow,
   BandRow,
   EventRow,
+  MemoRow,
   PartRow,
   SongRow,
   TuningRow,
@@ -131,4 +135,39 @@ export function useClipboard(): Clipboard | null | undefined {
  */
 export function usePendingWrites(): number | undefined {
   return useLiveQuery(() => pendingWriteCount(), []);
+}
+
+/** Live memos of a part, oldest first. */
+export function useMemos(partId: string | undefined): MemoRow[] | undefined {
+  return useLiveQuery(() => (partId ? liveMemos(partId) : undefined), [partId]);
+}
+
+export interface MemoLocal {
+  hasAudio: boolean;
+  upload: MemoUploadEntry | null;
+  fetch: MemoFetchEntry | null;
+}
+
+/** What this device holds for one memo. The clip's bytes are never loaded here, only whether they exist. */
+export function useMemoLocal(memoId: string | undefined): MemoLocal | undefined {
+  return useLiveQuery(
+    async () => {
+      if (!memoId) return undefined;
+      const [audioKey, upload, fetch] = await Promise.all([
+        db.memoAudio.where("memoId").equals(memoId).primaryKeys(),
+        db.memoUploads.get(memoId),
+        db.memoFetches.get(memoId),
+      ]);
+      return { hasAudio: audioKey.length > 0, upload: upload ?? null, fetch: fetch ?? null };
+    },
+    [memoId],
+  );
+}
+
+/** Notices on one part's card. */
+export function useMemoNotices(partId: string | undefined): MemoNotice[] | undefined {
+  return useLiveQuery(
+    async () => (partId ? (await listMemoNotices()).filter((n) => n.partId === partId) : undefined),
+    [partId],
+  );
 }

@@ -21,6 +21,8 @@
 
 import { liveQuery } from "dexie";
 import { db } from "../local/db";
+import { clearWaiting, workMemos } from "../memos/transfer";
+import { MEMO_RETRY_EVENT } from "../local/memos";
 import { syncNow } from "./client";
 
 /** Fallback cadence when the event stream is not delivering. */
@@ -50,26 +52,32 @@ export function startSync(): () => void {
   let disposed = false;
   let running = false;
   let queued = false;
+  let queuedChanged = false;
 
   /*
    * One cycle at a time, with at most one more queued. A burst of events (a
    * bandmate pushing a long offline session in several batches) should settle
    * into a single follow-up sync, not a stampede of overlapping ones.
    */
-  const run = async (): Promise<void> => {
+  const run = async (changed = false): Promise<void> => {
     if (disposed) return;
     if (running) {
       queued = true;
+      queuedChanged ||= changed;
       return;
     }
     running = true;
     try {
+      if (changed) await clearWaiting().catch(() => undefined);
       await syncNow();
+      await workMemos().catch(() => undefined);
     } finally {
       running = false;
       if (queued && !disposed) {
+        const again = queuedChanged;
         queued = false;
-        void run();
+        queuedChanged = false;
+        void run(again);
       }
     }
   };
@@ -101,7 +109,7 @@ export function startSync(): () => void {
   source.onmessage = (event) => {
     try {
       const payload = JSON.parse(event.data) as { type?: string };
-      if (payload.type === "changed") trigger();
+      if (payload.type === "changed") void run(true);
     } catch {
       // A frame we cannot parse is not worth failing over; the poll will catch
       // whatever it was announcing.
@@ -115,6 +123,7 @@ export function startSync(): () => void {
   };
 
   window.addEventListener("online", trigger);
+  window.addEventListener(MEMO_RETRY_EVENT, trigger);
   document.addEventListener("visibilitychange", onVisible);
   const timer = window.setInterval(trigger, POLL_MS);
 
@@ -124,6 +133,7 @@ export function startSync(): () => void {
     outbox.unsubscribe();
     window.clearInterval(timer);
     window.removeEventListener("online", trigger);
+    window.removeEventListener(MEMO_RETRY_EVENT, trigger);
     document.removeEventListener("visibilitychange", onVisible);
     source.close();
     active = undefined;

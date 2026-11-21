@@ -836,3 +836,68 @@ Plan deviations from the spec:
 ## 011 T060 — earlier entries' untouched guards report this branch's own files
 
 `check:untouched-reading`, `-polish`, `-wide`, `-notation` and `-usability` diff against `main` and name paths this entry changes on purpose: `src/lib/rhythm/audio.ts`, `scheduler.ts`, `notation.ts`, the new `engine-golden` test and fixture, `src/lib/arrangement/passes.ts`, `src/components/app/PlayView.tsx` and `SongView.tsx`, `src/components/rhythm/*`, the new `play/[partId]/page.tsx` and `click-bar.notes.test.tsx`. Every reported path is planned playback work. This entry's own fence, `check:untouched-playback`, and the amendment, line-ending, `untouched`, `untouched-rhythm` and `backbone` guards pass. The same was accepted for specs 004 to 006 (see 008 T050); none of these runs in CI.
+
+## 012 — suite before
+
+The baselines were recorded on the unedited tree before any product change: each part card's bounding box at 375×667, 412×915 and 1280×800 in both themes (`e2e/fixtures/memo-card-before.json`, T001), and the database diff and outbox entry of deleting a memo-less part (`e2e/fixtures/part-delete-before.json`, T002). Pass counts for the existing suites were not captured at the time; the regression net is the unedited existing suite, run in T102 and T103.
+
+## 012 — decisions
+
+From "Where the brief and the code differ":
+
+- **Recording or playing a memo stops nothing in the play view.** There is no shared engine to stop through; each play view makes its own, and memos are not in the play view. Leaving the play view already stops it.
+- **The memo carries who recorded it.** Devices hold no member list and a signed-out device has no user, so the server stamps the recorder's account and name from the signed-in account when the memo is first pushed.
+- **Record lives in the part card's overflow menu, not on its face.** The header row is full on a phone and a button there would add a line and cost the wide-reading fit.
+- **Delete erases audio, unlike every other delete.** The memo row is tombstoned like any row; its audio is erased on the server when the tombstone arrives and on each device when it pulls it. The privacy page says so.
+- **Deleting a part that has memos asks first**, naming how many memos go with it. Deleting a part with no memos is still one tap with no confirmation (spec 008 FR-014, amended).
+
+From "Decisions this spec makes":
+
+- **Server audio is kept in Postgres**, in its own `bytea` table keyed by the memo id, outside the synced tables and outside pull.
+- **Longest clip is 3 minutes**; recording stops itself at 3:00.
+- **Largest clip is 8 MiB**; recording stops itself before it gets there.
+- **Formats accepted are `audio/mp4`, `audio/webm` and `audio/ogg`**, with or without an AAC or Opus `codecs` parameter. Nothing else.
+- **Per-band total is 500 MB** of live memo audio; an upload past it is refused with a readable message and the audio stays on the recording device.
+- **The server drops bytes when the tombstone arrives in a push**, in the same transaction.
+- **Other devices drop bytes when they pull the tombstone.**
+- **No memos on the capture screen**, so capture's height budget is untouched.
+- **No memos in the play view.**
+
+Plan deviations from the spec's wording:
+
+- **"Two new routes" are one route file with two handlers**, `PUT` and `GET` on `/api/memos/{id}/audio`, each with its own authority (editor, member).
+- **Deleting a part erases its memos' audio even when the memo rows were not tombstoned.** Covers a bandmate deleting a part that had no memos on their device; an upload for such a memo is refused with `410 part_deleted`. Worth the owner's eye.
+- **The read-only words are the push's own**, "You have read-only access to that band."
+- **The recorder's name is frozen at the first push.** A later rename does not change old memos; deleting the account nulls `recordedById` and keeps the stamped name.
+- **A final chunk that would pass 8 MiB is not kept.** The saved clip is the longest run of whole chunks within the cap, so no row ever fails the wire schema and stalls a push.
+- **An upload cut off mid-transfer answers `400 incomplete` and is retried, not refused.**
+
+Left out on purpose, as an idea for later: **slowing down or looping memo playback.** A memo plays at the speed it was recorded, once through.
+
+## 012 — re-pinned tests
+
+- `e2e/polish-part-card-menu.spec.ts`: the part card menu gains **Record memo**, so the expected item count rises by one. Only the line assigning `want` changed; the check still fails on a missing or extra item.
+- `e2e/reading-helpers.ts`: helper-only, no assertion moves. `dumpDatabase` skips empty `memo*` stores so an app without memos dumps as before; `seedSong` falls back where `crypto.randomUUID` is absent (the plain-http `insecure` project). Added to plan.md's table; `check:untouched-memos` exempts it.
+
+## 012 — owed on real phones
+
+Not run here: there is no phone. Each row is pending a person (quickstart §6, SC-010).
+
+| # | Device | Do | Should show | Outcome |
+|---|---|---|---|---|
+| P1 | iPhone, Safari (also from the home screen) | record 20 s on a part over https | timer and level; memo plays; format `audio/mp4` | pending |
+| P2 | Android, Chrome | record 20 s | memo plays; format recorded | pending |
+| P3 | both | each plays the other's clip | both play, or the memo says why and offers Download | pending |
+| P4 | iPhone, airplane mode | record, then turn airplane mode off | "Will upload when online", then uploads with no action; the bandmate gets it | pending |
+| P5 | iPhone, silent switch on | play a memo | audible | pending |
+| P6 | either | take a call during recording | the clip up to the call is kept, with the cut-short notice; the microphone indicator goes off | pending |
+
+## 012 — browser check
+
+Pending, owed to a person at a real browser (T104): quickstart §5 at 100% zoom, both themes, 375×667 and 1280×800.
+
+## 012 T103 — earlier entries' untouched guards report this branch's own files
+
+`check:untouched-notation` and `-wide` diff against `main` and name paths this entry changes on purpose: `src/db`, `drizzle`, `src/lib/server`, `src/lib/sync`, `src/app/api`, `src/lib/model.ts`, `src/lib/local`, and (notation only) `src/components/app/SongView.tsx`. Every one is planned memo work (the synced memo table, the audio routes, the memo pull, the part card's Record and delete-confirm). This entry's own guards, `check:untouched-memos`, `check:memo-fence`, `check:memo-amendments`, and `check:line-endings`, pass. The same was accepted for entry 011 (see "011 T060"); none of these runs in CI.
+
+Fixes made while running the final guards: `e2e/memo-*` helper `useFakeMicrophone` renamed `withFakeMicrophone` (the lint rule read `use…` as a React hook); the part-delete confirmation sheet now renders only for a part with memos, so a part without any draws the markup `wide-narrow-unchanged.spec.ts` recorded from `main` (the empty `<dialog>` it had added changed that markup); `playwright.config.ts` and `SyncProvider.tsx` had been left with CRLF and are LF again. `spec004-holds.test.ts` failed once under full-suite load and passed alone.
