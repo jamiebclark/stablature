@@ -33,7 +33,22 @@ export function useCardTrack(listRef: RefObject<HTMLElement | null>, wide: boole
         li,
         ruler: li.querySelector<HTMLElement>('[data-testid="tab-ruler"]'),
         head: li.querySelector<HTMLElement>(".reading-card > :first-child"),
+        // The variant line ("Differs from A in bar 1: …") is one line of text like the head, and counts with it: a card
+        // narrower than it wraps it, and the card's width moves with the view, so its height would not hold.
+        line: li.querySelector<HTMLElement>('[data-testid="variant-line"]'),
       }));
+      const savedLine = items.map((i) => i.line?.getAttribute("style") ?? null);
+      items.forEach((i) => {
+        if (!i.line) return;
+        i.line.style.width = "max-content";
+        i.line.style.whiteSpace = "nowrap";
+      });
+      const lines = items.map((i) => (i.line ? i.line.getBoundingClientRect().width : 0));
+      items.forEach((i, k) => {
+        if (!i.line) return;
+        if (savedLine[k] === null) i.line.removeAttribute("style");
+        else i.line.setAttribute("style", savedLine[k]!);
+      });
       // Measure in one batch: every head on one line, read all, restore.
       const saved = items.map((i) => i.head?.getAttribute("style") ?? null);
       items.forEach((i) => {
@@ -63,8 +78,8 @@ export function useCardTrack(listRef: RefObject<HTMLElement | null>, wide: boole
       });
       items.forEach((i, k) => {
         setIfChanged(i.li, "--own-staff", i.ruler ? `${Math.ceil(rulers[k])}px` : null);
-        setIfChanged(i.li, "--own-head", `${Math.ceil(heads[k])}px`);
-        setIfChanged(i.li, "--own-head-print", `${Math.ceil(printHeads[k])}px`);
+        setIfChanged(i.li, "--own-head", `${Math.ceil(Math.max(heads[k], lines[k]))}px`);
+        setIfChanged(i.li, "--own-head-print", `${Math.ceil(Math.max(printHeads[k], lines[k]))}px`);
       });
       const widest = Math.max(0, ...items.map((i) => i.ruler?.offsetWidth ?? 0));
       setIfChanged(list, "--staff-line", items.some((i) => i.ruler) ? `${widest}px` : null);

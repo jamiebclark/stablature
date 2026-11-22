@@ -655,6 +655,11 @@ li:not([data-live-words]) .card-passes [data-testid="card-passes-live"] {
     max-width: 100%;
     min-width: 0;
   }
+  /* A card is sized from its resting head row, so an open name editor takes a line of its own in the head row: on a
+     card that fits the resting head exactly, input and Save would otherwise run under the actions button (T049). */
+  .reading-cards > li > .reading-card > :first-child > form {
+    min-width: 100%;
+  }
   /* Memo rows and the recorder were built at phone width. */
   .reading-cards > li:has([data-testid="part-memos"]) {
     --card-least: max(var(--card-floor), var(--card-min));

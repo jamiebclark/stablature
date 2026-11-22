@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import type { ActionId, Screen } from "@/lib/keys/shortcuts";
 
 /** An action returns false to say it did nothing, so the key keeps its default. */
@@ -20,7 +20,9 @@ const registry = new Set<Registration>();
  */
 export function useScreenKeys(screen: Screen, actions: ScreenActions): void {
   const ref = useRef<ScreenActions>(actions);
-  useEffect(() => {
+  // Before paint, not after: a key pressed once a control looks ready must reach the actions that saw it ready.
+  // A passive effect left a gap after each commit where Space ran the previous render's actions (spec 013 T051).
+  useLayoutEffect(() => {
     ref.current = actions;
   });
   useEffect(() => {
