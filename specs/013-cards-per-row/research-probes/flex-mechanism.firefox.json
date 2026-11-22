@@ -1,0 +1,194 @@
+{
+ "short12": {
+  "rows": [
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   [
+    8,
+    9,
+    10,
+    11
+   ]
+  ],
+  "want": [
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   [
+    8,
+    9,
+    10,
+    11
+   ]
+  ],
+  "lastAtOwn": true,
+  "fullRowsFill": true,
+  "listHeight": 88,
+  "expectHeight": 88
+ },
+ "fit6": {
+  "rows": [
+   [
+    0,
+    1
+   ],
+   [
+    2,
+    3
+   ],
+   [
+    4,
+    5
+   ]
+  ],
+  "want": [
+   [
+    0,
+    1
+   ],
+   [
+    2,
+    3
+   ],
+   [
+    4,
+    5
+   ]
+  ],
+  "lastAtOwn": true,
+  "fullRowsFill": true,
+  "listHeight": 136,
+  "expectHeight": 136
+ },
+ "long3": {
+  "rows": [
+   [
+    0
+   ],
+   [
+    1,
+    2
+   ]
+  ],
+  "want": [
+   [
+    0
+   ],
+   [
+    1,
+    2
+   ]
+  ],
+  "lastAtOwn": true,
+  "fullRowsFill": true,
+  "listHeight": 88,
+  "expectHeight": 88
+ },
+ "exactRow": {
+  "rows": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "want": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "lastAtOwn": true,
+  "fullRowsFill": true,
+  "listHeight": 88,
+  "expectHeight": 88
+ },
+ "exactLast": {
+  "rows": [
+   [
+    0,
+    1
+   ]
+  ],
+  "want": [
+   [
+    0,
+    1
+   ]
+  ],
+  "lastAtOwn": true,
+  "fullRowsFill": true,
+  "listHeight": 40,
+  "expectHeight": 40
+ },
+ "mixed": {
+  "rows": [
+   [
+    0,
+    1
+   ],
+   [
+    2,
+    3,
+    4
+   ],
+   [
+    5
+   ]
+  ],
+  "want": [
+   [
+    0,
+    1
+   ],
+   [
+    2,
+    3,
+    4
+   ],
+   [
+    5
+   ]
+  ],
+  "lastAtOwn": true,
+  "fullRowsFill": true,
+  "listHeight": 136,
+  "expectHeight": 136
+ },
+ "one": {
+  "rows": [
+   [
+    0
+   ]
+  ],
+  "want": [
+   [
+    0
+   ]
+  ],
+  "lastAtOwn": true,
+  "fullRowsFill": true,
+  "listHeight": 40,
+  "expectHeight": 40
+ }
+}

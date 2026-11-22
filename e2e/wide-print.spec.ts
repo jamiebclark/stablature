@@ -1,5 +1,6 @@
 /** INV-015: print draws the same cards, none split, none off the page. */
 import { expect, test } from "@playwright/test";
+import { drawn, greedy, measure, own } from "./cards-print-measure";
 import { FOLD, seedFitSong, seedFold } from "./wide-helpers";
 
 test.setTimeout(120_000);
@@ -50,7 +51,12 @@ for (const colorScheme of ["dark", "light"] as const) {
         expect(info.barHidden, `click bar display none at ${width}`).toBe(true);
         expect(info.scroll, `nothing cut at ${width}`).toBeLessThanOrEqual(info.vw);
         if (width === 718) expect(info.tops).toBe(info.count);
-        else expect(info.tops).toBeLessThan(info.count);
+        else {
+          // re-pinned by spec 013: paper follows the screen's width rule (FR-019), so rows are the greedy rows of the cards' own widths, not "some row holds two".
+          const m = await measure(page);
+          const g = greedy(own(m), m.row, m.gap);
+          if (!g.tie) expect(drawn(m.cards), `greedy rows at ${width}`).toEqual(g.rows);
+        }
       }
     });
   }

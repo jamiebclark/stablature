@@ -70,34 +70,34 @@
   "1280x800-dark": [
     {
       "label": "Actions for part A, Verse",
-      "width": 416,
+      "width": 149.0625,
       "height": 215.578125
     },
     {
       "label": "Actions for part B",
-      "width": 416,
+      "width": 208.0625,
       "height": 215.578125
     },
     {
       "label": "Actions for part A2",
-      "width": 416,
+      "width": 285.0625,
       "height": 235.578125
     }
   ],
   "1280x800-light": [
     {
       "label": "Actions for part A, Verse",
-      "width": 416,
+      "width": 149.0625,
       "height": 215.578125
     },
     {
       "label": "Actions for part B",
-      "width": 416,
+      "width": 208.0625,
       "height": 215.578125
     },
     {
       "label": "Actions for part A2",
-      "width": 416,
+      "width": 285.0625,
       "height": 235.578125
     }
   ]

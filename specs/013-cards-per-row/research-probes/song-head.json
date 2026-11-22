@@ -1,0 +1,508 @@
+{
+ "fit | today": {
+  "scroll": 800,
+  "listTop": 341,
+  "cards": [
+   {
+    "width": 628,
+    "height": 198,
+    "top": 341.4,
+    "headNatural": 313.8,
+    "headHeight": 32,
+    "staffHeight": 136,
+    "items": [
+     "A:41.4",
+     "Add a name:91.8",
+     "120 bpm · 4 beats a bar:124.7",
+     "Actions for part A:32",
+     "Actions for part A:0"
+    ]
+   },
+   {
+    "width": 628,
+    "height": 235.5,
+    "top": 341.4,
+    "headNatural": 390.7,
+    "headHeight": 32,
+    "staffHeight": 153.5,
+    "items": [
+     "A':49.8",
+     "Add a name:91.8",
+     "120 bpm · 4 beats a bar:124.7",
+     "variant of A:60.5",
+     "Actions for part A':32",
+     "Actions for part A':0"
+    ]
+   },
+   {
+    "width": 628,
+    "height": 182.8,
+    "top": 584.9,
+    "headNatural": 313.8,
+    "headHeight": 32,
+    "staffHeight": 120.8,
+    "items": [
+     "B:41.4",
+     "Add a name:91.8",
+     "120 bpm · 4 beats a bar:124.7",
+     "Actions for part B:32",
+     "Actions for part B:0"
+    ]
+   },
+   {
+    "width": 628,
+    "height": 182.8,
+    "top": 584.9,
+    "headNatural": 313.8,
+    "headHeight": 32,
+    "staffHeight": 120.8,
+    "items": [
+     "C:41.4",
+     "Add a name:91.8",
+     "120 bpm · 4 beats a bar:124.7",
+     "Actions for part C:32",
+     "Actions for part C:0"
+    ]
+   }
+  ]
+ },
+ "fit | per-card": {
+  "scroll": 832,
+  "listTop": 341,
+  "cards": [
+   {
+    "width": 628,
+    "height": 198,
+    "top": 341.4,
+    "headNatural": 313.8,
+    "headHeight": 32,
+    "staffHeight": 136,
+    "items": [
+     "A:41.4",
+     "Add a name:91.8",
+     "120 bpm · 4 beats a bar:124.7",
+     "Actions for part A:32",
+     "Actions for part A:0"
+    ]
+   },
+   {
+    "width": 628,
+    "height": 235.5,
+    "top": 341.4,
+    "headNatural": 390.7,
+    "headHeight": 32,
+    "staffHeight": 153.5,
+    "items": [
+     "A':49.8",
+     "Add a name:91.8",
+     "120 bpm · 4 beats a bar:124.7",
+     "variant of A:60.5",
+     "Actions for part A':32",
+     "Actions for part A':0"
+    ]
+   },
+   {
+    "width": 616,
+    "height": 182.8,
+    "top": 584.9,
+    "headNatural": 313.8,
+    "headHeight": 32,
+    "staffHeight": 120.8,
+    "items": [
+     "B:41.4",
+     "Add a name:91.8",
+     "120 bpm · 4 beats a bar:124.7",
+     "Actions for part B:32",
+     "Actions for part B:0"
+    ]
+   },
+   {
+    "width": 321,
+    "height": 222.8,
+    "top": 584.9,
+    "headNatural": 313.8,
+    "headHeight": 72,
+    "staffHeight": 120.8,
+    "items": [
+     "C:41.4",
+     "Add a name:91.8",
+     "120 bpm · 4 beats a bar:124.7",
+     "Actions for part C:32",
+     "Actions for part C:0"
+    ]
+   }
+  ]
+ },
+ "short | today": {
+  "scroll": 1221,
+  "listTop": 359,
+  "cards": [
+   {
+    "width": 416,
+    "height": 203.6,
+    "top": 359,
+    "headNatural": 265.9,
+    "headHeight": 32,
+    "staffHeight": 141.6,
+    "items": [
+     "P1:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P1:32",
+     "Actions for part P1:0"
+    ]
+   },
+   {
+    "width": 416,
+    "height": 203.6,
+    "top": 359,
+    "headNatural": 265.9,
+    "headHeight": 32,
+    "staffHeight": 141.6,
+    "items": [
+     "P2:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P2:32",
+     "Actions for part P2:0"
+    ]
+   },
+   {
+    "width": 416,
+    "height": 203.6,
+    "top": 359,
+    "headNatural": 265.9,
+    "headHeight": 32,
+    "staffHeight": 141.6,
+    "items": [
+     "P3:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P3:32",
+     "Actions for part P3:0"
+    ]
+   },
+   {
+    "width": 416,
+    "height": 203.6,
+    "top": 570.6,
+    "headNatural": 265.9,
+    "headHeight": 32,
+    "staffHeight": 141.6,
+    "items": [
+     "P4:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P4:32",
+     "Actions for part P4:0"
+    ]
+   },
+   {
+    "width": 416,
+    "height": 203.6,
+    "top": 570.6,
+    "headNatural": 265.9,
+    "headHeight": 32,
+    "staffHeight": 141.6,
+    "items": [
+     "P5:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P5:32",
+     "Actions for part P5:0"
+    ]
+   },
+   {
+    "width": 416,
+    "height": 203.6,
+    "top": 570.6,
+    "headNatural": 265.9,
+    "headHeight": 32,
+    "staffHeight": 141.6,
+    "items": [
+     "P6:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P6:32",
+     "Actions for part P6:0"
+    ]
+   },
+   {
+    "width": 416,
+    "height": 203.6,
+    "top": 782.1,
+    "headNatural": 265.9,
+    "headHeight": 32,
+    "staffHeight": 141.6,
+    "items": [
+     "P7:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P7:32",
+     "Actions for part P7:0"
+    ]
+   },
+   {
+    "width": 416,
+    "height": 203.6,
+    "top": 782.1,
+    "headNatural": 265.9,
+    "headHeight": 32,
+    "staffHeight": 141.6,
+    "items": [
+     "P8:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P8:32",
+     "Actions for part P8:0"
+    ]
+   },
+   {
+    "width": 416,
+    "height": 203.6,
+    "top": 782.1,
+    "headNatural": 265.9,
+    "headHeight": 32,
+    "staffHeight": 141.6,
+    "items": [
+     "P9:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P9:32",
+     "Actions for part P9:0"
+    ]
+   },
+   {
+    "width": 416,
+    "height": 203.6,
+    "top": 993.7,
+    "headNatural": 274.3,
+    "headHeight": 32,
+    "staffHeight": 141.6,
+    "items": [
+     "P10:58.2",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P10:32",
+     "Actions for part P10:0"
+    ]
+   },
+   {
+    "width": 416,
+    "height": 203.6,
+    "top": 993.7,
+    "headNatural": 274.3,
+    "headHeight": 32,
+    "staffHeight": 141.6,
+    "items": [
+     "P11:58.2",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P11:32",
+     "Actions for part P11:0"
+    ]
+   },
+   {
+    "width": 416,
+    "height": 203.6,
+    "top": 993.7,
+    "headNatural": 274.3,
+    "headHeight": 32,
+    "staffHeight": 141.6,
+    "items": [
+     "P12:58.2",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P12:32",
+     "Actions for part P12:0"
+    ]
+   }
+  ]
+ },
+ "short | per-card": {
+  "scroll": 958,
+  "listTop": 359,
+  "cards": [
+   {
+    "width": 151,
+    "height": 283.6,
+    "top": 359,
+    "headNatural": 265.9,
+    "headHeight": 112,
+    "staffHeight": 141.6,
+    "items": [
+     "P1:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P1:32",
+     "Actions for part P1:0"
+    ]
+   },
+   {
+    "width": 151,
+    "height": 283.6,
+    "top": 359,
+    "headNatural": 265.9,
+    "headHeight": 112,
+    "staffHeight": 141.6,
+    "items": [
+     "P2:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P2:32",
+     "Actions for part P2:0"
+    ]
+   },
+   {
+    "width": 151,
+    "height": 283.6,
+    "top": 359,
+    "headNatural": 265.9,
+    "headHeight": 112,
+    "staffHeight": 141.6,
+    "items": [
+     "P3:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P3:32",
+     "Actions for part P3:0"
+    ]
+   },
+   {
+    "width": 151,
+    "height": 283.6,
+    "top": 359,
+    "headNatural": 265.9,
+    "headHeight": 112,
+    "staffHeight": 141.6,
+    "items": [
+     "P4:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P4:32",
+     "Actions for part P4:0"
+    ]
+   },
+   {
+    "width": 151,
+    "height": 283.6,
+    "top": 359,
+    "headNatural": 265.9,
+    "headHeight": 112,
+    "staffHeight": 141.6,
+    "items": [
+     "P5:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P5:32",
+     "Actions for part P5:0"
+    ]
+   },
+   {
+    "width": 151,
+    "height": 283.6,
+    "top": 359,
+    "headNatural": 265.9,
+    "headHeight": 112,
+    "staffHeight": 141.6,
+    "items": [
+     "P6:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P6:32",
+     "Actions for part P6:0"
+    ]
+   },
+   {
+    "width": 151,
+    "height": 283.6,
+    "top": 359,
+    "headNatural": 265.9,
+    "headHeight": 112,
+    "staffHeight": 141.6,
+    "items": [
+     "P7:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P7:32",
+     "Actions for part P7:0"
+    ]
+   },
+   {
+    "width": 151,
+    "height": 283.6,
+    "top": 359,
+    "headNatural": 265.9,
+    "headHeight": 112,
+    "staffHeight": 141.6,
+    "items": [
+     "P8:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P8:32",
+     "Actions for part P8:0"
+    ]
+   },
+   {
+    "width": 144.1,
+    "height": 283.6,
+    "top": 650.6,
+    "headNatural": 265.9,
+    "headHeight": 112,
+    "staffHeight": 141.6,
+    "items": [
+     "P9:49.8",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P9:32",
+     "Actions for part P9:0"
+    ]
+   },
+   {
+    "width": 144.1,
+    "height": 283.6,
+    "top": 650.6,
+    "headNatural": 274.3,
+    "headHeight": 112,
+    "staffHeight": 141.6,
+    "items": [
+     "P10:58.2",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P10:32",
+     "Actions for part P10:0"
+    ]
+   },
+   {
+    "width": 144.1,
+    "height": 283.6,
+    "top": 650.6,
+    "headNatural": 274.3,
+    "headHeight": 112,
+    "staffHeight": 141.6,
+    "items": [
+     "P11:58.2",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P11:32",
+     "Actions for part P11:0"
+    ]
+   },
+   {
+    "width": 144.1,
+    "height": 283.6,
+    "top": 650.6,
+    "headNatural": 274.3,
+    "headHeight": 112,
+    "staffHeight": 141.6,
+    "items": [
+     "P12:58.2",
+     "Add a name:91.8",
+     "4 beats a bar:68.4",
+     "Actions for part P12:32",
+     "Actions for part P12:0"
+    ]
+   }
+  ]
+ }
+}

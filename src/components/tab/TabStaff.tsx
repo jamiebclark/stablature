@@ -553,7 +553,16 @@ function rulerWidth(
     ? columns.filter((column) => (marks.removals.get(`${column.eventId}-${column.repetition}`) ?? 0) > 0).length
     : 0;
   const gaps = removals + (marks && marks.removedAtEnd > 0 ? 1 : 0);
-  return `calc(${[...terms, `${connectors} * var(--staff-ch)`, `${gaps} * 3 * var(--staff-ch)`, "var(--gutter)"].join(" + ")})`;
+  return `calc(${sumTerms(terms)} + ${connectors} * var(--staff-ch) + ${gaps} * 3 * var(--staff-ch) + var(--gutter))`;
+}
+
+/** Sums terms in nested groups of 8: Chromium reads a flat `calc()` of about 100 operands as 0px. */
+function sumTerms(terms: string[]): string {
+  if (terms.length === 0) return "0px";
+  if (terms.length <= 8) return terms.join(" + ");
+  const groups: string[] = [];
+  for (let at = 0; at < terms.length; at += 8) groups.push(`calc(${terms.slice(at, at + 8).join(" + ")})`);
+  return sumTerms(groups);
 }
 
 /** Height of the rows drawn above the staff, so the labels line up with it. */

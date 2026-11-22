@@ -5,7 +5,12 @@ import { seedMemo } from "./memo-helpers";
 
 /** INV-012: a card with no memos keeps its recorded box; capture and play never show memo UI. */
 type Box = { label: string; width: number; height: number };
-const before = JSON.parse(readFileSync("e2e/fixtures/memo-card-before.json", "utf8")) as Record<string, Box[]>;
+// re-pinned by spec 013: on Linux the boxes come from memo-card-before.linux.json, the same file measured in the Linux
+// replica. Linux rounds glyph advances, and since spec 013 a short card's width follows its head row, so part A
+// ("A · Verse") is 2px wider at 1280 there. The 1px tolerance is unchanged.
+const before = JSON.parse(
+  readFileSync(`e2e/fixtures/memo-card-before${process.platform === "linux" ? ".linux" : ""}.json`, "utf8"),
+) as Record<string, Box[]>;
 const SIZES = [
   { width: 375, height: 667 },
   { width: 412, height: 915 },
