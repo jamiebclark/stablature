@@ -5,6 +5,8 @@ both pages draw exactly today's markup (FR-003, INV-001).
 
 ## 1. The list
 
+> *Amended by spec 013:* below 768 the list is unchanged. At 768+ it is a flex row-wrap and each `li` is sized from its own `--own-head` and `--own-staff` (greedy rows, last row not stretched), so the `--card-track` grid below no longer applies.
+
 | | Song page (`SongView`) | Play view (`PlayView`) |
 |---|---|---|
 | Element | `ul.reading-cards` (was `ul.grid.gap-3`) | `ol.reading-cards` (was `ol.grid.gap-4`) |
@@ -77,6 +79,8 @@ Both keep their narrow padding.
 
 ## 4. `useCardTrack(listRef)` (`src/components/reading/useCardTrack.ts`)
 
+> *Amended by spec 013:* the hook also writes each `li`'s `--own-head` and `--own-staff` (px) when its ruler, head row or fonts resize; `--staff-line` stays as the measured signal. It still sets no React state.
+
 - **When it runs.** In a layout effect after each commit, and in a `ResizeObserver` callback on every `.tab-ruler` in the list.
 - **What it does.** It reads each ruler's `offsetWidth` and writes `listRef.current.style.setProperty("--staff-line", max + "px")`.
 - **What it never does.** It sets no React state and causes no re-render. With no ruler in the list it removes the property,
@@ -84,6 +88,8 @@ Both keep their narrow padding.
 - **Cost.** One `offsetWidth` read per card per change.
 
 ## 5. The play-view card
+
+> *Amended by spec 013:* the pass words (`card-passes`) move to the end of the head row, so the rest and live words never move another item (013 deviation 4).
 
 ```html
 <li class="print-keep" data-card="0" data-first-pass="0" data-last-pass="2" [data-reading]>

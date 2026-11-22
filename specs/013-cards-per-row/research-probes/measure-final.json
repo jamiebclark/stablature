@@ -1,0 +1,1565 @@
+{
+ "fit | song | 768x1024": {
+  "list": 752,
+  "perRow": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "scroll": 1188,
+  "inner": 1024,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 1164,
+  "widths": [
+   752,
+   752,
+   752,
+   328
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32,
+   32
+  ]
+ },
+ "fit | play | 768x1024": {
+  "list": 752,
+  "perRow": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "scroll": 1316,
+  "inner": 1024,
+  "sideways": false,
+  "barTop": 967,
+  "lastBottom": 1251,
+  "widths": [
+   752,
+   752,
+   752,
+   752,
+   752,
+   616
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20,
+   20,
+   20,
+   20
+  ]
+ },
+ "fit | song | 1024x768": {
+  "list": 1008,
+  "perRow": [
+   1,
+   1,
+   2
+  ],
+  "scroll": 998,
+  "inner": 768,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 974,
+  "widths": [
+   1008,
+   1008,
+   616,
+   328
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32,
+   32
+  ]
+ },
+ "fit | play | 1024x768": {
+  "list": 1008,
+  "perRow": [
+   1,
+   1,
+   1,
+   2,
+   1
+  ],
+  "scroll": 1139,
+  "inner": 768,
+  "sideways": false,
+  "barTop": 711,
+  "lastBottom": 1074,
+  "widths": [
+   1008,
+   1008,
+   1008,
+   650,
+   351,
+   616
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20,
+   20,
+   20,
+   20
+  ]
+ },
+ "fit | song | 1280x800": {
+  "list": 1264,
+  "perRow": [
+   2,
+   2
+  ],
+  "scroll": 800,
+  "inner": 800,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 768,
+  "widths": [
+   628,
+   628,
+   616,
+   328
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32,
+   32
+  ]
+ },
+ "fit | play | 1280x800": {
+  "list": 1264,
+  "perRow": [
+   2,
+   2,
+   2
+  ],
+  "scroll": 800,
+  "inner": 800,
+  "sideways": false,
+  "barTop": 743,
+  "lastBottom": 705,
+  "widths": [
+   628,
+   628,
+   626,
+   630,
+   321,
+   616
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20,
+   20,
+   20,
+   20
+  ]
+ },
+ "fit | song | 1440x900": {
+  "list": 1424,
+  "perRow": [
+   2,
+   2
+  ],
+  "scroll": 900,
+  "inner": 900,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 768,
+  "widths": [
+   708,
+   708,
+   616,
+   328
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32,
+   32
+  ]
+ },
+ "fit | play | 1440x900": {
+  "list": 1424,
+  "perRow": [
+   2,
+   2,
+   2
+  ],
+  "scroll": 900,
+  "inner": 900,
+  "sideways": false,
+  "barTop": 843,
+  "lastBottom": 705,
+  "widths": [
+   708,
+   708,
+   706,
+   710,
+   321,
+   616
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20,
+   20,
+   20,
+   20
+  ]
+ },
+ "fit | song | 1920x1080": {
+  "list": 1520,
+  "perRow": [
+   2,
+   2
+  ],
+  "scroll": 1080,
+  "inner": 1080,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 768,
+  "widths": [
+   756,
+   756,
+   616,
+   328
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32,
+   32
+  ]
+ },
+ "fit | play | 1920x1080": {
+  "list": 1520,
+  "perRow": [
+   2,
+   2,
+   2
+  ],
+  "scroll": 1080,
+  "inner": 1080,
+  "sideways": false,
+  "barTop": 1023,
+  "lastBottom": 705,
+  "widths": [
+   756,
+   756,
+   754,
+   758,
+   321,
+   616
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20,
+   20,
+   20,
+   20
+  ]
+ },
+ "short | song | 768x1024": {
+  "list": 752,
+  "perRow": [
+   2,
+   2,
+   2,
+   2,
+   2,
+   2
+  ],
+  "scroll": 1644,
+  "inner": 1024,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 1620,
+  "widths": [
+   372,
+   372,
+   372,
+   372,
+   372,
+   372,
+   372,
+   372,
+   368,
+   377,
+   289,
+   289
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32
+  ]
+ },
+ "short | play | 768x1024": {
+  "list": 752,
+  "perRow": [
+   5,
+   5,
+   2
+  ],
+  "scroll": 1024,
+  "inner": 1024,
+  "sideways": false,
+  "barTop": 967,
+  "lastBottom": 700,
+  "widths": [
+   144,
+   144,
+   144,
+   144,
+   144,
+   144,
+   144,
+   144,
+   144,
+   144,
+   144,
+   144
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20
+  ]
+ },
+ "short | song | 1024x768": {
+  "list": 1008,
+  "perRow": [
+   3,
+   3,
+   3,
+   3
+  ],
+  "scroll": 1221,
+  "inner": 768,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 1197,
+  "widths": [
+   331,
+   331,
+   331,
+   331,
+   331,
+   331,
+   331,
+   331,
+   331,
+   289,
+   289,
+   289
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32
+  ]
+ },
+ "short | play | 1024x768": {
+  "list": 1008,
+  "perRow": [
+   6,
+   6
+  ],
+  "scroll": 768,
+  "inner": 768,
+  "sideways": false,
+  "barTop": 711,
+  "lastBottom": 502,
+  "widths": [
+   161,
+   161,
+   161,
+   161,
+   161,
+   161,
+   144,
+   144,
+   144,
+   144,
+   144,
+   144
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20
+  ]
+ },
+ "short | song | 1280x800": {
+  "list": 1264,
+  "perRow": [
+   4,
+   4,
+   4
+  ],
+  "scroll": 1010,
+  "inner": 800,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 986,
+  "widths": [
+   310,
+   310,
+   310,
+   310,
+   310,
+   310,
+   310,
+   310,
+   280,
+   289,
+   289,
+   289
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32
+  ]
+ },
+ "short | play | 1280x800": {
+  "list": 1264,
+  "perRow": [
+   8,
+   4
+  ],
+  "scroll": 800,
+  "inner": 800,
+  "sideways": false,
+  "barTop": 743,
+  "lastBottom": 502,
+  "widths": [
+   151,
+   151,
+   151,
+   151,
+   151,
+   151,
+   151,
+   151,
+   144,
+   144,
+   144,
+   144
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20
+  ]
+ },
+ "short | song | 1440x900": {
+  "list": 1424,
+  "perRow": [
+   4,
+   4,
+   4
+  ],
+  "scroll": 1010,
+  "inner": 900,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 986,
+  "widths": [
+   350,
+   350,
+   350,
+   350,
+   350,
+   350,
+   350,
+   350,
+   280,
+   289,
+   289,
+   289
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32
+  ]
+ },
+ "short | play | 1440x900": {
+  "list": 1424,
+  "perRow": [
+   9,
+   3
+  ],
+  "scroll": 900,
+  "inner": 900,
+  "sideways": false,
+  "barTop": 843,
+  "lastBottom": 502,
+  "widths": [
+   151,
+   151,
+   151,
+   151,
+   151,
+   151,
+   151,
+   151,
+   151,
+   144,
+   144,
+   144
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20
+  ]
+ },
+ "short | song | 1920x1080": {
+  "list": 1520,
+  "perRow": [
+   5,
+   5,
+   2
+  ],
+  "scroll": 1080,
+  "inner": 1080,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 986,
+  "widths": [
+   298,
+   298,
+   298,
+   298,
+   298,
+   296,
+   296,
+   296,
+   296,
+   305,
+   289,
+   289
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32,
+   32
+  ]
+ },
+ "short | play | 1920x1080": {
+  "list": 1520,
+  "perRow": [
+   10,
+   2
+  ],
+  "scroll": 1080,
+  "inner": 1080,
+  "sideways": false,
+  "barTop": 1023,
+  "lastBottom": 502,
+  "widths": [
+   145,
+   145,
+   145,
+   145,
+   145,
+   145,
+   145,
+   145,
+   145,
+   145,
+   144,
+   144
+  ],
+  "lines": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20,
+   20
+  ]
+ },
+ "long | song | 768x1024": {
+  "list": 752,
+  "perRow": [
+   1,
+   2
+  ],
+  "scroll": 1024,
+  "inner": 1024,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 928,
+  "widths": [
+   752,
+   272,
+   272
+  ],
+  "lines": [
+   2,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32
+  ]
+ },
+ "long | play | 768x1024": {
+  "list": 752,
+  "perRow": [
+   1,
+   2
+  ],
+  "scroll": 1024,
+  "inner": 1024,
+  "sideways": false,
+  "barTop": 967,
+  "lastBottom": 656,
+  "widths": [
+   752,
+   190,
+   190
+  ],
+  "lines": [
+   2,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20
+  ]
+ },
+ "long | song | 1024x768": {
+  "list": 1008,
+  "perRow": [
+   1,
+   2
+  ],
+  "scroll": 952,
+  "inner": 768,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 928,
+  "widths": [
+   1008,
+   272,
+   272
+  ],
+  "lines": [
+   2,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32
+  ]
+ },
+ "long | play | 1024x768": {
+  "list": 1008,
+  "perRow": [
+   1,
+   2
+  ],
+  "scroll": 768,
+  "inner": 768,
+  "sideways": false,
+  "barTop": 711,
+  "lastBottom": 656,
+  "widths": [
+   1008,
+   190,
+   190
+  ],
+  "lines": [
+   2,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20
+  ]
+ },
+ "long | song | 1280x800": {
+  "list": 1264,
+  "perRow": [
+   1,
+   2
+  ],
+  "scroll": 952,
+  "inner": 800,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 928,
+  "widths": [
+   1264,
+   272,
+   272
+  ],
+  "lines": [
+   2,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32
+  ]
+ },
+ "long | play | 1280x800": {
+  "list": 1264,
+  "perRow": [
+   1,
+   2
+  ],
+  "scroll": 800,
+  "inner": 800,
+  "sideways": false,
+  "barTop": 743,
+  "lastBottom": 656,
+  "widths": [
+   1264,
+   190,
+   190
+  ],
+  "lines": [
+   2,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20
+  ]
+ },
+ "long | song | 1440x900": {
+  "list": 1424,
+  "perRow": [
+   1,
+   2
+  ],
+  "scroll": 900,
+  "inner": 900,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 774,
+  "widths": [
+   1424,
+   272,
+   272
+  ],
+  "lines": [
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32
+  ]
+ },
+ "long | play | 1440x900": {
+  "list": 1424,
+  "perRow": [
+   1,
+   2
+  ],
+  "scroll": 900,
+  "inner": 900,
+  "sideways": false,
+  "barTop": 843,
+  "lastBottom": 502,
+  "widths": [
+   1424,
+   190,
+   190
+  ],
+  "lines": [
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20
+  ]
+ },
+ "long | song | 1920x1080": {
+  "list": 1520,
+  "perRow": [
+   1,
+   2
+  ],
+  "scroll": 1080,
+  "inner": 1080,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 774,
+  "widths": [
+   1520,
+   272,
+   272
+  ],
+  "lines": [
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   32,
+   32,
+   32
+  ]
+ },
+ "long | play | 1920x1080": {
+  "list": 1520,
+  "perRow": [
+   1,
+   2
+  ],
+  "scroll": 1080,
+  "inner": 1080,
+  "sideways": false,
+  "barTop": 1023,
+  "lastBottom": 502,
+  "widths": [
+   1520,
+   190,
+   190
+  ],
+  "lines": [
+   1,
+   1,
+   1
+  ],
+  "heads": [
+   20,
+   20,
+   20
+  ]
+ },
+ "names | song | 768x1024": {
+  "list": 752,
+  "perRow": [
+   1
+  ],
+  "scroll": 1024,
+  "inner": 1024,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 661,
+  "widths": [
+   343
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   120
+  ]
+ },
+ "names | play | 768x1024": {
+  "list": 752,
+  "perRow": [
+   1
+  ],
+  "scroll": 1024,
+  "inner": 1024,
+  "sideways": false,
+  "barTop": 967,
+  "lastBottom": 353,
+  "widths": [
+   343
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   68
+  ]
+ },
+ "names | song | 1024x768": {
+  "list": 1008,
+  "perRow": [
+   1
+  ],
+  "scroll": 768,
+  "inner": 768,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 661,
+  "widths": [
+   343
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   120
+  ]
+ },
+ "names | play | 1024x768": {
+  "list": 1008,
+  "perRow": [
+   1
+  ],
+  "scroll": 768,
+  "inner": 768,
+  "sideways": false,
+  "barTop": 711,
+  "lastBottom": 353,
+  "widths": [
+   343
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   68
+  ]
+ },
+ "names | song | 1280x800": {
+  "list": 1264,
+  "perRow": [
+   1
+  ],
+  "scroll": 800,
+  "inner": 800,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 661,
+  "widths": [
+   343
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   120
+  ]
+ },
+ "names | play | 1280x800": {
+  "list": 1264,
+  "perRow": [
+   1
+  ],
+  "scroll": 800,
+  "inner": 800,
+  "sideways": false,
+  "barTop": 743,
+  "lastBottom": 353,
+  "widths": [
+   343
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   68
+  ]
+ },
+ "names | song | 1440x900": {
+  "list": 1424,
+  "perRow": [
+   1
+  ],
+  "scroll": 900,
+  "inner": 900,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 661,
+  "widths": [
+   343
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   120
+  ]
+ },
+ "names | play | 1440x900": {
+  "list": 1424,
+  "perRow": [
+   1
+  ],
+  "scroll": 900,
+  "inner": 900,
+  "sideways": false,
+  "barTop": 843,
+  "lastBottom": 353,
+  "widths": [
+   343
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   68
+  ]
+ },
+ "names | song | 1920x1080": {
+  "list": 1520,
+  "perRow": [
+   1
+  ],
+  "scroll": 1080,
+  "inner": 1080,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 661,
+  "widths": [
+   343
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   120
+  ]
+ },
+ "names | play | 1920x1080": {
+  "list": 1520,
+  "perRow": [
+   1
+  ],
+  "scroll": 1080,
+  "inner": 1080,
+  "sideways": false,
+  "barTop": 1023,
+  "lastBottom": 353,
+  "widths": [
+   343
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   68
+  ]
+ },
+ "wide-bar | song | 768x1024": {
+  "list": 752,
+  "perRow": [
+   1
+  ],
+  "scroll": 1024,
+  "inner": 1024,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 563,
+  "widths": [
+   698
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   32
+  ]
+ },
+ "wide-bar | play | 768x1024": {
+  "list": 752,
+  "perRow": [
+   1
+  ],
+  "scroll": 1024,
+  "inner": 1024,
+  "sideways": false,
+  "barTop": 967,
+  "lastBottom": 305,
+  "widths": [
+   698
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   20
+  ]
+ },
+ "wide-bar | song | 1024x768": {
+  "list": 1008,
+  "perRow": [
+   1
+  ],
+  "scroll": 768,
+  "inner": 768,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 563,
+  "widths": [
+   698
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   32
+  ]
+ },
+ "wide-bar | play | 1024x768": {
+  "list": 1008,
+  "perRow": [
+   1
+  ],
+  "scroll": 768,
+  "inner": 768,
+  "sideways": false,
+  "barTop": 711,
+  "lastBottom": 305,
+  "widths": [
+   698
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   20
+  ]
+ },
+ "wide-bar | song | 1280x800": {
+  "list": 1264,
+  "perRow": [
+   1
+  ],
+  "scroll": 800,
+  "inner": 800,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 563,
+  "widths": [
+   698
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   32
+  ]
+ },
+ "wide-bar | play | 1280x800": {
+  "list": 1264,
+  "perRow": [
+   1
+  ],
+  "scroll": 800,
+  "inner": 800,
+  "sideways": false,
+  "barTop": 743,
+  "lastBottom": 305,
+  "widths": [
+   698
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   20
+  ]
+ },
+ "wide-bar | song | 1440x900": {
+  "list": 1424,
+  "perRow": [
+   1
+  ],
+  "scroll": 900,
+  "inner": 900,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 563,
+  "widths": [
+   698
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   32
+  ]
+ },
+ "wide-bar | play | 1440x900": {
+  "list": 1424,
+  "perRow": [
+   1
+  ],
+  "scroll": 900,
+  "inner": 900,
+  "sideways": false,
+  "barTop": 843,
+  "lastBottom": 305,
+  "widths": [
+   698
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   20
+  ]
+ },
+ "wide-bar | song | 1920x1080": {
+  "list": 1520,
+  "perRow": [
+   1
+  ],
+  "scroll": 1080,
+  "inner": 1080,
+  "sideways": false,
+  "barTop": null,
+  "lastBottom": 563,
+  "widths": [
+   698
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   32
+  ]
+ },
+ "wide-bar | play | 1920x1080": {
+  "list": 1520,
+  "perRow": [
+   1
+  ],
+  "scroll": 1080,
+  "inner": 1080,
+  "sideways": false,
+  "barTop": 1023,
+  "lastBottom": 305,
+  "widths": [
+   698
+  ],
+  "lines": [
+   1
+  ],
+  "heads": [
+   20
+  ]
+ }
+}

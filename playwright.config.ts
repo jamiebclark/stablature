@@ -111,7 +111,7 @@ export default defineConfig({
     // came out narrower than its columns and hid its last note. The staff layout runs there too.
     {
       name: "firefox",
-      testMatch: [/usability-staves\.spec\.ts/, /wide-sideways-firefox\.spec\.ts/],
+      testMatch: [/usability-staves\.spec\.ts/, /wide-sideways-firefox\.spec\.ts/, /cards-ruler-long\.spec\.ts/, /cards-rows\.spec\.ts/, /cards-print\.spec\.ts/],
       use: { ...devices["Desktop Firefox"], viewport: { width: 412, height: 915 } },
     },
     // A screen with no touch and no hover-less pointer ambiguity: the density pass reads sizes as a mouse

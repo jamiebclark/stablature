@@ -14,6 +14,7 @@
   /* Spec 010 layout tokens (data-model.md section 4). --staff-line and --click-bar-h are written from JS and have no default:
      an unset --staff-line makes the track formula fall back to 100%. */
   --card-floor: 343px;
+  --card-min: 9rem;
   --card-gap: 0.5rem;
   --card-pad-x: 0.375rem;
   --card-pad-y: 0.5rem;
@@ -635,16 +636,33 @@ li:not([data-live-words]) .card-passes [data-testid="card-passes-live"] {
 
 @media (min-width: 768px) {
   .reading-cards {
-    --card-track: max(
-      var(--card-floor),
-      min(calc(var(--staff-line, 100%) + 2 * var(--card-pad-x) + 2px), calc((100% - var(--card-gap)) / 2))
-    );
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-track)), 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--card-gap);
-    align-items: start;
+    align-items: flex-start;
+  }
+  /* The last line's spare width goes here, so a last row keeps its cards at their own widths (spec 013 R1). */
+  .reading-cards::after {
+    content: "";
+    flex: 9999 0 0;
+    margin-left: calc(-1 * var(--card-gap));
   }
   .reading-cards > li {
+    --card-chrome: calc(2 * var(--card-pad-x) + 2px);
+    --card-least: max(var(--card-min), min(calc(var(--own-head, 0px) + var(--card-chrome)), var(--card-floor)));
+    --card-own: max(var(--card-least), calc(var(--own-staff, 0px) + var(--card-chrome)));
+    flex: 1 0 var(--card-own);
+    max-width: 100%;
     min-width: 0;
+  }
+  /* A card is sized from its resting head row, so an open name editor takes a line of its own in the head row: on a
+     card that fits the resting head exactly, input and Save would otherwise run under the actions button (T049). */
+  .reading-cards > li > .reading-card > :first-child > form {
+    min-width: 100%;
+  }
+  /* Memo rows and the recorder were built at phone width. */
+  .reading-cards > li:has([data-testid="part-memos"]) {
+    --card-least: max(var(--card-floor), var(--card-min));
   }
   .reading-cards > li > .reading-card {
     /* The caption (12px) sits in the bottom padding, so every card keeps room for it: a view change moves nothing. */
@@ -653,6 +671,16 @@ li:not([data-live-words]) .card-passes [data-testid="card-passes-live"] {
 }
 
 /* ---------- print ---------- */
+
+@media print {
+  /* Paper sizes a card from its head as printed (`.no-print` items hidden), measured on screen by useCardTrack (INV-013). */
+  .reading-cards > li {
+    --card-least: max(var(--card-min), min(calc(var(--own-head-print, var(--own-head, 0px)) + var(--card-chrome)), var(--card-floor)));
+  }
+  .reading-cards > li:has([data-testid="part-memos"]) {
+    --card-least: max(var(--card-floor), var(--card-min));
+  }
+}
 
 @media print {
   :root {
@@ -679,7 +707,8 @@ li:not([data-live-words]) .card-passes [data-testid="card-passes-live"] {
     row-gap: var(--line-gap);
   }
   /* A chord symbol longer than the line breaks inside it rather than running off the page. Important over
-     the column's inline min-width, which is there for Firefox's sizing of the line on screen. */
+     the column's inline min-width, which is there for Firefox's sizing of the line on screen. The column
+     shrinks to the line, as on main, so the symbol can break. */
   .tab-bar-run [data-testid="tab-column"] {
     min-width: 0 !important;
     max-width: 100%;
@@ -687,8 +716,14 @@ li:not([data-live-words]) .card-passes [data-testid="card-passes-live"] {
   .tab-bar-run [data-testid="tab-column"] > div.text-accent {
     white-space: normal;
     overflow-wrap: anywhere;
-    max-width: calc(100vw - 8rem);
+    width: max-content;
+    max-width: min(100cqi, calc(100vw - 8rem));
+    /* 100cqi is the line (.tab-lines holds the bar runs), not the card, which is wider by the gutter. */
     line-height: 1;
+  }
+  /* The line is the container the symbol's cap is measured against (spec 013 contracts §5). */
+  .tab-staff-wrapped .tab-lines {
+    container-type: inline-size;
   }
 
   /* Never split a part across a page -- the whole point is reading it whole. */

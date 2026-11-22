@@ -203,12 +203,6 @@ export function PlayView({ songId, partId }: { songId: string; partId?: string }
                         {sectionWords}
                       </span>
                     ) : null}
-                    {words ? (
-                      <span data-testid="card-passes" className="card-passes text-xs text-text-faint">
-                        <span data-testid="card-passes-rest">{words}</span>
-                        <span data-testid="card-passes-live"></span>
-                      </span>
-                    ) : null}
                     {spanWords ? (
                       <span data-testid="card-bars" className="text-xs text-text-faint">
                         {spanWords}
@@ -223,6 +217,12 @@ export function PlayView({ songId, partId }: { songId: string; partId?: string }
                       <span className="text-xs text-text-faint">{part.name}</span>
                     ) : null}
                     {heading ? <span className="text-xs text-text-dim">{heading}</span> : null}
+                    {words ? (
+                      <span data-testid="card-passes" className="card-passes text-xs text-text-faint">
+                        <span data-testid="card-passes-rest">{words}</span>
+                        <span data-testid="card-passes-live"></span>
+                      </span>
+                    ) : null}
                   </div>
 
                   {tuning ? (

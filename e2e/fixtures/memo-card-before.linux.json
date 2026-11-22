@@ -1,0 +1,104 @@
+{
+  "375x667-dark": [
+    {
+      "label": "Actions for part A, Verse",
+      "width": 343,
+      "height": 227.578125
+    },
+    {
+      "label": "Actions for part B",
+      "width": 343,
+      "height": 227.578125
+    },
+    {
+      "label": "Actions for part A2",
+      "width": 343,
+      "height": 247.578125
+    }
+  ],
+  "375x667-light": [
+    {
+      "label": "Actions for part A, Verse",
+      "width": 343,
+      "height": 227.578125
+    },
+    {
+      "label": "Actions for part B",
+      "width": 343,
+      "height": 227.578125
+    },
+    {
+      "label": "Actions for part A2",
+      "width": 343,
+      "height": 247.578125
+    }
+  ],
+  "412x915-dark": [
+    {
+      "label": "Actions for part A, Verse",
+      "width": 380,
+      "height": 227.578125
+    },
+    {
+      "label": "Actions for part B",
+      "width": 380,
+      "height": 227.578125
+    },
+    {
+      "label": "Actions for part A2",
+      "width": 380,
+      "height": 247.578125
+    }
+  ],
+  "412x915-light": [
+    {
+      "label": "Actions for part A, Verse",
+      "width": 380,
+      "height": 227.578125
+    },
+    {
+      "label": "Actions for part B",
+      "width": 380,
+      "height": 227.578125
+    },
+    {
+      "label": "Actions for part A2",
+      "width": 380,
+      "height": 247.578125
+    }
+  ],
+  "1280x800-dark": [
+    {
+      "label": "Actions for part A, Verse",
+      "width": 151.0625,
+      "height": 215.578125
+    },
+    {
+      "label": "Actions for part B",
+      "width": 208.0625,
+      "height": 215.578125
+    },
+    {
+      "label": "Actions for part A2",
+      "width": 285.0625,
+      "height": 235.578125
+    }
+  ],
+  "1280x800-light": [
+    {
+      "label": "Actions for part A, Verse",
+      "width": 151.0625,
+      "height": 215.578125
+    },
+    {
+      "label": "Actions for part B",
+      "width": 208.0625,
+      "height": 215.578125
+    },
+    {
+      "label": "Actions for part A2",
+      "width": 285.0625,
+      "height": 235.578125
+    }
+  ]
+}

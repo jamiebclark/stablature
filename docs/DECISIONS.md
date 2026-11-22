@@ -901,3 +901,81 @@ Pending, owed to a person at a real browser (T104): quickstart §5 at 100% zoom,
 `check:untouched-notation` and `-wide` diff against `main` and name paths this entry changes on purpose: `src/db`, `drizzle`, `src/lib/server`, `src/lib/sync`, `src/app/api`, `src/lib/model.ts`, `src/lib/local`, and (notation only) `src/components/app/SongView.tsx`. Every one is planned memo work (the synced memo table, the audio routes, the memo pull, the part card's Record and delete-confirm). This entry's own guards, `check:untouched-memos`, `check:memo-fence`, `check:memo-amendments`, and `check:line-endings`, pass. The same was accepted for entry 011 (see "011 T060"); none of these runs in CI.
 
 Fixes made while running the final guards: `e2e/memo-*` helper `useFakeMicrophone` renamed `withFakeMicrophone` (the lint rule read `use…` as a React hook); the part-delete confirmation sheet now renders only for a part with memos, so a part without any draws the markup `wide-narrow-unchanged.spec.ts` recorded from `main` (the empty `<dialog>` it had added changed that markup); `playwright.config.ts` and `SyncProvider.tsx` had been left with CRLF and are LF again. `spec004-holds.test.ts` failed once under full-suite load and passed alone.
+
+## 013 — suite before
+
+Recorded on the untouched `013-cards-per-row` branch (nothing but spec files and the new helper/scripts added).
+
+- `npm test`: 186 files, 6264 tests, all passed.
+- Research probes (`probe.config.ts`, desktop project): 4 of 4 ran to completion and passed. They record figures, they do not assert the new behaviour.
+- `npm run test:e2e`: **not recorded.** The full Playwright suite outlasted the 10-minute command limit of this headless pass twice, so no pass/fail count exists. T001 stays open for a pass or a person who can let it run to the end.
+
+## 013 — decisions
+
+From "Decisions made for this spec":
+
+1. **A card that fits its row on one line is never wrapped to share a row.** Wrapping is kept only for a card wider than the whole row.
+2. **Greedy placement in order.** The next card goes on the current row if it fits at its own width, or else starts a new row. Tests compute the same rows from measured rulers (`greedyRows` in `e2e/cards-helpers.ts`).
+3. **The last row is not stretched.** Every other row fills the list's width; the last row's cards keep their own widths.
+4. **The phone floor (343px) stays only for cards that hold memo rows or the recorder.** Every other card's minimum is set by its head row's first line.
+5. **Route:** the list is a flex row-wrap at 768+ (a grid below, unchanged). Each `li` takes `--card-own` from `--own-head` and `--own-staff`, which `useCardTrack` writes from each card's measured ruler and one-line head row. No `order`, `grid-row` or `dense`.
+6. **The pass-words fix applies at every width.** The slot is at the end of the play view's head row.
+
+From "Deviations from the spec's wording" (plan.md):
+
+1. **Card minimum is per card:** `max(9rem, min(head row one line + chrome, 343px))`; 343px for memo cards.
+2. **The ruler is fixed.** In Chromium the hidden ruler read 0 past 48 columns; `rulerWidth` now regroups its `calc()` (`sumTerms`). No drawn column's width string changed.
+3. **SC-002 and US1 AS2's song-page "no vertical scroll" are not met.** The song page is held to one-line head rows and `scrollHeight` ≤ 1030 (measured 1010 on Windows, against 1221 today). The play view meets SC-002 in full. A compact song-page arrangement or head row is a follow-up finding.
+4. **The pass words move to the end of the head row** (amends spec 010 contracts/reading-cards.md §5's item order).
+5. **In print, the "printed line" is the card's content width.** Paper follows the screen rule (FR-019): no half-row cap; `useCardTrack` measures, on screen and in the same batch as `--own-head`, the head row on one line with its `.no-print` descendants hidden, and writes it as `--own-head-print`; `@media print` (no width condition, so spec 010's wide-threshold test stays green) builds `--card-least` from that. A real print fires only `beforeprint`/`afterprint` under screen styles and runs no observer, so paper takes no measurement under print media (T043, review round 2 F1; replaces the T037 re-measure listeners and the T020a stopgap).
+6. **Spec 010's `--staff-line` stays on the list** as the "measured" signal; four unedited spec 010 suites wait on it.
+
+Figures (cluster closed, mouse; cards per row · scrollHeight/innerHeight):
+
+| Song | Page | 1280×800 | 1440×900 | 1920×1080 |
+|---|---|---|---|---|
+| fit | play | 2,2,2 · 800/800 (last card 705, bar 743) | 2,2,2 · 900/900 | 2,2,2 · 1080/1080 |
+| fit | song | 2,2 · 800/800 | 2,2 · 900/900 | 2,2 · 1080/1080 |
+| short | play | 8,4 · 800/800 | 9,3 · 900/900 | 10,2 · 1080/1080 |
+| short | song | 4,4,4 · **1010**/800 | 4,4,4 · 1010/900 | 5,5,2 · 1080/1080 |
+| long | play | 1 (A), 2 · 800/800 | 1, 2 | 1, 2 |
+| long | song | 1, 2 · 952/800 | 1, 2 · 900/900 | 1, 2 · 1080/1080 |
+
+Today the short play view is 3,3,3,3 at 1280 and scrolls 962/800. At 768 the fit song's 4-bar cards are one a row at 752px (the re-pin of spec 010 SC-003).
+
+## 013 — re-pinned tests
+
+Each edited assertion carries `// re-pinned by spec 013: <reason>`.
+
+- `e2e/wide-order.spec.ts` "cards read left to right … at {768,1024,1280}": the width floor is `min(cardMinimum(li), list) − 0.5`, not `min(343, list)`.
+- Same test: every row but the last ends at the list's right; the last row's cards are within +0.5 of their own widths.
+- Same test: "some row holds ≥ 2 cards" becomes drawn rows equal to `greedyRows(measureCards)` (one a row at 768, two at 1024 and 1280).
+- "767 is one column; 768 is two columns": at 768 the list's `display` is `flex` and some card is narrower than the list; at 767 it stays `grid` with 6 tops.
+- "a 20px default font size …": the column count becomes the list's computed `display` (`grid` below 768, `flex` at 768+); the wrap checks are unchanged.
+- "order, floor, rows and widths: {fit, short, long, names, empty}": floor is the measured card minimum; full-row rule applies to every row but the last; `perRow ≥ 2` is replaced by the greedy-rows equality.
+- `e2e/wide-print.spec.ts` "print {fit, F5}" (T037): at 1047 `tops < count` becomes drawn rows equal `greedyRows` of the cards' own widths measured under print.
+- `e2e/fixtures/memo-card-before.json`: the two `1280x800` entries re-recorded on the finished build; the 375 and 412 entries are byte-equal.
+- `e2e/memo-card-height.spec.ts`: the fixture path only. On Linux it reads `e2e/fixtures/memo-card-before.linux.json`, measured in the Linux replica, where part A is 151.0625px wide at 1280×800 (149.0625 on Windows). The assertions and 1px tolerance are unchanged (T031, by the supervisor).
+
+## 013 — earlier entries' untouched guards
+
+`check:untouched-playback` and `check:untouched-memos` diff against `main` and name paths this entry changes on purpose: `src/components/reading/useCardTrack.ts`, `src/components/tab/TabStaff.tsx` (inside `rulerWidth`/`sumTerms` only), `e2e/wide-order.spec.ts`, `e2e/wide-print.spec.ts`, `e2e/fixtures/memo-card-before.json`, `e2e/memo-card-height.spec.ts` (its fixture path, T031), and (memos) `src/components/app/PlayView.tsx` (the `card-passes` block only). Every one is planned cards work, fenced by `check:untouched-cards`. `check:untouched-wide` and `check:wide-amendments` pass. None of these runs in CI.
+
+## 013 T031 — Linux replica (Docker, Playwright v1.64.1-noble)
+
+Ran `INV-016-linux-chrome.sh` over `cards-*`, `wide-order`, and the quickstart §4 list (desktop, mobile): 379 passed, 6 failed, 60 skipped. The replica copies the tree at `setup`, so re-run `setup` after any edit.
+
+- **Superseded by T040:** `cards-rows.spec.ts` INV-007 "long" no longer skips 1920. It asserts B and C share a row whenever the measured greedy rows leave A alone, and that A is alone at 1920 on Windows. This is a product fact, not test-only: on Linux Chrome at 1920 FR-007 puts B beside A (play view, mouse: A 1306 + 8 + B 186 <= 1520), so SC-003 / US2 AS1 does not hold there. Recorded in plan.md Deviations 7. The play view's notes and intervals views join the INV-004 test.
+- **Fixed (fixture twin):** `memo-card-height.spec.ts` at 1280×800 dark and light (mobile). Since spec 013 a short card's width follows its head row, and Linux rounds glyph advances, so part A is 151.0625px wide there against 149.0625 on Windows. `e2e/fixtures/memo-card-before.linux.json` holds the replica's measure and the spec reads it on Linux, as `narrow-before.linux.json` does. Replica after: 203 passed over the cards, wide and memo-card specs.
+- **Fixed (test-only), was 4 failures:** `wide-order.spec.ts` "cards read left to right" read geometry before the card track had written `--own-head`/`--own-staff` (slower on Linux), so cards looked narrower than their floor. The test now waits for fonts and every `--own-head`; the file passes on the replica (20 passed). No source change.
+- Firefox project not run on the replica.
+- **T051 (fixed by the supervisor; see tasks.md T051), `usability-keys` + `click-timing`, replica desktop, `--repeat-each=6 --retries=0`, 1 worker, both files in one run:** `main` 138/138. Branch 134/138 (all 4 failures `usability-keys:20` "the play keys act on the page", `click-stop` never appears after Space), and a second branch run failed `click-timing:192` (INV-022) once and `usability-keys:20` once. `usability-keys:20` alone on the branch (`-g`, 12 repeats) passed 12/12, so it fails only after `click-timing` has run in the same worker. The branch looks worse than `main` on `usability-keys:20`; not yet diagnosed or fixed. Next: run the pair on the branch with `-g` isolating the order, and check whether a card-track measure on the play page can stall the click's 0.75s lookahead.
+- **T051 fix:** `usability-keys:20` was a Space press landing in the gap between Start painting enabled and `useScreenKeys` taking the new render's actions (a passive effect). `src/components/keys/useScreenKeys.ts` now updates its ref in `useLayoutEffect`. This file is outside the plan's file list and outside every fence; the race exists on `main`, and this branch made it visible. Replica after: `usability-keys:20` 12/12 after `click-timing`. `click-timing:192` stays the pre-existing flake (FU7).
+
+## 013 T035 — print chord rules (review F1)
+
+The firefox failure of `usability-staves.spec.ts` "a chord longer than a line" that T023 recorded as a load-flake was a real regression: the print column rule `min-width: min(max-content, 100cqi) !important` is unparseable, so the declaration was dropped and the column kept its inline min-width. Now the column has `min-width: 0 !important` (as on `main`) and the symbol is capped at `100cqi` of `.tab-staff-wrapped .tab-lines` (the line the bar runs sit in) rather than of `.reading-card`, which is wider by the gutter. Verified in desktop, mobile and firefox on Windows: `cards-print` (adopted 80-character test, `Em7` on one line), `wide-print`, and the unedited `usability-staves` cases. The Linux replica run is still owed (do it with T040's replica pass).
+
+## 013 — merged after CI remediation without a fifth review
+
+Review round 4 was clean. PR #24's CI then failed on Linux desktop. The supervisor fixed T049 (name editor rule moved into `globals.css`), T050 (the variant line counts in `--own-head`) and T051 (`useScreenKeys` ref race), each verified in the Linux replica and on Windows (see tasks.md Phase 10). These changes went to CI without another review round; CI on the PR is their gate.
