@@ -636,9 +636,10 @@ export function CaptureScreen({
               {candidate.label}
             </Link>
           ))}
+          {/* Bordered like a chip: when the strip scrolls and cuts it, it reads as a chip cut by the edge, not a stray `+`. */}
           <Button
-            variant="ghost"
-            className="shrink-0 px-2 py-1"
+            variant="secondary"
+            className="shrink-0 px-2.5 py-1"
             onClick={async () => {
               const created = await createPart(song);
               setCursor("end");

@@ -153,8 +153,9 @@ export function MemoItem({
             onChange={(e) => void player.seek(Number(e.target.value))}
             className="min-h-(--control) min-w-0 flex-1 accent-accent"
           />
+          {/* At rest it shows the length: a bare 0:00 reads as an empty clip. Once played it shows the position. */}
           <span data-testid="memo-elapsed" className="text-xs tabular-nums text-text-dim">
-            {formatClock(player.elapsedMs)}
+            {formatClock(player.playing || player.elapsedMs > 0 ? player.elapsedMs : memo.durationMs)}
           </span>
         </div>
       ) : null}

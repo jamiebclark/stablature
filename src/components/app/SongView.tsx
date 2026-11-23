@@ -408,7 +408,7 @@ function PartCard({
               type="button"
               onClick={() => setRenaming(true)}
               aria-label={`Name part ${part.label}`}
-              className="inline-flex min-h-(--control) items-center gap-1 text-sm text-text-dim underline decoration-dashed underline-offset-4 hover:text-accent"
+              className="no-print inline-flex min-h-(--control) items-center gap-1 text-sm text-text-dim underline decoration-dashed underline-offset-4 hover:text-accent"
             >
               <Plus size={13} aria-hidden />
               Add a name
