@@ -8,6 +8,9 @@ const setIfChanged = (el: HTMLElement, name: string, value: string | null) => {
   } else if (el.style.getPropertyValue(name) !== value) el.style.setProperty(name, value);
 };
 
+/** What paper hides in a card's head: the selectors of globals.css's print rules. */
+const PRINT_HIDDEN = '.no-print, button[aria-label^="Name part "]';
+
 /**
  * Writes `--own-staff`, `--own-head` and `--own-head-print` (the head with its `.no-print` items hidden, which paper uses) on each card's `li` (its one-line staff and head row) and `--staff-line` on the list,
  * so the CSS sizes each card from its own content (spec 013 contracts §2). No state and no re-render, and nothing below 768px.
@@ -57,9 +60,9 @@ export function useCardTrack(listRef: RefObject<HTMLElement | null>, wide: boole
         i.head.style.flexWrap = "nowrap";
       });
       const heads = items.map((i) => (i.head ? i.head.getBoundingClientRect().width : 0));
-      // Paper hides `.no-print` items, so its one-line head is narrower. Measured here, under screen styles, because a real
-      // print runs no observer and measures nothing under print media (FR-019).
-      const hidden = items.map((i) => (i.head ? Array.from(i.head.querySelectorAll<HTMLElement>(".no-print")) : []));
+      // Paper hides `.no-print` items and the name invitation, so its one-line head is narrower. Measured here, under screen
+      // styles, because a real print runs no observer and measures nothing under print media (FR-019).
+      const hidden = items.map((i) => (i.head ? Array.from(i.head.querySelectorAll<HTMLElement>(PRINT_HIDDEN)) : []));
       const hiddenStyle = hidden.map((els) => els.map((e) => e.getAttribute("style")));
       hidden.forEach((els) => els.forEach((e) => e.style.setProperty("display", "none", "important")));
       const printHeads = items.map((i) => (i.head ? i.head.getBoundingClientRect().width : 0));

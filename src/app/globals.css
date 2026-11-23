@@ -700,7 +700,7 @@ li:not([data-live-words]) .card-passes [data-testid="card-passes-live"] {
     display: none !important;
   }
   /* An unnamed part's "+ Add a name" invites an edit; paper has nothing to say there. A rule rather than a class keeps
-     the narrow markup equal to main (wide-narrow-unchanged). */
+     the narrow markup equal to main (wide-narrow-unchanged). useCardTrack's PRINT_HIDDEN names it too. */
   button[aria-label^="Name part "] {
     display: none !important;
   }
