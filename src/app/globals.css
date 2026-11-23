@@ -699,6 +699,11 @@ li:not([data-live-words]) .card-passes [data-testid="card-passes-live"] {
   .no-print {
     display: none !important;
   }
+  /* An unnamed part's "+ Add a name" invites an edit; paper has nothing to say there. A rule rather than a class keeps
+     the narrow markup equal to main (wide-narrow-unchanged). useCardTrack's PRINT_HIDDEN names it too. */
+  button[aria-label^="Name part "] {
+    display: none !important;
+  }
 
   /* Paper does not scroll: a bar wider than the page wraps its columns so every one prints. */
   .tab-bar-run {

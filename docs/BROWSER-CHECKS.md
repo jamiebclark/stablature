@@ -370,3 +370,19 @@ and a variant's "Differs from A in bar 4: 8 changed" stays on one line.
    control. It predates spec 013 (spec 008's invitation), but packing more cards a row makes it more visible.
 2. **A full-row card stretches past its staff.** At 1920, `long`'s A card spans the row and leaves about 190px of empty card after
    bar 16. That's what flex-grow does for the only card on a row; it reads fine, but a card the width of its staff would look tighter.
+
+## Follow-up: defects fixed from these checks (2026-11-22)
+
+A sweep of every finding above against `main` (d983387). Already fixed by later entries: the clipped chord label, truncated chord
+symbols, faint bracket numerals, controls under 44px on touch, the help overlay's padding, ligatures in the paste box, and the
+hyphen-chord refusal's wording. tab-playback finding 3 was a misreading: the seed's group is a plain bracket, which has no number
+by design. Fixed in this change:
+
+- **"+ Add a name" no longer prints**: a print rule in `globals.css`, not a class, so the narrow markup still equals `main` (wide-narrow-unchanged).
+- **The memo player shows the clip's length at rest**, and the position once played, instead of `0:00`.
+- **Capture's `+ part` is bordered like a chip**, so when the strip cuts it at 375 it reads as a cut chip, not a stray `+`.
+- **The status row's inline separators get 4px after them**, not 2px. The row's own gaps stay at 2px: at 375 the row has about 5px
+  to spare with "stacking onto the marked column" and a 10-character chord, and 4px gaps clipped `end ⇥` (usability-status-row).
+  So the separators between the words and the chord, and before `⇤ start`, are still tight.
+
+Left as design calls, not errors: the rest of the "worth your eye" notes above.

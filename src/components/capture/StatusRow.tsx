@@ -7,7 +7,7 @@ import type { readDuration } from "@/lib/rhythm/durations";
 const Sep = ({ inline = false }: { inline?: boolean }) => (
   <span
     aria-hidden="true"
-    className={inline ? "mr-0.5 inline-block h-3 w-px shrink-0 bg-text-faint align-middle" : "h-3 w-px shrink-0 bg-text-faint"}
+    className={inline ? "mr-1 inline-block h-3 w-px shrink-0 bg-text-faint align-middle" : "h-3 w-px shrink-0 bg-text-faint"}
   />
 );
 

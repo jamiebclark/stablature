@@ -14,9 +14,10 @@ test("A records 30 s; B has it ready and playable within 10 s of Stop", async ({
     const memo = trio.guest.page.getByTestId("memo").first();
     await expect(memo).toHaveAttribute("data-state", "ready", { timeout: 10_000 });
     expect(Date.now() - stoppedAt).toBeLessThan(11_000);
-    await expect(memo.getByTestId("memo-elapsed")).toBeVisible();
+    // At rest the time is the clip's length; once playing it is the position, which moves off 0:00.
+    await expect(memo.getByTestId("memo-elapsed")).toHaveText(/^0:(29|30|31)$/);
     await memo.getByTestId("memo-play").click();
-    await expect(memo.getByTestId("memo-elapsed")).not.toHaveText(/^0:00/, { timeout: 5_000 });
+    await expect(memo.getByTestId("memo-elapsed")).toHaveText(/^0:0[1-9]$/, { timeout: 5_000 });
   } finally {
     await trio.close();
   }
