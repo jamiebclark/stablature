@@ -378,7 +378,7 @@ symbols, faint bracket numerals, controls under 44px on touch, the help overlay'
 hyphen-chord refusal's wording. tab-playback finding 3 was a misreading: the seed's group is a plain bracket, which has no number
 by design. Fixed in this change:
 
-- **"+ Add a name" no longer prints** (`no-print`).
+- **"+ Add a name" no longer prints**: a print rule in `globals.css`, not a class, so the narrow markup still equals `main` (wide-narrow-unchanged).
 - **The memo player shows the clip's length at rest**, and the position once played, instead of `0:00`.
 - **Capture's `+ part` is bordered like a chip**, so when the strip cuts it at 375 it reads as a cut chip, not a stray `+`.
 - **The status row's inline separators get 4px after them**, not 2px. The row's own gaps stay at 2px: at 375 the row has about 5px
